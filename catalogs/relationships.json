@@ -1,0 +1,154 @@
+{
+  "nodes": [
+    {
+      "id": "honeydrunk-kernel",
+      "consumes": [],
+      "consumed_by": ["honeydrunk-transport", "honeydrunk-vault", "honeydrunk-auth", "honeydrunk-web-rest", "honeydrunk-data", "honeydrunk-notify", "pulse"],
+      "consumed_by_planned": [],
+      "blocked_by": [],
+      "exposes": {
+        "contracts": ["IGridContext", "INodeContext", "IOperationContext", "IStartupHook", "IShutdownHook", "INodeLifecycle", "IHealthContributor", "IReadinessContributor", "ITraceEnricher", "ILogScopeFactory", "IAgentExecutionContext"],
+        "packages": ["HoneyDrunk.Kernel.Abstractions", "HoneyDrunk.Kernel"]
+      },
+      "consumes_detail": {}
+    },
+    {
+      "id": "honeydrunk-transport",
+      "consumes": ["honeydrunk-kernel"],
+      "consumed_by": ["honeydrunk-web-rest", "honeydrunk-data"],
+      "consumed_by_planned": [],
+      "blocked_by": [],
+      "exposes": {
+        "contracts": ["ITransportPublisher", "ITransportConsumer", "IMessageHandler", "ITransportEnvelope"],
+        "packages": ["HoneyDrunk.Transport", "HoneyDrunk.Transport.AzureServiceBus", "HoneyDrunk.Transport.StorageQueue", "HoneyDrunk.Transport.InMemory"]
+      },
+      "consumes_detail": {
+        "honeydrunk-kernel": ["IGridContext", "CorrelationId", "ITelemetryActivityFactory", "HoneyDrunk.Kernel.Abstractions"]
+      }
+    },
+    {
+      "id": "honeydrunk-vault",
+      "consumes": ["honeydrunk-kernel"],
+      "consumed_by": ["honeydrunk-auth"],
+      "consumed_by_planned": [],
+      "blocked_by": [],
+      "exposes": {
+        "contracts": ["ISecretStore", "IConfigProvider", "IVaultClient", "ISecretProvider", "IConfigSource"],
+        "packages": ["HoneyDrunk.Vault", "HoneyDrunk.Vault.Providers.AzureKeyVault", "HoneyDrunk.Vault.Providers.Aws", "HoneyDrunk.Vault.Providers.File", "HoneyDrunk.Vault.Providers.Configuration", "HoneyDrunk.Vault.Providers.InMemory"]
+      },
+      "consumes_detail": {
+        "honeydrunk-kernel": ["IGridContext", "IOperationContext", "IStartupHook", "IHealthContributor", "IReadinessContributor", "ITraceEnricher", "HoneyDrunk.Kernel"]
+      }
+    },
+    {
+      "id": "honeydrunk-auth",
+      "consumes": ["honeydrunk-kernel", "honeydrunk-vault"],
+      "consumed_by": ["honeydrunk-web-rest"],
+      "consumed_by_planned": [],
+      "blocked_by": [],
+      "exposes": {
+        "contracts": ["IAuthenticatedIdentityAccessor", "IAuthorizationPolicy", "AuthenticationResult", "AuthorizationDecision"],
+        "packages": ["HoneyDrunk.Auth.Abstractions", "HoneyDrunk.Auth", "HoneyDrunk.Auth.AspNetCore"]
+      },
+      "consumes_detail": {
+        "honeydrunk-kernel": ["IGridContext", "IOperationContext", "IStartupHook", "IHealthContributor", "HoneyDrunk.Kernel"],
+        "honeydrunk-vault": ["ISecretStore", "HoneyDrunk.Vault"]
+      }
+    },
+    {
+      "id": "honeydrunk-web-rest",
+      "consumes": ["honeydrunk-kernel", "honeydrunk-transport", "honeydrunk-auth"],
+      "consumed_by": [],
+      "consumed_by_planned": [],
+      "blocked_by": [],
+      "exposes": {
+        "contracts": ["ApiResult", "ApiErrorResponse"],
+        "packages": ["HoneyDrunk.Web.Rest.Abstractions", "HoneyDrunk.Web.Rest.AspNetCore"]
+      },
+      "consumes_detail": {
+        "honeydrunk-kernel": ["IOperationContextAccessor", "CorrelationId", "HoneyDrunk.Kernel.Abstractions"],
+        "honeydrunk-transport": ["ITransportEnvelope", "HoneyDrunk.Transport"],
+        "honeydrunk-auth": ["IAuthenticatedIdentityAccessor", "HoneyDrunk.Auth.AspNetCore"]
+      }
+    },
+    {
+      "id": "honeydrunk-data",
+      "consumes": ["honeydrunk-kernel", "honeydrunk-transport"],
+      "consumed_by": [],
+      "consumed_by_planned": [],
+      "blocked_by": [],
+      "exposes": {
+        "contracts": ["IRepository", "IUnitOfWork", "IOutboxStore"],
+        "packages": ["HoneyDrunk.Data.Abstractions", "HoneyDrunk.Data", "HoneyDrunk.Data.EntityFramework", "HoneyDrunk.Data.SqlServer", "HoneyDrunk.Data.Outbox", "HoneyDrunk.Data.Outbox.Dispatcher", "HoneyDrunk.Data.Migrations", "HoneyDrunk.Data.Testing"]
+      },
+      "consumes_detail": {
+        "honeydrunk-kernel": ["IGridContext", "IOperationContext", "IStartupHook", "HoneyDrunk.Kernel"],
+        "honeydrunk-transport": ["ITransportPublisher", "HoneyDrunk.Transport"]
+      }
+    },
+    {
+      "id": "pulse",
+      "consumes": ["honeydrunk-kernel"],
+      "consumed_by": [],
+      "consumed_by_planned": [],
+      "blocked_by": [],
+      "exposes": {
+        "contracts": ["ITraceSink", "ILogSink", "IMetricsSink"],
+        "packages": ["HoneyDrunk.Pulse.Contracts", "HoneyDrunk.Telemetry.Abstractions", "HoneyDrunk.Telemetry.OpenTelemetry"]
+      },
+      "consumes_detail": {
+        "honeydrunk-kernel": ["IGridContext", "HoneyDrunk.Kernel.Abstractions"]
+      }
+    },
+    {
+      "id": "honeydrunk-notify",
+      "consumes": ["honeydrunk-kernel"],
+      "consumed_by": [],
+      "consumed_by_planned": [],
+      "blocked_by": [],
+      "exposes": {
+        "contracts": ["INotificationSender", "INotificationGateway"],
+        "packages": ["HoneyDrunk.Notify.Abstractions", "HoneyDrunk.Notify"]
+      },
+      "consumes_detail": {
+        "honeydrunk-kernel": ["IGridContext", "HoneyDrunk.Kernel.Abstractions"]
+      }
+    },
+    {
+      "id": "honeydrunk-actions",
+      "consumes": [],
+      "consumed_by": [],
+      "consumed_by_planned": [],
+      "blocked_by": [],
+      "exposes": {
+        "contracts": [],
+        "packages": []
+      },
+      "consumes_detail": {}
+    },
+    {
+      "id": "honeydrunk-architecture",
+      "consumes": [],
+      "consumed_by": [],
+      "consumed_by_planned": [],
+      "blocked_by": [],
+      "exposes": {
+        "contracts": [],
+        "packages": []
+      },
+      "consumes_detail": {}
+    },
+    {
+      "id": "honeydrunk-studios",
+      "consumes": [],
+      "consumed_by": [],
+      "consumed_by_planned": [],
+      "blocked_by": [],
+      "exposes": {
+        "contracts": [],
+        "packages": []
+      },
+      "consumes_detail": {}
+    }
+  ]
+}

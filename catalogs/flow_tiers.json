@@ -1,0 +1,46 @@
+{
+  "description": "Priority tiers for agent work flows. Tier 1 is fastest path, Tier 3 requires human review.",
+  "tiers": [
+    {
+      "tier": 1,
+      "name": "Auto-Execute",
+      "description": "Changes that can be made and PR'd without human review of the plan",
+      "examples": [
+        "Documentation-only changes within a single repo",
+        "Version bumps in Directory.Build.props",
+        "Adding a new test for existing behavior",
+        "Updating CHANGELOG.md"
+      ],
+      "approvalRequired": false,
+      "prReviewRequired": true
+    },
+    {
+      "tier": 2,
+      "name": "Plan-Then-Execute",
+      "description": "Changes that need a generated plan reviewed before execution",
+      "examples": [
+        "New feature implementation within one repo",
+        "Adding a new provider to a slot (e.g., new Vault provider)",
+        "CI workflow changes",
+        "New middleware in Transport pipeline"
+      ],
+      "approvalRequired": true,
+      "prReviewRequired": true
+    },
+    {
+      "tier": 3,
+      "name": "Architecture Review",
+      "description": "Changes that affect contracts, invariants, or cross-repo boundaries",
+      "examples": [
+        "Modifying an Abstractions package interface",
+        "Adding a new Node to the Grid",
+        "Changing context model (GridContext fields)",
+        "Breaking version bumps (major version)",
+        "New dependency between Nodes"
+      ],
+      "approvalRequired": true,
+      "prReviewRequired": true,
+      "requiresAdr": true
+    }
+  ]
+}

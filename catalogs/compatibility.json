@@ -1,0 +1,77 @@
+{
+  "description": "Tracks which versions of each Node are compatible with each other. Updated when a Node ships a new major or minor version.",
+  "lastUpdated": "2026-03-22",
+  "matrix": [
+    {
+      "node": "honeydrunk-kernel",
+      "currentVersion": "0.4.0",
+      "compatibleWith": {},
+      "notes": "Root of the dependency tree. No upstream dependencies."
+    },
+    {
+      "node": "honeydrunk-transport",
+      "currentVersion": "0.4.0",
+      "compatibleWith": {
+        "honeydrunk-kernel": ">=0.4.0"
+      },
+      "notes": "Depends on Kernel.Abstractions only."
+    },
+    {
+      "node": "honeydrunk-vault",
+      "currentVersion": "0.2.0",
+      "compatibleWith": {
+        "honeydrunk-kernel": ">=0.4.0"
+      },
+      "notes": "Depends on Kernel.Abstractions only."
+    },
+    {
+      "node": "honeydrunk-auth",
+      "currentVersion": "0.2.0",
+      "compatibleWith": {
+        "honeydrunk-kernel": ">=0.4.0",
+        "honeydrunk-vault": ">=0.2.0"
+      },
+      "notes": "Uses Vault for signing key retrieval."
+    },
+    {
+      "node": "honeydrunk-web-rest",
+      "currentVersion": "0.2.0",
+      "compatibleWith": {
+        "honeydrunk-kernel": ">=0.4.0",
+        "honeydrunk-transport": ">=0.4.0",
+        "honeydrunk-auth": ">=0.2.0"
+      },
+      "notes": "Optional Transport dependency for outbox integration."
+    },
+    {
+      "node": "honeydrunk-data",
+      "currentVersion": "0.3.0",
+      "compatibleWith": {
+        "honeydrunk-kernel": ">=0.4.0",
+        "honeydrunk-transport": ">=0.4.0"
+      },
+      "notes": "Transport dependency for outbox store implementations."
+    },
+    {
+      "node": "pulse",
+      "currentVersion": "0.1.0",
+      "compatibleWith": {
+        "honeydrunk-kernel": ">=0.4.0"
+      },
+      "notes": "Depends on Kernel.Abstractions only."
+    },
+    {
+      "node": "honeydrunk-notify",
+      "currentVersion": "0.1.0",
+      "compatibleWith": {
+        "honeydrunk-kernel": ">=0.4.0"
+      },
+      "notes": "Depends on Kernel.Abstractions only."
+    }
+  ],
+  "upgradeRules": {
+    "majorBump": "All downstream Nodes must verify compatibility and may require code changes. Create a dispatch plan.",
+    "minorBump": "Downstream Nodes should update but no breaking changes expected. Verify canary tests pass.",
+    "patchBump": "No downstream action needed. Bug fixes and internal changes only."
+  }
+}

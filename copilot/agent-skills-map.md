@@ -1,0 +1,60 @@
+# Agent Skills Map
+
+Maps agent capabilities to the types of work they can perform in the Grid.
+
+## Core Skills
+
+### Architecture Analysis
+**Capability:** Read catalogs, routing rules, and repo context to answer questions about the Grid topology, dependencies, and boundaries.
+**Input:** Natural language question about architecture
+**Output:** Structured answer with file references
+
+### Issue Packet Generation
+**Capability:** Generate structured GitHub Issue packets from a description of work. Automatically detects single-repo vs multi-repo scope.
+**Input:** Description of feature, bug, change, or initiative
+**Output:** Issue packets in `/generated/issue-packets/`, dispatch plans and handoff prompts in `/generated/` for multi-repo work
+
+### ADR Draft Generation
+**Capability:** Facilitate an architecture discussion and produce an ADR draft.
+**Input:** Design question or proposal
+**Output:** Markdown file in `/generated/adr-drafts/` following ADR format
+
+### Site Sync Packet Generation
+**Capability:** Generate content update packets for the Studios website.
+**Input:** Architecture change (new Node, version release, ADR)
+**Output:** Markdown file in `/generated/site-sync-packets/`
+
+### Dependency Impact Analysis
+**Capability:** Given a proposed change to a Node, trace downstream impact through the dependency graph.
+**Input:** Node name + proposed change description
+**Output:** List of affected Nodes with impact assessment
+
+### PR Review
+**Capability:** Review a pull request against boundary rules, invariants, and code conventions.
+**Input:** PR diff or file changes
+**Output:** Review comments with severity levels
+
+## Skill Routing
+
+| Request Pattern | Primary Skill |
+|----------------|---------------|
+| "What repos are affected by..." | Dependency Impact Analysis |
+| "Create an issue for..." | Issue Packet Generation |
+| "Should we..." / "What if..." | ADR Draft Generation |
+| "Plan the changes for..." | Issue Packet Generation |
+| "Update the website for..." | Site Sync Packet Generation |
+| "Review this PR" | PR Review |
+| "How does X connect to Y" | Architecture Analysis |
+| "Break this into issues" | Issue Packet Generation |
+| "Scope this work" | Issue Packet Generation |
+| "Hand off X to Y repo" | Issue Packet Generation |
+
+## Agent Inventory
+
+| Agent | Purpose | Invokes |
+|-------|---------|---------|
+| **adr-composer** | Facilitate architecture decisions, produce ADRs | — |
+| **site-sync** | Sync website with architecture changes | — |
+| **scope** | Scope work into issues — auto-detects single or multi-repo, generates issue packets, dispatch plans, and handoff prompts | adr-composer, site-sync |
+| **refine** | Challenge scoped work before execution — finds gaps, missed dependencies, boundary violations, invariant risks | — |
+| **review** | Review PRs against boundary rules, invariants, contract safety, and code conventions | — |

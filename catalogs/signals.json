@@ -1,0 +1,51 @@
+[
+  {
+    "id": "context-propagated",
+    "name": "Context Propagated",
+    "direction": "downstream",
+    "description": "GridContext flows from caller to callee across Node boundaries",
+    "carriers": ["HTTP headers", "message envelope headers", "job metadata"],
+    "fields": ["CorrelationId", "CausationId", "NodeId", "StudioId", "Environment", "Baggage"]
+  },
+  {
+    "id": "health-reported",
+    "name": "Health Reported",
+    "direction": "upstream",
+    "description": "Nodes contribute health and readiness signals via IHealthContributor / IReadinessContributor",
+    "consumers": ["Kubernetes probes", "Pulse.Collector", "monitoring dashboards"]
+  },
+  {
+    "id": "telemetry-emitted",
+    "name": "Telemetry Emitted",
+    "direction": "upstream",
+    "description": "Nodes emit traces, logs, and metrics enriched with Grid context",
+    "consumers": ["Pulse.Collector", "Grafana stack", "Azure Monitor", "Sentry", "PostHog"]
+  },
+  {
+    "id": "secret-requested",
+    "name": "Secret Requested",
+    "direction": "downstream",
+    "description": "Nodes request secrets via ISecretStore, resolved by Vault providers",
+    "providers": ["AzureKeyVault", "AwsSecretsManager", "File", "Configuration", "InMemory"]
+  },
+  {
+    "id": "message-published",
+    "name": "Message Published",
+    "direction": "downstream",
+    "description": "Nodes publish transport envelopes via ITransportPublisher",
+    "brokers": ["AzureServiceBus", "StorageQueue", "InMemory"]
+  },
+  {
+    "id": "notification-dispatched",
+    "name": "Notification Dispatched",
+    "direction": "downstream",
+    "description": "Notify dispatches notifications across channels",
+    "channels": ["Email (SMTP, Resend)", "SMS (Twilio)"]
+  },
+  {
+    "id": "lifecycle-hook",
+    "name": "Lifecycle Hook",
+    "direction": "bidirectional",
+    "description": "Kernel orchestrates Node startup and shutdown via IStartupHook / IShutdownHook"
+  }
+]

@@ -1,0 +1,66 @@
+{
+  "description": "Defines the types of agentic flows and how they route through the system",
+  "flows": [
+    {
+      "id": "architecture-discussion",
+      "name": "Architecture Discussion",
+      "description": "Discuss a design question and produce an ADR draft",
+      "entry": "agent-hq",
+      "steps": [
+        "Discuss design question with user",
+        "Generate ADR draft in /generated/adr-drafts/",
+        "Optionally create issue packets for affected repos"
+      ],
+      "outputs": ["adr-draft", "issue-packets"]
+    },
+    {
+      "id": "cross-repo-feature",
+      "name": "Cross-Repo Feature",
+      "description": "Plan and create issues for a feature spanning multiple Nodes",
+      "entry": "agent-hq",
+      "steps": [
+        "Identify affected Nodes from catalogs",
+        "Determine dependency order for changes",
+        "Generate issue packet per repo",
+        "Generate site-sync packet if public surface changes"
+      ],
+      "outputs": ["issue-packets", "site-sync-packets"]
+    },
+    {
+      "id": "repo-feature",
+      "name": "Single Repo Feature",
+      "description": "Plan work scoped to one repo",
+      "entry": "agent-hq",
+      "steps": [
+        "Load repo context from /repos/{name}/",
+        "Validate feature against repo boundaries and invariants",
+        "Generate issue packet"
+      ],
+      "outputs": ["issue-packets"]
+    },
+    {
+      "id": "site-sync",
+      "name": "Site Sync",
+      "description": "Propagate architecture or documentation changes to the Studios website",
+      "entry": "agent-hq",
+      "steps": [
+        "Identify what changed (new Node, new version, new ADR)",
+        "Generate site-sync packet with content and target pages",
+        "Handoff to Studios repo agent"
+      ],
+      "outputs": ["site-sync-packets"]
+    },
+    {
+      "id": "canary-investigation",
+      "name": "Canary Investigation",
+      "description": "Investigate a canary test failure that indicates a cross-Node boundary violation",
+      "entry": "agent-hq",
+      "steps": [
+        "Identify which invariant was violated",
+        "Trace the violation to the responsible repo",
+        "Generate fix issue packet with invariant reference"
+      ],
+      "outputs": ["issue-packets"]
+    }
+  ]
+}
