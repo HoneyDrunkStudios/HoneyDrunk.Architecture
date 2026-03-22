@@ -49,7 +49,7 @@ Tracked initiatives across the HoneyDrunk Grid. Each initiative may span multipl
 **Scope:** Architecture  
 **Description:** This repo (HoneyDrunk.Architecture) as the central command center for agentic workflows, issue generation, and cross-repo coordination.
 
-### HoneyDrunk.Tools
-**Status:** Planned  
+### ~~HoneyDrunk.Tools~~ (Scrapped)
+**Status:** Cancelled  
 **Scope:** Ops  
-**Description:** CLI tools for scanning, accessibility checks, and CI automation. Referenced by HoneyDrunk.Actions workflows.
+**Description:** Originally planned as a separate CLI for scanning, accessibility checks, and CI automation. Decision made to implement this logic directly as composite actions within HoneyDrunk.Actions instead.

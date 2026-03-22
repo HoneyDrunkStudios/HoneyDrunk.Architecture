@@ -335,11 +335,11 @@
         "Template rendering with ITemplateRenderer and IEmailTemplateRenderer",
         "Queue-based async delivery with background worker processing",
         "Idempotency keys and delivery status tracking",
-        "Secure credential management via Vault integration"
+        "Secure credential management via deploy-time Key Vault injection"
       ],
       "monetization_signal": "Internal-first; provider ecosystem may expand to push notifications, webhooks, and partner integrations.",
       "roadmap_focus": "Push notification channel, webhook dispatch, adaptive send policies based on Pulse metrics.",
-      "grid_relationship": "Consumes Kernel for Grid context, lifecycle hooks, and telemetry. Consumes Vault for provider credentials and configuration.",
+      "grid_relationship": "Consumes Kernel for Grid context, lifecycle hooks, and telemetry. Provider credentials are injected at deploy time via Azure Key Vault (not the HoneyDrunk.Vault package).",
       "integration_depth": "medium",
       "demo_path": "Send a notification via INotificationSender → provider dispatches email/SMS → track delivery status.",
       "signal_quote": "When the Hive speaks, it's heard everywhere.",
@@ -381,7 +381,7 @@
       ],
       "monetization_signal": "Internal-first; open-core where appropriate.",
       "roadmap_focus": "Advance HoneyDrunk.Actions capabilities and harden contracts.",
-      "grid_relationship": "Connects with: honeydrunk-build, honeydrunk-tools.",
+      "grid_relationship": "Connects with: honeydrunk-build.",
       "integration_depth": "medium",
       "demo_path": "Reference a reusable workflow → observe build, test, pack, publish steps → verify artifacts.",
       "signal_quote": "Automation with personality.",

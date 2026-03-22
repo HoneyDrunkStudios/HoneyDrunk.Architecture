@@ -21,6 +21,6 @@ Deploy Pulse.Collector to production and validate sink fan-out under real load.
 
 ## On Deck
 
-- HoneyDrunk.Tools CLI scaffolding
+- ~~HoneyDrunk.Tools CLI scaffolding~~ (scrapped — moved to Actions composite actions)
 - Canary test coverage expansion across all Nodes
 - Studios website architecture documentation pages

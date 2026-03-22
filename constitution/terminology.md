@@ -7,7 +7,8 @@ Canonical definitions for terms used across HoneyDrunk.OS.
 | Term | Definition |
 |------|-----------|
 | **Grid** | The full distributed system composed of all Nodes. Synonym: "the Hive." |
-| **Node** | A deployable unit (NuGet package or service) that participates in the Grid. Each repo produces one or more Nodes. |
+| **Node** | A library-level building block (NuGet package) that participates in the Grid. Each repo produces one or more Nodes. |
+| **Service** | A deployable process that hosts one or more Nodes and runs in the Grid (e.g., Pulse.Collector, Notify.Functions). See `catalogs/services.json`. |
 | **Studio** | The organizational tenant. `StudioId` scopes configuration, secrets, and telemetry. |
 | **Sector** | A narrative grouping of related Nodes (e.g., Core, Ops, Meta, HoneyNet, Creator, Market, AI). |
 | **Cluster** | A sub-grouping within a Sector (e.g., Core → foundation, security). |

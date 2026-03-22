@@ -38,7 +38,7 @@ High-level roadmap for the HoneyDrunk Grid.
 - [ ] Grid v0.5 — Next contract evolution based on production learnings
 - [ ] Data — Cosmos DB provider exploration
 - [ ] Auth — Multi-tenant identity federation
-- [ ] HoneyDrunk.Tools — CLI scaffolding for CI automation
+- [x] ~~HoneyDrunk.Tools~~ — Scrapped; scanning logic moved to HoneyDrunk.Actions composite actions
 
 ## Future
 

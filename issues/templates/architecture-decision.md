@@ -3,6 +3,8 @@ name: Architecture Decision
 type: architecture-decision
 tier: 3
 target_repo: HoneyDrunk.Architecture
+labels: ["architecture", "tier-3", "meta"]
+dependencies: []
 ---
 
 # Architecture Decision: {Title}

@@ -83,7 +83,7 @@ Centralized view of what shipped across the Grid.
 
 ### Notify 0.1.0
 
-- **Signal:** Seed
+- **Signal:** Live
 - **Shipped:** Q1 2026 (wrapping up)
 - **Highlights:**
   - Email and SMS providers

@@ -14,7 +14,7 @@
       "compatibleWith": {
         "honeydrunk-kernel": ">=0.4.0"
       },
-      "notes": "Depends on Kernel.Abstractions only."
+      "notes": "Depends on HoneyDrunk.Kernel runtime and Kernel.Abstractions."
     },
     {
       "node": "honeydrunk-vault",
@@ -22,7 +22,7 @@
       "compatibleWith": {
         "honeydrunk-kernel": ">=0.4.0"
       },
-      "notes": "Depends on Kernel.Abstractions only."
+      "notes": "Depends on HoneyDrunk.Kernel runtime and Kernel.Abstractions."
     },
     {
       "node": "honeydrunk-auth",

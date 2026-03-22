@@ -3,6 +3,8 @@ name: Repo Feature
 type: repo-feature
 tier: 2
 target_repo: "{repo}"
+labels: ["feature", "tier-2", "{sector}"]
+dependencies: []
 ---
 
 # Feature: {Title}

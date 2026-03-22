@@ -11,7 +11,7 @@
   },
   {
     "id": "notify-worker",
-    "nodeId": "notify",
+    "nodeId": "honeydrunk-notify",
     "name": "HoneyDrunk.Notify.Worker",
     "type": "worker",
     "description": "Background worker that dequeues and dispatches notifications",
@@ -21,7 +21,7 @@
   },
   {
     "id": "notify-functions",
-    "nodeId": "notify",
+    "nodeId": "honeydrunk-notify",
     "name": "HoneyDrunk.Notify.Functions",
     "type": "function-app",
     "description": "Azure Functions for notification processing",
@@ -31,7 +31,7 @@
   },
   {
     "id": "studios-website",
-    "nodeId": "studios",
+    "nodeId": "honeydrunk-studios",
     "name": "honeydrunk-website",
     "type": "web-app",
     "description": "HoneyDrunk Studios public website",
