@@ -1,0 +1,42 @@
+[
+  {
+    "id": "pulse-collector",
+    "nodeId": "pulse",
+    "name": "Pulse.Collector",
+    "type": "service",
+    "description": "Deployable OTLP receiver that ingests traces, logs, and metrics and fans out to configured sinks",
+    "runtime": "net10.0",
+    "hosting": "container",
+    "status": "active"
+  },
+  {
+    "id": "notify-worker",
+    "nodeId": "honeydrunk-notify",
+    "name": "HoneyDrunk.Notify.Worker",
+    "type": "worker",
+    "description": "Background worker that dequeues and dispatches notifications",
+    "runtime": "net10.0",
+    "hosting": "container",
+    "status": "active"
+  },
+  {
+    "id": "notify-functions",
+    "nodeId": "honeydrunk-notify",
+    "name": "HoneyDrunk.Notify.Functions",
+    "type": "function-app",
+    "description": "Azure Functions for notification processing",
+    "runtime": "net10.0",
+    "hosting": "azure-functions",
+    "status": "active"
+  },
+  {
+    "id": "studios-website",
+    "nodeId": "honeydrunk-studios",
+    "name": "honeydrunk-website",
+    "type": "web-app",
+    "description": "HoneyDrunk Studios public website",
+    "runtime": "next.js",
+    "hosting": "vercel",
+    "status": "active"
+  }
+]

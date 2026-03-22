@@ -1,0 +1,210 @@
+[
+  {
+    "id": "kernel-abstractions",
+    "nodeId": "honeydrunk-kernel",
+    "name": "HoneyDrunk.Kernel.Abstractions",
+    "type": "abstractions",
+    "version": "0.4.0",
+    "description": "Pure zero-dependency contracts for the Grid context model, lifecycle, and identity"
+  },
+  {
+    "id": "kernel-runtime",
+    "nodeId": "honeydrunk-kernel",
+    "name": "HoneyDrunk.Kernel",
+    "type": "runtime",
+    "version": "0.4.0",
+    "description": "Runtime implementations of GridContext, NodeContext, OperationContext, and lifecycle management"
+  },
+  {
+    "id": "transport-core",
+    "nodeId": "honeydrunk-transport",
+    "name": "HoneyDrunk.Transport",
+    "type": "runtime",
+    "version": "0.4.0",
+    "description": "Core messaging abstractions, middleware pipeline, envelope contracts"
+  },
+  {
+    "id": "transport-servicebus",
+    "nodeId": "honeydrunk-transport",
+    "name": "HoneyDrunk.Transport.AzureServiceBus",
+    "type": "provider",
+    "version": "0.4.0",
+    "description": "Azure Service Bus transport provider"
+  },
+  {
+    "id": "transport-storagequeue",
+    "nodeId": "honeydrunk-transport",
+    "name": "HoneyDrunk.Transport.StorageQueue",
+    "type": "provider",
+    "version": "0.4.0",
+    "description": "Azure Storage Queue transport provider"
+  },
+  {
+    "id": "transport-inmemory",
+    "nodeId": "honeydrunk-transport",
+    "name": "HoneyDrunk.Transport.InMemory",
+    "type": "testing",
+    "version": "0.4.0",
+    "description": "In-memory broker for testing"
+  },
+  {
+    "id": "vault-core",
+    "nodeId": "honeydrunk-vault",
+    "name": "HoneyDrunk.Vault",
+    "type": "runtime",
+    "version": "0.2.0",
+    "description": "Core Vault client, orchestrator, caching, and resilience"
+  },
+  {
+    "id": "vault-azure",
+    "nodeId": "honeydrunk-vault",
+    "name": "HoneyDrunk.Vault.Providers.AzureKeyVault",
+    "type": "provider",
+    "version": "0.2.0",
+    "description": "Azure Key Vault secrets provider"
+  },
+  {
+    "id": "vault-aws",
+    "nodeId": "honeydrunk-vault",
+    "name": "HoneyDrunk.Vault.Providers.Aws",
+    "type": "provider",
+    "version": "0.2.0",
+    "description": "AWS Secrets Manager provider"
+  },
+  {
+    "id": "vault-file",
+    "nodeId": "honeydrunk-vault",
+    "name": "HoneyDrunk.Vault.Providers.File",
+    "type": "provider",
+    "version": "0.2.0",
+    "description": "File-based secrets provider for development"
+  },
+  {
+    "id": "vault-config",
+    "nodeId": "honeydrunk-vault",
+    "name": "HoneyDrunk.Vault.Providers.Configuration",
+    "type": "provider",
+    "version": "0.2.0",
+    "description": "IConfiguration bridge provider"
+  },
+  {
+    "id": "vault-inmemory",
+    "nodeId": "honeydrunk-vault",
+    "name": "HoneyDrunk.Vault.Providers.InMemory",
+    "type": "testing",
+    "version": "0.2.0",
+    "description": "In-memory secrets store for testing"
+  },
+  {
+    "id": "auth-abstractions",
+    "nodeId": "honeydrunk-auth",
+    "name": "HoneyDrunk.Auth.Abstractions",
+    "type": "abstractions",
+    "version": "0.2.0",
+    "description": "Auth contracts — token validation, policy evaluation interfaces"
+  },
+  {
+    "id": "auth-runtime",
+    "nodeId": "honeydrunk-auth",
+    "name": "HoneyDrunk.Auth",
+    "type": "runtime",
+    "version": "0.2.0",
+    "description": "JWT validation, signing key management, policy evaluation"
+  },
+  {
+    "id": "auth-aspnetcore",
+    "nodeId": "honeydrunk-auth",
+    "name": "HoneyDrunk.Auth.AspNetCore",
+    "type": "hosting",
+    "version": "0.2.0",
+    "description": "ASP.NET Core middleware integration for Auth"
+  },
+  {
+    "id": "webrest-abstractions",
+    "nodeId": "honeydrunk-web-rest",
+    "name": "HoneyDrunk.Web.Rest.Abstractions",
+    "type": "abstractions",
+    "version": "0.2.0",
+    "description": "REST contracts — ApiResult, pagination, validation models"
+  },
+  {
+    "id": "webrest-aspnetcore",
+    "nodeId": "honeydrunk-web-rest",
+    "name": "HoneyDrunk.Web.Rest.AspNetCore",
+    "type": "hosting",
+    "version": "0.2.0",
+    "description": "ASP.NET Core integration — exception mapping, correlation, JSON conventions"
+  },
+  {
+    "id": "pulse-contracts",
+    "nodeId": "pulse",
+    "name": "HoneyDrunk.Pulse.Contracts",
+    "type": "abstractions",
+    "version": "0.1.0",
+    "description": "Shared telemetry event models (multi-target: netstandard2.0, net8.0, net10.0)"
+  },
+  {
+    "id": "telemetry-abstractions",
+    "nodeId": "pulse",
+    "name": "HoneyDrunk.Telemetry.Abstractions",
+    "type": "abstractions",
+    "version": "0.1.0",
+    "description": "Sink interfaces — ITraceSink, ILogSink, IMetricsSink, IAnalyticsSink, IErrorSink"
+  },
+  {
+    "id": "telemetry-otel",
+    "nodeId": "pulse",
+    "name": "HoneyDrunk.Telemetry.OpenTelemetry",
+    "type": "runtime",
+    "version": "0.1.0",
+    "description": "OpenTelemetry preconfigured pipelines with Grid context enrichment"
+  },
+  {
+    "id": "data-abstractions",
+    "nodeId": "honeydrunk-data",
+    "name": "HoneyDrunk.Data.Abstractions",
+    "type": "abstractions",
+    "version": "0.3.0",
+    "description": "Repository, unit of work, and tenant access contracts"
+  },
+  {
+    "id": "data-runtime",
+    "nodeId": "honeydrunk-data",
+    "name": "HoneyDrunk.Data",
+    "type": "runtime",
+    "version": "0.3.0",
+    "description": "Provider-neutral data orchestration"
+  },
+  {
+    "id": "data-ef",
+    "nodeId": "honeydrunk-data",
+    "name": "HoneyDrunk.Data.EntityFramework",
+    "type": "provider",
+    "version": "0.3.0",
+    "description": "EF Core repository and unit of work implementation"
+  },
+  {
+    "id": "data-sqlserver",
+    "nodeId": "honeydrunk-data",
+    "name": "HoneyDrunk.Data.SqlServer",
+    "type": "provider",
+    "version": "0.3.0",
+    "description": "SQL Server / Azure SQL specialization"
+  },
+  {
+    "id": "notify-abstractions",
+    "nodeId": "honeydrunk-notify",
+    "name": "HoneyDrunk.Notify.Abstractions",
+    "type": "abstractions",
+    "version": "0.1.0",
+    "description": "Notification channel contracts"
+  },
+  {
+    "id": "notify-runtime",
+    "nodeId": "honeydrunk-notify",
+    "name": "HoneyDrunk.Notify",
+    "type": "runtime",
+    "version": "0.1.0",
+    "description": "Notification dispatch engine"
+  }
+]
