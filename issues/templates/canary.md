@@ -3,7 +3,7 @@ name: Canary Investigation
 type: canary
 tier: 2
 target_repo: "{repo}"
-labels: ["chore", "tier-2", "{sector}"]
+labels: ["canary", "tier-2", "boundary-violation"]
 dependencies: []
 ---
 

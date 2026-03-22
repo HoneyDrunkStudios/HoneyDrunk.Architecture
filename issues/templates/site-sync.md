@@ -3,7 +3,7 @@ name: Site Sync
 type: site-sync
 tier: 1
 target_repo: HoneyDrunk.Studios
-labels: ["chore", "tier-1", "meta"]
+labels: ["site-sync", "tier-1", "documentation"]
 dependencies: []
 ---
 

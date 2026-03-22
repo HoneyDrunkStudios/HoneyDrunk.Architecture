@@ -3,7 +3,7 @@ name: Cross-Repo Change
 type: cross-repo-change
 tier: 2
 target_repos: []
-labels: ["chore", "tier-2", "{sector}"]
+labels: ["cross-repo", "tier-2", "coordination"]
 dependencies: []
 ---
 

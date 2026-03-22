@@ -14,7 +14,7 @@
       "compatibleWith": {
         "honeydrunk-kernel": ">=0.4.0"
       },
-      "notes": "Depends on HoneyDrunk.Kernel runtime and Kernel.Abstractions."
+      "notes": "Should depend on Kernel.Abstractions only per invariant #2. Currently also references full Kernel (for GridContext.Initialize) — tracked for removal."
     },
     {
       "node": "honeydrunk-vault",

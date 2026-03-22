@@ -29,7 +29,7 @@ HoneyDrunk.Architecture/catalogs/
 | `catalogs/modules.json` | `data/schema/modules.json` | Package-level detail per Node |
 | `catalogs/services.json` | `data/schema/services.json` | Deployed service instances |
 | `catalogs/relationships.json` | `data/schema/relationships.json` | Dependency graph (consumes, exposes) |
-| `catalogs/signals.json` | `data/schema/signals.json` | Timeline entries (build-in-public log) |
+| `catalogs/signals.json` | *(no direct mapping)* | Signal type registry (e.g. `context-propagated`, `telemetry-emitted`). Website `data/schema/signals.json` is a separate build-in-public changelog — not sourced from this catalog. |
 | `catalogs/flow_config.json` | `data/schema/flow_config.json` | Flow calculation weights |
 | `catalogs/flow_tiers.json` | `data/schema/flow_tiers.json` | Tier thresholds |
 | `constitution/sectors.md` | `data/schema/sectors.json` | Sector definitions, colors, descriptions |
@@ -100,9 +100,11 @@ Each entry in `relationships.json` is under `{ "nodes": [...] }`:
 }
 ```
 
-## Signal Timeline Schema
+## Website Signal Timeline Schema
 
-Each entry in `signals.json` is a build-in-public log entry:
+The website has a build-in-public log at `data/schema/signals.json`. This is **not** sourced from the Architecture catalog — it is website-only content authored directly in the Studios repo. Do not sync or overwrite it from `catalogs/signals.json` (which is a signal type registry, not a changelog).
+
+Each website timeline entry follows this shape:
 ```json
 {
   "date": "YYYY-MM-DD",

@@ -40,7 +40,7 @@ Changes to GitHub Actions workflows or CI infrastructure.
 - **Starts in:** HoneyDrunk.Actions
 - **Signals:** "workflow", "CI", "pipeline", "build step"
 
-### `canary-failure`
+### `canary`
 A canary test failure indicating a cross-Node boundary violation.
 - **Tier:** 2 (Plan-Then-Execute)
 - **Starts in:** This repo (investigation)

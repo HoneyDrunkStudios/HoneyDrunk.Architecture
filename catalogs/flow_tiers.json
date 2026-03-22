@@ -1,5 +1,5 @@
 {
-  "description": "Priority tiers for agent work flows. Tier 1 is fastest path, Tier 3 requires human review.",
+  "description": "Priority tiers for agent workflows. Tier 1 is fastest path, Tier 3 requires human review.",
   "tiers": [
     {
       "tier": 1,

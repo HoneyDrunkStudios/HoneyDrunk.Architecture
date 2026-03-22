@@ -10,8 +10,11 @@ Rules that must never be violated across the HoneyDrunk Grid. Canary tests enfor
 2. **Runtime packages depend on Abstractions, never on other runtime packages at the same layer.**
    `HoneyDrunk.Transport` depends on `HoneyDrunk.Kernel.Abstractions`, not `HoneyDrunk.Kernel`.
 
-3. **Provider packages depend on their parent Node's Abstractions, not the runtime package.**
-   `HoneyDrunk.Vault.Providers.AzureKeyVault` → `HoneyDrunk.Vault` (which re-exports abstractions), never on internal Vault implementation details.
+3. **Provider packages depend on their parent Node's contracts, not internal implementation details.**
+   When a Node splits contracts into a separate package (e.g. `HoneyDrunk.Kernel.Abstractions`),
+   providers reference that package. When a Node bundles contracts into its main package
+   (e.g. `HoneyDrunk.Vault`), providers reference the main package. In either case, providers
+   must only consume exported interfaces — never internal types, caches, or resilience plumbing.
 
 4. **No circular dependencies.** The dependency graph is a DAG. Kernel is always at the root.
 

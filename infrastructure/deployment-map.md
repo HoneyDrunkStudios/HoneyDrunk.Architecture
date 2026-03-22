@@ -35,7 +35,7 @@ These are the running processes. See `catalogs/services.json` for the canonical 
 |-----------|-------|
 | Runtime | .NET 10.0 (dotnet-isolated) |
 | Hosting | Azure App Service (container) |
-| Container Registry | GHCR (`ghcr.io/honeydrunkstudios/pulse-collector`) — overrideable to ACR via `vars.ACR_REGISTRY` |
+| Container Registry | GHCR (`ghcr.io/honeydrunkstudios/pulse-collector`) — overridable to ACR via `vars.ACR_REGISTRY` |
 | Dockerfile | `Pulse.Collector/Dockerfile` |
 | Ports | 8080, 8081 |
 | Deployment Pattern | Build image → push to registry → deploy to staging slot → health check (`/healthz`) → swap to production |
