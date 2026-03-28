@@ -44,12 +44,20 @@ Tracked initiatives across the HoneyDrunk Grid. Each initiative may span multipl
 
 ## Planned
 
+### Agent Kit
+**Status:** On Deck
+**Scope:** AI
+**Description:** Agent execution runtime, tool abstraction, and memory. Foundation for AI-powered workflows across the Grid.
+
+## Completed
+
 ### Architecture Command Center
-**Status:** Starting  
-**Scope:** Architecture  
-**Description:** This repo (HoneyDrunk.Architecture) as the central command center for agentic workflows, issue generation, and cross-repo coordination.
+**Status:** Complete
+**Scope:** Architecture
+**Completed:** 2026-03-28
+**Description:** HoneyDrunk.Architecture stood up as the central command center. Catalogs, routing rules, issue templates, copilot instructions, per-repo context docs, and Azure infrastructure documentation all in place.
 
 ### ~~HoneyDrunk.Tools~~ (Scrapped)
-**Status:** Cancelled  
-**Scope:** Ops  
+**Status:** Cancelled
+**Scope:** Ops
 **Description:** Originally planned as a separate CLI for scanning, accessibility checks, and CI automation. Decision made to implement this logic directly as composite actions within HoneyDrunk.Actions instead.

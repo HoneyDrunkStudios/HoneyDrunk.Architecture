@@ -14,7 +14,7 @@
       "compatibleWith": {
         "honeydrunk-kernel": ">=0.4.0"
       },
-      "notes": "Should depend on Kernel.Abstractions only per invariant #2. Currently also references full Kernel (for GridContext.Initialize) — tracked for removal."
+      "notes": "Violates Invariant #2: depends on full Kernel (not just Abstractions) because GridContext.Initialize() is only on the concrete class, not IGridContext. Used by GridContextFactory and GridContextPropagationMiddleware. Fix requires exposing an initialization method on IGridContext in Kernel.Abstractions."
     },
     {
       "node": "honeydrunk-vault",
