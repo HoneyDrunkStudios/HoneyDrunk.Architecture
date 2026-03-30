@@ -24,7 +24,6 @@ All Azure resources provisioned or planned across the HoneyDrunk Grid.
 |----------|------|--------|---------|
 | Resource Group | `rg-hd-notify-dev` | Pending | Contains all Notify dev resources |
 | Function App | `func-hd-notify-dev` | Pending | Runs Notify.Functions (queue-triggered email/SMS) |
-| App Service Plan | `plan-hd-notify-dev` | Pending | Consumption plan for the Function App |
 | Storage Account | `sthdnotifydev` | Pending | Queues (notify-queue) + Function App runtime storage |
 | Key Vault | `kv-hd-notify-dev` | Pending | Runtime secrets (see [azure-identity-and-secrets.md](azure-identity-and-secrets.md)) |
 | App Registration | `sp-hd-notify-dev` | Pending | OIDC identity for GitHub Actions deployments |

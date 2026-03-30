@@ -1,66 +1,123 @@
 {
-  "description": "Defines the types of agentic flows and how they route through the system",
+  "description": "Defines the types of agentic flows and how they route through the system. See /routing/sdlc.md for the three-surface lifecycle.",
+  "surfaces": {
+    "claude-code": {
+      "role": "plan-and-orchestrate",
+      "description": "Decomposes intent, generates issues/handoffs, makes architectural decisions",
+      "operates_on": "architecture-repo, workspace"
+    },
+    "codex": {
+      "role": "cloud-execution",
+      "description": "Executes well-scoped tasks autonomously, opens PRs",
+      "operates_on": "single-repo-per-task",
+      "input": ["github-issue", "handoff-prompt"]
+    },
+    "copilot": {
+      "role": "ide-coding",
+      "description": "In-IDE coding, debugging, exploratory work, PR adjustments",
+      "operates_on": "single-repo-in-editor"
+    }
+  },
   "flows": [
     {
       "id": "architecture-discussion",
       "name": "Architecture Discussion",
       "description": "Discuss a design question and produce an ADR draft",
+      "surface": "claude-code",
       "entry": "agent-hq",
       "steps": [
-        "Discuss design question with user",
+        "Discuss design question with developer",
         "Generate ADR draft in /generated/adr-drafts/",
-        "Optionally create issue packets for affected repos"
+        "Optionally decompose into tasks and generate issue packets"
       ],
-      "outputs": ["adr-draft", "issue-packets"]
+      "outputs": ["adr-draft", "issue-packets"],
+      "next_surface": "codex"
     },
     {
       "id": "cross-repo-feature",
       "name": "Cross-Repo Feature",
       "description": "Plan and create issues for a feature spanning multiple Nodes",
+      "surface": "claude-code",
       "entry": "agent-hq",
       "steps": [
         "Identify affected Nodes from catalogs",
         "Determine dependency order for changes",
-        "Generate issue packet per repo",
+        "Generate issue packet per repo with handoff context",
         "Generate site-sync packet if public surface changes"
       ],
-      "outputs": ["issue-packets", "site-sync-packets"]
+      "outputs": ["issue-packets", "handoff-prompts", "site-sync-packets"],
+      "next_surface": "codex"
     },
     {
       "id": "repo-feature",
       "name": "Single Repo Feature",
       "description": "Plan work scoped to one repo",
+      "surface": "claude-code",
       "entry": "agent-hq",
       "steps": [
         "Load repo context from /repos/{name}/",
         "Validate feature against repo boundaries and invariants",
-        "Generate issue packet"
+        "Generate issue packet with handoff context"
       ],
-      "outputs": ["issue-packets"]
+      "outputs": ["issue-packets", "handoff-prompts"],
+      "next_surface": "codex"
+    },
+    {
+      "id": "codex-execution",
+      "name": "Codex Task Execution",
+      "description": "Codex picks up a scoped task and implements it",
+      "surface": "codex",
+      "entry": "github-issue or handoff-prompt",
+      "steps": [
+        "Read issue/handoff for context, acceptance criteria, constraints",
+        "Implement in target repo on a feature branch",
+        "Run tests, ensure CI passes",
+        "Open PR with implementation"
+      ],
+      "outputs": ["pull-request"],
+      "next_surface": "developer-review"
+    },
+    {
+      "id": "ide-fix",
+      "name": "IDE Fix / Adjustment",
+      "description": "Developer works directly in the IDE with Copilot",
+      "surface": "copilot",
+      "entry": "developer-opens-repo",
+      "steps": [
+        "Developer identifies specific code to change",
+        "Copilot assists with implementation, debugging, refactoring",
+        "Developer commits and opens PR (or pushes to existing PR branch)"
+      ],
+      "outputs": ["pull-request", "commits"],
+      "next_surface": null
     },
     {
       "id": "site-sync",
       "name": "Site Sync",
       "description": "Propagate architecture or documentation changes to the Studios website",
+      "surface": "claude-code",
       "entry": "agent-hq",
       "steps": [
         "Identify what changed (new Node, new version, new ADR)",
         "Generate site-sync packet with content and target pages",
-        "Handoff to Studios repo agent"
+        "Generate handoff for Codex to execute against Studios repo"
       ],
-      "outputs": ["site-sync-packets"]
+      "outputs": ["site-sync-packets", "handoff-prompts"],
+      "next_surface": "codex"
     },
     {
       "id": "canary-investigation",
       "name": "Canary Investigation",
       "description": "Investigate a canary test failure that indicates a cross-Node boundary violation",
+      "surface": "claude-code",
       "entry": "agent-hq",
       "steps": [
         "Identify which invariant was violated",
         "Trace the violation to the responsible repo",
         "Generate fix issue packet with invariant reference"
       ],
-      "outputs": ["issue-packets"]
+      "outputs": ["issue-packets"],
+      "next_surface": "codex or copilot depending on complexity"
     }
   ]
 }

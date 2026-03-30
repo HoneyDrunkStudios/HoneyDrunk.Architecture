@@ -41,7 +41,7 @@ Canonical naming rules for all Azure resources in the HoneyDrunk Grid.
 | App Service Plan | `plan` | 60 | Alphanumeric, hyphens |
 | Storage Account | `st` | 24 | **Lowercase alphanumeric only** (no hyphens) |
 | App Registration (Entra ID) | `sp` | — | Any |
-| Container Registry | `cr` | 50 | Alphanumeric only |
+| Container Registry | `cr` | 50 | **Lowercase alphanumeric only** (no hyphens) |
 
 ---
 
@@ -53,7 +53,7 @@ Canonical naming rules for all Azure resources in the HoneyDrunk Grid.
 | Key Vault | `kv-hd-{service}-{env}` | `kv-hd-notify-dev` |
 | Function App | `func-hd-{service}-{env}` | `func-hd-notify-dev` |
 | App Service | `app-hd-{service}-{env}` | `app-hd-pulse-dev` |
-| App Service Plan | `plan-hd-{service}-{env}` | `plan-hd-notify-dev` |
+| App Service Plan | `plan-hd-{service}-{env}` | `plan-hd-pulse-dev` |
 | Storage Account | `sthd{service}{env}` | `sthdnotifydev` |
 | App Registration | `sp-hd-{service}-{env}` | `sp-hd-notify-dev` |
 

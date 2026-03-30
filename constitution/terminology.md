@@ -51,5 +51,7 @@ Canonical definitions for terms used across HoneyDrunk.OS.
 | **Issue Packet** | A machine-readable artifact (Markdown + frontmatter) that an agent can use to create a GitHub Issue in a target repo. |
 | **Site Sync Packet** | An artifact describing changes needed on the HoneyDrunk Studios website to reflect architecture changes. |
 | **ADR Draft** | A partially completed Architecture Decision Record generated from a discussion with an agent. |
+| **PDR** | A Product Decision Record — captures strategic product-level decisions with enough architectural depth to guide ADRs, roadmap, and ecosystem expansion. Lives in `pdrs/`. |
+| **PDR Draft** | A partially completed Product Decision Record generated from a discussion with an agent. |
 | **Handoff** | The act of passing a structured work artifact from one agent (or human) to another for execution. |
 | **Routing Rule** | A rule that determines which repo, workflow, or agent handles a given type of request. |
