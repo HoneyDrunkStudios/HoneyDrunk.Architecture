@@ -1,6 +1,6 @@
 # Execution Rules
 
-How agents should execute work after routing.
+How work is executed after routing. See `/routing/sdlc.md` for the full three-surface lifecycle (Claude Code → Codex → Copilot).
 
 ## Pre-Execution Checklist
 
@@ -31,15 +31,36 @@ When creating an issue packet in `/generated/issue-packets/`:
 
 ## Handoff Protocol
 
-When handing off work to another agent or human:
+### Claude Code → Codex
 
-1. Generate the artifact in `/generated/`
-2. Include a summary section at the top with:
-   - What this is (issue, ADR, site-sync)
+When Claude Code generates work for Codex execution:
+
+1. Generate the artifact in `/generated/` (issue packet or handoff prompt)
+2. Include the structured handoff format defined in `/routing/sdlc.md`:
+   - Task description (imperative)
    - Target repo and branch
-   - Prerequisites (other PRs that must merge first)
-   - Estimated tier and complexity
-3. The receiving agent should validate the artifact against repo boundaries before executing
+   - Upstream context (Goal, Feature, ADRs)
+   - Acceptance criteria
+   - Dependencies (PRs that must merge first)
+   - Constraints (boundaries, invariants)
+3. Create a GitHub Issue in the target repo using the issue packet, or provide the handoff prompt directly to Codex
+
+### Codex → Developer
+
+When Codex completes a task:
+
+1. PR is opened in the target repo with implementation
+2. Developer reviews against acceptance criteria from the issue
+3. If adjustments needed: developer uses Copilot in IDE to fix, pushes to same branch
+4. If fundamental rework needed: close PR, refine issue, re-assign
+
+### Developer → Claude Code (escalation)
+
+When in-IDE work reveals systemic issues:
+
+1. Developer identifies that the problem crosses repo boundaries or requires architectural reasoning
+2. Escalate to Claude Code for re-planning, impact analysis, or ADR discussion
+3. Claude Code may generate new tasks or adjust the existing plan
 
 ## Rollback Rules
 

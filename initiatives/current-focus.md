@@ -2,25 +2,31 @@
 
 What the team (human + agents) should prioritize right now.
 
-**Last Updated:** 2026-03-22
+**Last Updated:** 2026-03-28
 
 ## Primary Focus
 
-### Architecture Command Center Bootstrap
-Stand up the HoneyDrunk.Architecture repo as the central source of truth for the Grid. Populate catalogs, routing rules, and issue templates so agents can start generating structured work artifacts.
+### Deploy Notify and Pulse
 
-**Why now:** Every other initiative benefits from centralized context. Agents need routing rules and repo boundaries to operate effectively.
+Provision Azure infrastructure and get both services running in the development environment.
 
-## Secondary Focus
+- **Notify:** Azure Function App (`func-hd-notify-dev`) — queue-triggered email/SMS dispatch
+- **Pulse:** App Service container (`app-hd-pulse-dev`) — OTLP collector for observability
 
-### Notify v0.1.0 Finalization
-Complete Azure Functions deployment and integration tests for Notify. Get the notification pipeline production-ready.
+**Why now:** All Node packages are built and published. The deployment pipeline (HoneyDrunk.Actions) is ready. The Azure provisioning guide and naming conventions are documented. The only remaining work is creating the Azure resources, wiring OIDC, and running the first deploy.
 
-### Pulse Production Deployment
-Deploy Pulse.Collector to production and validate sink fan-out under real load.
+**See:** `infrastructure/azure-provisioning-guide.md` for step-by-step instructions.
 
 ## On Deck
 
-- ~~HoneyDrunk.Tools CLI scaffolding~~ (scrapped — moved to Actions composite actions)
-- Canary test coverage expansion across all Nodes
-- Studios website architecture documentation pages
+### Agent Kit
+
+Stand up the Agent Kit Node — agent execution runtime, tool abstraction, and memory. This is the foundation for AI-powered workflows across the Grid.
+
+### Grid v0.4 Alignment (Notify + Pulse)
+
+Align Notify and Pulse with Kernel 0.4.0 patterns (same alignment the Core Nodes completed). Tracked in `active-initiatives.md`.
+
+### Canary Test Coverage
+
+Expand canary test coverage across all Node boundaries.

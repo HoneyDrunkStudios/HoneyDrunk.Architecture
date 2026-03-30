@@ -350,7 +350,7 @@
     "strategy_base": 21,
     "tier": "none",
     "time_pressure": 3,
-    "done": true,
+    "done": false,
     "cooldown_days": 14
   },
   {

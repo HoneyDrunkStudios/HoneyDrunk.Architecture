@@ -2,6 +2,8 @@
 
 Index of all ADRs for the HoneyDrunk Grid.
 
+For product-level strategic decisions, see [PDRs](../pdrs/README.md).
+
 | ID | Title | Status | Date | Sector | Impact |
 |----|-------|--------|------|--------|--------|
 | [ADR-0001](ADR-0001-node-vs-service.md) | Node vs Service Distinction | Accepted | 2026-03-22 | Core | Clarified Node = library package, Service = deployable process. Split catalogs into `nodes.json` and `services.json`. |

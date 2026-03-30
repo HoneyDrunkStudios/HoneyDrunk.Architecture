@@ -86,7 +86,19 @@ Agents and cognition primitives — lifecycles, memory, orchestration, and safet
 
 **Color:** `#D946EF` (synthMagenta)
 
-*No real Nodes yet. Planned: AgentKit, Governor, Clarity, Sim.*
+See [ai-sector-architecture.md](ai-sector-architecture.md) for the comprehensive architecture definition.
+
+| Node | Signal | Responsibility |
+|------|--------|---------------|
+| **Agents** | Planned | Agent runtime, lifecycle, execution context, tool/memory interfaces |
+| **AI** | Planned | Model/provider abstraction, normalized inference contracts |
+| **Memory** | Planned | Agent memory — short-term, long-term, scoped storage and retrieval |
+| **Knowledge** | Planned | External knowledge ingestion, embeddings, RAG pipelines |
+| **Evals** | Planned | Prompt evaluation, regression testing, model comparison |
+| **Capabilities** | Planned | Tool registry, discovery, permissioning, versioning |
+| **Flow** | Planned | Workflow engine, multi-step pipelines, sagas, compensation |
+| **Operator** | Planned | Human oversight — approvals, safety, circuit breakers, cost controls, audit |
+| **Sim** | Planned | Simulation, plan evaluation, risk analysis |
 
 ## Dependency Flow (Real Nodes)
 
