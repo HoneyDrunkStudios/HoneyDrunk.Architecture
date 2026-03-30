@@ -1,6 +1,6 @@
 # HoneyDrunk.Web.Rest — Overview
 
-**Sector:** Core
+**Sector:** Core  
 **Version:** 0.2.0  
 **Framework:** .NET 10.0  
 **Repo:** `HoneyDrunkStudios/HoneyDrunk.Web.Rest`
