@@ -39,7 +39,7 @@ The ecosystem's self-awareness — registries, documentation, and knowledge syst
 |------|--------|---------------|
 | **Architecture** | Live | Grid command center — ADRs, routing, catalogs, agent workflows |
 | **Studios** | Live | HoneyDrunk Studios public website |
-| **Lore** | Planned | LLM-compiled living knowledge wiki — ingests, compiles, self-maintains, answers |
+| **Lore** | Seed | LLM-compiled living knowledge wiki — ingests, compiles, self-maintains, answers |
 
 ## HoneyNet
 
@@ -91,15 +91,15 @@ See [ai-sector-architecture.md](ai-sector-architecture.md) for the comprehensive
 
 | Node | Signal | Responsibility |
 |------|--------|---------------|
-| **Agents** | Planned | Agent runtime, lifecycle, execution context, tool/memory interfaces |
-| **AI** | Planned | Model/provider abstraction, normalized inference contracts |
-| **Memory** | Planned | Agent memory — short-term, long-term, scoped storage and retrieval |
-| **Knowledge** | Planned | External knowledge ingestion, embeddings, RAG pipelines |
-| **Evals** | Planned | Prompt evaluation, regression testing, model comparison |
-| **Capabilities** | Planned | Tool registry, discovery, permissioning, versioning |
-| **Flow** | Planned | Workflow engine, multi-step pipelines, sagas, compensation |
-| **Operator** | Planned | Human oversight — approvals, safety, circuit breakers, cost controls, audit |
-| **Sim** | Planned | Simulation, plan evaluation, risk analysis |
+| **Agents** | Seed | Agent runtime, lifecycle, execution context, tool/memory interfaces |
+| **AI** | Seed | Model/provider abstraction, normalized inference contracts |
+| **Memory** | Seed | Agent memory — short-term, long-term, scoped storage and retrieval |
+| **Knowledge** | Seed | External knowledge ingestion, embeddings, RAG pipelines |
+| **Evals** | Seed | Prompt evaluation, regression testing, model comparison |
+| **Capabilities** | Seed | Tool registry, discovery, permissioning, versioning |
+| **Flow** | Seed | Workflow engine, multi-step pipelines, sagas, compensation |
+| **Operator** | Seed | Human oversight — approvals, safety, circuit breakers, cost controls, audit |
+| **Sim** | Seed | Simulation, plan evaluation, risk analysis |
 
 ## Dependency Flow (Real Nodes)
 

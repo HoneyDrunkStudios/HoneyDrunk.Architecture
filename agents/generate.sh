@@ -146,22 +146,29 @@ def parse_frontmatter(content):
     return fm, body
 
 
-def capabilities_to_tools(capabilities, tool):
-    """Map canonical capabilities to tool-specific tool names."""
+def capabilities_to_tools(capabilities, tool, agent_name="unknown"):
+    """Map canonical capabilities to tool-specific tool names. Fails on unknown capabilities."""
     tools = []
     seen = set()
     for cap in capabilities:
-        if cap in cap_map and tool in cap_map[cap]:
-            tool_name = cap_map[cap][tool]
-            if tool_name not in seen:
-                tools.append(tool_name)
-                seen.add(tool_name)
+        if cap not in cap_map:
+            raise SystemExit(
+                f"Unknown capability '{cap}' in agent '{agent_name}'; add it to {mappings_file}."
+            )
+        if tool not in cap_map[cap]:
+            raise SystemExit(
+                f"Capability '{cap}' has no mapping for target '{tool}' in {mappings_file}."
+            )
+        tool_name = cap_map[cap][tool]
+        if tool_name not in seen:
+            tools.append(tool_name)
+            seen.add(tool_name)
     return tools
 
 
 def generate_claude(name, fm, body):
     """Generate Claude Code agent file."""
-    tools = capabilities_to_tools(fm.get("capabilities", []), "claude")
+    tools = capabilities_to_tools(fm.get("capabilities", []), "claude", name)
     lines = [
         f"<!-- GENERATED from agents/canonical/{name}.md (mappings v{mapping_version}) — do not edit -->",
         "---",
@@ -180,13 +187,14 @@ def generate_claude(name, fm, body):
 
 def generate_copilot(name, fm, body):
     """Generate GitHub Copilot agent file."""
-    tools = capabilities_to_tools(fm.get("capabilities", []), "copilot")
+    tools = capabilities_to_tools(fm.get("capabilities", []), "copilot", name)
     delegates = fm.get("delegates_to", [])
 
+    desc = fm.get("description", "").replace("\\", "\\\\").replace('"', '\\"')
     lines = [
         f"<!-- GENERATED from agents/canonical/{name}.md (mappings v{mapping_version}) — do not edit -->",
         "---",
-        f"description: \"{fm.get('description', '')}\"",
+        f"description: \"{desc}\"",
     ]
 
     tools_str = ", ".join(tools)
@@ -203,9 +211,16 @@ def generate_copilot(name, fm, body):
     return "\n".join(lines) + "\n"
 
 
+# Collect all canonical agent names for delegate validation
+canonical_names = set()
+for f in os.listdir(canonical_dir):
+    if f.endswith(".md"):
+        canonical_names.add(f[:-3])
+
 # Process all canonical agents
 stale_files = []
 generated_count = 0
+errors = []
 
 for filename in sorted(os.listdir(canonical_dir)):
     if not filename.endswith(".md"):
@@ -219,8 +234,20 @@ for filename in sorted(os.listdir(canonical_dir)):
 
     fm, body = parse_frontmatter(content)
 
+    # Validate required fields
+    for required in ("name", "description", "capabilities"):
+        if required not in fm or not fm[required]:
+            errors.append(f"{filename}: missing required field '{required}'")
+
+    # Validate delegates_to references
+    for delegate in fm.get("delegates_to", []):
+        if delegate not in canonical_names:
+            errors.append(f"{filename}: delegates_to '{delegate}' does not match any canonical agent")
+
+    if errors:
+        continue
+
     if "name" not in fm:
-        print(f"  SKIP {filename} — no 'name' in frontmatter")
         continue
 
     outputs = []
@@ -251,6 +278,13 @@ for filename in sorted(os.listdir(canonical_dir)):
         generated_count += 1
 
 targets_label = {"all": "Claude Code + GitHub Copilot", "copilot": "GitHub Copilot only", "claude": "Claude Code only"}
+
+# Fail on validation errors
+if errors:
+    print("Validation errors in canonical agents:")
+    for e in errors:
+        print(f"  {e}")
+    sys.exit(1)
 
 if check_mode:
     if stale_files:

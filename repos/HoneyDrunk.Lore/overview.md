@@ -1,7 +1,7 @@
 # HoneyDrunk.Lore — Overview
 
 **Sector:** Meta  
-**Signal:** Planned  
+**Version:** TBD  
 **Framework:** .NET 10.0 / Markdown  
 **Repo:** `HoneyDrunkStudios/HoneyDrunk.Lore`
 

@@ -91,14 +91,16 @@ A versioned mapping file (`agents/tool-mappings.json`) translates capabilities t
 
 ### Generation
 
-A generator script (`agents/generate.sh` or a GitHub Action) reads canonical agents and produces:
+A generator script (`agents/generate.sh`) reads canonical agents and produces the currently implemented projections:
 
 | Output | Location | Format |
 |--------|----------|--------|
 | Claude Code agents | `.claude/agents/{name}.md` | YAML frontmatter with `tools:` list |
-| Codex repo instructions | `AGENTS.md` | Plain markdown synthesized from shared guidance; not a 1:1 agent registry |
+| Copilot agents (optional) | `.github/agents/{name}.agent.md` | Copilot frontmatter via `--target copilot` |
 
-GitHub Copilot discovers agents from `.claude/agents/` automatically, so no separate Copilot-specific generation is needed. The `.github/agents/` directory is not used for agents. If a future tool requires its own format, the generator supports `--target` to produce additional outputs.
+GitHub Copilot discovers agents from `.claude/agents/` automatically, so no separate Copilot-specific generation is needed by default. The generator supports `--target copilot` or `--target all` if explicit Copilot-format files are needed.
+
+OpenAI Codex uses repo-level instructions from `AGENTS.md`, but that projection is not produced by the generator today. `AGENTS.md` is hand-maintained. If Codex projection from canonical sources is added later, this ADR should be updated to reflect the implemented output.
 
 Generated files include a header comment:
 

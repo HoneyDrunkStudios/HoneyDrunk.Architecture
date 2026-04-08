@@ -1,7 +1,7 @@
 # HoneyDrunk.Evals — Overview
 
 **Sector:** AI  
-**Signal:** Planned  
+**Version:** TBD  
 **Framework:** .NET 10.0  
 **Repo:** `HoneyDrunkStudios/HoneyDrunk.Evals`
 
