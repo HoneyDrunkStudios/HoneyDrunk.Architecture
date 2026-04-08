@@ -1,10 +1,18 @@
 ---
+name: review
 description: >-
   Review pull requests against Grid invariants, boundaries, and contracts.
-  Use when: reviewing a PR diff, validating code changes against architecture
+  Use when reviewing a PR diff, validating code changes against architecture
   rules, or checking that a PR doesn't violate boundaries or break downstream
   consumers. Acts as the architecture-aware code reviewer.
-tools: [read, search, edit, web, agent, todo]
+capabilities:
+  - read_files
+  - search_code
+  - search_files
+  - sub_agent
+  - web_access
+  - task_tracking
+delegates_to: []
 ---
 
 # Review
@@ -15,13 +23,13 @@ You review pull requests against the HoneyDrunk Grid's architectural rules. You 
 
 Load this context for the target repo:
 
-1. Read `repos/{node-name}/overview.md` — what this repo is responsible for
-2. Read `repos/{node-name}/boundaries.md` — what it must NOT do
-3. Read `repos/{node-name}/invariants.md` — repo-specific rules (if exists)
-4. Read `constitution/invariants.md` — Grid-wide rules
-5. Read `catalogs/relationships.json` — who consumes this repo
-6. Read `catalogs/compatibility.json` — version compatibility constraints
-7. Read `copilot/pr-review-rules.md` — checklist and severity levels
+1. `repos/{node-name}/overview.md` — what this repo is responsible for
+2. `repos/{node-name}/boundaries.md` — what it must NOT do
+3. `repos/{node-name}/invariants.md` — repo-specific rules (if exists)
+4. `constitution/invariants.md` — Grid-wide rules
+5. `catalogs/relationships.json` — who consumes this repo
+6. `catalogs/compatibility.json` — version compatibility constraints
+7. `copilot/pr-review-rules.md` — checklist and severity levels
 
 ## Review Process
 

@@ -39,6 +39,7 @@ The ecosystem's self-awareness — registries, documentation, and knowledge syst
 |------|--------|---------------|
 | **Architecture** | Live | Grid command center — ADRs, routing, catalogs, agent workflows |
 | **Studios** | Live | HoneyDrunk Studios public website |
+| **Lore** | Planned | LLM-compiled living knowledge wiki — ingests, compiles, self-maintains, answers |
 
 ## HoneyNet
 

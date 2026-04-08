@@ -1,17 +1,22 @@
-<!-- GENERATED from agents/canonical/pdr-composer.md (mappings v1) — do not edit -->
 ---
 name: pdr-composer
 description: >-
-  Facilitate product decisions for HoneyDrunk Studios. Use when evaluating platform strategy, defining capability tiers, making pricing/packaging decisions, positioning HoneyHub for external adoption, deciding domain boundaries at the product level, or creating PDR records.
-tools:
-  - Read
-  - Grep
-  - Glob
-  - Edit
-  - Write
-  - Bash
-  - Agent
-  - WebSearch
+  Facilitate product decisions for HoneyDrunk Studios. Use when evaluating
+  platform strategy, defining capability tiers, making pricing/packaging
+  decisions, positioning HoneyHub for external adoption, deciding domain
+  boundaries at the product level, or creating PDR records.
+capabilities:
+  - read_files
+  - search_code
+  - search_files
+  - edit_files
+  - write_files
+  - run_commands
+  - sub_agent
+  - web_access
+delegates_to:
+  - adr-composer
+  - scope
 ---
 
 # PDR Composer

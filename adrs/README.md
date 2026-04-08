@@ -8,6 +8,8 @@ For product-level strategic decisions, see [PDRs](../pdrs/README.md).
 |----|-------|--------|------|--------|--------|
 | [ADR-0001](ADR-0001-node-vs-service.md) | Node vs Service Distinction | Accepted | 2026-03-22 | Core | Clarified Node = library package, Service = deployable process. Split catalogs into `nodes.json` and `services.json`. |
 | [ADR-0002](ADR-0002-honeyhub-command-center.md) | Architecture Repo as Agent Command Center | Accepted | 2026-03-22 | Meta | Established this repo as the centralized source of truth for all agentic workflows and cross-repo coordination. |
+| [ADR-0003](ADR-0003-honeyhub-control-plane.md) | HoneyHub as Organizational Control Plane | Proposed | 2026-03-30 | Meta | HoneyHub as a graph-driven orchestration system with integration, knowledge graph, orchestration engine, and projection layers. |
+| [ADR-0004](ADR-0004-tool-agnostic-agent-definitions.md) | Tool-Agnostic Agent Definitions | Accepted | 2026-04-08 | Meta | Agent definitions authored once in canonical format, generated into tool-specific formats for Claude Code, Copilot, and Codex. |
 
 ## Statuses
 
