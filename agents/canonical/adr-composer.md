@@ -1,17 +1,20 @@
-<!-- GENERATED from agents/canonical/adr-composer.md (mappings v1) — do not edit -->
 ---
 name: adr-composer
 description: >-
-  Facilitate architecture decisions for HoneyDrunk Studios. Use when discussing trade-offs, evaluating design options, proposing changes to contracts or boundaries, or creating ADR records. Researches Grid topology, invariants, dependencies, and existing ADRs to provide informed analysis.
-tools:
-  - Read
-  - Grep
-  - Glob
-  - Edit
-  - Write
-  - Bash
-  - Agent
-  - WebSearch
+  Facilitate architecture decisions for HoneyDrunk Studios. Use when discussing
+  trade-offs, evaluating design options, proposing changes to contracts or
+  boundaries, or creating ADR records. Researches Grid topology, invariants,
+  dependencies, and existing ADRs to provide informed analysis.
+capabilities:
+  - read_files
+  - search_code
+  - search_files
+  - edit_files
+  - write_files
+  - run_commands
+  - sub_agent
+  - web_access
+delegates_to: []
 ---
 
 # ADR Composer

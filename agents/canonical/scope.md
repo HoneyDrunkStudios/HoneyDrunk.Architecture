@@ -1,16 +1,20 @@
-<!-- GENERATED from agents/canonical/scope.md (mappings v1) — do not edit -->
 ---
 name: scope
 description: >-
-  Scope and plan work for the HoneyDrunk Grid. Use when a feature, bug, chore, or initiative needs to be decomposed into actionable tasks with issue packets and agent handoffs. Detects single-repo vs multi-repo scope automatically.
-tools:
-  - Read
-  - Grep
-  - Glob
-  - Edit
-  - Write
-  - Bash
-  - Agent
+  Scope and plan work for the HoneyDrunk Grid. Use when a feature, bug, chore,
+  or initiative needs to be decomposed into actionable tasks with issue packets
+  and agent handoffs. Detects single-repo vs multi-repo scope automatically.
+capabilities:
+  - read_files
+  - search_code
+  - search_files
+  - edit_files
+  - write_files
+  - run_commands
+  - sub_agent
+delegates_to:
+  - adr-composer
+  - site-sync
 ---
 
 # Scope

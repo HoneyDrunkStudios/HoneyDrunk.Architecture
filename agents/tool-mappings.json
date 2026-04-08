@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "description": "Maps semantic capabilities to tool-specific frontmatter vocabulary. See ADR-0004.",
+  "capabilities": {
+    "read_files":    { "claude": "Read",      "copilot": "read" },
+    "search_code":   { "claude": "Grep",      "copilot": "search" },
+    "search_files":  { "claude": "Glob",      "copilot": "search" },
+    "edit_files":    { "claude": "Edit",      "copilot": "edit" },
+    "write_files":   { "claude": "Write",     "copilot": "edit" },
+    "run_commands":  { "claude": "Bash",      "copilot": "terminal" },
+    "sub_agent":     { "claude": "Agent",     "copilot": "agent" },
+    "web_access":    { "claude": "WebSearch", "copilot": "web" },
+    "task_tracking": { "claude": "TodoWrite", "copilot": "todo" }
+  }
+}

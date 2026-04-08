@@ -20,16 +20,20 @@ High-level roadmap for the HoneyDrunk Grid.
 
 - [ ] Pulse — Production hardening, Grafana dashboard templates, finalize 0.1.0 release
 - [ ] Notify — Azure Functions deployment, finalize 0.1.0 release
-- [ ] Agent Kit — Agent execution runtime, tool abstraction, memory integration
-- [ ] Orchestrator — Workflow orchestration, multi-step pipelines, agent coordination
+- [ ] HoneyDrunk.AI — Model/provider abstraction, OpenAI + Anthropic providers, Pulse telemetry
+- [ ] HoneyDrunk.Capabilities — Tool registry, discovery, permissioning, initial tool descriptors
+- [ ] HoneyDrunk.Agents — Agent runtime, lifecycle, execution context, tool/memory interfaces
+- [ ] HoneyDrunk.Memory — Agent memory contracts, InMemory provider, Agents integration
 - [ ] HoneyHub — Initial scaffolding, project orchestration, creator dashboard foundations
 - [ ] Studios website — Architecture documentation pages, version tracking
 
 ## Q3 2026 (Jul–Sep)
 
+- [ ] HoneyDrunk.Knowledge — Document ingestion, RAG pipelines, Azure AI Search provider
+- [ ] HoneyDrunk.Flow — Workflow engine, multi-step pipelines, agent chaining, compensation
+- [ ] HoneyDrunk.Lore — Initial scaffolding, raw ingestion, LLM compilation, wiki maintenance
+- [ ] HoneyDrunk.Agents — Multi-agent orchestration, federated memory, deterministic seeds
 - [ ] HoneyHub — AI-assisted workflows, Signal integration, collaborative dashboards
-- [ ] Agent Kit — Multi-agent orchestration, federated memory, deterministic seeds
-- [ ] Orchestrator — Saga patterns, compensation, distributed workflow state
 - [ ] Grid v0.5 planning — Evaluate WebSocket/SignalR transport, gRPC support
 - [ ] Cross-repo canary test automation via Actions workflows
 
@@ -38,10 +42,13 @@ High-level roadmap for the HoneyDrunk Grid.
 - [ ] Grid v0.5 — Next contract evolution based on production learnings
 - [ ] Data — Cosmos DB provider exploration
 - [ ] Auth — Multi-tenant identity federation
+- [ ] HoneyDrunk.Operator — Human oversight, approval gates, circuit breakers, cost controls, audit trail
+- [ ] HoneyDrunk.Evals — Prompt evaluation, regression testing, model comparison
 - [x] ~~HoneyDrunk.Tools~~ — Scrapped; scanning logic moved to HoneyDrunk.Actions composite actions
 
 ## Future
 
+- HoneyDrunk.Sim — Simulation, plan evaluation, risk analysis (when agents operate at scale)
 - HoneyDrunk.Gateway — API gateway with built-in Grid context
 - HoneyDrunk.Jobs — Background job scheduling with Grid integration
 - HoneyDrunk.Cache — Distributed caching abstraction
