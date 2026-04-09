@@ -4,6 +4,25 @@ Tracked initiatives across the HoneyDrunk Grid. Each initiative may span multipl
 
 ## In Progress
 
+### Configuration & Secrets Rollout (ADR-0005 / ADR-0006)
+**Status:** In Progress
+**Scope:** Vault, Vault.Rotation (new), Architecture, Actions, Auth, Web.Rest, Data, Notify, Pulse, Studios
+**Initiative:** `adr-0005-0006-rollout`
+**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
+**Description:** Per-Node Key Vault + shared App Configuration + env-driven bootstrap model (ADR-0005), plus rotation lifecycle, event-driven invalidation, and deploy-gate SLA checks (ADR-0006). Two waves: foundation then per-Node migration.
+**Tracking:**
+- [x] Issue packets authored (15 packets, 2 waves)
+- [x] Wave 1 issues filed on board (6/7 — #04 blocked on repo creation)
+- [ ] Wave 1: Vault env-driven `AddVault` wiring
+- [ ] Wave 1: Vault `AddAppConfiguration` extension
+- [ ] Wave 1: Vault event-driven cache invalidation
+- [ ] Wave 1: Vault.Rotation repo scaffold
+- [ ] Wave 1: Architecture portal walkthroughs
+- [ ] Wave 1: Architecture catalog registration for Vault.Rotation
+- [ ] Wave 1: Actions OIDC federated-credential workflow
+- [ ] Wave 2: Per-Node bootstrap migrations (Auth, Web.Rest, Data, Notify, Pulse, Studios)
+- [ ] Wave 2: Actions direct secret removal + deploy-gate SLA check
+
 ### Grid v0.4 Stabilization
 **Status:** In Progress  
 **Scope:** Kernel, Transport, Vault, Auth, Web.Rest, Data  
