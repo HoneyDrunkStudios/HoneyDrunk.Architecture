@@ -5,6 +5,10 @@ tier: 2
 target_repo: HoneyDrunk.Actions
 labels: ["ci", "tier-2", "ops"]
 dependencies: []
+adrs: []
+wave: 1
+initiative: "{initiative-slug}"
+node: "{node-id}"
 ---
 
 # CI Change: {Title}

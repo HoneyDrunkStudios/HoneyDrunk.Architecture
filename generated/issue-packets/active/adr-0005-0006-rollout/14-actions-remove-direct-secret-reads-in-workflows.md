@@ -7,6 +7,8 @@ labels: ["ci", "tier-2", "ops", "infrastructure", "adr-0005"]
 dependencies: ["actions-oidc-federated-credentials-workflow"]
 adrs: ["ADR-0005"]
 wave: 2
+initiative: adr-0005-0006-rollout
+node: honeydrunk-actions
 ---
 
 # Feature: Audit HoneyDrunk.Actions workflows and composites for direct secret reads

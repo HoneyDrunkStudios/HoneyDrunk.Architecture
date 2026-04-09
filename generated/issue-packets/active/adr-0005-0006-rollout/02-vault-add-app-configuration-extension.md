@@ -7,6 +7,8 @@ labels: ["feature", "tier-2", "core", "infrastructure", "adr-0005"]
 dependencies: []
 adrs: ["ADR-0005"]
 wave: 1
+initiative: adr-0005-0006-rollout
+node: honeydrunk-vault
 ---
 
 # Feature: Add `AddAppConfiguration` builder extension reading `AZURE_APPCONFIG_ENDPOINT`

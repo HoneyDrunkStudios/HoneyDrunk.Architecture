@@ -7,6 +7,8 @@ labels: ["feature", "tier-2", "core", "infrastructure", "adr-0005"]
 dependencies: ["vault-env-driven-add-vault-wiring", "vault-add-app-configuration-extension", "vault-event-driven-cache-invalidation"]
 adrs: ["ADR-0005", "ADR-0006"]
 wave: 2
+initiative: adr-0005-0006-rollout
+node: honeydrunk-web-rest
 ---
 
 # Feature: Migrate HoneyDrunk.Web.Rest config bootstrap to `AZURE_KEYVAULT_URI` + `AZURE_APPCONFIG_ENDPOINT`

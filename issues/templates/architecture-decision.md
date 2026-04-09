@@ -5,6 +5,10 @@ tier: 3
 target_repo: HoneyDrunk.Architecture
 labels: ["architecture", "adr", "tier-3"]
 dependencies: []
+adrs: []
+wave: 1
+initiative: "{initiative-slug}"
+node: "{node-id}"
 ---
 
 # Architecture Decision: {Title}

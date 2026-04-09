@@ -112,7 +112,7 @@ Append a handoff section to every issue packet (this is what downstream agents r
 - {PRs or tasks that must merge first}
 
 **Constraints:**
-- {invariants to respect}
+- {inline the full text of each referenced invariant — do NOT just cite by number}
 - {boundaries not to cross}
 
 **Key Files:**
@@ -158,6 +158,8 @@ Before outputting any issue:
 - [ ] Labels include type, tier, and sector
 - [ ] Agent Handoff section included with constraints and key files
 - [ ] No invariant violations in the proposed work
+- [ ] All referenced invariants are inlined as full text, not just cited by number
+- [ ] All ADR decisions relevant to implementation are summarized in the packet body — the agent executing in the target repo has no access to the Architecture repo
 
 ## Constraints
 
@@ -167,3 +169,12 @@ Before outputting any issue:
 - Reference specific interfaces, packages, and file paths — not vague descriptions.
 - If an architecture decision hasn't been made yet, tell the user to delegate to the adr-composer agent first.
 - If the work triggers a website update, note it and flag for site-sync.
+
+## Self-Containment Rule
+
+Issue packets are executed by agents in the **target repo**, not the Architecture repo. The agent has no access to `constitution/invariants.md`, ADRs, or routing rules. Therefore:
+
+1. **Inline invariant text.** Never write "Invariant 17" — write the actual rule text. Reference the number parenthetically if useful (e.g., "One Key Vault per deployable Node per environment (invariant 17)").
+2. **Summarize ADR decisions.** If a packet references ADR-0005, extract the specific decisions the agent needs into the Proposed Implementation or Constraints section. The ADR ID is metadata for traceability, not a pointer the agent can follow.
+3. **Include relevant boundary rules.** If `repos/{name}/boundaries.md` has constraints that affect implementation, inline them.
+4. **Frontmatter must include all board fields.** The `wave`, `tier`, `target_repo`, `labels`, `adrs`, and `initiative` fields in frontmatter are used by the filing script to populate both GitHub labels and Project board fields. Omitting them forces manual backfill.

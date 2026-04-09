@@ -7,6 +7,8 @@ labels: ["feature", "tier-2", "core", "infrastructure", "adr-0005"]
 dependencies: []
 adrs: ["ADR-0005"]
 wave: 1
+initiative: adr-0005-0006-rollout
+node: honeydrunk-vault
 ---
 
 # Feature: Env-var-driven `AddVault` wiring for `AZURE_KEYVAULT_URI`

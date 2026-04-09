@@ -7,6 +7,8 @@ labels: ["chore", "tier-1", "meta", "catalogs", "adr-0006"]
 dependencies: []
 adrs: ["ADR-0006"]
 wave: 1
+initiative: adr-0005-0006-rollout
+node: honeydrunk-architecture
 ---
 
 # Feature: Register `HoneyDrunk.Vault.Rotation` in `catalogs/nodes.json` and `relationships.json`

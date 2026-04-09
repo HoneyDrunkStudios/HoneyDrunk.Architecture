@@ -33,6 +33,9 @@ Before finalizing an issue packet:
 - [ ] Boundary check confirms the work belongs in the target repo
 - [ ] Dependencies are listed if this is part of a cross-repo change
 - [ ] Labels include type, tier, and sector
+- [ ] Frontmatter includes all board fields: `wave`, `initiative`, `node`, `adrs`, `tier`
+- [ ] All referenced invariants are inlined as full text — never cite by number alone
+- [ ] ADR decisions relevant to implementation are summarized in the packet body
 
 ## Anti-Patterns
 
@@ -40,3 +43,4 @@ Before finalizing an issue packet:
 - **Wrong repo:** Putting Transport work in a Kernel issue
 - **Missing context:** Issues without links to ADRs or initiatives
 - **Scope creep:** One issue should do one thing. Split if needed.
+- **Opaque references:** Writing "Invariant 17" or "see ADR-0005" without inlining the relevant content. The executing agent has no access to the Architecture repo.

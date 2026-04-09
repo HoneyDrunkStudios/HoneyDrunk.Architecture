@@ -5,6 +5,10 @@ tier: 2
 target_repo: "{repo}"
 labels: ["canary", "tier-2", "boundary-violation"]
 dependencies: []
+adrs: []
+wave: 1
+initiative: "{initiative-slug}"
+node: "{node-id}"
 ---
 
 # Canary Failure: {Title}

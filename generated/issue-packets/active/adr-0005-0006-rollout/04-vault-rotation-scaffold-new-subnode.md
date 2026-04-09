@@ -7,6 +7,8 @@ labels: ["feature", "tier-3", "core", "infrastructure", "new-node", "adr-0006"]
 dependencies: []
 adrs: ["ADR-0006"]
 wave: 1
+initiative: adr-0005-0006-rollout
+node: honeydrunk-vault
 ---
 
 # Feature: Scaffold new sub-Node `HoneyDrunk.Vault.Rotation` Function App

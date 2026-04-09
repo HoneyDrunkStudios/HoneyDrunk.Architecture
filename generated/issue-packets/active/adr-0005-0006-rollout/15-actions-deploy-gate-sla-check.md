@@ -7,6 +7,8 @@ labels: ["ci", "tier-2", "ops", "infrastructure", "adr-0006"]
 dependencies: ["actions-oidc-federated-credentials-workflow"]
 adrs: ["ADR-0006"]
 wave: 2
+initiative: adr-0005-0006-rollout
+node: honeydrunk-actions
 ---
 
 # Feature: Deploy-gate composite action that checks secret rotation SLA before release

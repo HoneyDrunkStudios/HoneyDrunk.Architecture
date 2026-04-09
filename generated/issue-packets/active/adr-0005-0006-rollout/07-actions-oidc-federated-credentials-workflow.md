@@ -7,6 +7,8 @@ labels: ["ci", "tier-2", "ops", "infrastructure", "adr-0005"]
 dependencies: []
 adrs: ["ADR-0005"]
 wave: 1
+initiative: adr-0005-0006-rollout
+node: honeydrunk-actions
 ---
 
 # Feature: Reusable OIDC federated-credential workflow + KV-access composite actions

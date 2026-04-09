@@ -7,6 +7,8 @@ labels: ["feature", "tier-2", "meta", "infrastructure", "adr-0005"]
 dependencies: []
 adrs: ["ADR-0005", "ADR-0006"]
 wave: 2
+initiative: adr-0005-0006-rollout
+node: honeydrunk-studios
 ---
 
 # Feature: Migrate HoneyDrunk.Studios (Next.js) secrets to Key Vault references via App Service config

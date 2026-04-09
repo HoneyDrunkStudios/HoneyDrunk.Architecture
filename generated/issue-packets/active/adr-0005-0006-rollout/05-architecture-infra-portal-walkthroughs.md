@@ -7,6 +7,8 @@ labels: ["feature", "tier-2", "meta", "infrastructure", "docs", "adr-0005", "adr
 dependencies: []
 adrs: ["ADR-0005", "ADR-0006"]
 wave: 1
+initiative: adr-0005-0006-rollout
+node: honeydrunk-architecture
 ---
 
 # Feature: Portal walkthroughs for Key Vault, App Configuration, Event Grid, OIDC, Log Analytics

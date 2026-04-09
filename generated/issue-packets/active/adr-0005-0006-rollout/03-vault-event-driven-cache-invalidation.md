@@ -7,6 +7,8 @@ labels: ["feature", "tier-2", "core", "infrastructure", "adr-0006"]
 dependencies: []
 adrs: ["ADR-0006"]
 wave: 1
+initiative: adr-0005-0006-rollout
+node: honeydrunk-vault
 ---
 
 # Feature: Event-driven cache invalidation for `SecretCache` on `SecretNewVersionCreated`
