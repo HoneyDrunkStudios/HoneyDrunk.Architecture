@@ -1,4 +1,3 @@
-<!-- GENERATED from agents/canonical/refine.md (mappings v1) — do not edit -->
 ---
 name: refine
 description: >-

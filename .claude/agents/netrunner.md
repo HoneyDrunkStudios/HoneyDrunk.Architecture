@@ -1,4 +1,3 @@
-<!-- GENERATED from agents/canonical/netrunner.md (mappings v1) — do not edit -->
 ---
 name: netrunner
 description: >-

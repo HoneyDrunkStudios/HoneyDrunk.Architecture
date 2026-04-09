@@ -1,4 +1,3 @@
-<!-- GENERATED from agents/canonical/scope.md (mappings v1) — do not edit -->
 ---
 name: scope
 description: >-

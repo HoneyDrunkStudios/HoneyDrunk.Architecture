@@ -1,4 +1,3 @@
-<!-- GENERATED from agents/canonical/pdr-composer.md (mappings v1) — do not edit -->
 ---
 name: pdr-composer
 description: >-
