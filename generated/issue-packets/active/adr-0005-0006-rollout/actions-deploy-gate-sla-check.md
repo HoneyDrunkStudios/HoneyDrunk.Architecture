@@ -4,7 +4,7 @@ type: ci-change
 tier: 2
 target_repo: HoneyDrunkStudios/HoneyDrunk.Actions
 labels: ["ci", "tier-2", "ops", "infrastructure", "adr-0006"]
-dependencies: ["actions-oidc-federated-credentials-workflow"]
+dependencies: ["actions-oidc-and-secret-cleanup", "architecture-infra-setup"]
 adrs: ["ADR-0006"]
 wave: 2
 initiative: adr-0005-0006-rollout
@@ -71,8 +71,8 @@ ADR-0006 Tier 5 says a secret older than its SLA triggers an alert and **blocks 
 - Invariant 22 — diagnostic settings routed to Log Analytics (prerequisite)
 
 ## Dependencies
-- `2026-04-09-actions-oidc-federated-credentials-workflow.md`
-- `2026-04-09-architecture-infra-portal-walkthroughs.md` (the Log Analytics workspace must exist first)
+- `actions-oidc-and-secret-cleanup` (provides the reusable workflow this gate integrates with)
+- `architecture-infra-setup` (the Log Analytics workspace must exist first — Part A walkthrough 6)
 
 ## Labels
 `ci`, `tier-2`, `ops`, `infrastructure`, `adr-0006`
@@ -88,7 +88,7 @@ ADR-0006 Tier 5 says a secret older than its SLA triggers an alert and **blocks 
 
 **Acceptance Criteria:** As listed above
 
-**Dependencies:** OIDC workflow packet must land first; Log Analytics workspace must exist in each environment
+**Dependencies:** `actions-oidc-and-secret-cleanup` must land first; Log Analytics workspace must exist in each environment (provisioned via `architecture-infra-setup`).
 
 **Constraints:**
 - Invariant 8 — Secret values never appear in logs, traces, exceptions, or telemetry. Only secret names/identifiers may be traced. `VaultTelemetry` enforces this. The KQL query must never select or log secret *values*, only names and ages.

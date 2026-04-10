@@ -4,7 +4,7 @@ type: repo-feature
 tier: 2
 target_repo: HoneyDrunkStudios/HoneyDrunk.Pulse
 labels: ["feature", "tier-2", "ops", "infrastructure", "adr-0005"]
-dependencies: ["vault-env-driven-add-vault-wiring", "vault-add-app-configuration-extension", "vault-event-driven-cache-invalidation"]
+dependencies: ["vault-bootstrap-extensions", "vault-event-driven-cache-invalidation", "architecture-infra-setup", "actions-oidc-and-secret-cleanup"]
 adrs: ["ADR-0005", "ADR-0006"]
 wave: 2
 initiative: adr-0005-0006-rollout
@@ -85,9 +85,9 @@ Pulse.Collector is a long-running OTLP receiver and must not hold stale sink cre
 - Note: `catalogs/nodes.json` Pulse entry has id `pulse` not `honeydrunk-pulse`; use `pulse` as the App Configuration label to match
 
 ## Dependencies
-- Wave 1 Vault packets
-- `architecture-infra-portal-walkthroughs`
-- `actions-oidc-federated-credentials-workflow`
+- `vault-bootstrap-extensions` + `vault-event-driven-cache-invalidation` (merged and published as a preview Vault package first)
+- `architecture-infra-setup` (portal walkthroughs for vault/OIDC provisioning)
+- `actions-oidc-and-secret-cleanup` (reusable OIDC deploy workflow)
 
 ## Labels
 `feature`, `tier-2`, `ops`, `infrastructure`, `adr-0005`
@@ -103,7 +103,7 @@ Pulse.Collector is a long-running OTLP receiver and must not hold stale sink cre
 
 **Acceptance Criteria:** As listed above
 
-**Dependencies:** Wave 1 Vault packets merged
+**Dependencies:** `vault-bootstrap-extensions` and `vault-event-driven-cache-invalidation` merged and published as a preview Vault package before this lands.
 
 **Constraints:**
 - Invariant 8 — Secret values never appear in logs, traces, exceptions, or telemetry. Only secret names/identifiers may be traced. `VaultTelemetry` enforces this. Telemetry sink outputs must never contain raw credentials, even during debug.

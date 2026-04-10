@@ -8,6 +8,7 @@ dependencies: []
 adrs: ["ADR-0006"]
 wave: 1
 initiative: adr-0005-0006-rollout
+blocked: repo-does-not-exist-yet
 node: honeydrunk-vault
 ---
 
@@ -116,8 +117,10 @@ ADR-0006 Tier 2 introduces `HoneyDrunk.Vault.Rotation` as a brand-new sub-Node t
 - Reference repos: `HoneyDrunk.Notify`, `HoneyDrunk.Pulse`
 
 ## Dependencies
-- **Catalogs registration packet** (`architecture-catalogs-register-vault-rotation`) — must land in the same window so the Grid graph knows the new Node exists
-- **Infra walkthroughs packet** (`architecture-infra-portal-walkthroughs`) — walkthroughs for creating the `kv-hd-vaultrot-{env}` vault and wiring OIDC
+- **`create-vault-rotation-repo`** (human-only chore, filed on `HoneyDrunk.Architecture`) — the repo must exist on GitHub before this packet can be filed as an issue. This is the hard blocker.
+- **Architecture infra setup packet** (`architecture-infra-setup`) — provides both the new-Node catalog registration and the portal walkthroughs for creating the `kv-hd-vaultrot-{env}` vault and wiring OIDC
+
+**Filing sequence:** file `create-vault-rotation-repo` immediately (human-only). Once a human closes it (repo created), file this packet against the new repo. Until then, this packet is excluded from the filing batch.
 
 ## Labels
 `feature`, `tier-3`, `core`, `infrastructure`, `new-node`, `adr-0006`
@@ -135,8 +138,8 @@ ADR-0006 Tier 2 introduces `HoneyDrunk.Vault.Rotation` as a brand-new sub-Node t
 - [ ] As listed above
 
 **Dependencies:**
-- Catalog entries updated (parallel packet)
-- Infra walkthroughs available (parallel packet)
+- `create-vault-rotation-repo` packet (human-only chore on HoneyDrunk.Architecture) — hard blocker; repo must exist first
+- `architecture-infra-setup` packet (catalogs + portal walkthroughs, same repo)
 
 **Constraints:**
 - Invariant 11: One repo per Node (or tightly coupled Node family). Each repo has its own solution, CI pipeline, and versioning. — one repo per Node

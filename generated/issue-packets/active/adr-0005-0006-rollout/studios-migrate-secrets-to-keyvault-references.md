@@ -2,9 +2,9 @@
 name: Repo Feature
 type: repo-feature
 tier: 2
-target_repo: HoneyDrunkStudios/HoneyDrunk.Studios
+target_repo: HoneyDrunkStudios/HoneyDrunkStudios
 labels: ["feature", "tier-2", "meta", "infrastructure", "adr-0005"]
-dependencies: []
+dependencies: ["architecture-infra-setup", "actions-oidc-and-secret-cleanup"]
 adrs: ["ADR-0005", "ADR-0006"]
 wave: 2
 initiative: adr-0005-0006-rollout
@@ -85,8 +85,8 @@ ADR-0005 applies to every deployable Node, including the Next.js website. Studio
 - User preference: portal over CLI — provisioning follows the architecture walkthroughs
 
 ## Dependencies
-- `2026-04-09-architecture-infra-portal-walkthroughs.md` (vault creation + KV-reference walkthrough)
-- `2026-04-09-actions-oidc-federated-credentials-workflow.md` (CI)
+- `architecture-infra-setup` (portal walkthroughs for vault creation + KV references)
+- `actions-oidc-and-secret-cleanup` (reusable OIDC deploy workflow)
 
 ## Labels
 `feature`, `tier-2`, `meta`, `infrastructure`, `adr-0005`
@@ -102,7 +102,7 @@ ADR-0005 applies to every deployable Node, including the Next.js website. Studio
 
 **Acceptance Criteria:** As listed above
 
-**Dependencies:** Portal walkthroughs + OIDC workflow packets
+**Dependencies:** `architecture-infra-setup` and `actions-oidc-and-secret-cleanup` packets
 
 **Constraints:**
 - Invariant 17 — One Key Vault per deployable Node per environment. Named `kv-hd-{service}-{env}`, with Azure RBAC enabled. Access policies are forbidden. Own vault, not shared.

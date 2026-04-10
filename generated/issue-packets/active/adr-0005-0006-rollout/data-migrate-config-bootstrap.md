@@ -4,7 +4,7 @@ type: repo-feature
 tier: 2
 target_repo: HoneyDrunkStudios/HoneyDrunk.Data
 labels: ["feature", "tier-2", "core", "infrastructure", "adr-0005"]
-dependencies: ["vault-env-driven-add-vault-wiring", "vault-add-app-configuration-extension", "vault-event-driven-cache-invalidation"]
+dependencies: ["vault-bootstrap-extensions", "vault-event-driven-cache-invalidation", "architecture-infra-setup", "actions-oidc-and-secret-cleanup"]
 adrs: ["ADR-0005", "ADR-0006"]
 wave: 2
 initiative: adr-0005-0006-rollout
@@ -78,9 +78,9 @@ Data is the highest-risk Node for secret leakage because it holds the SQL connec
 - Data is already aligned to Kernel 0.4.0 (per active-initiatives), so this migration lands cleanly
 
 ## Dependencies
-- Wave 1 Vault packets
-- `architecture-infra-portal-walkthroughs`
-- `actions-oidc-federated-credentials-workflow`
+- `vault-bootstrap-extensions` + `vault-event-driven-cache-invalidation` (merged and published as a preview Vault package first)
+- `architecture-infra-setup` (portal walkthroughs for vault/OIDC provisioning)
+- `actions-oidc-and-secret-cleanup` (reusable OIDC deploy workflow)
 
 ## Labels
 `feature`, `tier-2`, `core`, `infrastructure`, `adr-0005`
@@ -95,7 +95,7 @@ Data is the highest-risk Node for secret leakage because it holds the SQL connec
 
 **Acceptance Criteria:** As listed above
 
-**Dependencies:** Wave 1 Vault packets merged + preview packages available
+**Dependencies:** `vault-bootstrap-extensions` and `vault-event-driven-cache-invalidation` merged and published as a preview Vault package before this lands.
 
 **Constraints:**
 - **Invariant 9:** Vault is the only source of secrets. No Node reads secrets directly from environment variables, config files, or provider SDKs. All access goes through `ISecretStore`. This includes migration tooling.

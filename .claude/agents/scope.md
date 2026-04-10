@@ -81,14 +81,30 @@ Work within the same wave can run in parallel. Across waves, sequencing is stric
 
 ## Phase 4: Generate Artifacts
 
+Per ADR-0008 D10, all generated artifacts live under `/generated/issue-packets/active/` and are grouped by initiative. Packets, dispatch plans, and handoffs are **co-located** inside their initiative folder — the prior sibling folders `/generated/dispatch-plans/` and `/generated/handoffs/` are deprecated and must not be written to.
+
+Layout:
+
+```
+/generated/issue-packets/
+├── active/
+│   └── {initiative-slug}/
+│       ├── dispatch-plan.md                     (multi-repo only)
+│       ├── handoff-{wave-or-purpose}.md         (multi-repo, zero or more)
+│       ├── {target-repo-short}-{description}.md
+│       └── ...
+└── active/standalone/
+    └── {YYYY-MM-DD}-{target-repo-short}-{description}.md
+```
+
 ### Issue Packets
 
-For each work unit, generate an issue packet in `/generated/issue-packets/` with naming:
-```
-{YYYY-MM-DD}-{repo-short-name}-{kebab-case-description}.md
-```
+For each work unit:
 
-Every issue must include frontmatter, summary, context, scope, acceptance criteria, dependencies, and labels per `copilot/issue-authoring-rules.md`.
+- **Inside an initiative folder** (multi-repo or initiative-scoped work): name the packet `{target-repo-short}-{kebab-case-description}.md` — **no date prefix**. Execution order is carried by the dispatch plan's narrative, not the filename.
+- **Standalone** (one-off work not tied to any initiative): write to `active/standalone/` with the date prefix — `{YYYY-MM-DD}-{target-repo-short}-{kebab-case-description}.md`.
+
+Every packet must include frontmatter, summary, context, scope, acceptance criteria, human prerequisites, dependencies, and labels per `copilot/issue-authoring-rules.md`.
 
 ### Agent Handoff
 
@@ -122,23 +138,48 @@ Append a handoff section to every issue packet (this is what downstream agents r
 - {interfaces/types to implement or modify}
 ```
 
+### Human Prerequisites section
+
+Every packet must include a `## Human Prerequisites` section (at the body level, not inside Agent Handoff). Infra packets in particular have portal clicks the agent cannot perform: vault creation, RBAC assignments, OIDC federated credentials, Event Grid subscription wiring, App Configuration provisioning, Log Analytics setup, payment of Azure charges, etc. List each as a checkbox. If there are no human prerequisites, write "None." explicitly — do not omit the section.
+
+```markdown
+## Human Prerequisites
+- [ ] {portal step 1, with cross-link to the infrastructure walkthrough doc if one exists}
+- [ ] {manual deploy-time action}
+- [ ] {secret to be seeded manually}
+```
+
+A packet with human prerequisites is still `Actor=Agent` as long as the code-change work itself can be delegated. The prerequisites happen before or after the agent's PR, not during. Only set `Actor=Human` when the *entire* work item cannot be delegated (see Actor section below).
+
+### Actor field and `human-only` label
+
+Every packet must be classifiable as `Actor=Agent` (default) or `Actor=Human`. This determines who executes the work and surfaces as a pill on The Hive project board.
+
+- **`Actor=Agent`** (default) — the code, docs, YAML, or JSON change can be authored end-to-end by an agent (Codex Cloud, Claude Code, etc.). Human Prerequisites may still exist (usually do for infra work) but they're not in the agent's critical path. Do not add the `human-only` label. Omit the Actor from frontmatter and it defaults to Agent.
+- **`Actor=Human`** — the entire work item cannot be delegated. Examples: creating a new GitHub repo, making an architectural judgment call on a new pattern, paying for an external service, first-time portal-only provisioning with no code artifact. Add `"human-only"` to the `labels:` frontmatter array. The filing script and board will reflect `Actor=Human`.
+
+When in doubt, use `Actor=Agent` with a thorough Human Prerequisites section. `Actor=Human` is an escape hatch, not a default.
+
 ### Multi-Repo: Dispatch Plan
 
-For multi-repo work, also generate a dispatch plan in `/generated/dispatch-plans/`:
+For multi-repo work, also generate a dispatch plan **inside the initiative folder** as `dispatch-plan.md` (fixed name, no date prefix). It lives alongside the packets it orchestrates:
+
 ```
-{YYYY-MM-DD}-{initiative-kebab-case}.md
+active/{initiative-slug}/dispatch-plan.md
 ```
 
-Include: summary, trigger, wave diagram, issue packet links, handoff links, site sync flag, rollback plan.
+Include: summary, trigger, wave diagram, packet links (relative to the same folder), site sync flag, rollback plan, and the `gh issue create` batch commands for every packet in the initiative. Per ADR-0008 D7, the dispatch plan is the **one exception to packet immutability** — it's a living narrative updated at wave boundaries as a historical record.
 
 ### Multi-Repo: Handoff Prompts
 
-For each wave transition, generate a handoff prompt in `/generated/handoffs/`:
+For each wave transition, generate a handoff prompt **inside the same initiative folder** as `handoff-{wave-or-purpose}.md`:
+
 ```
-{YYYY-MM-DD}-wave{N}-{repo-short-name}-{description}.md
+active/{initiative-slug}/handoff-wave2-core-nodes.md
+active/{initiative-slug}/handoff-rotation-bringup.md
 ```
 
-Each handoff must be self-contained: upstream changes, new package versions, interface signatures, invariants, acceptance criteria.
+Each handoff must be self-contained: upstream changes, new package versions, interface signatures, invariants, acceptance criteria. Per ADR-0008 D7, handoffs are **read once at the wave transition** — ephemeral baton passes, not live trackers. They are immutable under invariant 24.
 
 ## Phase 5: Output
 
@@ -157,6 +198,8 @@ Before outputting any issue:
 - [ ] Dependencies listed if cross-repo
 - [ ] Labels include type, tier, and sector
 - [ ] Agent Handoff section included with constraints and key files
+- [ ] `## Human Prerequisites` section present (listing portal steps / manual actions, or explicitly "None.")
+- [ ] Actor classification explicit: default `Actor=Agent`, set `Actor=Human` and add `"human-only"` label only when the entire work item cannot be delegated
 - [ ] No invariant violations in the proposed work
 - [ ] All referenced invariants are inlined as full text, not just cited by number
 - [ ] All ADR decisions relevant to implementation are summarized in the packet body — the agent executing in the target repo has no access to the Architecture repo
@@ -177,4 +220,5 @@ Issue packets are executed by agents in the **target repo**, not the Architectur
 1. **Inline invariant text.** Never write "Invariant 17" — write the actual rule text. Reference the number parenthetically if useful (e.g., "One Key Vault per deployable Node per environment (invariant 17)").
 2. **Summarize ADR decisions.** If a packet references ADR-0005, extract the specific decisions the agent needs into the Proposed Implementation or Constraints section. The ADR ID is metadata for traceability, not a pointer the agent can follow.
 3. **Include relevant boundary rules.** If `repos/{name}/boundaries.md` has constraints that affect implementation, inline them.
-4. **Frontmatter must include all board fields.** The `wave`, `tier`, `target_repo`, `labels`, `adrs`, and `initiative` fields in frontmatter are used by the filing script to populate both GitHub labels and Project board fields. Omitting them forces manual backfill.
+4. **Frontmatter must include all board fields.** The `wave`, `tier`, `target_repo`, `labels`, `adrs`, `initiative`, and (when `Actor=Human`) `"human-only"` in the `labels:` array are used by the filing script to populate both GitHub labels and Project board fields. Omitting them forces manual backfill. The `Actor` single-select field on The Hive defaults to `Agent`; no frontmatter key is required for that case.
+

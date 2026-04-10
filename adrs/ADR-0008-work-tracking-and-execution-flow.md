@@ -37,29 +37,35 @@ The org Project carries exactly these custom fields:
 
 | Field | Type | Values |
 |---|---|---|
-| `Status` | single select | `Backlog`, `Ready`, `In Progress`, `Blocked`, `Done` |
+| `Status` | single select | `Backlog`, `Ready`, `In Progress`, `In Progress - Agent`, `Blocked`, `Done` |
 | `Wave` | single select | `Wave 1`, `Wave 2`, `Wave 3`, `N/A` |
 | `Initiative` | single select | entries from `initiatives/active-initiatives.md` |
 | `Node` | single select | NodeId values from `catalogs/nodes.json` |
 | `Tier` | single select | `1`, `2`, `3` (per `routing/request-types.md`) |
 | `ADR` | text | comma-separated ADR references, e.g. `ADR-0005, ADR-0006` |
+| `Actor` | single select | `Agent`, `Human` — who executes the work. Default `Agent`. Set `Human` when a work item cannot be delegated (repo creation, portal-only actions, payments, judgment calls). Mirrors the `human-only` label in D4. Primary visual surface for the "Agent Queue" board view. |
 
 ### D4 — Canonical label conventions
 
-Labels are authoritative in the issue; the board mirrors them into custom fields via workflow automation.
+Labels are authoritative in the issue. The board mirrors them into custom fields via a **custom GitHub Action** (the label→field mirror workflow in `HoneyDrunk.Actions`, packet filed 2026-04-10 as HoneyDrunk.Actions#22). GitHub Projects v2 does **not** ship native label→field mapping — the mirroring promised here requires the custom workflow to be built and installed. Until it lands, filed issues need a one-shot field backfill via `gh project item-edit`.
 
 - `wave-{N}` — wave membership for ADR-driven rollouts
 - `adr-{NNNN}` — traceability to governing ADRs
 - `tier-{N}` — request type tier
 - `blocked` — awaiting upstream work
+- `human-only` — opt-out label marking work an agent cannot execute end-to-end (repo creation, payments, portal actions that cannot be delegated, judgment calls on new designs). Absence of the label means the issue is agent-eligible by default. Distinguished from "Human Prerequisites" sections inside packets, which list portal steps that precede *agent-eligible* work.
 
 A `hd-tracked` opt-in label is **not** required — see D5.
+
+**Agent Queue view.** The Hive project board should carry a saved view named "Agent Queue" filtered to `Actor=Agent AND Status in (Backlog, Ready)`. The filter uses the `Actor` custom field (D3) rather than the label directly, because labels are not shown as first-class pills on Projects v2 board cards — only custom single-select fields are. The `human-only` label is the opt-out *data*; the `Actor` field is the *visual display surface*. The label→field mirror workflow keeps them in sync automatically; until it lands, both are set manually when filing an issue.
 
 ### D5 — Auto-add via org-wide repo filter
 
 The Project's auto-add workflow is configured once, on the Project itself, with the filter `repo:HoneyDrunkStudios/*`. Every issue in every org repo is added automatically.
 
 Label-gated auto-add (e.g. requiring an `hd-tracked` label) is explicitly rejected: a forgotten label causes silent visibility loss. The repo filter is foolproof and requires zero per-repo configuration.
+
+**Operational note:** this workflow must be enabled manually in the portal (board → `...` menu → Workflows → Auto-add to project → filter `repo:HoneyDrunkStudios/*` → toggle on). It is *not* enabled by default. Until it is enabled, every filed issue requires a manual `gh project item-add` to land on the board. Additionally, auto-add only runs forward — issues filed before enablement must be added manually (this happened to the 11 issues in the ADR-0005/0006 rollout on 2026-04-10).
 
 ### D6 — Packet → Issue → Board → PR lifecycle
 

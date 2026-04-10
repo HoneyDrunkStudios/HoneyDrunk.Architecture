@@ -4,7 +4,7 @@ type: repo-feature
 tier: 2
 target_repo: HoneyDrunkStudios/HoneyDrunk.Notify
 labels: ["feature", "tier-2", "ops", "infrastructure", "adr-0005"]
-dependencies: ["vault-env-driven-add-vault-wiring", "vault-add-app-configuration-extension", "vault-event-driven-cache-invalidation"]
+dependencies: ["vault-bootstrap-extensions", "vault-event-driven-cache-invalidation", "architecture-infra-setup", "actions-oidc-and-secret-cleanup"]
 adrs: ["ADR-0005", "ADR-0006"]
 wave: 2
 initiative: adr-0005-0006-rollout
@@ -83,9 +83,9 @@ Notify holds the primary third-party provider credentials (Resend API key, Twili
 - Active initiative: Notification Subsystem Launch (Azure Functions deployment pending — this packet is the deployment bring-up gate)
 
 ## Dependencies
-- Wave 1 Vault packets
-- `architecture-infra-portal-walkthroughs`
-- `actions-oidc-federated-credentials-workflow`
+- `vault-bootstrap-extensions` + `vault-event-driven-cache-invalidation` (merged and published as a preview Vault package first)
+- `architecture-infra-setup` (portal walkthroughs for vault/OIDC provisioning)
+- `actions-oidc-and-secret-cleanup` (reusable OIDC deploy workflow)
 
 ## Labels
 `feature`, `tier-2`, `ops`, `infrastructure`, `adr-0005`
@@ -101,7 +101,7 @@ Notify holds the primary third-party provider credentials (Resend API key, Twili
 
 **Acceptance Criteria:** As listed above
 
-**Dependencies:** Wave 1 Vault packets merged; this Node is the canonical test case for Tier-2 rotation.
+**Dependencies:** `vault-bootstrap-extensions` and `vault-event-driven-cache-invalidation` merged and published as a preview Vault package before this lands. This Node is the canonical test case for Tier-2 rotation.
 
 **Constraints:**
 - **Invariant 8:** Secret values never appear in logs, traces, exceptions, or telemetry. Only secret names/identifiers may be traced. `VaultTelemetry` enforces this. Never log Resend/Twilio/SMTP credentials, even during troubleshooting.
