@@ -51,6 +51,20 @@ ADR-0006 Tier 5 says a secret older than its SLA triggers an alert and **blocks 
 - [ ] Summary output renders in the GitHub Actions run UI
 - [ ] README documents integration + exception schema
 
+## Referenced Invariants
+
+> **Invariant 8:** Secret values never appear in logs, traces, exceptions, or telemetry. Only secret names/identifiers may be traced. `VaultTelemetry` enforces this.
+
+> **Invariant 20:** No secret may exceed its tier's rotation SLA without an active exception. Tier 1 (Azure-native): ≤ 30 days. Tier 2 (third-party via rotation Function): ≤ 90 days. Certificates: auto-renewed 30 days before expiry. Exceptions must be logged in Log Analytics. See ADR-0006.
+
+> **Invariant 22:** Every Key Vault must have diagnostic settings routed to the shared Log Analytics workspace. Required for rotation SLA monitoring, unauthorized access alerting, and audit. See ADR-0006.
+
+## Referenced ADR Decisions
+
+**ADR-0006 (Secret Rotation and Lifecycle):** Five-tier rotation model — Azure-native rotation (≤30d), third-party rotation via `HoneyDrunk.Vault.Rotation` Function (≤90d), Event Grid cache invalidation on `SecretNewVersionCreated`, audit via Log Analytics, and deploy-blocking rotation SLAs.
+- **§Tier 4:** Diagnostic settings on every Key Vault route to shared Log Analytics. Alert rules for approaching expiry, rotation failure, unauthorized access, unexpected identity access. Dashboard for secret age vs SLA.
+- **§Tier 5:** Rotation SLAs — Azure-native ≤30d, third-party ≤90d, certificates auto-renewed ≥30d before expiry. Exceeding SLA blocks deploys until resolved.
+
 ## Context
 - ADR-0006 §Tier 4, §Tier 5
 - Invariant 20 — rotation SLA
@@ -70,14 +84,14 @@ ADR-0006 Tier 5 says a secret older than its SLA triggers an alert and **blocks 
 **Context:**
 - Goal: Operationalize the SLA gate from ADR-0006
 - Feature: Rotation lifecycle rollout
-- ADRs: ADR-0006
+- ADRs: ADR-0006 (Secret Rotation and Lifecycle)
 
 **Acceptance Criteria:** As listed above
 
 **Dependencies:** OIDC workflow packet must land first; Log Analytics workspace must exist in each environment
 
 **Constraints:**
-- Invariant 8 — the KQL query must never select or log secret *values*, only names and ages
+- Invariant 8 — Secret values never appear in logs, traces, exceptions, or telemetry. Only secret names/identifiers may be traced. `VaultTelemetry` enforces this. The KQL query must never select or log secret *values*, only names and ages.
 - Composite action must be idempotent and side-effect-free
 
 **Key Files:**

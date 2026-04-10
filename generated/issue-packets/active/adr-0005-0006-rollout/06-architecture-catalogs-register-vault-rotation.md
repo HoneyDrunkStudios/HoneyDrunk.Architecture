@@ -74,6 +74,15 @@ Create `overview.md`, `boundaries.md`, `active-work.md`, `invariants.md`, `integ
 - [ ] `relationships.json` still forms a DAG (invariant 4)
 - [ ] `initiatives/active-initiatives.md` updated with a new "Vault.Rotation Bring-Up" initiative entry pointing at the scaffold packet
 
+## Referenced Invariants
+
+> **Invariant 4:** No circular dependencies. The dependency graph is a DAG. Kernel is always at the root.
+
+## Referenced ADR Decisions
+
+**ADR-0006 (Secret Rotation and Lifecycle):** Five-tier rotation model — Azure-native rotation (≤30d), third-party rotation via `HoneyDrunk.Vault.Rotation` Function (≤90d), Event Grid cache invalidation on `SecretNewVersionCreated`, audit via Log Analytics, and deploy-blocking rotation SLAs.
+- **§New sub-Node:** `HoneyDrunk.Vault.Rotation` needs its own vault (`kv-hd-vaultrot-{env}`), Managed Identity, RBAC as Secrets Officer on every vault it rotates into, CI pipeline, and standard Grid scaffolding.
+
 ## Context
 - ADR-0006 §New sub-Node
 - Invariant 4 — no circular dependencies
@@ -92,7 +101,7 @@ None — can run in parallel with the scaffold packet and the infra walkthroughs
 **Context:**
 - Goal: Make the Grid aware of `HoneyDrunk.Vault.Rotation` before downstream migration work begins
 - Feature: Rotation lifecycle rollout
-- ADRs: ADR-0006
+- ADRs: ADR-0006 (five-tier rotation model, third-party rotation via Vault.Rotation Function, Event Grid cache invalidation, Log Analytics audit, deploy-blocking SLAs)
 
 **Acceptance Criteria:**
 - [ ] As listed above
@@ -100,7 +109,7 @@ None — can run in parallel with the scaffold packet and the infra walkthroughs
 **Dependencies:** None (but the repo scaffolding packet is a natural sibling)
 
 **Constraints:**
-- Invariant 4 — DAG must remain acyclic
+- Invariant 4: No circular dependencies. The dependency graph is a DAG. Kernel is always at the root. — DAG must remain acyclic
 - Don't invent relationship edges beyond what ADR-0006 supports
 
 **Key Files:**

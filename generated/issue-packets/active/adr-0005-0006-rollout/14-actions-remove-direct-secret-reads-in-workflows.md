@@ -44,6 +44,17 @@ ADR-0005 requires that secrets live in Key Vault, not in GitHub Actions repo sec
 - [ ] README updated with the banned-patterns list
 - [ ] Existing consumer workflows in other repos still work (smoke test via one downstream call)
 
+## Referenced Invariants
+
+> **Invariant 8:** Secret values never appear in logs, traces, exceptions, or telemetry. Only secret names/identifiers may be traced. `VaultTelemetry` enforces this.
+
+> **Invariant 9:** Vault is the only source of secrets. No Node reads secrets directly from environment variables, config files, or provider SDKs. All access goes through `ISecretStore`.
+
+## Referenced ADR Decisions
+
+**ADR-0005 (Configuration and Secrets Strategy):** Per-deployable-Node Key Vaults (`kv-hd-{service}-{env}`), `{Provider}--{Key}` secret naming, Managed Identity + Azure RBAC access, three-tier config split (Key Vault for secrets, App Configuration for non-secret config, env vars for bootstrap only), and env-var-driven discovery (`AZURE_KEYVAULT_URI`, `AZURE_APPCONFIG_ENDPOINT`).
+- **§Access:** Runtime uses system-assigned Managed Identity with `Key Vault Secrets User` on own vault only. CI uses OIDC federated credentials with `Key Vault Secrets Officer`. Local dev uses File provider or `DefaultAzureCredential` via `az login`. Access policies and client secrets are forbidden.
+
 ## Context
 - ADR-0005 §Access
 - Invariant 9 — Vault is the only source of secrets
@@ -61,7 +72,7 @@ ADR-0005 requires that secrets live in Key Vault, not in GitHub Actions repo sec
 **Context:**
 - Goal: Make ADR-0005 invariant 9 enforceable across CI
 - Feature: Configuration & secrets strategy rollout
-- ADRs: ADR-0005
+- ADRs: ADR-0005 (Configuration and Secrets Strategy)
 
 **Acceptance Criteria:** As listed above
 
@@ -69,7 +80,7 @@ ADR-0005 requires that secrets live in Key Vault, not in GitHub Actions repo sec
 
 **Constraints:**
 - Do not break existing downstream consumers — any change to the reusable workflow input interface requires a major version bump
-- Invariant 8 — lint output must never echo any secret value
+- Invariant 8 — Secret values never appear in logs, traces, exceptions, or telemetry. Only secret names/identifiers may be traced. `VaultTelemetry` enforces this. Lint output must never echo any secret value.
 
 **Key Files:**
 - `.github/workflows/*.yml`

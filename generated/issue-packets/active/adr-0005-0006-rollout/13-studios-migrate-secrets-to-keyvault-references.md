@@ -64,6 +64,21 @@ ADR-0005 applies to every deployable Node, including the Next.js website. Studio
 - [ ] `docs/deployment.md` explains the pattern and cross-links ADR-0005
 - [ ] A test deploy to staging succeeds end-to-end
 
+## Referenced Invariants
+
+> **Invariant 8:** Secret values never appear in logs, traces, exceptions, or telemetry. Only secret names/identifiers may be traced. `VaultTelemetry` enforces this.
+
+> **Invariant 17:** One Key Vault per deployable Node per environment. Named `kv-hd-{service}-{env}`, with Azure RBAC enabled. Access policies are forbidden. Library-only Nodes (Kernel, Vault, Transport, Architecture) have no vault. See ADR-0005.
+
+> **Invariant 18:** Vault URIs and App Configuration endpoints reach Nodes via environment variables. `AZURE_KEYVAULT_URI` and `AZURE_APPCONFIG_ENDPOINT` are set as App Service config at deploy time. Never derived by convention, never hardcoded. See ADR-0005.
+
+## Referenced ADR Decisions
+
+**ADR-0005 (Configuration and Secrets Strategy):** Per-deployable-Node Key Vaults (`kv-hd-{service}-{env}`), `{Provider}--{Key}` secret naming, Managed Identity + Azure RBAC access, three-tier config split (Key Vault for secrets, App Configuration for non-secret config, env vars for bootstrap only), and env-var-driven discovery (`AZURE_KEYVAULT_URI`, `AZURE_APPCONFIG_ENDPOINT`).
+- **§Bootstrap:** `AZURE_KEYVAULT_URI` and `AZURE_APPCONFIG_ENDPOINT` are set as App Service application settings at deploy time. `AddVault(...)` reads the vault URI; `AddAppConfiguration(...)` reads the App Config endpoint. Both use `DefaultAzureCredential`. Convention-based derivation from Node name was rejected.
+- **§Isolation:** Each deployable Node gets one Key Vault per environment (`kv-hd-{service}-{env}`), mirroring `rg-hd-{service}-{env}` 1:1. No shared vault. 24-char Azure limit means service names ≤ 13 chars.
+- **§Access:** Runtime uses system-assigned Managed Identity with `Key Vault Secrets User` on own vault only. CI uses OIDC federated credentials with `Key Vault Secrets Officer`. Local dev uses File provider or `DefaultAzureCredential` via `az login`. Access policies and client secrets are forbidden.
+
 ## Context
 - ADR-0005 §Isolation, §Bootstrap
 - Invariants 17, 18
@@ -83,16 +98,16 @@ ADR-0005 applies to every deployable Node, including the Next.js website. Studio
 **Context:**
 - Goal: Extend ADR-0005 to non-.NET deployable Nodes
 - Feature: Configuration & secrets strategy rollout
-- ADRs: ADR-0005
+- ADRs: ADR-0005 (Configuration and Secrets Strategy)
 
 **Acceptance Criteria:** As listed above
 
 **Dependencies:** Portal walkthroughs + OIDC workflow packets
 
 **Constraints:**
-- Invariant 17 — own vault, not shared
-- Invariant 18 — env-driven, not hardcoded — App Settings are the env-var surface here
-- Invariant 8 — never commit secrets
+- Invariant 17 — One Key Vault per deployable Node per environment. Named `kv-hd-{service}-{env}`, with Azure RBAC enabled. Access policies are forbidden. Own vault, not shared.
+- Invariant 18 — Vault URIs and App Configuration endpoints reach Nodes via environment variables. `AZURE_KEYVAULT_URI` and `AZURE_APPCONFIG_ENDPOINT` are set as App Service config at deploy time. Never derived by convention, never hardcoded. App Settings are the env-var surface here.
+- Invariant 8 — Secret values never appear in logs, traces, exceptions, or telemetry. Only secret names/identifiers may be traced. `VaultTelemetry` enforces this. Never commit secrets.
 - No ISecretStore / AddVault dependency on .NET libraries
 
 **Key Files:**

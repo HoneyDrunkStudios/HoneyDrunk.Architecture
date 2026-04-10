@@ -52,6 +52,22 @@ This is the first half of the bootstrap story in ADR-0005. Its sibling is `AddAp
 - [ ] CHANGELOG updated
 - [ ] Canary: consuming Node bootstraps with only `AZURE_KEYVAULT_URI` set
 
+## Referenced Invariants
+
+> **Invariant 8:** Secret values never appear in logs, traces, exceptions, or telemetry. Only secret names/identifiers may be traced. `VaultTelemetry` enforces this.
+
+> **Invariant 9:** Vault is the only source of secrets. No Node reads secrets directly from environment variables, config files, or provider SDKs. All access goes through `ISecretStore`.
+
+> **Invariant 17:** One Key Vault per deployable Node per environment. Named `kv-hd-{service}-{env}`, with Azure RBAC enabled. Access policies are forbidden. Library-only Nodes (Kernel, Vault, Transport, Architecture) have no vault. See ADR-0005.
+
+> **Invariant 18:** Vault URIs and App Configuration endpoints reach Nodes via environment variables. `AZURE_KEYVAULT_URI` and `AZURE_APPCONFIG_ENDPOINT` are set as App Service config at deploy time. Never derived by convention, never hardcoded. See ADR-0005.
+
+## Referenced ADR Decisions
+
+**ADR-0005 (Configuration and Secrets Strategy):** Per-deployable-Node Key Vaults (`kv-hd-{service}-{env}`), `{Provider}--{Key}` secret naming, Managed Identity + Azure RBAC access, three-tier config split (Key Vault for secrets, App Configuration for non-secret config, env vars for bootstrap only), and env-var-driven discovery (`AZURE_KEYVAULT_URI`, `AZURE_APPCONFIG_ENDPOINT`).
+- **§Bootstrap:** `AZURE_KEYVAULT_URI` and `AZURE_APPCONFIG_ENDPOINT` are set as App Service application settings at deploy time. `AddVault(...)` reads the vault URI; `AddAppConfiguration(...)` reads the App Config endpoint. Both use `DefaultAzureCredential`. Convention-based derivation from Node name was rejected.
+- **§Access:** Runtime uses system-assigned Managed Identity with `Key Vault Secrets User` on own vault only. CI uses OIDC federated credentials with `Key Vault Secrets Officer`. Local dev uses File provider or `DefaultAzureCredential` via `az login`. Access policies and client secrets are forbidden.
+
 ## Context
 - ADR-0005 §Bootstrap and §Access
 - Invariants 17, 18
@@ -70,7 +86,7 @@ None — foundational. Blocks all per-Node migration packets.
 **Context:**
 - Goal: Implement the bootstrap contract from ADR-0005 so every Node reaches its vault by convention
 - Feature: Configuration & secrets strategy rollout
-- ADRs: ADR-0005
+- ADRs: ADR-0005 (per-deployable-Node Key Vaults, env-var bootstrap, Managed Identity + RBAC, three-tier config split)
 
 **Acceptance Criteria:**
 - [ ] Extension method compiles and is discoverable on the builder
@@ -81,8 +97,8 @@ None — foundational. Blocks all per-Node migration packets.
 **Dependencies:** None
 
 **Constraints:**
-- Invariant 8 — never log the URI? URI is non-secret per ADR-0005, logging at Information is acceptable once on startup
-- Invariant 9 — no direct SDK secret reads anywhere else
+- Invariant 8 — Secret values never appear in logs, traces, exceptions, or telemetry. Only secret names/identifiers may be traced. `VaultTelemetry` enforces this. Note: the vault URI itself is non-secret per ADR-0005, so logging it at Information is acceptable once on startup.
+- Invariant 9 — Vault is the only source of secrets. No Node reads secrets directly from environment variables, config files, or provider SDKs. All access goes through `ISecretStore`.
 - Do not add a hard runtime dependency from `HoneyDrunk.Vault` to `HoneyDrunk.Vault.Providers.AzureKeyVault`
 
 **Key Files:**

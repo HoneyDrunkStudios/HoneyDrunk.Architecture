@@ -59,6 +59,17 @@ This must exist before per-Node migration to App Configuration + Managed Identit
 - [ ] XML docs reference ADR-0006 and invariant 21
 - [ ] CHANGELOG updated
 
+## Referenced Invariants
+
+> **Invariant 8:** Secret values never appear in logs, traces, exceptions, or telemetry. Only secret names/identifiers may be traced. `VaultTelemetry` enforces this.
+
+> **Invariant 21:** Applications must never pin to a specific secret version. All secret reads resolve the latest version via `ISecretStore`. Pinning breaks Event Grid cache invalidation and rotation propagation. See ADR-0006.
+
+## Referenced ADR Decisions
+
+**ADR-0006 (Secret Rotation and Lifecycle):** Five-tier rotation model — Azure-native rotation (≤30d), third-party rotation via `HoneyDrunk.Vault.Rotation` Function (≤90d), Event Grid cache invalidation on `SecretNewVersionCreated`, audit via Log Analytics, and deploy-blocking rotation SLAs.
+- **§Tier 3:** Each Key Vault has an Event Grid subscription on `SecretNewVersionCreated`. A Function/webhook invalidates the `HoneyDrunk.Vault` cache entry. Next `ISecretStore` read fetches latest version. TTL becomes fallback, not primary mechanism. Apps must never pin to a version.
+
 ## Context
 - ADR-0006 §Tier 3 — Propagation via Event Grid cache invalidation
 - Invariant 21 — applications must never pin to a specific secret version
@@ -78,7 +89,7 @@ None — foundational for rotation.
 **Context:**
 - Goal: Tier-3 rotation propagation from ADR-0006
 - Feature: Rotation lifecycle rollout
-- ADRs: ADR-0006
+- ADRs: ADR-0006 (five-tier rotation model, Event Grid cache invalidation, rotation SLAs, audit via Log Analytics)
 
 **Acceptance Criteria:**
 - [ ] As listed above
@@ -86,8 +97,8 @@ None — foundational for rotation.
 **Dependencies:** None. Blocks all per-Node migration packets that depend on rotation-safe config.
 
 **Constraints:**
-- Invariant 8 — never log secret values, even in webhook debug output
-- Invariant 21 — consumers must resolve "latest" through `ISecretStore`; invalidation is what makes that safe
+- Invariant 8 — Secret values never appear in logs, traces, exceptions, or telemetry. Only secret names/identifiers may be traced. `VaultTelemetry` enforces this. This includes webhook debug output.
+- Invariant 21 — Applications must never pin to a specific secret version. All secret reads resolve the latest version via `ISecretStore`. Pinning breaks Event Grid cache invalidation and rotation propagation. See ADR-0006. Invalidation is what makes resolving "latest" safe.
 - No Kernel runtime dependency change
 
 **Key Files:**

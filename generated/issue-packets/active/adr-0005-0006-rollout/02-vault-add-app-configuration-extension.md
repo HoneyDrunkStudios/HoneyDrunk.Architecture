@@ -54,6 +54,22 @@ ADR-0005 establishes a three-tier config split: secrets in `kv-hd-{service}-{env
 - [ ] XML docs reference ADR-0005, invariants 17–18
 - [ ] CHANGELOG updated
 
+## Referenced Invariants
+
+> **Invariant 4:** No circular dependencies. The dependency graph is a DAG. Kernel is always at the root.
+
+> **Invariant 9:** Vault is the only source of secrets. No Node reads secrets directly from environment variables, config files, or provider SDKs. All access goes through `ISecretStore`.
+
+> **Invariant 17:** One Key Vault per deployable Node per environment. Named `kv-hd-{service}-{env}`, with Azure RBAC enabled. Access policies are forbidden. Library-only Nodes (Kernel, Vault, Transport, Architecture) have no vault. See ADR-0005.
+
+> **Invariant 18:** Vault URIs and App Configuration endpoints reach Nodes via environment variables. `AZURE_KEYVAULT_URI` and `AZURE_APPCONFIG_ENDPOINT` are set as App Service config at deploy time. Never derived by convention, never hardcoded. See ADR-0005.
+
+## Referenced ADR Decisions
+
+**ADR-0005 (Configuration and Secrets Strategy):** Per-deployable-Node Key Vaults (`kv-hd-{service}-{env}`), `{Provider}--{Key}` secret naming, Managed Identity + Azure RBAC access, three-tier config split (Key Vault for secrets, App Configuration for non-secret config, env vars for bootstrap only), and env-var-driven discovery (`AZURE_KEYVAULT_URI`, `AZURE_APPCONFIG_ENDPOINT`).
+- **§Three-tier configuration split:** Secrets go in Key Vault, non-secret config goes in shared App Configuration (`appcs-hd-shared-{env}`) with label-per-Node partitioning, env vars are bootstrap only (`AZURE_KEYVAULT_URI`, `AZURE_APPCONFIG_ENDPOINT`, `ASPNETCORE_ENVIRONMENT`, `HONEYDRUNK_NODE_ID`).
+- **§Bootstrap:** `AZURE_KEYVAULT_URI` and `AZURE_APPCONFIG_ENDPOINT` are set as App Service application settings at deploy time. `AddVault(...)` reads the vault URI; `AddAppConfiguration(...)` reads the App Config endpoint. Both use `DefaultAzureCredential`. Convention-based derivation from Node name was rejected.
+
 ## Context
 - ADR-0005 §Three-tier configuration split and §Bootstrap
 - Invariants 17, 18
@@ -72,7 +88,7 @@ None — foundational.
 **Context:**
 - Goal: Implement the `AddAppConfiguration` half of ADR-0005 bootstrap
 - Feature: Configuration & secrets strategy rollout
-- ADRs: ADR-0005
+- ADRs: ADR-0005 (per-deployable-Node Key Vaults, env-var bootstrap, Managed Identity + RBAC, three-tier config split)
 
 **Acceptance Criteria:**
 - [ ] As listed in Acceptance Criteria above
@@ -80,8 +96,8 @@ None — foundational.
 **Dependencies:** None (can run in parallel with the `AddVault` wiring packet)
 
 **Constraints:**
-- Invariant 9 — secrets still flow only through `ISecretStore`. App Configuration's KV-reference resolution must not bypass `ISecretStore` for anything classified as a secret; use KV references only for secret-adjacent config values
-- No circular dependency from Vault back into Kernel runtime
+- Invariant 9 — Vault is the only source of secrets. No Node reads secrets directly from environment variables, config files, or provider SDKs. All access goes through `ISecretStore`. App Configuration's KV-reference resolution must not bypass `ISecretStore` for anything classified as a secret; use KV references only for secret-adjacent config values.
+- Invariant 4 — No circular dependencies. The dependency graph is a DAG. Kernel is always at the root. No circular dependency from Vault back into Kernel runtime.
 
 **Key Files:**
 - `HoneyDrunk.Vault/HoneyDrunk.Vault/HoneyDrunk.Vault/Extensions/HoneyDrunkBuilderExtensions.cs`

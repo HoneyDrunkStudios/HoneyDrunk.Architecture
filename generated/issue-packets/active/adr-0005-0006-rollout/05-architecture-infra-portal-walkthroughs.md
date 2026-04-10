@@ -91,6 +91,32 @@ Cross-link all six from a new `infrastructure/README.md` index and from the exis
 - [ ] 13-char service-name constraint called out on the KV creation walkthrough
 - [ ] RBAC walkthrough explicitly forbids legacy access policies with a callout box
 
+## Referenced Invariants
+
+> **Invariant 17:** One Key Vault per deployable Node per environment. Named `kv-hd-{service}-{env}`, with Azure RBAC enabled. Access policies are forbidden. Library-only Nodes (Kernel, Vault, Transport, Architecture) have no vault. See ADR-0005.
+
+> **Invariant 18:** Vault URIs and App Configuration endpoints reach Nodes via environment variables. `AZURE_KEYVAULT_URI` and `AZURE_APPCONFIG_ENDPOINT` are set as App Service config at deploy time. Never derived by convention, never hardcoded. See ADR-0005.
+
+> **Invariant 19:** Service names in Azure resource naming must be ≤ 13 characters. Required to fit within Azure's 24-character Key Vault name limit (`kv-hd-{service}-{env}`). See ADR-0005.
+
+> **Invariant 20:** No secret may exceed its tier's rotation SLA without an active exception. Tier 1 (Azure-native): ≤ 30 days. Tier 2 (third-party via rotation Function): ≤ 90 days. Certificates: auto-renewed 30 days before expiry. Exceptions must be logged in Log Analytics. See ADR-0006.
+
+> **Invariant 21:** Applications must never pin to a specific secret version. All secret reads resolve the latest version via `ISecretStore`. Pinning breaks Event Grid cache invalidation and rotation propagation. See ADR-0006.
+
+> **Invariant 22:** Every Key Vault must have diagnostic settings routed to the shared Log Analytics workspace. Required for rotation SLA monitoring, unauthorized access alerting, and audit. See ADR-0006.
+
+## Referenced ADR Decisions
+
+**ADR-0005 (Configuration and Secrets Strategy):** Per-deployable-Node Key Vaults (`kv-hd-{service}-{env}`), `{Provider}--{Key}` secret naming, Managed Identity + Azure RBAC access, three-tier config split (Key Vault for secrets, App Configuration for non-secret config, env vars for bootstrap only), and env-var-driven discovery (`AZURE_KEYVAULT_URI`, `AZURE_APPCONFIG_ENDPOINT`).
+- **§Access:** Runtime uses system-assigned Managed Identity with `Key Vault Secrets User` on own vault only. CI uses OIDC federated credentials with `Key Vault Secrets Officer`. Local dev uses File provider or `DefaultAzureCredential` via `az login`. Access policies and client secrets are forbidden.
+- **§Three-tier configuration split:** Secrets go in Key Vault, non-secret config goes in shared App Configuration (`appcs-hd-shared-{env}`) with label-per-Node partitioning, env vars are bootstrap only (`AZURE_KEYVAULT_URI`, `AZURE_APPCONFIG_ENDPOINT`, `ASPNETCORE_ENVIRONMENT`, `HONEYDRUNK_NODE_ID`).
+- **§Operational Consequences:** CI pipelines must use OIDC. Service naming bound by 13-char ceiling. Shared App Configuration per environment required. Portal walkthroughs deferred to infrastructure docs.
+
+**ADR-0006 (Secret Rotation and Lifecycle):** Five-tier rotation model — Azure-native rotation (≤30d), third-party rotation via `HoneyDrunk.Vault.Rotation` Function (≤90d), Event Grid cache invalidation on `SecretNewVersionCreated`, audit via Log Analytics, and deploy-blocking rotation SLAs.
+- **§Tier 3:** Each Key Vault has an Event Grid subscription on `SecretNewVersionCreated`. A Function/webhook invalidates the `HoneyDrunk.Vault` cache entry. Next `ISecretStore` read fetches latest version. TTL becomes fallback, not primary mechanism. Apps must never pin to a version.
+- **§Tier 4:** Diagnostic settings on every Key Vault route to shared Log Analytics. Alert rules for approaching expiry, rotation failure, unauthorized access, unexpected identity access. Dashboard for secret age vs SLA.
+- **§New Dependencies:** Shared Log Analytics workspace is cross-cutting. Event Grid subscriptions must be provisioned per vault.
+
 ## Context
 - ADR-0005 §Access, §Three-tier config, §Operational Consequences
 - ADR-0006 §Tier 3, §Tier 4, §New dependencies
@@ -110,7 +136,7 @@ None — pure docs. Unblocks every per-Node migration packet and the Vault.Rotat
 **Context:**
 - Goal: Make the new config & rotation story operable by the solo dev via portal only
 - Feature: Configuration/rotation rollout
-- ADRs: ADR-0005, ADR-0006
+- ADRs: ADR-0005 (per-deployable-Node Key Vaults, env-var bootstrap, Managed Identity + RBAC, three-tier config split), ADR-0006 (five-tier rotation model, third-party rotation via Vault.Rotation Function, Event Grid cache invalidation, Log Analytics audit, deploy-blocking SLAs)
 
 **Acceptance Criteria:**
 - [ ] As listed above

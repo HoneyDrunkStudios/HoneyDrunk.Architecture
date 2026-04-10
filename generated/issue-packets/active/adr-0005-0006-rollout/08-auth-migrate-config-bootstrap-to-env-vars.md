@@ -51,6 +51,29 @@ ADR-0005 mandates every deployable Node bootstrap through two env vars and consu
 - [ ] CHANGELOG updated
 - [ ] Canary test verifies `ISecretStore` is the only path to secret values
 
+## Referenced Invariants
+
+> **Invariant 8:** Secret values never appear in logs, traces, exceptions, or telemetry. Only secret names/identifiers may be traced. `VaultTelemetry` enforces this.
+
+> **Invariant 9:** Vault is the only source of secrets. No Node reads secrets directly from environment variables, config files, or provider SDKs. All access goes through `ISecretStore`.
+
+> **Invariant 10:** Auth tokens are validated, never issued. HoneyDrunk.Auth validates JWT Bearer tokens. It is not an identity provider.
+
+> **Invariant 17:** One Key Vault per deployable Node per environment. Named `kv-hd-{service}-{env}`, with Azure RBAC enabled. Access policies are forbidden. Library-only Nodes (Kernel, Vault, Transport, Architecture) have no vault. See ADR-0005.
+
+> **Invariant 18:** Vault URIs and App Configuration endpoints reach Nodes via environment variables. `AZURE_KEYVAULT_URI` and `AZURE_APPCONFIG_ENDPOINT` are set as App Service config at deploy time. Never derived by convention, never hardcoded. See ADR-0005.
+
+> **Invariant 21:** Applications must never pin to a specific secret version. All secret reads resolve the latest version via `ISecretStore`. Pinning breaks Event Grid cache invalidation and rotation propagation. See ADR-0006.
+
+## Referenced ADR Decisions
+
+**ADR-0005 (Configuration and Secrets Strategy):** Per-deployable-Node Key Vaults (`kv-hd-{service}-{env}`), `{Provider}--{Key}` secret naming, Managed Identity + Azure RBAC access, three-tier config split (Key Vault for secrets, App Configuration for non-secret config, env vars for bootstrap only), and env-var-driven discovery (`AZURE_KEYVAULT_URI`, `AZURE_APPCONFIG_ENDPOINT`).
+- **§Bootstrap:** `AZURE_KEYVAULT_URI` and `AZURE_APPCONFIG_ENDPOINT` are set as App Service application settings at deploy time. `AddVault(...)` reads the vault URI; `AddAppConfiguration(...)` reads the App Config endpoint. Both use `DefaultAzureCredential`. Convention-based derivation from Node name was rejected.
+- **§Three-tier configuration split:** Secrets go in Key Vault, non-secret config goes in shared App Configuration (`appcs-hd-shared-{env}`) with label-per-Node partitioning, env vars are bootstrap only.
+
+**ADR-0006 (Secret Rotation and Lifecycle):** Five-tier rotation model — Azure-native rotation (≤30d), third-party rotation via `HoneyDrunk.Vault.Rotation` Function (≤90d), Event Grid cache invalidation on `SecretNewVersionCreated`, audit via Log Analytics, and deploy-blocking rotation SLAs.
+- **§Tier 3:** Each Key Vault has an Event Grid subscription on `SecretNewVersionCreated`. A Function/webhook invalidates the `HoneyDrunk.Vault` cache entry. Next `ISecretStore` read fetches latest version. TTL becomes fallback, not primary mechanism. Apps must never pin to a version.
+
 ## Context
 - ADR-0005 §Bootstrap, §Three-tier configuration split
 - ADR-0006 §Tier 3
@@ -74,7 +97,7 @@ ADR-0005 mandates every deployable Node bootstrap through two env vars and consu
 **Context:**
 - Goal: ADR-0005/0006 per-Node migration wave
 - Feature: Configuration & secrets strategy rollout
-- ADRs: ADR-0005, ADR-0006
+- ADRs: ADR-0005 (Configuration and Secrets Strategy — per-Node Key Vaults, env-var discovery, three-tier config split), ADR-0006 (Secret Rotation and Lifecycle — five-tier rotation, Event Grid cache invalidation)
 
 **Acceptance Criteria:**
 - [ ] As listed above
@@ -82,10 +105,10 @@ ADR-0005 mandates every deployable Node bootstrap through two env vars and consu
 **Dependencies:** Wave 1 Vault packets must be merged and released as a preview package before this lands.
 
 **Constraints:**
-- Invariant 9 — `ISecretStore` only
-- Invariant 10 — Auth validates, does not issue
-- Invariant 17 — `kv-hd-auth-{env}` vault per environment
-- Invariant 21 — never pin secret versions
+- **Invariant 9:** Vault is the only source of secrets. No Node reads secrets directly from environment variables, config files, or provider SDKs. All access goes through `ISecretStore`.
+- **Invariant 10:** Auth tokens are validated, never issued. HoneyDrunk.Auth validates JWT Bearer tokens. It is not an identity provider.
+- **Invariant 17:** One Key Vault per deployable Node per environment. Named `kv-hd-{service}-{env}`, with Azure RBAC enabled. Access policies are forbidden. Library-only Nodes (Kernel, Vault, Transport, Architecture) have no vault. See ADR-0005. Auth's vault: `kv-hd-auth-{env}`.
+- **Invariant 21:** Applications must never pin to a specific secret version. All secret reads resolve the latest version via `ISecretStore`. Pinning breaks Event Grid cache invalidation and rotation propagation. See ADR-0006.
 
 **Key Files:**
 - `Program.cs`

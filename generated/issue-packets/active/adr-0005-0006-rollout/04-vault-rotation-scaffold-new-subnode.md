@@ -90,6 +90,26 @@ ADR-0006 Tier 2 introduces `HoneyDrunk.Vault.Rotation` as a brand-new sub-Node t
 - [ ] Canary project stub exists (no tests yet)
 - [ ] 13-char service-name budget verified for `vaultrot`
 
+## Referenced Invariants
+
+> **Invariant 11:** One repo per Node (or tightly coupled Node family). Each repo has its own solution, CI pipeline, and versioning.
+
+> **Invariant 17:** One Key Vault per deployable Node per environment. Named `kv-hd-{service}-{env}`, with Azure RBAC enabled. Access policies are forbidden. Library-only Nodes (Kernel, Vault, Transport, Architecture) have no vault. See ADR-0005.
+
+> **Invariant 19:** Service names in Azure resource naming must be ≤ 13 characters. Required to fit within Azure's 24-character Key Vault name limit (`kv-hd-{service}-{env}`). See ADR-0005.
+
+> **Invariant 20:** No secret may exceed its tier's rotation SLA without an active exception. Tier 1 (Azure-native): ≤ 30 days. Tier 2 (third-party via rotation Function): ≤ 90 days. Certificates: auto-renewed 30 days before expiry. Exceptions must be logged in Log Analytics. See ADR-0006.
+
+> **Invariant 21:** Applications must never pin to a specific secret version. All secret reads resolve the latest version via `ISecretStore`. Pinning breaks Event Grid cache invalidation and rotation propagation. See ADR-0006.
+
+> **Invariant 22:** Every Key Vault must have diagnostic settings routed to the shared Log Analytics workspace. Required for rotation SLA monitoring, unauthorized access alerting, and audit. See ADR-0006.
+
+## Referenced ADR Decisions
+
+**ADR-0006 (Secret Rotation and Lifecycle):** Five-tier rotation model — Azure-native rotation (≤30d), third-party rotation via `HoneyDrunk.Vault.Rotation` Function (≤90d), Event Grid cache invalidation on `SecretNewVersionCreated`, audit via Log Analytics, and deploy-blocking rotation SLAs.
+- **§Tier 2:** `HoneyDrunk.Vault.Rotation` is a new Azure Function App sub-Node for rotating third-party secrets (Resend, Twilio, OpenAI). Triggers via Event Grid or manual. Mints new key via provider API, writes to Key Vault, disables old version after grace period. Where no rotation API exists, emits reminder pointing to manual runbook.
+- **§New sub-Node:** `HoneyDrunk.Vault.Rotation` needs its own vault (`kv-hd-vaultrot-{env}`), Managed Identity, RBAC as Secrets Officer on every vault it rotates into, CI pipeline, and standard Grid scaffolding.
+
 ## Context
 - ADR-0006 §Tier 2 and §New sub-Node
 - Invariants 17 (per-Node vault), 19 (13-char service name), 20 (rotation SLA), 21 (no version pinning), 22 (diag to Log Analytics)
@@ -109,7 +129,7 @@ ADR-0006 Tier 2 introduces `HoneyDrunk.Vault.Rotation` as a brand-new sub-Node t
 **Context:**
 - Goal: Create the Tier-2 rotation home so downstream rotator issues have somewhere to land
 - Feature: Rotation lifecycle rollout
-- ADRs: ADR-0006
+- ADRs: ADR-0006 (five-tier rotation model, third-party rotation via Vault.Rotation Function, Event Grid cache invalidation, Log Analytics audit, deploy-blocking SLAs)
 
 **Acceptance Criteria:**
 - [ ] As listed above
@@ -119,8 +139,8 @@ ADR-0006 Tier 2 introduces `HoneyDrunk.Vault.Rotation` as a brand-new sub-Node t
 - Infra walkthroughs available (parallel packet)
 
 **Constraints:**
-- Invariant 11 — one repo per Node
-- Invariant 19 — service name short enough for `kv-hd-vaultrot-{env}` to fit Azure's 24-char limit
+- Invariant 11: One repo per Node (or tightly coupled Node family). Each repo has its own solution, CI pipeline, and versioning. — one repo per Node
+- Invariant 19: Service names in Azure resource naming must be ≤ 13 characters. Required to fit within Azure's 24-character Key Vault name limit (`kv-hd-{service}-{env}`). See ADR-0005. — service name short enough for `kv-hd-vaultrot-{env}` to fit Azure's 24-char limit
 - No cross-vault wildcard RBAC — grants must be per-target-vault
 - No client-secret CI authentication anywhere
 
