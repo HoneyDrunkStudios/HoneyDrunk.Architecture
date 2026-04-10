@@ -1,4 +1,3 @@
-<!-- GENERATED from agents/canonical/review.md (mappings v1) — do not edit -->
 ---
 name: review
 description: >-

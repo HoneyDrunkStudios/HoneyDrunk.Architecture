@@ -5,6 +5,10 @@ tier: 1
 target_repo: "{repo}"
 labels: ["bug", "tier-1", "{sector}"]
 dependencies: []
+adrs: []
+wave: 1
+initiative: "{initiative-slug}"
+node: "{node-id}"
 ---
 
 # Bug: {Title}

@@ -1,9 +1,12 @@
 # ADR-0004: Tool-Agnostic Agent Definitions
 
-**Status:** Accepted  
-**Date:** 2026-04-08  
-**Deciders:** HoneyDrunk Studios  
+**Status:** Superseded by [ADR-0007](ADR-0007-claude-agents-as-source-of-truth.md)
+**Date:** 2026-04-08
+**Superseded:** 2026-04-09
+**Deciders:** HoneyDrunk Studios
 **Sector:** Meta
+
+> **Note:** This ADR is retained for historical context. The canonical `agents/` directory and generator described below were removed on 2026-04-09. Agent definitions now live directly in `.claude/agents/`. See [ADR-0007](ADR-0007-claude-agents-as-source-of-truth.md) for rationale.
 
 ## Context
 

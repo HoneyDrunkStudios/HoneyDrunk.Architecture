@@ -1,4 +1,3 @@
-<!-- GENERATED from agents/canonical/adr-composer.md (mappings v1) — do not edit -->
 ---
 name: adr-composer
 description: >-

@@ -2,9 +2,13 @@
 name: Site Sync
 type: site-sync
 tier: 1
-target_repo: HoneyDrunk.Studios
+target_repo: HoneyDrunkStudios/HoneyDrunk.Studios
 labels: ["site-sync", "tier-1", "documentation"]
 dependencies: []
+adrs: []
+wave: 1
+initiative: "{initiative-slug}"
+node: "{node-id}"
 ---
 
 # Site Sync: {Title}

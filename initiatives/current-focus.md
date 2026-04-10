@@ -2,9 +2,20 @@
 
 What the team (human + agents) should prioritize right now.
 
-**Last Updated:** 2026-03-28
+**Last Updated:** 2026-04-09
 
 ## Primary Focus
+
+### Configuration & Secrets Rollout (ADR-0005 / ADR-0006)
+
+Execute the two-wave rollout that standardizes secret and configuration management across the Grid.
+
+- **Wave 1 (in progress):** Vault env-driven wiring, App Configuration extension, event-driven cache invalidation, Vault.Rotation repo scaffold, portal walkthroughs, catalog registration, OIDC deploy workflow
+- **Wave 2 (blocked on Wave 1 exit criteria):** Per-Node bootstrap migrations (Auth, Web.Rest, Data, Notify, Pulse, Studios) + Actions secret cleanup and deploy-gate SLA check
+- **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
+- **Blocker:** Packet #04 (Vault.Rotation scaffold) requires creating the `HoneyDrunk.Vault.Rotation` repo on GitHub
+
+**See:** `generated/issue-packets/active/adr-0005-0006-rollout/dispatch-plan.md`
 
 ### Deploy Notify and Pulse
 

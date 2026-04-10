@@ -2,9 +2,13 @@
 name: CI Change
 type: ci-change
 tier: 2
-target_repo: HoneyDrunk.Actions
+target_repo: HoneyDrunkStudios/HoneyDrunk.Actions
 labels: ["ci", "tier-2", "ops"]
 dependencies: []
+adrs: []
+wave: 1
+initiative: "{initiative-slug}"
+node: "{node-id}"
 ---
 
 # CI Change: {Title}

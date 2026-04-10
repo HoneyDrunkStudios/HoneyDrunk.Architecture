@@ -5,6 +5,10 @@ tier: 2
 target_repo: "{repo}"
 labels: ["feature", "tier-2", "{sector}"]
 dependencies: []
+adrs: []
+wave: 1
+initiative: "{initiative-slug}"
+node: "{node-id}"
 ---
 
 # Feature: {Title}

@@ -61,3 +61,34 @@ Rules that must never be violated across the HoneyDrunk Grid. Canary tests enfor
 
 16. **No test code in runtime packages.**
     Tests live in dedicated `.Tests` or `.Canary` projects only.
+
+## Infrastructure & Configuration Invariants
+
+17. **One Key Vault per deployable Node per environment.**
+    Named `kv-hd-{service}-{env}`, with Azure RBAC enabled. Access policies are forbidden. Library-only Nodes (Kernel, Vault, Transport, Architecture) have no vault. See ADR-0005.
+
+18. **Vault URIs and App Configuration endpoints reach Nodes via environment variables.**
+    `AZURE_KEYVAULT_URI` and `AZURE_APPCONFIG_ENDPOINT` are set as App Service config at deploy time. Never derived by convention, never hardcoded. See ADR-0005.
+
+19. **Service names in Azure resource naming must be ≤ 13 characters.**
+    Required to fit within Azure's 24-character Key Vault name limit (`kv-hd-{service}-{env}`). See ADR-0005.
+
+20. **No secret may exceed its tier's rotation SLA without an active exception.**
+    Tier 1 (Azure-native): ≤ 30 days. Tier 2 (third-party via rotation Function): ≤ 90 days. Certificates: auto-renewed 30 days before expiry. Exceptions must be logged in Log Analytics. See ADR-0006.
+
+21. **Applications must never pin to a specific secret version.**
+    All secret reads resolve the latest version via `ISecretStore`. Pinning breaks Event Grid cache invalidation and rotation propagation. See ADR-0006.
+
+22. **Every Key Vault must have diagnostic settings routed to the shared Log Analytics workspace.**
+    Required for rotation SLA monitoring, unauthorized access alerting, and audit. See ADR-0006.
+
+## Work Tracking Invariants
+
+23. **Every tracked work item has a GitHub Issue in its target repo.**
+    No work tracked exclusively in packet files, chat logs, or external tools. Issues live where the code lives. See ADR-0008.
+
+24. **Issue packets are immutable specifications.**
+    State lives on the org Project board, never in the packet file. If requirements change materially, write a new packet rather than editing the old one. See ADR-0008.
+
+25. **Dispatch plans are initiative narratives, not live state.**
+    The org Project board is the source of truth for in-flight work. Dispatch plans are updated at wave boundaries as historical records. See ADR-0008.

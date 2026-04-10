@@ -5,6 +5,10 @@ tier: 2
 target_repos: []
 labels: ["dependency-upgrade", "tier-2", "coordination"]
 dependencies: []
+adrs: []
+wave: 1
+initiative: "{initiative-slug}"
+node: "{node-id}"
 ---
 
 # Dependency Upgrade: {Title}

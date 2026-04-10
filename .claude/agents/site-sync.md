@@ -1,4 +1,3 @@
-<!-- GENERATED from agents/canonical/site-sync.md (mappings v1) — do not edit -->
 ---
 name: site-sync
 description: >-
