@@ -34,8 +34,8 @@ Before finalizing an issue packet:
 - [ ] Dependencies are listed if this is part of a cross-repo change
 - [ ] Labels include type, tier, and sector
 - [ ] Frontmatter includes all board fields: `wave`, `initiative`, `node`, `adrs`, `tier`
-- [ ] All referenced invariants are inlined as full text — never cite by number alone
-- [ ] ADR decisions relevant to implementation are summarized in the packet body
+- [ ] Implementation constraints include invariant text (or a direct quoted excerpt) where the exact wording affects behavior; avoid number-only references in constraint sections
+- [ ] ADR decisions relevant to implementation are summarized in the packet body with file links so an executor can verify full context quickly
 
 ## Anti-Patterns
 
@@ -43,4 +43,6 @@ Before finalizing an issue packet:
 - **Wrong repo:** Putting Transport work in a Kernel issue
 - **Missing context:** Issues without links to ADRs or initiatives
 - **Scope creep:** One issue should do one thing. Split if needed.
-- **Opaque references:** Writing "Invariant 17" or "see ADR-0005" without inlining the relevant content. The executing agent has no access to the Architecture repo.
+- **Opaque references:** Writing only "Invariant 17" or "see ADR-0005" in implementation constraints without including the relevant text/excerpt.
+
+Execution note: ADR-0008 D8 checks out both the target repo and `HoneyDrunk.Architecture` during cloud execution. Packets should still be self-sufficient for implementation-critical constraints so execution does not depend on extra document discovery.

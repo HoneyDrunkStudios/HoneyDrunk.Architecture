@@ -32,6 +32,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 $OrgOwner = "HoneyDrunkStudios"
+$ProjectItemLookupLimit = 5000
 
 # Resolve to absolute path
 if (-not [System.IO.Path]::IsPathRooted($InitiativeFolder)) {
@@ -58,6 +59,7 @@ $fInit = Get-FieldId "Initiative"
 $fNode = Get-FieldId "Node"
 $fTier = Get-FieldId "Tier"
 $fAdr  = Get-FieldId "ADR"
+$fActor = Get-FieldId "Actor"
 
 function Parse-Frontmatter($filePath) {
     $content = Get-Content $filePath -Raw
@@ -79,8 +81,30 @@ function Parse-Frontmatter($filePath) {
 
 # Collect packet files (skip dispatch-plan.md and handoff-*.md)
 $packets = Get-ChildItem "$InitiativeFolder\*.md" |
-    Where-Object { $_.Name -notmatch '^(dispatch-plan|handoff-)' } |
-    Sort-Object Name
+    Where-Object { $_.Name -notmatch '^(dispatch-plan|handoff-)' }
+
+$isStandaloneFolder = (Split-Path $InitiativeFolder -Leaf) -eq "standalone"
+
+if ($isStandaloneFolder) {
+    # Standalone packets are date-prefixed and filed in lexical filename order.
+    $packets = $packets | Sort-Object Name
+}
+else {
+    # Initiative packets must use NN- prefix so filing order is explicit and stable.
+    $packets = $packets |
+        ForEach-Object {
+            if ($_.BaseName -notmatch '^(\d{2})-') {
+                throw "Packet '$($_.Name)' is missing required NN- execution-order prefix for initiative filing."
+            }
+
+            [pscustomobject]@{
+                Order = [int]$Matches[1]
+                File  = $_
+            }
+        } |
+        Sort-Object Order, @{ Expression = { $_.File.Name } } |
+        ForEach-Object { $_.File }
+}
 
 Write-Host "`n=== Filing packets from: $InitiativeFolder ===" -ForegroundColor Cyan
 Write-Host "Project: The Hive (#$ProjectNumber)`n"
@@ -93,18 +117,70 @@ foreach ($packet in $packets) {
     }
 
     $targetRepo = $fm["target_repo"]
+    $targetReposRaw = $fm["target_repos"]
     $tier = $fm["tier"]
     $wave = $fm["wave"]
     $node = $fm["node"]
     $initiative = $fm["initiative"]
+    $actorRaw = $fm["actor"]
     $adrs = if ($fm["adrs"] -is [array]) { $fm["adrs"] -join ", " } else { $fm["adrs"] }
     $labels = if ($fm["labels"] -is [array]) { $fm["labels"] -join "," } else { $fm["labels"] }
+    $labelValues = @()
+    if ($labels) {
+        $labelValues = $labels -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $_ }
+    }
+
+    $actor = $null
+    if ($actorRaw) {
+        $actorCandidate = "$actorRaw".Trim().ToLowerInvariant()
+        if ($actorCandidate -eq "human") {
+            $actor = "Human"
+        }
+        elseif ($actorCandidate -eq "agent") {
+            $actor = "Agent"
+        }
+        else {
+            Write-Host "WARN: Unknown actor '$actorRaw' in $($packet.Name). Expected 'agent' or 'human'." -ForegroundColor Yellow
+        }
+    }
+    if (-not $actor -and ($labelValues | Where-Object { $_.ToLowerInvariant() -eq "human-only" })) {
+        $actor = "Human"
+    }
+    if (-not $actor) {
+        $actor = "Agent"
+    }
+
+    $targetRepos = @()
+    if ($targetRepo) {
+        $targetRepos += $targetRepo
+    }
+    if ($targetReposRaw) {
+        if ($targetReposRaw -is [array]) {
+            $targetRepos += $targetReposRaw
+        }
+        else {
+            $targetRepos += $targetReposRaw
+        }
+    }
+    $targetRepos = $targetRepos | ForEach-Object { "$_".Trim() } | Where-Object { $_ } | Select-Object -Unique
+    $targetRepos = $targetRepos | ForEach-Object {
+        if ($_ -match '^[^/]+/[^/]+$') {
+            $_
+        }
+        else {
+            "$OrgOwner/$_"
+        }
+    } | Select-Object -Unique
 
     # Extract title from first H1
     $title = (Get-Content $packet.FullName | Where-Object { $_ -match '^#\s+' } | Select-Object -First 1) -replace '^#\s+(Feature|Chore|Bug|CI):\s*', ''
 
-    if (-not $targetRepo -or -not $title) {
-        Write-Host "SKIP (missing target_repo or title): $($packet.Name)" -ForegroundColor Yellow
+    if ($targetRepo -and $targetReposRaw) {
+        throw "Packet '$($packet.Name)' contains both target_repo and target_repos. Use exactly one."
+    }
+
+    if (-not $targetRepos -or $targetRepos.Count -eq 0 -or -not $title) {
+        Write-Host "SKIP (missing target repo(s) or title): $($packet.Name)" -ForegroundColor Yellow
         continue
     }
 
@@ -114,9 +190,10 @@ foreach ($packet in $packets) {
     }
 
     Write-Host "--- $($packet.Name) ---" -ForegroundColor Green
-    Write-Host "  Repo:  $targetRepo"
+    Write-Host "  Repo(s): $($targetRepos -join ', ')"
     Write-Host "  Title: $title"
     Write-Host "  Wave:  $wave | Tier: $tier | Node: $node"
+    Write-Host "  Actor: $actor"
     Write-Host "  ADRs:  $adrs"
     Write-Host "  Labels: $labels"
 
@@ -125,53 +202,78 @@ foreach ($packet in $packets) {
         continue
     }
 
-    # Ensure labels exist on target repo
-    if ($labels) {
-        foreach ($label in ($labels -split ',')) {
-            $label = $label.Trim()
-            gh label create $label --repo $targetRepo --force 2>&1 | Out-Null
+    foreach ($repo in $targetRepos) {
+        Write-Host "  Filing into: $repo" -ForegroundColor DarkCyan
+
+        # Ensure labels exist on target repo
+        if ($labels) {
+            foreach ($label in $labelValues) {
+                gh label create $label --repo $repo --force 2>&1 | Out-Null
+            }
         }
-    }
 
-    # Create issue
-    $issueUrl = gh issue create --repo $targetRepo --title $title --body-file $packet.FullName --label $labels 2>&1
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host "  ERROR filing issue: $issueUrl" -ForegroundColor Red
-        continue
-    }
-    Write-Host "  Issue: $issueUrl" -ForegroundColor Cyan
+        # Create issue
+        $issueCreateArgs = @(
+            "issue", "create",
+            "--repo", $repo,
+            "--title", $title,
+            "--body-file", $packet.FullName
+        )
 
-    # Add to project
-    gh project item-add $ProjectNumber --owner $OrgOwner --url $issueUrl 2>&1 | Out-Null
+        if ($labels) {
+            foreach ($label in $labelValues) {
+                $issueCreateArgs += @("--label", $label)
+            }
+        }
 
-    # Get the item ID we just added
-    $allItems = gh project item-list $ProjectNumber --owner $OrgOwner --format json | ConvertFrom-Json
-    $itemId = ($allItems.items | Where-Object { $_.content.url -eq $issueUrl }).id
+        $issueUrl = gh @issueCreateArgs 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "  ERROR filing issue in $repo : $issueUrl" -ForegroundColor Red
+            continue
+        }
+        Write-Host "  Issue: $issueUrl" -ForegroundColor Cyan
 
-    if (-not $itemId) {
-        Write-Host "  WARN: Could not find item on board to set fields" -ForegroundColor Yellow
-        continue
-    }
+        # Add to project
+        gh project item-add $ProjectNumber --owner $OrgOwner --url $issueUrl 2>&1 | Out-Null
 
-    # Set board fields
-    if ($wave) {
-        $optId = Get-OptionId "Wave" "Wave $wave"
-        if ($optId) { gh project item-edit --project-id $projectId --id $itemId --field-id $fWave --single-select-option-id $optId 2>&1 | Out-Null }
-    }
-    if ($initiative) {
-        $optId = Get-OptionId "Initiative" $initiative
-        if ($optId) { gh project item-edit --project-id $projectId --id $itemId --field-id $fInit --single-select-option-id $optId 2>&1 | Out-Null }
-    }
-    if ($node) {
-        $optId = Get-OptionId "Node" $node
-        if ($optId) { gh project item-edit --project-id $projectId --id $itemId --field-id $fNode --single-select-option-id $optId 2>&1 | Out-Null }
-    }
-    if ($tier) {
-        $optId = Get-OptionId "Tier" "$tier"
-        if ($optId) { gh project item-edit --project-id $projectId --id $itemId --field-id $fTier --single-select-option-id $optId 2>&1 | Out-Null }
-    }
-    if ($adrs) {
-        gh project item-edit --project-id $projectId --id $itemId --field-id $fAdr --text $adrs 2>&1 | Out-Null
+        # Use an explicit high limit so recent items are still discoverable on large boards.
+        $allItems = gh project item-list $ProjectNumber --owner $OrgOwner --limit $ProjectItemLookupLimit --format json | ConvertFrom-Json
+        $itemId = ($allItems.items | Where-Object { $_.content.url -eq $issueUrl }).id
+
+        if (-not $itemId) {
+            Write-Host "  WARN: Could not find item on board to set fields" -ForegroundColor Yellow
+            continue
+        }
+
+        # Set board fields
+        if ($wave) {
+            $optId = Get-OptionId "Wave" "Wave $wave"
+            if ($optId) { gh project item-edit --project-id $projectId --id $itemId --field-id $fWave --single-select-option-id $optId 2>&1 | Out-Null }
+        }
+        if ($initiative) {
+            $optId = Get-OptionId "Initiative" $initiative
+            if ($optId) { gh project item-edit --project-id $projectId --id $itemId --field-id $fInit --single-select-option-id $optId 2>&1 | Out-Null }
+        }
+        if ($node) {
+            $optId = Get-OptionId "Node" $node
+            if ($optId) { gh project item-edit --project-id $projectId --id $itemId --field-id $fNode --single-select-option-id $optId 2>&1 | Out-Null }
+        }
+        if ($tier) {
+            $optId = Get-OptionId "Tier" "$tier"
+            if ($optId) { gh project item-edit --project-id $projectId --id $itemId --field-id $fTier --single-select-option-id $optId 2>&1 | Out-Null }
+        }
+        if ($adrs) {
+            gh project item-edit --project-id $projectId --id $itemId --field-id $fAdr --text $adrs 2>&1 | Out-Null
+        }
+        if ($fActor -and $actor) {
+            $optId = Get-OptionId "Actor" $actor
+            if ($optId) {
+                gh project item-edit --project-id $projectId --id $itemId --field-id $fActor --single-select-option-id $optId 2>&1 | Out-Null
+            }
+            else {
+                Write-Host "  WARN: Actor option '$actor' not found on project board" -ForegroundColor Yellow
+            }
+        }
     }
 
     Write-Host "  Board fields set`n" -ForegroundColor Green

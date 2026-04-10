@@ -2,7 +2,7 @@
 name: Site Sync
 type: site-sync
 tier: 1
-target_repo: HoneyDrunk.Studios
+target_repo: HoneyDrunkStudios/HoneyDrunk.Studios
 labels: ["site-sync", "tier-1", "documentation"]
 dependencies: []
 adrs: []

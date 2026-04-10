@@ -24,7 +24,7 @@ Create the `HoneyDrunkStudios/HoneyDrunk.Vault.Rotation` repo on GitHub with the
 **`Human`.** This entire work item is human-only. Org-admin rights on `HoneyDrunkStudios` are required to create a new repo, and creating repos is not something we delegate to an agent even when technically possible.
 
 ## Motivation
-`vault-rotation-scaffold.md` defines the solution, CI, and Function App skeleton for `HoneyDrunk.Vault.Rotation` but cannot be filed as a GitHub issue until the target repo exists. Without a tracked task, "create the repo" is an implicit prerequisite that's easy to forget. This packet surfaces it as an explicit Wave 1 work item so it shows up on The Hive's Agent Queue as a human-only blocker.
+`06-vault-rotation-scaffold.md` defines the solution, CI, and Function App skeleton for `HoneyDrunk.Vault.Rotation` but cannot be filed as a GitHub issue until the target repo exists. Without a tracked task, "create the repo" is an implicit prerequisite that's easy to forget. This packet surfaces it as an explicit Wave 1 work item so it shows up on The Hive's Agent Queue as a human-only blocker.
 
 ## Steps (portal)
 
@@ -49,12 +49,12 @@ Create the `HoneyDrunkStudios/HoneyDrunk.Vault.Rotation` repo on GitHub with the
 - [ ] Default branch is `main` with a README committed
 - [ ] Branch protection rules match the Grid standard (mirror `HoneyDrunk.Vault`'s settings)
 - [ ] `.gitignore` and LICENSE committed
-- [ ] "Next Steps" script below has been run, filing `vault-rotation-scaffold.md` as an issue on the new repo
+- [ ] "Next Steps" script below has been run, filing `06-vault-rotation-scaffold.md` as an issue on the new repo
 - [ ] This chore issue is closed after the Next Steps script completes
 
 ## Next Steps (run immediately after the repo exists)
 
-These commands file `vault-rotation-scaffold.md` against the newly-created repo, add it to The Hive, and populate all custom fields. **Copy-paste directly into a terminal** from the `HoneyDrunk.Architecture` repo root. They assume you just finished Step 7 above.
+These commands file `06-vault-rotation-scaffold.md` against the newly-created repo, add it to The Hive, and populate all custom fields. **Copy-paste directly into a terminal** from the `HoneyDrunk.Architecture` repo root. They assume you just finished Step 7 above.
 
 ```bash
 PACKETS="generated/issue-packets/active/adr-0005-0006-rollout"
@@ -69,7 +69,7 @@ done
 # 2. File the scaffold packet as an issue on the new repo
 ISSUE_URL=$(gh issue create --repo HoneyDrunkStudios/HoneyDrunk.Vault.Rotation \
   --title "Scaffold HoneyDrunk.Vault.Rotation repo, solution, and Function App" \
-  --body-file "$PACKETS/vault-rotation-scaffold.md" \
+  --body-file "$PACKETS/06-vault-rotation-scaffold.md" \
   --label "feature,tier-3,new-node,adr-0006,wave-1")
 echo "Filed: $ISSUE_URL"
 
@@ -89,17 +89,17 @@ echo "Done. Scaffold packet is now a live Wave 1 agent-eligible work item."
 echo "Close this chore issue (#8) and kick off the scaffold packet on Codex Cloud whenever you're ready."
 ```
 
-After this runs, `vault-rotation-scaffold.md` is filed against the new repo and on The Hive with `Actor=Agent`. It becomes your next agent-eligible work item.
+After this runs, `06-vault-rotation-scaffold.md` is filed against the new repo and on The Hive with `Actor=Agent`. It becomes your next agent-eligible work item.
 
 ## Human Prerequisites
 - Org-admin role on `HoneyDrunkStudios` (required to create new repos under the org)
 - Browser with GitHub session logged in as the org owner
 
 ## Dependencies
-None. This is the root blocker for `vault-rotation-scaffold.md`.
+None. This is the root blocker for `06-vault-rotation-scaffold.md`.
 
 ## Downstream Unblocks
-- `vault-rotation-scaffold.md` — becomes fileable and executable the moment this chore is Done
+- `06-vault-rotation-scaffold.md` — becomes fileable and executable the moment this chore is Done
 
 ## Referenced ADR Decisions
 
@@ -116,5 +116,6 @@ None. This is the root blocker for `vault-rotation-scaffold.md`.
 ## Notes for the human executing this chore
 
 - This is genuinely a 3-minute portal task. No scripts, no CLI.
-- After you create the repo, run the commented-out `gh issue create` block in `dispatch-plan.md` for `vault-rotation-scaffold.md` and then close this issue.
+- After you create the repo, run the commented-out `gh issue create` block in `dispatch-plan.md` for `06-vault-rotation-scaffold.md` and then close this issue.
 - If you decide to defer the whole Vault.Rotation bring-up (waiting for a real third-party rotation need), close this as "not planned" with a note pointing at the deferral decision — don't delete the packet. A future ADR can revive it.
+

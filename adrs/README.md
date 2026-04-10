@@ -10,7 +10,10 @@ For product-level strategic decisions, see [PDRs](../pdrs/README.md).
 | [ADR-0002](ADR-0002-honeyhub-command-center.md) | Architecture Repo as Agent Command Center | Accepted | 2026-03-22 | Meta | Established this repo as the centralized source of truth for all agentic workflows and cross-repo coordination. |
 | [ADR-0003](ADR-0003-honeyhub-control-plane.md) | HoneyHub as Organizational Control Plane | Proposed | 2026-03-30 | Meta | HoneyHub as a graph-driven orchestration system with integration, knowledge graph, orchestration engine, and projection layers. |
 | [ADR-0004](ADR-0004-tool-agnostic-agent-definitions.md) | Tool-Agnostic Agent Definitions | Superseded by [ADR-0007](ADR-0007-claude-agents-as-source-of-truth.md) | 2026-04-08 | Meta | Agent definitions authored once in canonical format, generated into tool-specific formats for Claude Code, Copilot, and Codex. |
+| [ADR-0005](ADR-0005-configuration-and-secrets-strategy.md) | Configuration and Secrets Strategy | Accepted | 2026-04-09 | Infrastructure | Defined per-Node per-environment Key Vault strategy, bootstrap env vars, App Configuration split, and RBAC/OIDC access model. |
+| [ADR-0006](ADR-0006-secret-rotation-and-lifecycle.md) | Secret Rotation and Lifecycle | Accepted | 2026-04-09 | Infrastructure | Defined rotation SLAs, Azure-native and third-party rotation paths, event-driven cache invalidation, and audit/alert requirements. |
 | [ADR-0007](ADR-0007-claude-agents-as-source-of-truth.md) | `.claude/agents/` as Single Source of Truth | Accepted | 2026-04-09 | Meta | Dropped canonical/generator layer. Agents live directly in `.claude/agents/`; Copilot discovers them there, Codex uses `AGENTS.md`. |
+| [ADR-0008](ADR-0008-work-tracking-and-execution-flow.md) | Work Tracking and Execution Flow | Accepted | 2026-04-09 | Meta | Standardized packet-to-issue-to-board-to-PR lifecycle, org-level project schema, and cloud agent execution flow. |
 
 ## Statuses
 

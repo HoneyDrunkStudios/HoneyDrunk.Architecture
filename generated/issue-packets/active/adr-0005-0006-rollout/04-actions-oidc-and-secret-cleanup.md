@@ -113,7 +113,7 @@ Establishing the new workflow without also removing legacy direct secret reads l
 ## Context
 - ADR-0005 §Access
 - Invariants 8, 9, 17, 18
-- User preference: portal over CLI — this workflow is a CLI surface, so keep it minimal; the portal walkthroughs in `architecture-infra-setup.md` are the primary operational docs
+- User preference: portal over CLI — this workflow is a CLI surface, so keep it minimal; the portal walkthroughs in `03-architecture-infra-setup.md` are the primary operational docs
 
 ## Dependencies
 None (as a packet — Part B builds on Part A within the same PR, so they ship together).
@@ -153,3 +153,4 @@ None (as a packet — Part B builds on Part A within the same PR, so they ship t
 **Contracts:**
 - Reusable workflow input interface documented in README
 - Banned-patterns list documented in README
+

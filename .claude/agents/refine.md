@@ -33,8 +33,8 @@ Then read the actual code in workspace repos to verify assumptions the scope mak
 ## What You Review
 
 - Issue packets in `/generated/issue-packets/`
-- Dispatch plans in `/generated/dispatch-plans/`
-- Handoff prompts in `/generated/handoffs/`
+- Dispatch plans co-located in `/generated/issue-packets/active/{initiative}/dispatch-plan.md`
+- Handoff prompts co-located in `/generated/issue-packets/active/{initiative}/handoff-*.md`
 - Or a scope proposal presented directly in conversation
 
 ## Review Process

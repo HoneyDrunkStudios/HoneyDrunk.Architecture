@@ -91,7 +91,8 @@ Layout:
 │   └── {initiative-slug}/
 │       ├── dispatch-plan.md                     (multi-repo only)
 │       ├── handoff-{wave-or-purpose}.md         (multi-repo, zero or more)
-│       ├── {target-repo-short}-{description}.md
+│       ├── 01-{target-repo-short}-{description}.md
+│       ├── 02-{target-repo-short}-{description}.md
 │       └── ...
 └── active/standalone/
     └── {YYYY-MM-DD}-{target-repo-short}-{description}.md
@@ -101,7 +102,7 @@ Layout:
 
 For each work unit:
 
-- **Inside an initiative folder** (multi-repo or initiative-scoped work): name the packet `{target-repo-short}-{kebab-case-description}.md` — **no date prefix**. Execution order is carried by the dispatch plan's narrative, not the filename.
+- **Inside an initiative folder** (multi-repo or initiative-scoped work): name the packet `{NN}-{target-repo-short}-{kebab-case-description}.md` with a two-digit execution-order prefix (`01-`, `02-`, ...). The numeric prefix is the canonical ordering signal.
 - **Standalone** (one-off work not tied to any initiative): write to `active/standalone/` with the date prefix — `{YYYY-MM-DD}-{target-repo-short}-{kebab-case-description}.md`.
 
 Every packet must include frontmatter, summary, context, scope, acceptance criteria, human prerequisites, dependencies, and labels per `copilot/issue-authoring-rules.md`.
