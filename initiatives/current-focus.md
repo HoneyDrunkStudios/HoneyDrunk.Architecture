@@ -32,7 +32,7 @@ Provision Azure infrastructure and get both services running in the development 
 
 ### HoneyDrunk.Lore Bring-Up
 
-Stand up Lore as a flat-file LLM-compiled wiki. 6 issues scoped and on The Hive under initiative `honeydunk-lore-bringup`. Start with Lore#1 (scaffold) and Architecture#9 (catalog registration) — they are independent and can run in parallel.
+Stand up Lore as a flat-file LLM-compiled wiki. 6 issues scoped and on The Hive under initiative `honeydrunk-lore-bringup`. Start with Lore#1 (scaffold) and Architecture#9 (catalog registration) — they are independent and can run in parallel.
 
 **See:** `initiatives/active-initiatives.md` → HoneyDrunk.Lore Bring-Up
 

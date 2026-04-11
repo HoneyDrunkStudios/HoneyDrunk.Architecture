@@ -66,7 +66,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 ### HoneyDrunk.Lore Bring-Up
 **Status:** On Deck  
 **Scope:** Lore, Architecture  
-**Initiative:** `honeydunk-lore-bringup`  
+**Initiative:** `honeydrunk-lore-bringup`  
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)  
 **Description:** Stand up HoneyDrunk.Lore as a flat-file LLM-compiled wiki. Repo scaffolded with `raw/`, `wiki/`, `output/`, `tools/` directories, CLAUDE.md schema doc, sourcing playbook, Obsidian vault configuration, Web Clipper, scheduled ingest agent, and OpenClaw sourcing skill. Inspired by the Karpathy LLM-wiki pattern. Flat-file-first — Knowledge/Agents integration deferred until those nodes exist.  
 **Tracking:**

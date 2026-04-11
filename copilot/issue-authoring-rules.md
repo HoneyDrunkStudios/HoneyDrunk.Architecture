@@ -14,6 +14,39 @@ Every issue must include:
 6. **Labels** — At minimum: type (`feature`, `bug`, `chore`), tier (`tier-1`, `tier-2`, `tier-3`), sector.
 7. **Dependencies** — Other issues or PRs that must complete first.
 
+## Blocking Relationships
+
+After filing issues, wire native GitHub blocking relationships for every dependency listed in the Dependencies section. Do not leave dependencies as body text only.
+
+Use the GraphQL `addBlockedBy` mutation:
+
+```bash
+gh api graphql -f query='
+mutation {
+  addBlockedBy(input: {
+    issueId: "<blocked-issue-node-id>"
+    blockingIssueId: "<blocking-issue-node-id>"
+  }) {
+    issue { number }
+    blockingIssue { number }
+  }
+}'
+```
+
+Get issue node IDs with:
+```bash
+gh api graphql -f query='
+{
+  repository(owner: "HoneyDrunkStudios", name: "<repo>") {
+    issues(first: 20) {
+      nodes { number id }
+    }
+  }
+}'
+```
+
+Every `Dependencies` entry in an issue body must have a corresponding `addBlockedBy` call. This surfaces the blocking chain natively in the GitHub UI and on The Hive board.
+
 ## Naming Convention for Issue Packets
 
 `{YYYY-MM-DD}-{repo-short-name}-{kebab-case-description}.md`
@@ -32,6 +65,7 @@ Before finalizing an issue packet:
 - [ ] Target repo is correct per routing rules
 - [ ] Boundary check confirms the work belongs in the target repo
 - [ ] Dependencies are listed if this is part of a cross-repo change
+- [ ] Blocking relationships wired via `addBlockedBy` for every dependency listed
 - [ ] Labels include type, tier, and sector
 - [ ] Frontmatter includes all board fields: `wave`, `initiative`, `node`, `adrs`, `tier`
 - [ ] Implementation constraints include invariant text (or a direct quoted excerpt) where the exact wording affects behavior; avoid number-only references in constraint sections
