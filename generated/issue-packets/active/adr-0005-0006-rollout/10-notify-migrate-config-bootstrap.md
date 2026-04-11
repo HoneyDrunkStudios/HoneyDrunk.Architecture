@@ -40,6 +40,21 @@ Notify holds the primary third-party provider credentials (Resend API key, Twili
 - `HoneyDrunk.Notify.Providers.Smtp`
 - Azure Functions host project (pending deployment)
 
+## NuGet Dependencies
+
+### `HoneyDrunk.Notify` host/worker — additions to existing references
+| Package | Notes |
+|---|---|
+| `HoneyDrunk.Standards` `0.2.6` (`PrivateAssets: all`) | StyleCop + EditorConfig analyzers — confirm already present; add if missing |
+| `HoneyDrunk.Vault.Providers.AzureKeyVault` (preview from packet 01) | Provides the new env-driven `AddVault()` overload |
+| `HoneyDrunk.Vault.Providers.AppConfiguration` (preview from packet 01) | Provides `AddAppConfiguration()` |
+| `HoneyDrunk.Vault.EventGrid` (preview from packet 02) | Provides `MapVaultInvalidationWebhook` — register in both worker host and Functions host |
+
+### `HoneyDrunk.Notify.Providers.Resend`, `.Twilio`, `.Smtp` — additions to existing references
+| Package | Notes |
+|---|---|
+| `HoneyDrunk.Standards` `0.2.6` (`PrivateAssets: all`) | Confirm already present on each provider project; add if missing |
+
 ## Boundary Check
 - [x] All secret handling belongs in Notify's provider layer
 - [x] No Transport contract change

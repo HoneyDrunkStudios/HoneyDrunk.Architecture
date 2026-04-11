@@ -34,6 +34,16 @@ Same as the Auth migration packet — ADR-0005 bootstrap contract + ADR-0006 rot
 - `HoneyDrunk.Web.Rest` (runtime)
 - `HoneyDrunk.Web.Rest.*` sub-packages if any read `IConfiguration` for secrets
 
+## NuGet Dependencies
+
+### `HoneyDrunk.Web.Rest` host project — additions to existing references
+| Package | Notes |
+|---|---|
+| `HoneyDrunk.Standards` `0.2.6` (`PrivateAssets: all`) | StyleCop + EditorConfig analyzers — confirm already present; add if missing |
+| `HoneyDrunk.Vault.Providers.AzureKeyVault` (preview from packet 01) | Provides the new env-driven `AddVault()` overload |
+| `HoneyDrunk.Vault.Providers.AppConfiguration` (preview from packet 01) | Provides `AddAppConfiguration()` |
+| `HoneyDrunk.Vault.EventGrid` (preview from packet 02) | Provides `MapVaultInvalidationWebhook` for the `/internal/vault/invalidate` endpoint |
+
 ## Boundary Check
 - [x] Bootstrap change is Web.Rest-internal
 - [x] Response envelope and exception mapping logic untouched (invariant-aligned)

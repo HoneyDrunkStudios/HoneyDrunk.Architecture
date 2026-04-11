@@ -87,8 +87,11 @@ Rules that must never be violated across the HoneyDrunk Grid. Canary tests enfor
 23. **Every tracked work item has a GitHub Issue in its target repo.**
     No work tracked exclusively in packet files, chat logs, or external tools. Issues live where the code lives. See ADR-0008.
 
-24. **Issue packets are immutable specifications.**
-    State lives on the org Project board, never in the packet file. If requirements change materially, write a new packet rather than editing the old one. See ADR-0008.
+24. **Issue packets are immutable once filed as a GitHub Issue.**
+    Filing is the point of no return. Before a packet is filed, it may be amended to fill in missing operational context (e.g. NuGet dependencies, key files, constraints) without violating this rule. After filing, state lives on the org Project board, never in the packet file. If requirements change materially post-filing, write a new packet rather than editing the old one. See ADR-0008.
 
 25. **Dispatch plans are initiative narratives, not live state.**
     The org Project board is the source of truth for in-flight work. Dispatch plans are updated at wave boundaries as historical records. See ADR-0008.
+
+26. **Issue packets for .NET code work must include an explicit `## NuGet Dependencies` section.**
+    Any packet that creates or modifies .NET projects must list every `PackageReference` entry required — both additions to existing projects and the full reference list for new projects. `HoneyDrunk.Standards` must be explicitly listed on every new .NET project (StyleCop + EditorConfig analyzers, `PrivateAssets: all`). Cloud agent execution cannot infer or guess package lists; an absent section is grounds to stop and flag rather than proceed. This section must be present before the packet is filed as a GitHub Issue (see invariant 24 — pre-filing amendments are permitted; post-filing corrections require a new packet).

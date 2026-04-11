@@ -36,6 +36,16 @@ ADR-0005 mandates every deployable Node bootstrap through two env vars and consu
 - `HoneyDrunk.Auth` (runtime host)
 - Any `HoneyDrunk.Auth.*` packages that currently read secrets directly
 
+## NuGet Dependencies
+
+### `HoneyDrunk.Auth` host project — additions to existing references
+| Package | Notes |
+|---|---|
+| `HoneyDrunk.Standards` `0.2.6` (`PrivateAssets: all`) | StyleCop + EditorConfig analyzers — confirm already present; add if missing |
+| `HoneyDrunk.Vault.Providers.AzureKeyVault` (preview from packet 01) | Provides the new env-driven `AddVault()` overload |
+| `HoneyDrunk.Vault.Providers.AppConfiguration` (preview from packet 01) | Provides `AddAppConfiguration()` |
+| `HoneyDrunk.Vault.EventGrid` (preview from packet 02) | Provides `MapVaultInvalidationWebhook` for the `/internal/vault/invalidate` endpoint |
+
 ## Boundary Check
 - [x] Work is purely Auth's own bootstrap surface and its secret reads — no cross-Node API changes
 - [x] Does not touch JWT validation logic (invariant 10 — Auth still validates, never issues)

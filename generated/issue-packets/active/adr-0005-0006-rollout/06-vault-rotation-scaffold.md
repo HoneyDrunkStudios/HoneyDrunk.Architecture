@@ -75,6 +75,55 @@ ADR-0006 Tier 2 introduces `HoneyDrunk.Vault.Rotation` as a brand-new sub-Node t
 - New: `HoneyDrunk.Vault.Rotation.Abstractions`
 - New: `HoneyDrunk.Vault.Rotation.Providers`
 
+## NuGet Dependencies
+
+### New: `HoneyDrunk.Vault.Rotation` (Function App host)
+| Package | Notes |
+|---|---|
+| `HoneyDrunk.Standards` `0.2.6` (`PrivateAssets: all`) | StyleCop + EditorConfig analyzers — required on every HoneyDrunk .NET project |
+| `HoneyDrunk.Kernel` (latest stable) | `IGridContext`, `AddHoneyDrunkNode` bootstrap |
+| `HoneyDrunk.Vault` (latest stable) | `ISecretStore` — for reading the Function App's own credentials |
+| `Microsoft.Azure.Functions.Worker` (latest stable) | Isolated worker model host |
+| `Microsoft.Azure.Functions.Worker.Sdk` (latest stable) | Build tooling for isolated Functions |
+| `Microsoft.Azure.Functions.Worker.Extensions.Timer` (latest stable) | Timer trigger for the rotation schedule |
+| `Microsoft.Azure.Functions.Worker.Extensions.Http` (latest stable) | HTTP trigger for the webhook invalidation endpoint |
+| `Azure.Identity` (latest stable) | `DefaultAzureCredential` / Managed Identity |
+| ProjectRef: `HoneyDrunk.Vault.Rotation.Abstractions` | `IRotator`, `RotationContext`, `RotationResult` |
+| ProjectRef: `HoneyDrunk.Vault.Rotation.Providers` | Provider stub discovery |
+
+### New: `HoneyDrunk.Vault.Rotation.Abstractions`
+| Package | Notes |
+|---|---|
+| `HoneyDrunk.Standards` `0.2.6` (`PrivateAssets: all`) | StyleCop + EditorConfig analyzers — required on every HoneyDrunk .NET project |
+
+### New: `HoneyDrunk.Vault.Rotation.Providers`
+| Package | Notes |
+|---|---|
+| `HoneyDrunk.Standards` `0.2.6` (`PrivateAssets: all`) | StyleCop + EditorConfig analyzers — required on every HoneyDrunk .NET project |
+| `Azure.Identity` (latest stable) | Credential chain for future provider API calls |
+| `Azure.Security.KeyVault.Secrets` (latest stable) | Writing rotated secret versions into target Key Vaults |
+| ProjectRef: `HoneyDrunk.Vault.Rotation.Abstractions` | `IRotator` contract |
+
+### New: `HoneyDrunk.Vault.Rotation.Tests`
+| Package | Notes |
+|---|---|
+| `HoneyDrunk.Standards` `0.2.6` (`PrivateAssets: all`) | StyleCop + EditorConfig analyzers — required on every HoneyDrunk .NET project |
+| `xunit` (latest stable) | Test framework |
+| `xunit.runner.visualstudio` (latest stable) | VS test runner integration |
+| `Microsoft.NET.Test.Sdk` (latest stable) | Test SDK |
+| `coverlet.collector` (latest stable) | Code coverage |
+| ProjectRef: `HoneyDrunk.Vault.Rotation.Abstractions` | Unit under test |
+| ProjectRef: `HoneyDrunk.Vault.Rotation.Providers` | Unit under test |
+
+### New: `HoneyDrunk.Vault.Rotation.Canary`
+| Package | Notes |
+|---|---|
+| `HoneyDrunk.Standards` `0.2.6` (`PrivateAssets: all`) | StyleCop + EditorConfig analyzers — required on every HoneyDrunk .NET project |
+| `xunit` (latest stable) | Test framework |
+| `xunit.runner.visualstudio` (latest stable) | VS test runner integration |
+| `Microsoft.NET.Test.Sdk` (latest stable) | Test SDK |
+| ProjectRef: `HoneyDrunk.Vault.Rotation.Abstractions` | Integration boundary under test |
+
 ## Boundary Check
 - [x] Rotation logic does not belong in `HoneyDrunk.Vault` (Vault is a client/cache/provider library — no outbound scheduled write responsibilities)
 - [x] Does not duplicate Azure-native rotation (Tier 1 is KV policy, not this Node)
