@@ -42,7 +42,7 @@
     },
     {
       "id": "honeydrunk-vault-rotation",
-      "consumes": ["honeydrunk-kernel", "honeydrunk-vault", "honeydrunk-auth", "honeydrunk-web-rest", "honeydrunk-data", "honeydrunk-notify", "pulse", "honeydrunk-actions", "honeydrunk-studios"],
+      "consumes": ["honeydrunk-kernel", "honeydrunk-vault"],
       "consumed_by": [],
       "consumed_by_planned": [],
       "blocked_by": [],
@@ -52,21 +52,14 @@
       },
       "consumes_detail": {
         "honeydrunk-kernel": ["IGridContext", "HoneyDrunk.Kernel"],
-        "honeydrunk-vault": ["ISecretStore", "HoneyDrunk.Vault"],
-        "honeydrunk-auth": ["Infrastructure write scope only (target Node Key Vault ownership); not a package dependency"],
-        "honeydrunk-web-rest": ["Infrastructure write scope only (target Node Key Vault ownership); not a package dependency"],
-        "honeydrunk-data": ["Infrastructure write scope only (target Node Key Vault ownership); not a package dependency"],
-        "honeydrunk-notify": ["Infrastructure write scope only (target Node Key Vault ownership); not a package dependency"],
-        "pulse": ["Infrastructure write scope only (target Node Key Vault ownership); not a package dependency"],
-        "honeydrunk-actions": ["Infrastructure write scope only (target Node Key Vault ownership); not a package dependency"],
-        "honeydrunk-studios": ["Infrastructure write scope only (target Node Key Vault ownership); not a package dependency"]
+        "honeydrunk-vault": ["ISecretStore", "HoneyDrunk.Vault"]
       }
     },
     {
       "id": "honeydrunk-auth",
       "consumes": ["honeydrunk-kernel", "honeydrunk-vault"],
       "consumed_by": ["honeydrunk-web-rest"],
-      "consumed_by_planned": ["honeydrunk-capabilities", "honeydrunk-operator", "honeydrunk-vault-rotation"],
+      "consumed_by_planned": ["honeydrunk-capabilities", "honeydrunk-operator"],
       "blocked_by": [],
       "exposes": {
         "contracts": ["IAuthenticatedIdentityAccessor", "IAuthorizationPolicy", "AuthenticationResult", "AuthorizationDecision"],
@@ -81,7 +74,7 @@
       "id": "honeydrunk-web-rest",
       "consumes": ["honeydrunk-kernel", "honeydrunk-transport", "honeydrunk-auth"],
       "consumed_by": [],
-      "consumed_by_planned": ["honeydrunk-vault-rotation"],
+      "consumed_by_planned": [],
       "blocked_by": [],
       "exposes": {
         "contracts": ["ApiResult", "ApiErrorResponse"],
@@ -97,7 +90,7 @@
       "id": "honeydrunk-data",
       "consumes": ["honeydrunk-kernel", "honeydrunk-transport"],
       "consumed_by": [],
-      "consumed_by_planned": ["honeydrunk-memory", "honeydrunk-knowledge", "honeydrunk-flow", "honeydrunk-operator", "honeydrunk-vault-rotation"],
+      "consumed_by_planned": ["honeydrunk-memory", "honeydrunk-knowledge", "honeydrunk-flow", "honeydrunk-operator"],
       "blocked_by": [],
       "exposes": {
         "contracts": ["IRepository", "IUnitOfWork", "IOutboxStore"],
@@ -112,7 +105,7 @@
       "id": "pulse",
       "consumes": ["honeydrunk-kernel"],
       "consumed_by": [],
-      "consumed_by_planned": ["honeydrunk-ai", "honeydrunk-evals", "honeydrunk-operator", "honeydrunk-vault-rotation"],
+      "consumed_by_planned": ["honeydrunk-ai", "honeydrunk-evals", "honeydrunk-operator"],
       "blocked_by": [],
       "exposes": {
         "contracts": ["ITraceSink", "ILogSink", "IMetricsSink"],
@@ -126,7 +119,7 @@
       "id": "honeydrunk-notify",
       "consumes": ["honeydrunk-kernel"],
       "consumed_by": [],
-      "consumed_by_planned": ["honeydrunk-vault-rotation"],
+      "consumed_by_planned": [],
       "blocked_by": [],
       "exposes": {
         "contracts": ["INotificationSender", "INotificationGateway"],
@@ -140,7 +133,7 @@
       "id": "honeydrunk-actions",
       "consumes": [],
       "consumed_by": [],
-      "consumed_by_planned": ["honeydrunk-vault-rotation"],
+      "consumed_by_planned": [],
       "blocked_by": [],
       "exposes": {
         "contracts": [],
@@ -164,7 +157,7 @@
       "id": "honeydrunk-studios",
       "consumes": [],
       "consumed_by": [],
-      "consumed_by_planned": ["honeydrunk-vault-rotation"],
+      "consumed_by_planned": [],
       "blocked_by": [],
       "exposes": {
         "contracts": [],
