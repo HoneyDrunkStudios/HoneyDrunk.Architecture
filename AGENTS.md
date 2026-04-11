@@ -36,7 +36,7 @@ The handoff always includes: task description, target repo, acceptance criteria,
 
 - Implement within the target repo only — never cross repo boundaries in a single task
 - Follow conventional commits: `feat:`, `fix:`, `chore:`, `docs:`, `test:`, `refactor:`
-- **Version bumps:** Check the packet's `version_bump` frontmatter field. If `true`, bump every non-test `.csproj` in the solution to the `target_version` in the packet's `## Versioning` section — all projects move together in one commit. If `false`, do not touch any `<Version>` element; only append your CHANGELOG entry under the existing version. Never bump a version the packet does not explicitly authorise. Never push a git tag — that is the human release chore.
+- **Version bumps:** Check the packet's `version_bump` frontmatter field. If `true`, bump every non-test `.csproj` in the solution to the `target_version` in the packet's `## Versioning` section — all projects move together in one commit. If `false`, do not change the `<Version>` of any existing project; any new projects created by this packet must start at the solution's current version (not a fresh `1.0.0`). Only append your CHANGELOG entry under the existing version. Never bump a version the packet does not explicitly authorise. Never push a git tag — that is the human release chore.
 - All .NET code targets .NET 10.0 with C# primary constructors and nullable reference types
 - XML documentation on all new public APIs
 - Run tests before opening a PR

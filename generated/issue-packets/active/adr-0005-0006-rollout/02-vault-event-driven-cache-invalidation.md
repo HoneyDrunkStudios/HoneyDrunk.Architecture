@@ -51,8 +51,8 @@ Append your changes to the existing `[0.3.0]` CHANGELOG entry. Do **not** push a
 
 | Project | Action |
 |---|---|
-| All solution projects | No change — already at `0.3.0` |
-| `HoneyDrunk.Vault.EventGrid` | New — starts at `0.3.0` (set on creation, no bump needed) |
+| All existing solution projects | No change — already at `0.3.0`, do not modify `<Version>` |
+| `HoneyDrunk.Vault.EventGrid` | New project — set `<Version>0.3.0</Version>` to match the solution's current version |
 
 ## NuGet Dependencies
 
