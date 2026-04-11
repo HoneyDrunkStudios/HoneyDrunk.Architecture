@@ -136,6 +136,48 @@
     "cooldown_days": 14
   },
   {
+    "id": "honeydrunk-vault-rotation",
+    "type": "node",
+    "name": "HoneyDrunk.Vault.Rotation",
+    "public_name": "HoneyDrunk.Vault.Rotation",
+    "short": "Tier-2 third-party secret rotation Function",
+    "description": "Azure Function App that rotates third-party provider secrets (Resend, Twilio, OpenAI, ...) into per-Node Key Vaults on schedule. Sibling to HoneyDrunk.Vault; separate deployable.",
+    "sector": "Core",
+    "signal": "Seed",
+    "cluster": "security",
+    "energy": 0,
+    "priority": 0,
+    "flow": 0,
+    "tags": ["infrastructure", "rotation", "secrets", "functions", "azure"],
+    "links": {
+      "repo": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Vault.Rotation"
+    },
+    "long_description": {
+      "overview": "HoneyDrunk.Vault.Rotation is a deployable Azure Function Node for ADR-0006 Tier-2 secret rotation. It rotates third-party provider credentials on schedule and writes new versions into per-Node Key Vaults.",
+      "why_it_exists": "Centralize third-party key rotation and SLA enforcement without duplicating rotator infrastructure in every Node.",
+      "primary_audience": "Platform maintainers operating HoneyDrunk secret lifecycle automation.",
+      "value_props": [
+        "Automated Tier-2 provider secret rotation",
+        "Per-vault write model aligned with Key Vault RBAC",
+        "Shared telemetry/alerting hooks for SLA monitoring"
+      ],
+      "monetization_signal": "Internal platform capability.",
+      "roadmap_focus": "Scaffold baseline Function runtime, then integrate provider adapters and observability.",
+      "grid_relationship": "Depends on Kernel and Vault, writes rotated values into deployable Node vaults.",
+      "integration_depth": "medium",
+      "demo_path": "Trigger rotation run \u2192 write new secret version \u2192 observe downstream refresh event path.",
+      "signal_quote": "Rotate once, protect everywhere.",
+      "stability_tier": "seed",
+      "impact_vector": "security posture"
+    },
+    "foundational": false,
+    "strategy_base": 10,
+    "tier": "none",
+    "time_pressure": 0,
+    "done": false,
+    "cooldown_days": 14
+  },
+  {
     "id": "honeydrunk-auth",
     "type": "node",
     "name": "HoneyDrunk.Auth",

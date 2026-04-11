@@ -96,6 +96,7 @@ The following invariants must be added to `constitution/invariants.md`:
 - CI pipelines for every deployable Node must be updated to use OIDC federated credentials instead of client-secret service principals.
 - A shared `appcs-hd-shared-{env}` App Configuration resource must be provisioned per environment, with Managed Identity access granted per Node.
 - Portal walkthroughs for vault creation, RBAC, App Configuration, and OIDC wiring belong in `infrastructure/` docs, not in this ADR.
+- Walkthrough index: [Infrastructure Walkthroughs](../infrastructure/README.md).
 
 ## Alternatives Considered
 

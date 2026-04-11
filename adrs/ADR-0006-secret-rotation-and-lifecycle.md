@@ -90,6 +90,7 @@ Scaffolding is explicitly **not** part of this ADR — this pass is documentatio
 
 - The shared Log Analytics workspace (`log-hd-shared-{env}`) becomes a cross-cutting dependency for every deployable Node. It must exist before any Node can ship to that environment.
 - Event Grid subscriptions must be provisioned per vault. This is a portal walkthrough, deferred to `infrastructure/` docs.
+- Walkthrough index: [Infrastructure Walkthroughs](../infrastructure/README.md).
 
 ### New Invariants
 
