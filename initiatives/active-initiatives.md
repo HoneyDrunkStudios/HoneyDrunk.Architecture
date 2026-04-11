@@ -1,6 +1,6 @@
 # Active Initiatives
 
-Tracked initiatives across the HoneyDrunk Grid. Each initiative may span multiple repos.
+Tracked initiatives currently in progress or planned. Completed and cancelled initiatives live in [archived-initiatives.md](archived-initiatives.md).
 
 ## In Progress
 
@@ -63,20 +63,21 @@ Tracked initiatives across the HoneyDrunk Grid. Each initiative may span multipl
 
 ## Planned
 
+### HoneyDrunk.Lore Bring-Up
+**Status:** On Deck  
+**Scope:** Lore, Architecture  
+**Initiative:** `honeydunk-lore-bringup`  
+**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)  
+**Description:** Stand up HoneyDrunk.Lore as a flat-file LLM-compiled wiki. Repo scaffolded with `raw/`, `wiki/`, `output/`, `tools/` directories, CLAUDE.md schema doc, sourcing playbook, Obsidian vault configuration, Web Clipper, scheduled ingest agent, and OpenClaw sourcing skill. Inspired by the Karpathy LLM-wiki pattern. Flat-file-first — Knowledge/Agents integration deferred until those nodes exist.  
+**Tracking:**
+- [ ] Lore#1: Repo scaffold + CLAUDE.md schema doc
+- [ ] Lore#2: Obsidian vault setup + Web Clipper (human-only)
+- [ ] Lore#3: Scheduled ingest agent (CronCreate)
+- [ ] Lore#4: sourcing-playbook.md
+- [ ] Lore#5: OpenClaw setup + Lore sourcing skill (human-only)
+- [ ] Architecture#9: Catalog registration for HoneyDrunk.Lore
+
 ### Agent Kit
 **Status:** On Deck  
 **Scope:** AI  
 **Description:** Agent execution runtime, tool abstraction, and memory. Foundation for AI-powered workflows across the Grid.  
-
-## Completed
-
-### Architecture Command Center
-**Status:** Complete  
-**Scope:** Architecture  
-**Completed:** 2026-03-28  
-**Description:** HoneyDrunk.Architecture stood up as the central command center. Catalogs, routing rules, issue templates, copilot instructions, per-repo context docs, and Azure infrastructure documentation all in place.  
-
-### ~~HoneyDrunk.Tools~~ (Scrapped)
-**Status:** Cancelled  
-**Scope:** Ops  
-**Description:** Originally planned as a separate CLI for scanning, accessibility checks, and CI automation. Decision made to implement this logic directly as composite actions within HoneyDrunk.Actions instead.  

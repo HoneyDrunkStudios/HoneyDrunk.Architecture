@@ -2,7 +2,7 @@
 
 What the team (human + agents) should prioritize right now.
 
-**Last Updated:** 2026-04-09
+**Last Updated:** 2026-04-11
 
 ## Primary Focus
 
@@ -29,6 +29,12 @@ Provision Azure infrastructure and get both services running in the development 
 **See:** `infrastructure/azure-provisioning-guide.md` for step-by-step instructions.
 
 ## On Deck
+
+### HoneyDrunk.Lore Bring-Up
+
+Stand up Lore as a flat-file LLM-compiled wiki. 6 issues scoped and on The Hive under initiative `honeydunk-lore-bringup`. Start with Lore#1 (scaffold) and Architecture#9 (catalog registration) — they are independent and can run in parallel.
+
+**See:** `initiatives/active-initiatives.md` → HoneyDrunk.Lore Bring-Up
 
 ### Agent Kit
 
