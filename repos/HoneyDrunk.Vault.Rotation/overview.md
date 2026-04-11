@@ -1,8 +1,10 @@
 # HoneyDrunk.Vault.Rotation — Overview
 
 **Sector:** Core  
+**Version:** TBD  
+**Framework:** TBD  
+**Repo:** `HoneyDrunkStudios/HoneyDrunk.Vault.Rotation`  
 **Status:** Scaffolding in progress  
-**Repo:** `HoneyDrunkStudios/HoneyDrunk.Vault.Rotation`
 
 ## Purpose
 

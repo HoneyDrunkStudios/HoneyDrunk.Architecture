@@ -20,8 +20,9 @@ Create a per-Node Key Vault named `kv-hd-{service}-{env}` in the matching resour
    - Key vault name: `kv-hd-{service}-{env}`.
 3. Validate naming before moving on:
    - Azure Key Vault name max length is **24 chars**.
-   - `kv-hd-` prefix (6 chars) + `-{env}` suffix (up to 5 chars for `stage` + separator) leaves a **13-char service budget**.
-   - If the service segment exceeds 13 chars, stop and rename the service token (Invariant 19).
+   - For `kv-hd-{service}-{env}`: `kv-hd-` uses 6 chars, the separator before `{env}` uses 1 char, and this convention requires `{env}` to be **4 chars or fewer**.
+   - Budget math: `24 - 6 - 1 - 4 = 13`, so `{service}` must be **<= 13 chars** (Invariant 19).
+   - If the service segment exceeds 13 chars, stop and rename the service token.
 4. On **Access configuration**:
    - Permission model: **Azure role-based access control**.
    - Confirm legacy access policy mode is not selected (Invariant 17).
