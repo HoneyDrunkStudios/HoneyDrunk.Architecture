@@ -93,5 +93,8 @@ Rules that must never be violated across the HoneyDrunk Grid. Canary tests enfor
 25. **Dispatch plans are initiative narratives, not live state.**
     The org Project board is the source of truth for in-flight work. Dispatch plans are updated at wave boundaries as historical records. See ADR-0008.
 
+27. **All projects in a solution share one version and move together.**
+    When a version bump is warranted, every `.csproj` in the solution (excluding test projects) is updated to the same new version in a single commit. Partial bumps — where some projects in a solution are on a different version than others — are forbidden. Releases are triggered by pushing a git tag; agents never push tags. The first packet to land on a solution in an initiative bumps the version; subsequent packets on the same solution append to the CHANGELOG only. See invariant 26 and ADR-0008.
+
 26. **Issue packets for .NET code work must include an explicit `## NuGet Dependencies` section.**
     Any packet that creates or modifies .NET projects must list every `PackageReference` entry required — both additions to existing projects and the full reference list for new projects. `HoneyDrunk.Standards` must be explicitly listed on every new .NET project (StyleCop + EditorConfig analyzers, `PrivateAssets: all`). Cloud agent execution cannot infer or guess package lists; an absent section is grounds to stop and flag rather than proceed. This section must be present before the packet is filed as a GitHub Issue (see invariant 24 — pre-filing amendments are permitted; post-filing corrections require a new packet).

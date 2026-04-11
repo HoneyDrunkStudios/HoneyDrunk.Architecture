@@ -10,6 +10,8 @@ wave: 1
 initiative: adr-0005-0006-rollout
 blocked: repo-does-not-exist-yet
 node: honeydrunk-vault
+version_bump: true
+target_version: 0.1.0
 ---
 
 # Feature: Scaffold new sub-Node `HoneyDrunk.Vault.Rotation` Function App
@@ -74,6 +76,21 @@ ADR-0006 Tier 2 introduces `HoneyDrunk.Vault.Rotation` as a brand-new sub-Node t
 - New: `HoneyDrunk.Vault.Rotation` (Function host)
 - New: `HoneyDrunk.Vault.Rotation.Abstractions`
 - New: `HoneyDrunk.Vault.Rotation.Providers`
+
+## Versioning
+
+**Bump:** Yes — this is the first (and only) packet on `HoneyDrunk.Vault.Rotation`. New repo, first release.
+**Version:** `0.1.0` (all new projects start here)
+
+Set `<Version>0.1.0</Version>` on every non-test project at creation time:
+
+| Project | Action |
+|---|---|
+| `HoneyDrunk.Vault.Rotation` | New — `0.1.0` |
+| `HoneyDrunk.Vault.Rotation.Abstractions` | New — `0.1.0` |
+| `HoneyDrunk.Vault.Rotation.Providers` | New — `0.1.0` |
+
+Create a `CHANGELOG.md` with a `[0.1.0]` entry describing the scaffold. Do **not** push a git tag — the human release chore does that.
 
 ## NuGet Dependencies
 
