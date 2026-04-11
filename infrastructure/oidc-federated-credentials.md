@@ -30,15 +30,15 @@ Create Azure AD federated credentials for GitHub Actions so CI can access Azure 
 - Do **not** create a client secret for this flow.
 - OIDC trust + federated credential replaces client-secret auth.
 
-## Wire identifiers into GitHub environment secrets
+## Wire identifiers into GitHub environment variables
 
-In GitHub repo → **Settings → Environments → {env} → Secrets and variables → Actions**:
+In GitHub repo → **Settings → Environments → {env} → Variables**:
 
 - Add `AZURE_CLIENT_ID` (App registration client ID)
 - Add `AZURE_TENANT_ID` (Tenant ID)
 - Add `AZURE_SUBSCRIPTION_ID` (Subscription ID)
 
-These are identifiers, not sensitive secrets, but store consistently as environment secrets/variables for pipeline portability.
+These are non-sensitive identifiers and must be stored as **environment variables**, not secrets. Reserve **environment secrets** for sensitive material (e.g., `NUGET_API_KEY`, registry credentials).
 
 ## Verification
 
