@@ -77,6 +77,23 @@ This packet delivers both halves of the ADR-0005 bootstrap story as one coherent
 - `HoneyDrunk.Vault.Providers.AzureKeyVault` (new env-var bootstrap entry)
 - New: `HoneyDrunk.Vault.Providers.AppConfiguration` (or co-located under the AzureKeyVault bootstrap package — decide during implementation, keep both extensions consistent)
 
+## NuGet Dependencies
+
+### `HoneyDrunk.Vault.Providers.AzureKeyVault` — additions to existing project
+| Package | Notes |
+|---|---|
+| `Azure.Extensions.AspNetCore.Configuration.Secrets` (latest stable) | Azure Key Vault as an `IConfiguration` source — required for the `AddVault` env-driven bootstrap |
+
+### New: `HoneyDrunk.Vault.Providers.AppConfiguration`
+| Package | Notes |
+|---|---|
+| `HoneyDrunk.Standards` `0.2.6` (`PrivateAssets: all`) | StyleCop + EditorConfig analyzers — required on every HoneyDrunk .NET project |
+| `Azure.Identity` (latest stable) | `DefaultAzureCredential` for App Configuration + KV reference resolution |
+| `Microsoft.Extensions.Configuration.AzureAppConfiguration` (latest stable) | Core App Configuration client |
+| `Microsoft.Azure.AppConfiguration.AspNetCore` (latest stable) | ASP.NET Core integration, refresh middleware |
+| `Microsoft.FeatureManagement.AspNetCore` (latest stable) | `IFeatureManager` / feature flag support |
+| ProjectRef: `HoneyDrunk.Vault` | Dependency on the core secret store abstraction |
+
 ## Boundary Check
 - [x] Feature is within HoneyDrunk.Vault's stated responsibility: secret store and config provider wiring
 - [x] Does not duplicate any other Node's responsibility

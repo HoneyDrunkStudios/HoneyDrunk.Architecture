@@ -41,6 +41,29 @@ Pulse.Collector is a long-running OTLP receiver and must not hold stale sink cre
 - `HoneyDrunk.Pulse.Collector` (OTLP receiver)
 - All sink packages (`HoneyDrunk.Pulse.Sinks.*`)
 
+## NuGet Dependencies
+
+### `HoneyDrunk.Pulse` host — additions to existing references
+| Package | Notes |
+|---|---|
+| `HoneyDrunk.Standards` `0.2.6` (`PrivateAssets: all`) | StyleCop + EditorConfig analyzers — confirm already present; add if missing |
+| `HoneyDrunk.Vault.Providers.AzureKeyVault` (preview from packet 01) | Provides the new env-driven `AddVault()` overload |
+| `HoneyDrunk.Vault.Providers.AppConfiguration` (preview from packet 01) | Provides `AddAppConfiguration()` |
+| `HoneyDrunk.Vault.EventGrid` (preview from packet 02) | Provides `MapVaultInvalidationWebhook` — register in both Pulse host and Pulse.Collector |
+
+### `HoneyDrunk.Pulse.Collector` — additions to existing references
+| Package | Notes |
+|---|---|
+| `HoneyDrunk.Standards` `0.2.6` (`PrivateAssets: all`) | Confirm already present; add if missing |
+| `HoneyDrunk.Vault.Providers.AzureKeyVault` (preview from packet 01) | Collector bootstraps independently — needs its own `AddVault()` |
+| `HoneyDrunk.Vault.Providers.AppConfiguration` (preview from packet 01) | Collector bootstraps independently — needs its own `AddAppConfiguration()` |
+| `HoneyDrunk.Vault.EventGrid` (preview from packet 02) | Register webhook in Collector host too |
+
+### `HoneyDrunk.Pulse.Sinks.*` — additions to existing references
+| Package | Notes |
+|---|---|
+| `HoneyDrunk.Standards` `0.2.6` (`PrivateAssets: all`) | Confirm already present on each sink project; add if missing |
+
 ## Boundary Check
 - [x] Sink credential handling belongs in Pulse
 - [x] Telemetry responsibilities unchanged — only bootstrap surface moves

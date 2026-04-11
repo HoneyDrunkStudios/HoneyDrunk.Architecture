@@ -36,6 +36,26 @@ Data is the highest-risk Node for secret leakage because it holds the SQL connec
 - `HoneyDrunk.Data.SqlServer` (provider) — verify no direct env-var reads
 - Any `HoneyDrunk.Data.*.Migrations` tooling
 
+## NuGet Dependencies
+
+### `HoneyDrunk.Data` host project — additions to existing references
+| Package | Notes |
+|---|---|
+| `HoneyDrunk.Standards` `0.2.6` (`PrivateAssets: all`) | StyleCop + EditorConfig analyzers — confirm already present; add if missing |
+| `HoneyDrunk.Vault.Providers.AzureKeyVault` (preview from packet 01) | Provides the new env-driven `AddVault()` overload |
+| `HoneyDrunk.Vault.Providers.AppConfiguration` (preview from packet 01) | Provides `AddAppConfiguration()` |
+| `HoneyDrunk.Vault.EventGrid` (preview from packet 02) | Provides `MapVaultInvalidationWebhook` for the `/internal/vault/invalidate` endpoint |
+
+### `HoneyDrunk.Data.SqlServer` — additions to existing references
+| Package | Notes |
+|---|---|
+| `HoneyDrunk.Standards` `0.2.6` (`PrivateAssets: all`) | Confirm already present; add if missing |
+
+### Migration tooling projects — additions to existing references
+| Package | Notes |
+|---|---|
+| `HoneyDrunk.Vault.Providers.AzureKeyVault` (preview from packet 01) | Migration runner must also resolve connection strings via `ISecretStore` — not from `appsettings` |
+
 ## Boundary Check
 - [x] Data's secret surface lives here; the migration is internal
 - [x] Does not alter `IRepository`/`IUnitOfWork` contracts

@@ -42,6 +42,20 @@ This must exist before per-Node migration to App Configuration + Managed Identit
 - `HoneyDrunk.Vault` (cache + invalidator contract)
 - New optional: `HoneyDrunk.Vault.EventGrid` (webhook handler package)
 
+## NuGet Dependencies
+
+### `HoneyDrunk.Vault` — additions to existing project
+No new `PackageReference` entries. The `ISecretCacheInvalidator` interface and `SecretCache` changes are within the existing dependency surface.
+
+### New: `HoneyDrunk.Vault.EventGrid`
+| Package | Notes |
+|---|---|
+| `HoneyDrunk.Standards` `0.2.6` (`PrivateAssets: all`) | StyleCop + EditorConfig analyzers — required on every HoneyDrunk .NET project |
+| `Azure.Messaging.EventGrid` (latest stable) | Event Grid schema parsing — `EventGridEvent`, `CloudEvent`, subscription validation handshake |
+| `Microsoft.Extensions.DependencyInjection.Abstractions` (latest stable) | DI registration helpers for `MapVaultInvalidationWebhook` |
+| `Microsoft.AspNetCore.Http.Abstractions` (latest stable) | `IEndpointRouteBuilder` for ASP.NET Core endpoint registration |
+| ProjectRef: `HoneyDrunk.Vault` | Resolves `ISecretCacheInvalidator` and `ISecretStore` (webhook auth) |
+
 ## Boundary Check
 - [x] Cache lives in Vault — invalidator belongs here too
 - [x] Webhook parsing is infrastructure glue, not a transport message — no Transport dependency
