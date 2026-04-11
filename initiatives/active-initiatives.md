@@ -31,8 +31,8 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)  
 **Description:** Scaffold HoneyDrunk.Vault.Rotation as a deployable Function Node, wire OIDC + RBAC, and complete ADR-0006 Tier-2 operational setup.
 **Tracking:**
-- [x] Architecture catalog registration + routing keywords
-- [x] Architecture repo stubs (`repos/HoneyDrunk.Vault.Rotation/*`)
+- [ ] Architecture catalog registration + routing keywords
+- [ ] Architecture repo stubs (`repos/HoneyDrunk.Vault.Rotation/*`)
 - [ ] Repo scaffold implementation packet execution
 - [ ] Managed identity + vault RBAC automation
 - [ ] Rotation function runtime + observability

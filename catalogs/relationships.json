@@ -3,375 +3,144 @@
     {
       "id": "honeydrunk-kernel",
       "consumes": [],
-      "consumed_by": [
-        "honeydrunk-transport",
-        "honeydrunk-vault",
-        "honeydrunk-auth",
-        "honeydrunk-web-rest",
-        "honeydrunk-data",
-        "honeydrunk-notify",
-        "pulse",
-        "honeydrunk-vault-rotation"
-      ],
-      "consumed_by_planned": [
-        "honeydrunk-ai",
-        "honeydrunk-capabilities",
-        "honeydrunk-agents",
-        "honeydrunk-memory",
-        "honeydrunk-knowledge",
-        "honeydrunk-flow",
-        "honeydrunk-operator"
-      ],
+      "consumed_by": ["honeydrunk-transport", "honeydrunk-vault", "honeydrunk-auth", "honeydrunk-web-rest", "honeydrunk-data", "honeydrunk-notify", "pulse"],
+      "consumed_by_planned": ["honeydrunk-ai", "honeydrunk-capabilities", "honeydrunk-agents", "honeydrunk-memory", "honeydrunk-knowledge", "honeydrunk-flow", "honeydrunk-operator", "honeydrunk-vault-rotation"],
       "blocked_by": [],
       "exposes": {
-        "contracts": [
-          "IGridContext",
-          "INodeContext",
-          "IOperationContext",
-          "IStartupHook",
-          "IShutdownHook",
-          "INodeLifecycle",
-          "IHealthContributor",
-          "IReadinessContributor",
-          "ITraceEnricher",
-          "ILogScopeFactory",
-          "IAgentExecutionContext"
-        ],
-        "packages": [
-          "HoneyDrunk.Kernel.Abstractions",
-          "HoneyDrunk.Kernel"
-        ]
+        "contracts": ["IGridContext", "INodeContext", "IOperationContext", "IStartupHook", "IShutdownHook", "INodeLifecycle", "IHealthContributor", "IReadinessContributor", "ITraceEnricher", "ILogScopeFactory", "IAgentExecutionContext"],
+        "packages": ["HoneyDrunk.Kernel.Abstractions", "HoneyDrunk.Kernel"]
       },
       "consumes_detail": {}
     },
     {
       "id": "honeydrunk-transport",
-      "consumes": [
-        "honeydrunk-kernel"
-      ],
-      "consumed_by": [
-        "honeydrunk-web-rest",
-        "honeydrunk-data"
-      ],
-      "consumed_by_planned": [
-        "honeydrunk-flow"
-      ],
+      "consumes": ["honeydrunk-kernel"],
+      "consumed_by": ["honeydrunk-web-rest", "honeydrunk-data"],
+      "consumed_by_planned": ["honeydrunk-flow"],
       "blocked_by": [],
       "exposes": {
-        "contracts": [
-          "ITransportPublisher",
-          "ITransportConsumer",
-          "IMessageHandler",
-          "ITransportEnvelope"
-        ],
-        "packages": [
-          "HoneyDrunk.Transport",
-          "HoneyDrunk.Transport.AzureServiceBus",
-          "HoneyDrunk.Transport.StorageQueue",
-          "HoneyDrunk.Transport.InMemory"
-        ]
+        "contracts": ["ITransportPublisher", "ITransportConsumer", "IMessageHandler", "ITransportEnvelope"],
+        "packages": ["HoneyDrunk.Transport", "HoneyDrunk.Transport.AzureServiceBus", "HoneyDrunk.Transport.StorageQueue", "HoneyDrunk.Transport.InMemory"]
       },
       "consumes_detail": {
-        "honeydrunk-kernel": [
-          "IGridContext",
-          "CorrelationId",
-          "ITelemetryActivityFactory",
-          "HoneyDrunk.Kernel.Abstractions"
-        ]
+        "honeydrunk-kernel": ["IGridContext", "CorrelationId", "ITelemetryActivityFactory", "HoneyDrunk.Kernel.Abstractions"]
       }
     },
     {
       "id": "honeydrunk-vault",
-      "consumes": [
-        "honeydrunk-kernel"
-      ],
-      "consumed_by": [
-        "honeydrunk-auth",
-        "honeydrunk-vault-rotation"
-      ],
-      "consumed_by_planned": [
-        "honeydrunk-ai"
-      ],
+      "consumes": ["honeydrunk-kernel"],
+      "consumed_by": ["honeydrunk-auth"],
+      "consumed_by_planned": ["honeydrunk-ai", "honeydrunk-vault-rotation"],
       "blocked_by": [],
       "exposes": {
-        "contracts": [
-          "ISecretStore",
-          "IConfigProvider",
-          "IVaultClient",
-          "ISecretProvider",
-          "IConfigSource"
-        ],
-        "packages": [
-          "HoneyDrunk.Vault",
-          "HoneyDrunk.Vault.Providers.AzureKeyVault",
-          "HoneyDrunk.Vault.Providers.Aws",
-          "HoneyDrunk.Vault.Providers.File",
-          "HoneyDrunk.Vault.Providers.Configuration",
-          "HoneyDrunk.Vault.Providers.InMemory"
-        ]
+        "contracts": ["ISecretStore", "IConfigProvider", "IVaultClient", "ISecretProvider", "IConfigSource"],
+        "packages": ["HoneyDrunk.Vault", "HoneyDrunk.Vault.Providers.AzureKeyVault", "HoneyDrunk.Vault.Providers.Aws", "HoneyDrunk.Vault.Providers.File", "HoneyDrunk.Vault.Providers.Configuration", "HoneyDrunk.Vault.Providers.InMemory"]
       },
       "consumes_detail": {
-        "honeydrunk-kernel": [
-          "IGridContext",
-          "IOperationContext",
-          "IStartupHook",
-          "IHealthContributor",
-          "IReadinessContributor",
-          "ITraceEnricher",
-          "HoneyDrunk.Kernel"
-        ]
+        "honeydrunk-kernel": ["IGridContext", "IOperationContext", "IStartupHook", "IHealthContributor", "IReadinessContributor", "ITraceEnricher", "HoneyDrunk.Kernel"]
       }
     },
     {
       "id": "honeydrunk-vault-rotation",
-      "consumes": [
-        "honeydrunk-kernel",
-        "honeydrunk-vault",
-        "honeydrunk-auth",
-        "honeydrunk-web-rest",
-        "honeydrunk-data",
-        "honeydrunk-notify",
-        "pulse",
-        "honeydrunk-actions",
-        "honeydrunk-studios"
-      ],
+      "consumes": ["honeydrunk-kernel", "honeydrunk-vault", "honeydrunk-auth", "honeydrunk-web-rest", "honeydrunk-data", "honeydrunk-notify", "pulse", "honeydrunk-actions", "honeydrunk-studios"],
       "consumed_by": [],
       "consumed_by_planned": [],
       "blocked_by": [],
       "exposes": {
-        "contracts": [
-          "IRotator",
-          "RotationResult"
-        ],
-        "packages": [
-          "HoneyDrunk.Vault.Rotation"
-        ]
+        "contracts": ["IRotator", "RotationResult"],
+        "packages": ["HoneyDrunk.Vault.Rotation"]
       },
       "consumes_detail": {
-        "honeydrunk-kernel": [
-          "IGridContext",
-          "HoneyDrunk.Kernel"
-        ],
-        "honeydrunk-vault": [
-          "ISecretStore",
-          "HoneyDrunk.Vault"
-        ],
-        "honeydrunk-auth": [
-          "Target Key Vault write scope"
-        ],
-        "honeydrunk-web-rest": [
-          "Target Key Vault write scope"
-        ],
-        "honeydrunk-data": [
-          "Target Key Vault write scope"
-        ],
-        "honeydrunk-notify": [
-          "Target Key Vault write scope"
-        ],
-        "pulse": [
-          "Target Key Vault write scope"
-        ],
-        "honeydrunk-actions": [
-          "Target Key Vault write scope"
-        ],
-        "honeydrunk-studios": [
-          "Target Key Vault write scope"
-        ]
+        "honeydrunk-kernel": ["IGridContext", "HoneyDrunk.Kernel"],
+        "honeydrunk-vault": ["ISecretStore", "HoneyDrunk.Vault"],
+        "honeydrunk-auth": ["Infrastructure write scope only (target Node Key Vault ownership); not a package dependency"],
+        "honeydrunk-web-rest": ["Infrastructure write scope only (target Node Key Vault ownership); not a package dependency"],
+        "honeydrunk-data": ["Infrastructure write scope only (target Node Key Vault ownership); not a package dependency"],
+        "honeydrunk-notify": ["Infrastructure write scope only (target Node Key Vault ownership); not a package dependency"],
+        "pulse": ["Infrastructure write scope only (target Node Key Vault ownership); not a package dependency"],
+        "honeydrunk-actions": ["Infrastructure write scope only (target Node Key Vault ownership); not a package dependency"],
+        "honeydrunk-studios": ["Infrastructure write scope only (target Node Key Vault ownership); not a package dependency"]
       }
     },
     {
       "id": "honeydrunk-auth",
-      "consumes": [
-        "honeydrunk-kernel",
-        "honeydrunk-vault"
-      ],
-      "consumed_by": [
-        "honeydrunk-web-rest",
-        "honeydrunk-vault-rotation"
-      ],
-      "consumed_by_planned": [
-        "honeydrunk-capabilities",
-        "honeydrunk-operator"
-      ],
+      "consumes": ["honeydrunk-kernel", "honeydrunk-vault"],
+      "consumed_by": ["honeydrunk-web-rest"],
+      "consumed_by_planned": ["honeydrunk-capabilities", "honeydrunk-operator", "honeydrunk-vault-rotation"],
       "blocked_by": [],
       "exposes": {
-        "contracts": [
-          "IAuthenticatedIdentityAccessor",
-          "IAuthorizationPolicy",
-          "AuthenticationResult",
-          "AuthorizationDecision"
-        ],
-        "packages": [
-          "HoneyDrunk.Auth.Abstractions",
-          "HoneyDrunk.Auth",
-          "HoneyDrunk.Auth.AspNetCore"
-        ]
+        "contracts": ["IAuthenticatedIdentityAccessor", "IAuthorizationPolicy", "AuthenticationResult", "AuthorizationDecision"],
+        "packages": ["HoneyDrunk.Auth.Abstractions", "HoneyDrunk.Auth", "HoneyDrunk.Auth.AspNetCore"]
       },
       "consumes_detail": {
-        "honeydrunk-kernel": [
-          "IGridContext",
-          "IOperationContext",
-          "IStartupHook",
-          "IHealthContributor",
-          "HoneyDrunk.Kernel"
-        ],
-        "honeydrunk-vault": [
-          "ISecretStore",
-          "HoneyDrunk.Vault"
-        ]
+        "honeydrunk-kernel": ["IGridContext", "IOperationContext", "IStartupHook", "IHealthContributor", "HoneyDrunk.Kernel"],
+        "honeydrunk-vault": ["ISecretStore", "HoneyDrunk.Vault"]
       }
     },
     {
       "id": "honeydrunk-web-rest",
-      "consumes": [
-        "honeydrunk-kernel",
-        "honeydrunk-transport",
-        "honeydrunk-auth"
-      ],
-      "consumed_by": [
-        "honeydrunk-vault-rotation"
-      ],
-      "consumed_by_planned": [],
+      "consumes": ["honeydrunk-kernel", "honeydrunk-transport", "honeydrunk-auth"],
+      "consumed_by": [],
+      "consumed_by_planned": ["honeydrunk-vault-rotation"],
       "blocked_by": [],
       "exposes": {
-        "contracts": [
-          "ApiResult",
-          "ApiErrorResponse"
-        ],
-        "packages": [
-          "HoneyDrunk.Web.Rest.Abstractions",
-          "HoneyDrunk.Web.Rest.AspNetCore"
-        ]
+        "contracts": ["ApiResult", "ApiErrorResponse"],
+        "packages": ["HoneyDrunk.Web.Rest.Abstractions", "HoneyDrunk.Web.Rest.AspNetCore"]
       },
       "consumes_detail": {
-        "honeydrunk-kernel": [
-          "IOperationContextAccessor",
-          "CorrelationId",
-          "HoneyDrunk.Kernel.Abstractions"
-        ],
-        "honeydrunk-transport": [
-          "ITransportEnvelope",
-          "HoneyDrunk.Transport"
-        ],
-        "honeydrunk-auth": [
-          "IAuthenticatedIdentityAccessor",
-          "HoneyDrunk.Auth.AspNetCore"
-        ]
+        "honeydrunk-kernel": ["IOperationContextAccessor", "CorrelationId", "HoneyDrunk.Kernel.Abstractions"],
+        "honeydrunk-transport": ["ITransportEnvelope", "HoneyDrunk.Transport"],
+        "honeydrunk-auth": ["IAuthenticatedIdentityAccessor", "HoneyDrunk.Auth.AspNetCore"]
       }
     },
     {
       "id": "honeydrunk-data",
-      "consumes": [
-        "honeydrunk-kernel",
-        "honeydrunk-transport"
-      ],
-      "consumed_by": [
-        "honeydrunk-vault-rotation"
-      ],
-      "consumed_by_planned": [
-        "honeydrunk-memory",
-        "honeydrunk-knowledge",
-        "honeydrunk-flow",
-        "honeydrunk-operator"
-      ],
+      "consumes": ["honeydrunk-kernel", "honeydrunk-transport"],
+      "consumed_by": [],
+      "consumed_by_planned": ["honeydrunk-memory", "honeydrunk-knowledge", "honeydrunk-flow", "honeydrunk-operator", "honeydrunk-vault-rotation"],
       "blocked_by": [],
       "exposes": {
-        "contracts": [
-          "IRepository",
-          "IUnitOfWork",
-          "IOutboxStore"
-        ],
-        "packages": [
-          "HoneyDrunk.Data.Abstractions",
-          "HoneyDrunk.Data",
-          "HoneyDrunk.Data.EntityFramework",
-          "HoneyDrunk.Data.SqlServer",
-          "HoneyDrunk.Data.Outbox",
-          "HoneyDrunk.Data.Outbox.Dispatcher",
-          "HoneyDrunk.Data.Migrations",
-          "HoneyDrunk.Data.Testing"
-        ]
+        "contracts": ["IRepository", "IUnitOfWork", "IOutboxStore"],
+        "packages": ["HoneyDrunk.Data.Abstractions", "HoneyDrunk.Data", "HoneyDrunk.Data.EntityFramework", "HoneyDrunk.Data.SqlServer", "HoneyDrunk.Data.Outbox", "HoneyDrunk.Data.Outbox.Dispatcher", "HoneyDrunk.Data.Migrations", "HoneyDrunk.Data.Testing"]
       },
       "consumes_detail": {
-        "honeydrunk-kernel": [
-          "IGridContext",
-          "IOperationContext",
-          "IStartupHook",
-          "HoneyDrunk.Kernel"
-        ],
-        "honeydrunk-transport": [
-          "ITransportPublisher",
-          "HoneyDrunk.Transport"
-        ]
+        "honeydrunk-kernel": ["IGridContext", "IOperationContext", "IStartupHook", "HoneyDrunk.Kernel"],
+        "honeydrunk-transport": ["ITransportPublisher", "HoneyDrunk.Transport"]
       }
     },
     {
       "id": "pulse",
-      "consumes": [
-        "honeydrunk-kernel"
-      ],
-      "consumed_by": [
-        "honeydrunk-vault-rotation"
-      ],
-      "consumed_by_planned": [
-        "honeydrunk-ai",
-        "honeydrunk-evals",
-        "honeydrunk-operator"
-      ],
+      "consumes": ["honeydrunk-kernel"],
+      "consumed_by": [],
+      "consumed_by_planned": ["honeydrunk-ai", "honeydrunk-evals", "honeydrunk-operator", "honeydrunk-vault-rotation"],
       "blocked_by": [],
       "exposes": {
-        "contracts": [
-          "ITraceSink",
-          "ILogSink",
-          "IMetricsSink"
-        ],
-        "packages": [
-          "HoneyDrunk.Pulse.Contracts",
-          "HoneyDrunk.Telemetry.Abstractions",
-          "HoneyDrunk.Telemetry.OpenTelemetry"
-        ]
+        "contracts": ["ITraceSink", "ILogSink", "IMetricsSink"],
+        "packages": ["HoneyDrunk.Pulse.Contracts", "HoneyDrunk.Telemetry.Abstractions", "HoneyDrunk.Telemetry.OpenTelemetry"]
       },
       "consumes_detail": {
-        "honeydrunk-kernel": [
-          "IGridContext",
-          "HoneyDrunk.Kernel.Abstractions"
-        ]
+        "honeydrunk-kernel": ["IGridContext", "HoneyDrunk.Kernel.Abstractions"]
       }
     },
     {
       "id": "honeydrunk-notify",
-      "consumes": [
-        "honeydrunk-kernel"
-      ],
-      "consumed_by": [
-        "honeydrunk-vault-rotation"
-      ],
-      "consumed_by_planned": [],
+      "consumes": ["honeydrunk-kernel"],
+      "consumed_by": [],
+      "consumed_by_planned": ["honeydrunk-vault-rotation"],
       "blocked_by": [],
       "exposes": {
-        "contracts": [
-          "INotificationSender",
-          "INotificationGateway"
-        ],
-        "packages": [
-          "HoneyDrunk.Notify.Abstractions",
-          "HoneyDrunk.Notify"
-        ]
+        "contracts": ["INotificationSender", "INotificationGateway"],
+        "packages": ["HoneyDrunk.Notify.Abstractions", "HoneyDrunk.Notify"]
       },
       "consumes_detail": {
-        "honeydrunk-kernel": [
-          "IGridContext",
-          "HoneyDrunk.Kernel.Abstractions"
-        ]
+        "honeydrunk-kernel": ["IGridContext", "HoneyDrunk.Kernel.Abstractions"]
       }
     },
     {
       "id": "honeydrunk-actions",
       "consumes": [],
-      "consumed_by": [
-        "honeydrunk-vault-rotation"
-      ],
-      "consumed_by_planned": [],
+      "consumed_by": [],
+      "consumed_by_planned": ["honeydrunk-vault-rotation"],
       "blocked_by": [],
       "exposes": {
         "contracts": [],
@@ -394,10 +163,8 @@
     {
       "id": "honeydrunk-studios",
       "consumes": [],
-      "consumed_by": [
-        "honeydrunk-vault-rotation"
-      ],
-      "consumed_by_planned": [],
+      "consumed_by": [],
+      "consumed_by_planned": ["honeydrunk-vault-rotation"],
       "blocked_by": [],
       "exposes": {
         "contracts": [],
@@ -407,388 +174,151 @@
     },
     {
       "id": "honeydrunk-ai",
-      "consumes": [
-        "honeydrunk-kernel",
-        "honeydrunk-vault",
-        "pulse"
-      ],
+      "consumes": ["honeydrunk-kernel", "honeydrunk-vault", "pulse"],
       "consumed_by": [],
-      "consumed_by_planned": [
-        "honeydrunk-agents",
-        "honeydrunk-memory",
-        "honeydrunk-knowledge",
-        "honeydrunk-evals",
-        "honeydrunk-sim"
-      ],
+      "consumed_by_planned": ["honeydrunk-agents", "honeydrunk-memory", "honeydrunk-knowledge", "honeydrunk-evals", "honeydrunk-sim"],
       "blocked_by": [],
       "exposes": {
-        "contracts": [
-          "IChatClient",
-          "IEmbeddingGenerator",
-          "IModelProvider",
-          "IInferenceResult"
-        ],
-        "packages": [
-          "HoneyDrunk.AI.Abstractions",
-          "HoneyDrunk.AI",
-          "HoneyDrunk.AI.Providers.OpenAI",
-          "HoneyDrunk.AI.Providers.Anthropic",
-          "HoneyDrunk.AI.Providers.AzureOpenAI",
-          "HoneyDrunk.AI.Providers.Local"
-        ]
+        "contracts": ["IChatClient", "IEmbeddingGenerator", "IModelProvider", "IInferenceResult"],
+        "packages": ["HoneyDrunk.AI.Abstractions", "HoneyDrunk.AI", "HoneyDrunk.AI.Providers.OpenAI", "HoneyDrunk.AI.Providers.Anthropic", "HoneyDrunk.AI.Providers.AzureOpenAI", "HoneyDrunk.AI.Providers.Local"]
       },
       "consumes_detail": {
-        "honeydrunk-kernel": [
-          "IGridContext",
-          "IOperationContext",
-          "ITraceEnricher",
-          "HoneyDrunk.Kernel.Abstractions"
-        ],
-        "honeydrunk-vault": [
-          "ISecretStore",
-          "HoneyDrunk.Vault"
-        ],
-        "pulse": [
-          "ITraceSink",
-          "HoneyDrunk.Pulse.Contracts"
-        ]
+        "honeydrunk-kernel": ["IGridContext", "IOperationContext", "ITraceEnricher", "HoneyDrunk.Kernel.Abstractions"],
+        "honeydrunk-vault": ["ISecretStore", "HoneyDrunk.Vault"],
+        "pulse": ["ITraceSink", "HoneyDrunk.Pulse.Contracts"]
       }
     },
     {
       "id": "honeydrunk-capabilities",
-      "consumes": [
-        "honeydrunk-kernel",
-        "honeydrunk-auth"
-      ],
+      "consumes": ["honeydrunk-kernel", "honeydrunk-auth"],
       "consumed_by": [],
-      "consumed_by_planned": [
-        "honeydrunk-agents"
-      ],
+      "consumed_by_planned": ["honeydrunk-agents"],
       "blocked_by": [],
       "exposes": {
-        "contracts": [
-          "ICapabilityRegistry",
-          "ICapabilityDescriptor",
-          "ICapabilityInvoker",
-          "ICapabilityGuard"
-        ],
-        "packages": [
-          "HoneyDrunk.Capabilities.Abstractions",
-          "HoneyDrunk.Capabilities"
-        ]
+        "contracts": ["ICapabilityRegistry", "ICapabilityDescriptor", "ICapabilityInvoker", "ICapabilityGuard"],
+        "packages": ["HoneyDrunk.Capabilities.Abstractions", "HoneyDrunk.Capabilities"]
       },
       "consumes_detail": {
-        "honeydrunk-kernel": [
-          "IGridContext",
-          "INodeContext",
-          "HoneyDrunk.Kernel.Abstractions"
-        ],
-        "honeydrunk-auth": [
-          "IAuthorizationPolicy",
-          "HoneyDrunk.Auth.Abstractions"
-        ]
+        "honeydrunk-kernel": ["IGridContext", "INodeContext", "HoneyDrunk.Kernel.Abstractions"],
+        "honeydrunk-auth": ["IAuthorizationPolicy", "HoneyDrunk.Auth.Abstractions"]
       }
     },
     {
       "id": "honeydrunk-agents",
-      "consumes": [
-        "honeydrunk-kernel",
-        "honeydrunk-ai",
-        "honeydrunk-capabilities"
-      ],
+      "consumes": ["honeydrunk-kernel", "honeydrunk-ai", "honeydrunk-capabilities"],
       "consumed_by": [],
-      "consumed_by_planned": [
-        "honeydrunk-flow",
-        "honeydrunk-sim"
-      ],
+      "consumed_by_planned": ["honeydrunk-flow", "honeydrunk-sim"],
       "blocked_by": [],
       "exposes": {
-        "contracts": [
-          "IAgent",
-          "IAgentExecutionContext",
-          "IAgentLifecycle",
-          "IToolInvoker",
-          "IAgentMemory"
-        ],
-        "packages": [
-          "HoneyDrunk.Agents.Abstractions",
-          "HoneyDrunk.Agents"
-        ]
+        "contracts": ["IAgent", "IAgentExecutionContext", "IAgentLifecycle", "IToolInvoker", "IAgentMemory"],
+        "packages": ["HoneyDrunk.Agents.Abstractions", "HoneyDrunk.Agents"]
       },
       "consumes_detail": {
-        "honeydrunk-kernel": [
-          "IGridContext",
-          "IOperationContext",
-          "IStartupHook",
-          "IAgentExecutionContext",
-          "HoneyDrunk.Kernel"
-        ],
-        "honeydrunk-ai": [
-          "IChatClient",
-          "HoneyDrunk.AI.Abstractions"
-        ],
-        "honeydrunk-capabilities": [
-          "ICapabilityRegistry",
-          "ICapabilityInvoker",
-          "HoneyDrunk.Capabilities.Abstractions"
-        ]
+        "honeydrunk-kernel": ["IGridContext", "IOperationContext", "IStartupHook", "IAgentExecutionContext", "HoneyDrunk.Kernel"],
+        "honeydrunk-ai": ["IChatClient", "HoneyDrunk.AI.Abstractions"],
+        "honeydrunk-capabilities": ["ICapabilityRegistry", "ICapabilityInvoker", "HoneyDrunk.Capabilities.Abstractions"]
       }
     },
     {
       "id": "honeydrunk-memory",
-      "consumes": [
-        "honeydrunk-kernel",
-        "honeydrunk-data",
-        "honeydrunk-ai"
-      ],
+      "consumes": ["honeydrunk-kernel", "honeydrunk-data", "honeydrunk-ai"],
       "consumed_by": [],
       "consumed_by_planned": [],
       "blocked_by": [],
       "exposes": {
-        "contracts": [
-          "IMemoryStore",
-          "IMemoryScope",
-          "IMemorySummarizer"
-        ],
-        "packages": [
-          "HoneyDrunk.Memory.Abstractions",
-          "HoneyDrunk.Memory",
-          "HoneyDrunk.Memory.Providers.SqlServer",
-          "HoneyDrunk.Memory.Providers.CosmosDB",
-          "HoneyDrunk.Memory.Providers.InMemory"
-        ]
+        "contracts": ["IMemoryStore", "IMemoryScope", "IMemorySummarizer"],
+        "packages": ["HoneyDrunk.Memory.Abstractions", "HoneyDrunk.Memory", "HoneyDrunk.Memory.Providers.SqlServer", "HoneyDrunk.Memory.Providers.CosmosDB", "HoneyDrunk.Memory.Providers.InMemory"]
       },
       "consumes_detail": {
-        "honeydrunk-kernel": [
-          "IGridContext",
-          "TenantId",
-          "ProjectId",
-          "HoneyDrunk.Kernel.Abstractions"
-        ],
-        "honeydrunk-data": [
-          "IRepository",
-          "IUnitOfWork",
-          "HoneyDrunk.Data.Abstractions"
-        ],
-        "honeydrunk-ai": [
-          "IEmbeddingGenerator",
-          "HoneyDrunk.AI.Abstractions"
-        ]
+        "honeydrunk-kernel": ["IGridContext", "TenantId", "ProjectId", "HoneyDrunk.Kernel.Abstractions"],
+        "honeydrunk-data": ["IRepository", "IUnitOfWork", "HoneyDrunk.Data.Abstractions"],
+        "honeydrunk-ai": ["IEmbeddingGenerator", "HoneyDrunk.AI.Abstractions"]
       }
     },
     {
       "id": "honeydrunk-knowledge",
-      "consumes": [
-        "honeydrunk-kernel",
-        "honeydrunk-data",
-        "honeydrunk-ai"
-      ],
+      "consumes": ["honeydrunk-kernel", "honeydrunk-data", "honeydrunk-ai"],
       "consumed_by": [],
-      "consumed_by_planned": [
-        "honeydrunk-sim",
-        "honeydrunk-lore"
-      ],
+      "consumed_by_planned": ["honeydrunk-sim", "honeydrunk-lore"],
       "blocked_by": [],
       "exposes": {
-        "contracts": [
-          "IKnowledgeStore",
-          "IDocumentIngester",
-          "IRetrievalPipeline",
-          "IKnowledgeSource"
-        ],
-        "packages": [
-          "HoneyDrunk.Knowledge.Abstractions",
-          "HoneyDrunk.Knowledge",
-          "HoneyDrunk.Knowledge.Providers.AzureAISearch",
-          "HoneyDrunk.Knowledge.Providers.PostgresVector",
-          "HoneyDrunk.Knowledge.Providers.InMemory"
-        ]
+        "contracts": ["IKnowledgeStore", "IDocumentIngester", "IRetrievalPipeline", "IKnowledgeSource"],
+        "packages": ["HoneyDrunk.Knowledge.Abstractions", "HoneyDrunk.Knowledge", "HoneyDrunk.Knowledge.Providers.AzureAISearch", "HoneyDrunk.Knowledge.Providers.PostgresVector", "HoneyDrunk.Knowledge.Providers.InMemory"]
       },
       "consumes_detail": {
-        "honeydrunk-kernel": [
-          "IGridContext",
-          "HoneyDrunk.Kernel.Abstractions"
-        ],
-        "honeydrunk-data": [
-          "IRepository",
-          "HoneyDrunk.Data.Abstractions"
-        ],
-        "honeydrunk-ai": [
-          "IEmbeddingGenerator",
-          "HoneyDrunk.AI.Abstractions"
-        ]
+        "honeydrunk-kernel": ["IGridContext", "HoneyDrunk.Kernel.Abstractions"],
+        "honeydrunk-data": ["IRepository", "HoneyDrunk.Data.Abstractions"],
+        "honeydrunk-ai": ["IEmbeddingGenerator", "HoneyDrunk.AI.Abstractions"]
       }
     },
     {
       "id": "honeydrunk-flow",
-      "consumes": [
-        "honeydrunk-kernel",
-        "honeydrunk-agents",
-        "honeydrunk-data",
-        "honeydrunk-transport"
-      ],
+      "consumes": ["honeydrunk-kernel", "honeydrunk-agents", "honeydrunk-data", "honeydrunk-transport"],
       "consumed_by": [],
-      "consumed_by_planned": [
-        "honeydrunk-lore"
-      ],
+      "consumed_by_planned": ["honeydrunk-lore"],
       "blocked_by": [],
       "exposes": {
-        "contracts": [
-          "IWorkflow",
-          "IWorkflowEngine",
-          "IWorkflowStep",
-          "IWorkflowState",
-          "ICompensation"
-        ],
-        "packages": [
-          "HoneyDrunk.Flow.Abstractions",
-          "HoneyDrunk.Flow"
-        ]
+        "contracts": ["IWorkflow", "IWorkflowEngine", "IWorkflowStep", "IWorkflowState", "ICompensation"],
+        "packages": ["HoneyDrunk.Flow.Abstractions", "HoneyDrunk.Flow"]
       },
       "consumes_detail": {
-        "honeydrunk-kernel": [
-          "IGridContext",
-          "IStartupHook",
-          "HoneyDrunk.Kernel"
-        ],
-        "honeydrunk-agents": [
-          "IAgent",
-          "IAgentExecutionContext",
-          "HoneyDrunk.Agents.Abstractions"
-        ],
-        "honeydrunk-data": [
-          "IRepository",
-          "IUnitOfWork",
-          "HoneyDrunk.Data.Abstractions"
-        ],
-        "honeydrunk-transport": [
-          "ITransportPublisher",
-          "HoneyDrunk.Transport"
-        ]
+        "honeydrunk-kernel": ["IGridContext", "IStartupHook", "HoneyDrunk.Kernel"],
+        "honeydrunk-agents": ["IAgent", "IAgentExecutionContext", "HoneyDrunk.Agents.Abstractions"],
+        "honeydrunk-data": ["IRepository", "IUnitOfWork", "HoneyDrunk.Data.Abstractions"],
+        "honeydrunk-transport": ["ITransportPublisher", "HoneyDrunk.Transport"]
       }
     },
     {
       "id": "honeydrunk-operator",
-      "consumes": [
-        "honeydrunk-kernel",
-        "honeydrunk-auth",
-        "honeydrunk-data",
-        "pulse"
-      ],
+      "consumes": ["honeydrunk-kernel", "honeydrunk-auth", "honeydrunk-data", "pulse"],
       "consumed_by": [],
       "consumed_by_planned": [],
       "blocked_by": [],
       "exposes": {
-        "contracts": [
-          "IApprovalGate",
-          "ICircuitBreaker",
-          "ICostGuard",
-          "IAuditLog",
-          "IDecisionPolicy",
-          "ISafetyFilter"
-        ],
-        "packages": [
-          "HoneyDrunk.Operator.Abstractions",
-          "HoneyDrunk.Operator"
-        ]
+        "contracts": ["IApprovalGate", "ICircuitBreaker", "ICostGuard", "IAuditLog", "IDecisionPolicy", "ISafetyFilter"],
+        "packages": ["HoneyDrunk.Operator.Abstractions", "HoneyDrunk.Operator"]
       },
       "consumes_detail": {
-        "honeydrunk-kernel": [
-          "IGridContext",
-          "HoneyDrunk.Kernel.Abstractions"
-        ],
-        "honeydrunk-auth": [
-          "IAuthorizationPolicy",
-          "HoneyDrunk.Auth.Abstractions"
-        ],
-        "honeydrunk-data": [
-          "IRepository",
-          "IUnitOfWork",
-          "HoneyDrunk.Data.Abstractions"
-        ],
-        "pulse": [
-          "ITraceSink",
-          "HoneyDrunk.Pulse.Contracts"
-        ]
+        "honeydrunk-kernel": ["IGridContext", "HoneyDrunk.Kernel.Abstractions"],
+        "honeydrunk-auth": ["IAuthorizationPolicy", "HoneyDrunk.Auth.Abstractions"],
+        "honeydrunk-data": ["IRepository", "IUnitOfWork", "HoneyDrunk.Data.Abstractions"],
+        "pulse": ["ITraceSink", "HoneyDrunk.Pulse.Contracts"]
       }
     },
     {
       "id": "honeydrunk-evals",
-      "consumes": [
-        "honeydrunk-ai",
-        "pulse"
-      ],
+      "consumes": ["honeydrunk-ai", "pulse"],
       "consumed_by": [],
       "consumed_by_planned": [],
       "blocked_by": [],
       "exposes": {
-        "contracts": [
-          "IEvaluator",
-          "IEvalDataset",
-          "IEvalScorer",
-          "IEvalReport"
-        ],
-        "packages": [
-          "HoneyDrunk.Evals.Abstractions",
-          "HoneyDrunk.Evals"
-        ]
+        "contracts": ["IEvaluator", "IEvalDataset", "IEvalScorer", "IEvalReport"],
+        "packages": ["HoneyDrunk.Evals.Abstractions", "HoneyDrunk.Evals"]
       },
       "consumes_detail": {
-        "honeydrunk-ai": [
-          "IChatClient",
-          "HoneyDrunk.AI.Abstractions"
-        ],
-        "pulse": [
-          "ITraceSink",
-          "HoneyDrunk.Pulse.Contracts"
-        ]
+        "honeydrunk-ai": ["IChatClient", "HoneyDrunk.AI.Abstractions"],
+        "pulse": ["ITraceSink", "HoneyDrunk.Pulse.Contracts"]
       }
     },
     {
       "id": "honeydrunk-sim",
-      "consumes": [
-        "honeydrunk-ai",
-        "honeydrunk-knowledge",
-        "honeydrunk-agents"
-      ],
+      "consumes": ["honeydrunk-ai", "honeydrunk-knowledge", "honeydrunk-agents"],
       "consumed_by": [],
       "consumed_by_planned": [],
       "blocked_by": [],
       "exposes": {
-        "contracts": [
-          "ISimulator",
-          "IScenario",
-          "IRiskAssessment",
-          "IPlanValidator"
-        ],
-        "packages": [
-          "HoneyDrunk.Sim.Abstractions",
-          "HoneyDrunk.Sim"
-        ]
+        "contracts": ["ISimulator", "IScenario", "IRiskAssessment", "IPlanValidator"],
+        "packages": ["HoneyDrunk.Sim.Abstractions", "HoneyDrunk.Sim"]
       },
       "consumes_detail": {
-        "honeydrunk-ai": [
-          "IChatClient",
-          "HoneyDrunk.AI.Abstractions"
-        ],
-        "honeydrunk-knowledge": [
-          "IRetrievalPipeline",
-          "HoneyDrunk.Knowledge.Abstractions"
-        ],
-        "honeydrunk-agents": [
-          "IAgent",
-          "HoneyDrunk.Agents.Abstractions"
-        ]
+        "honeydrunk-ai": ["IChatClient", "HoneyDrunk.AI.Abstractions"],
+        "honeydrunk-knowledge": ["IRetrievalPipeline", "HoneyDrunk.Knowledge.Abstractions"],
+        "honeydrunk-agents": ["IAgent", "HoneyDrunk.Agents.Abstractions"]
       }
     },
     {
       "id": "honeydrunk-lore",
-      "consumes": [
-        "honeydrunk-knowledge",
-        "honeydrunk-agents",
-        "honeydrunk-ai",
-        "honeydrunk-flow"
-      ],
+      "consumes": ["honeydrunk-knowledge", "honeydrunk-agents", "honeydrunk-ai", "honeydrunk-flow"],
       "consumed_by": [],
       "consumed_by_planned": [],
       "blocked_by": [],
@@ -797,24 +327,10 @@
         "packages": []
       },
       "consumes_detail": {
-        "honeydrunk-knowledge": [
-          "IKnowledgeStore",
-          "IDocumentIngester",
-          "IRetrievalPipeline",
-          "HoneyDrunk.Knowledge.Abstractions"
-        ],
-        "honeydrunk-agents": [
-          "IAgent",
-          "HoneyDrunk.Agents.Abstractions"
-        ],
-        "honeydrunk-ai": [
-          "IChatClient",
-          "HoneyDrunk.AI.Abstractions"
-        ],
-        "honeydrunk-flow": [
-          "IWorkflowEngine",
-          "HoneyDrunk.Flow.Abstractions"
-        ]
+        "honeydrunk-knowledge": ["IKnowledgeStore", "IDocumentIngester", "IRetrievalPipeline", "HoneyDrunk.Knowledge.Abstractions"],
+        "honeydrunk-agents": ["IAgent", "HoneyDrunk.Agents.Abstractions"],
+        "honeydrunk-ai": ["IChatClient", "HoneyDrunk.AI.Abstractions"],
+        "honeydrunk-flow": ["IWorkflowEngine", "HoneyDrunk.Flow.Abstractions"]
       }
     }
   ]

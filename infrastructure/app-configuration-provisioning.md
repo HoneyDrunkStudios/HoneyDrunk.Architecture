@@ -18,6 +18,8 @@ Provision shared App Configuration `appcs-hd-shared-{env}` for non-secret config
    - Scope: one shared instance per environment (not per Node).
 2. Open the instance and go to **Configuration explorer**.
 3. Create key-values for each Node using labels matching `HONEYDRUNK_NODE_ID`.
+   - Example: key `Notify:Email:FromAddress`, value `noreply@honeydrunk.io`, label `honeydrunk-notify`.
+   - Example: key `Auth:Jwt:Issuer`, value `https://auth.honeydrunk.local`, label `honeydrunk-auth`.
 4. Set bootstrap endpoint in app settings for consuming services:
    - `AZURE_APPCONFIG_ENDPOINT`
 5. Configure **Feature manager** entries for runtime flags.

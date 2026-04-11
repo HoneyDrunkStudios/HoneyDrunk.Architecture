@@ -41,6 +41,21 @@ For each rule:
 - Set evaluation frequency/window.
 - Document suppression/exception process when needed.
 
+Example starter queries (adapt table names to your diagnostic schema):
+
+- Secret approaching expiry:
+  ```kusto
+  AzureDiagnostics
+  | where ResourceType == "VAULTS" and OperationName has "SecretNearExpiry"
+  | summarize count() by Resource, bin(TimeGenerated, 1h)
+  ```
+- Unauthorized access attempt:
+  ```kusto
+  AzureDiagnostics
+  | where ResourceType == "VAULTS" and ResultType in ("Forbidden", "Unauthorized")
+  | summarize attempts = count() by identity_claim_appid_g, Resource, bin(TimeGenerated, 15m)
+  ```
+
 ### 4) Dashboard
 
 1. Create or import Azure Monitor workbook/dashboard for **secret age vs SLA**.
