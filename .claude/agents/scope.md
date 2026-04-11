@@ -184,10 +184,44 @@ Each handoff must be self-contained: upstream changes, new package versions, int
 
 ## Phase 5: Output
 
+### Step 1 — Create issues
 Provide `gh` CLI commands in dependency order:
 ```bash
 gh issue create --repo HoneyDrunkStudios/{repo} --title "{title}" --body-file "{packet}" --label "{labels}"
 ```
+
+### Step 2 — Add to project board
+```bash
+gh project item-add 4 --owner HoneyDrunkStudios --url "https://github.com/HoneyDrunkStudios/{repo}/issues/{number}"
+```
+
+### Step 3 — Set project fields
+Set Status, Wave, Node, Tier, Actor, and Initiative on every item via `updateProjectV2ItemFieldValue`. See field and option IDs in `infrastructure/github-projects-field-ids.md`.
+
+### Step 4 — Wire blocking relationships
+For every dependency listed in an issue's Dependencies section, call `addBlockedBy`. Get node IDs first, then wire each pair:
+
+```bash
+# Get node IDs
+gh api graphql -f query='{
+  repository(owner: "HoneyDrunkStudios", name: "{repo}") {
+    issues(first: 20) { nodes { number id } }
+  }
+}'
+
+# Wire each blocking relationship
+gh api graphql -f query='mutation {
+  addBlockedBy(input: {
+    issueId: "{blocked-node-id}"
+    blockingIssueId: "{blocker-node-id}"
+  }) {
+    issue { number }
+    blockingIssue { number }
+  }
+}'
+```
+
+Every dependency in a `Dependencies:` section must have a corresponding `addBlockedBy` call.
 
 ## Quality Checklist
 
@@ -201,6 +235,7 @@ Before outputting any issue:
 - [ ] Agent Handoff section included with constraints and key files
 - [ ] `## Human Prerequisites` section present (listing portal steps / manual actions, or explicitly "None.")
 - [ ] Actor classification explicit: default `Actor=Agent`, set `Actor=Human` and add `"human-only"` label only when the entire work item cannot be delegated
+- [ ] Blocking relationships wired via `addBlockedBy` for every dependency listed
 - [ ] No invariant violations in the proposed work
 - [ ] All referenced invariants are inlined as full text, not just cited by number
 - [ ] All ADR decisions relevant to implementation are summarized in the packet body — the agent executing in the target repo has no access to the Architecture repo
