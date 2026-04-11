@@ -23,6 +23,20 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [ ] Wave 2: Per-Node bootstrap migrations (Auth, Web.Rest, Data, Notify, Pulse, Studios)
 - [ ] Wave 2: Actions direct secret removal + deploy-gate SLA check
 
+
+### Vault.Rotation Bring-Up
+**Status:** In Progress  
+**Scope:** Vault.Rotation, Architecture, Actions  
+**Initiative:** `vault-rotation-bring-up`  
+**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)  
+**Description:** Scaffold HoneyDrunk.Vault.Rotation as a deployable Function Node, wire OIDC + RBAC, and complete ADR-0006 Tier-2 operational setup.
+**Tracking:**
+- [x] Architecture catalog registration + routing keywords
+- [x] Architecture repo stubs (`repos/HoneyDrunk.Vault.Rotation/*`)
+- [ ] Repo scaffold implementation packet execution
+- [ ] Managed identity + vault RBAC automation
+- [ ] Rotation function runtime + observability
+
 ### Grid v0.4 Stabilization
 **Status:** In Progress  
 **Scope:** Kernel, Transport, Vault, Auth, Web.Rest, Data  

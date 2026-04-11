@@ -16,6 +16,7 @@ Rules for determining which repo(s) are affected by a given request.
 | context, GridContext, NodeContext, OperationContext, lifecycle, startup hook, health contributor, correlation, identity, CorrelationId, NodeId | `HoneyDrunk.Kernel` |
 | transport, message, publish, consume, envelope, middleware, outbox dispatcher, service bus, storage queue, broker | `HoneyDrunk.Transport` |
 | vault, secret, ISecretStore, key vault, aws secrets, config provider | `HoneyDrunk.Vault` |
+| rotation, secret rotation, IRotator, RotationResult, third-party rotation, Vault.Rotation | `HoneyDrunk.Vault.Rotation` |
 | auth, JWT, token, authorization, policy, signing key, claims | `HoneyDrunk.Auth` |
 | REST, API, response envelope, ApiResult, exception mapping, correlation header, pagination | `HoneyDrunk.Web.Rest` |
 | telemetry, trace, metrics, logs, sink, Loki, Tempo, Mimir, PostHog, Sentry, OTLP, Pulse, collector | `HoneyDrunk.Pulse` |
