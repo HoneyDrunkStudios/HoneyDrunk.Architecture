@@ -14,6 +14,11 @@ Maps agent capabilities to the types of work they can perform in the Grid.
 **Input:** Description of feature, bug, change, or initiative
 **Output:** Issue packets in `/generated/issue-packets/`, dispatch plans and handoff prompts in `/generated/` for multi-repo work
 
+### Issue Filing
+**Capability:** File packet files as GitHub issues and wire them fully into The Hive. Handles the entire mechanical pipeline so nothing is missed.
+**Input:** Initiative slug or path to packet files
+**Output:** GitHub issues created, added to The Hive with all fields set (Status, Wave, Node, Tier, Actor, Initiative), blocking relationships wired
+
 ### ADR Draft Generation
 **Capability:** Facilitate an architecture discussion and produce an ADR draft.
 **Input:** Design question or proposal
@@ -48,6 +53,9 @@ Maps agent capabilities to the types of work they can perform in the Grid.
 | "Break this into issues" | Issue Packet Generation |
 | "Scope this work" | Issue Packet Generation |
 | "Hand off X to Y repo" | Issue Packet Generation |
+| "File these issues" | Issue Filing |
+| "Create the issues for..." | Issue Filing |
+| "Push these packets to GitHub" | Issue Filing |
 
 ## AI Surfaces
 
@@ -68,6 +76,7 @@ Agents that run within the Claude Code / Architecture repo context:
 | **adr-composer** | Facilitate architecture decisions, produce ADRs | — |
 | **site-sync** | Sync website with architecture changes | — |
 | **scope** | Scope work into issues — auto-detects single or multi-repo, generates issue packets, dispatch plans, and handoff prompts | adr-composer, site-sync |
+| **file-issues** | File packet files as GitHub issues — creates issues, adds to The Hive, sets all project fields, wires blocking relationships | — |
 | **refine** | Challenge scoped work before execution — finds gaps, missed dependencies, boundary violations, invariant risks | — |
 | **review** | Review PRs against boundary rules, invariants, contract safety, and code conventions | — |
 | **netrunner** | Research and investigation across the Grid | — |
