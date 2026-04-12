@@ -37,13 +37,20 @@ Read these files to build your context:
 
 **1b. Query GitHub issue states:**
 
-For each issue URL in `filed-packets.json`, fetch its current state:
+Gather all issue states in a single bash call — do not query issues one at a time:
 
 ```bash
-gh issue view <url> --json state,title,number,closedAt
+jq -r 'to_entries[] | "\(.key)\t\(.value)"' generated/issue-packets/filed-packets.json \
+  | while IFS=$'\t' read -r packet url; do
+      result=$(gh issue view "${url}" --json state,title,number,closedAt 2>/dev/null \
+               || echo '{"state":"unknown","title":"","number":0,"closedAt":null}')
+      echo "{\"packet\":\"${packet}\",\"url\":\"${url}\",$(echo "${result}" | jq -c '.')}"
+    done \
+  | jq -s '.' > /tmp/issue-states.json
+cat /tmp/issue-states.json
 ```
 
-Group results by initiative slug. Track open/closed counts and closed dates per initiative.
+Read `/tmp/issue-states.json` for all subsequent reasoning. Group by initiative slug (from packet filenames). Track open/closed counts and closed dates per initiative.
 
 **1c. Detect release drift:**
 
