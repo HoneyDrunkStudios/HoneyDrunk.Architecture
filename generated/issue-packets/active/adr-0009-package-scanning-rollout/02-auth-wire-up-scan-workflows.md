@@ -89,12 +89,29 @@ jobs:
       github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
+### `.github/workflows/hive-field-mirror.yml`
+
+```yaml
+name: Hive Field Mirror
+
+on:
+  issues:
+    types: [opened, labeled, unlabeled, edited]
+
+jobs:
+  mirror:
+    uses: HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/hive-field-mirror.yml@main
+    secrets:
+      hive-field-mirror-token: ${{ secrets.HIVE_FIELD_MIRROR_TOKEN }}
+```
+
 ## Acceptance Criteria
 
 - [ ] `.github/workflows/pr.yml` exists and calls `pr-core.yml@main`
 - [ ] `.github/workflows/nightly-security.yml` exists and calls `nightly-security.yml@main`
 - [ ] `.github/workflows/nightly-deps.yml` exists and calls `nightly-deps.yml@main`
-- [ ] All three workflows are valid YAML (no syntax errors)
+- [ ] `.github/workflows/hive-field-mirror.yml` exists and calls `hive-field-mirror.yml@main`
+- [ ] All four workflows are valid YAML (no syntax errors)
 - [ ] No other files are modified
 
 ## Dependencies
@@ -103,7 +120,7 @@ None.
 
 ## Agent Handoff
 
-**Objective:** Create three GitHub Actions workflow files. No code changes required.
+**Objective:** Create four GitHub Actions workflow files. No code changes required.
 **Target:** HoneyDrunk.Auth, branch from `main`
 **ADRs:** ADR-0009
 
@@ -116,3 +133,4 @@ None.
 - New: `.github/workflows/pr.yml`
 - New: `.github/workflows/nightly-security.yml`
 - New: `.github/workflows/nightly-deps.yml`
+- New: `.github/workflows/hive-field-mirror.yml`
