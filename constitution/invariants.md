@@ -108,3 +108,14 @@ Rules that must never be violated across the HoneyDrunk Grid. Canary tests enfor
     All model selection goes through `IModelRouter` in HoneyDrunk.AI. Routing policies are stored in App Configuration (ADR-0005) and are operator-configurable without a redeploy. See ADR-0010 (Proposed — this invariant takes effect when ADR-0010 is accepted).
 
 _Invariants 29–30 are reserved for the Observation Layer (ADR-0010). They will be added here when ADR-0010 is accepted._
+
+## Code Review Invariants
+
+31. **Every PR traverses the tier-1 gate before merge.**
+    Build, unit tests, analyzers, vulnerability scan, and secret scan are required branch-protection checks on every .NET repo in the Grid, delivered via `pr-core.yml` in `HoneyDrunk.Actions`. Bypassing tier 1 via force-push to `main` or admin override is forbidden except for `hotfix-infra` scenarios where the gate itself is broken. See ADR-0011 D2 and D5 (Proposed — this invariant takes effect when ADR-0011 is accepted).
+
+32. **Agent-authored PRs must link to their packet in the PR body.**
+    The review agent resolves the packet via this link and uses it as the primary scope anchor. Absent the link, the PR is treated as out-of-band, must carry the `out-of-band` label, and receives a degraded review in which the agent runs against the Grid context only (invariants, boundaries, relationships, diff) without a packet-scope check. See ADR-0011 D3 and D9 (Proposed — this invariant takes effect when ADR-0011 is accepted).
+
+33. **Review-agent and scope-agent context-loading contracts are coupled.**
+    The set of files loaded by the review agent (per `.claude/agents/review.md`) must be a superset of the set loaded by the scope agent (per `.claude/agents/scope.md`). Divergence is an anti-pattern; updates to either agent's context-loading section must be mirrored in the other. The coupling exists so there is no class of defect the scope agent could introduce at packet-authoring time that the review agent cannot catch at PR time for lack of information. See ADR-0011 D4 (Proposed — this invariant takes effect when ADR-0011 is accepted).

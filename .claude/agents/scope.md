@@ -29,6 +29,8 @@ Load this context first:
 5. `constitution/invariants.md` — rules that must not be violated
 6. `copilot/issue-authoring-rules.md` — quality standards for issues
 
+**Coupling with the review agent (ADR-0011 D4, invariant 33).** The review agent's context-loading contract in `.claude/agents/review.md` must remain a superset of this list. If you add a file here, mirror it in `review.md` before committing. The symmetry exists so there is no class of defect you (scope) could introduce at packet-authoring time that the review agent cannot catch at PR time for lack of information. Divergence is an anti-pattern under invariant 33.
+
 ## Phase 1: Detect Scope
 
 Determine scope by checking:

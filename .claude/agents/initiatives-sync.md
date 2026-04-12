@@ -189,6 +189,8 @@ Then post your summary (see Output Summary below) as a PR comment.
 - **Always preserve hand-written content.** Your job is to augment and update, not rewrite. Keep the voice and structure the human established.
 - **Cite your sources.** When you make a change, briefly note what data drove the decision (e.g., "Vault#9 closed 2026-04-10" or "grid-health.json shows v0.4.0").
 - **If there are no changes, exit cleanly.** Don't open an empty PR.
+- **Checkbox text must reflect what the issue actually delivered, not the packet name.** A packet named "Vault.Rotation repo scaffold" may have been scoped as the repo-creation prerequisite only — if the issue title says "Create Vault.Rotation repo," the checkbox should read "repo creation," not "repo scaffold." Read the issue title from `/tmp/issue-states.json` and use that as the source of truth for what was completed.
+- **Closing an issue does not mean its downstream work is done.** If a closed issue unblocks further work (e.g., repo created → scaffold execution can now proceed), note the unblocking in a sync annotation but do not check off the downstream items. Only check off what the closed issue itself delivered.
 
 ## Output Summary
 
