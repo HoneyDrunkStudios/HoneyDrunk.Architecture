@@ -89,6 +89,7 @@ Severity: **Request Changes** if downstream impact not documented.
 - Nullable reference types respected? Any `!` suppressions added without justification?
 - Are there tests for new behavior?
 - Is CHANGELOG.md updated?
+- If new packages/projects are introduced, do they include CHANGELOG.md and README.md?
 
 Severity: **Request Changes** for missing tests. **Suggest** for style issues.
 
@@ -136,6 +137,7 @@ Severity: **Block** if context is silently dropped.
 - [x] Context propagation
 - [x] Tests present
 - [ ] CHANGELOG updated
+- [ ] README updated (if public API or installation changed)
 ```
 
 ## Severity Guide

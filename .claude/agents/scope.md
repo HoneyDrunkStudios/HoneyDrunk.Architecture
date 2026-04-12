@@ -234,6 +234,9 @@ Before outputting any issue:
 - [ ] Labels include type, tier, and sector
 - [ ] Agent Handoff section included with constraints and key files
 - [ ] `## Human Prerequisites` section present (listing portal steps / manual actions, or explicitly "None.")
+- [ ] Acceptance criteria include CHANGELOG.md update for behavioral changes (invariant 12)
+- [ ] Acceptance criteria include README.md update if public API surface or installation changes (invariant 12)
+- [ ] New packages/projects include CHANGELOG.md and README.md creation in acceptance criteria (invariant 12)
 - [ ] Actor classification explicit: default `Actor=Agent`, set `Actor=Human` and add `"human-only"` label only when the entire work item cannot be delegated
 - [ ] Blocking relationships wired via `addBlockedBy` for every dependency listed
 - [ ] No invariant violations in the proposed work

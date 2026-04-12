@@ -39,7 +39,9 @@ node: "{node-id}"
 - [ ] Implementation complete
 - [ ] Unit tests added
 - [ ] XML docs on public APIs
-- [ ] CHANGELOG.md updated
+- [ ] CHANGELOG.md updated with entry under new version heading
+- [ ] README.md updated if public API surface or installation changed
+- [ ] New packages include CHANGELOG.md and README.md from first commit
 - [ ] Canary tests pass (if applicable)
 
 ## Dependencies

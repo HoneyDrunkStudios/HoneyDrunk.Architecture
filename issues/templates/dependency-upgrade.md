@@ -46,6 +46,7 @@ node: "{node-id}"
 ## Acceptance Criteria
 - [ ] All consuming repos upgraded
 - [ ] All builds green
+- [ ] CHANGELOG.md updated in each upgraded repo with dependency change entry
 - [ ] `catalogs/compatibility.json` updated with new version ranges
 - [ ] `initiatives/releases.md` updated
 

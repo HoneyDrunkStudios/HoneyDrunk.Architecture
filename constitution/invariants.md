@@ -45,8 +45,8 @@ Rules that must never be violated across the HoneyDrunk Grid. Canary tests enfor
 11. **One repo per Node (or tightly coupled Node family).**
     Each repo has its own solution, CI pipeline, and versioning.
 
-12. **Semantic versioning with CHANGELOG.**
-    Breaking changes bump major. New features bump minor. Fixes bump patch.
+12. **Semantic versioning with CHANGELOG and README.**
+    Breaking changes bump major. New features bump minor. Fixes bump patch. Every package directory must contain a `CHANGELOG.md` following [Keep a Changelog](https://keepachangelog.com/) format and a `README.md` describing the package's purpose, installation, and public API surface. New projects must have both files from the first commit. Every code change that affects behavior must have a corresponding CHANGELOG entry under the correct version heading. Release notes are auto-generated from CHANGELOG entries at tag time (see `HoneyDrunk.Actions` `release/generate-notes` composite action).
 
 13. **All public APIs have XML documentation.**
     Enforced by HoneyDrunk.Standards analyzers.

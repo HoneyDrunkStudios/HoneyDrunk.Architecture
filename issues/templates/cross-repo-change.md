@@ -48,7 +48,8 @@ node: "{node-id}"
 - [ ] All phase PRs merged in order
 - [ ] Canary tests passing in all affected repos
 - [ ] Packages published to feed
-- [ ] CHANGELOG.md updated in all repos
+- [ ] CHANGELOG.md updated in all affected packages
+- [ ] README.md updated in repos where public API surface or installation changed
 
 ## Dependencies
 <!-- Other issues or version requirements -->
