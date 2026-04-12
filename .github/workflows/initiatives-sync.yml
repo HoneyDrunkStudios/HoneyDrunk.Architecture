@@ -1,0 +1,17 @@
+name: Initiatives Sync
+
+on:
+  schedule:
+    # Monday and Thursday at 06:00 UTC
+    - cron: '0 6 * * 1,4'
+  workflow_dispatch: {}
+
+jobs:
+  sync:
+    uses: HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/agent-run.yml@main
+    with:
+      agent: initiatives-sync
+      provider: claude
+    secrets:
+      anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+      github-token: ${{ secrets.INITIATIVES_SYNC_TOKEN }}

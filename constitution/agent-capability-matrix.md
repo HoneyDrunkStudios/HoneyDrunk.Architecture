@@ -14,6 +14,7 @@ Quick-reference card for all Claude Code agents in `.claude/agents/`. Use this t
 | **review** | PR opened or execution completed | PR diff, issue packet, ADR constraints | Review comments, pass/fail verdict | Merge, approve in GitHub UI |
 | **refine** | Draft exists, needs iteration | Draft doc (ADR, PDR, packet, design), feedback | Revised draft | Author from scratch, make binding decisions |
 | **site-sync** | Repo release or content update | Release notes, ADRs, repo state | Site-sync packet in `generated/site-sync-packets/` | Publish to website directly |
+| **initiatives-sync** | Weekly schedule or manual dispatch | Sync report from `initiatives-sync.py`, catalogs, initiative files | Updated `initiatives/` files via Claude Code Action PR | Create issues, modify `filed-packets.json`, make architectural decisions |
 
 ---
 
@@ -43,6 +44,9 @@ Has a PR been opened and needs a review pass?
 
 Did a Node release something that the website should announce?
   → yes → site-sync
+
+Do initiative tracking files need reconciliation with GitHub issue states?
+  → yes → initiatives-sync (automated weekly, or invoke manually)
 ```
 
 ---
@@ -54,7 +58,7 @@ These apply to all agents:
 - **Claude Code agents plan and generate artifacts; they do not execute code changes.** Execution is Codex or Copilot.
 - **Agents do not modify files inside other repos directly.** Cross-repo work goes through issue packets → GitHub Issues → Codex.
 - **Agents do not make binding architectural decisions alone.** ADR drafts go to the developer for review before Accepted status.
-- **Agents do not push to remote.** No `git push`, no `gh pr create` except `file-issues` (which is authorized for `gh issue create`).
+- **Agents do not push to remote.** No `git push`, no `gh pr create` except `file-issues` (which is authorized for `gh issue create`) and `initiatives-sync` (which runs via Claude Code Action in CI and pushes to an existing PR branch).
 
 ---
 
@@ -78,6 +82,7 @@ Before any work, load in this order:
 | pdr-composer | Existing PDRs in `PDRs/` for format and precedent |
 | netrunner | `catalogs/relationships.json`, `catalogs/nodes.json`, `routing/repo-discovery-rules.md` |
 | file-issues | `generated/issue-packets/active/` dispatch plan, `copilot/issue-authoring-rules.md` |
+| initiatives-sync | `generated/initiatives-sync-report.json`, `initiatives/`, `catalogs/grid-health.json`, `catalogs/nodes.json`, `generated/issue-packets/filed-packets.json` |
 | review | ADRs referenced in packet frontmatter, `constitution/invariants.md` |
 | refine | The draft being refined; its governing ADR/PDR if applicable |
 | site-sync | `routing/site-sync-rules.md`, `generated/site-sync-packets/` |
