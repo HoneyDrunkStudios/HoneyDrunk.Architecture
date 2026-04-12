@@ -16,6 +16,8 @@ jobs:
     with:
       agent: initiatives-sync
       provider: claude
+      model: claude-haiku-4-5-20251001
+      max-turns: 40
     secrets:
       anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
       github-token: ${{ secrets.INITIATIVES_SYNC_TOKEN }}
