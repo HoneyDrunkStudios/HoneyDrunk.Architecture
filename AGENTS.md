@@ -44,7 +44,8 @@ See `routing/sdlc.md` for the full lifecycle and handoff protocols.
 
 - Initiative packets → `generated/issue-packets/active/{initiative-slug}/` with a `dispatch-plan.md`
 - Standalone (one-off) packets → `generated/issue-packets/active/standalone/{YYYY-MM-DD}-{repo-short}-{description}.md`
-- Frontmatter must include: `target_repo`, `type`, `tier`, `version_bump`, `adrs`, `initiative`, `labels`
+- Frontmatter must include: `target_repo`, `type`, `tier`, `adrs`, `initiative`, `labels`
+- Include `version_bump` and `target_version` only for versioned/code-change packets where a release/version update is part of the work (typically .NET/NuGet-oriented changes), not for every standalone or CI-only packet
 - Packets are immutable once filed as GitHub Issues — never edit a filed packet
 - See `generated/issue-packets/README.md` for full lifecycle and folder rules
 

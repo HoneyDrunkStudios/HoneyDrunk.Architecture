@@ -132,6 +132,9 @@
         { "name": "IChatClient", "kind": "interface", "description": "Normalized chat completion contract. Aligned with Microsoft.Extensions.AI (Q3 2026 adoption planned)." },
         { "name": "IEmbeddingGenerator", "kind": "interface", "description": "Generate text embeddings. Aligned with Microsoft.Extensions.AI." },
         { "name": "IModelProvider", "kind": "interface", "description": "Provider slot — implement per model backend (OpenAI, Anthropic, Azure OpenAI, local/ONNX)." },
+        { "name": "IModelRouter", "kind": "interface", "description": "Routes inference requests to the most appropriate model/provider based on policy, capability, cost, and runtime constraints." },
+        { "name": "IRoutingPolicy", "kind": "interface", "description": "Declares the policy inputs and decision rules used by model routing (quality tier, latency, cost, residency, fallback)." },
+        { "name": "IModelCapabilityDeclaration", "kind": "interface", "description": "Describes a model's declared capabilities and constraints so routing can match requests to supported providers." },
         { "name": "IInferenceResult", "kind": "interface", "description": "Normalized inference response — content, tokens in/out, model ID, latency, cost estimate." }
       ]
     },
@@ -142,7 +145,7 @@
       "status": "seed",
       "interfaces": [
         { "name": "IAgent", "kind": "interface", "description": "Core agent interface — identity, capability declarations, execution entry point." },
-        { "name": "IAgentExecutionContext", "kind": "interface", "description": "Extends Kernel's IAgentExecutionContext with AI-specific bindings (memory refs, tool bindings)." },
+        { "name": "IAgentExecutionContextExtensions", "kind": "interface", "description": "Agents-specific extension of Kernel's IAgentExecutionContext — adds AI-specific bindings (memory refs, tool bindings)." },
         { "name": "IAgentLifecycle", "kind": "interface", "description": "Lifecycle hooks for agents: register → initialize → execute → complete → decommission." },
         { "name": "IToolInvoker", "kind": "interface", "description": "How agents call tools — resolves through Capabilities' tool registry." },
         { "name": "IAgentMemory", "kind": "interface", "description": "Memory read/write from the agent's perspective — backed by Memory Node storage." }

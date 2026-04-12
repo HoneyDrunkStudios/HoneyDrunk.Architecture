@@ -57,6 +57,8 @@ This is a provider-slot package family (same pattern as Vault providers, Transpo
 
 **Sector assignment:** Both Observe Nodes belong to **Meta** sector — they are about the Grid's self-awareness and visibility, not about Core runtime, Ops pipelines, or AI cognition.
 
+> **Note:** PDR-0001 originally placed Observe and Observe.Connectors in the **Ops** sector. This ADR intentionally reassigns them to **Meta** because observation is a self-awareness concern (how the Grid perceives external systems), not an operational pipeline concern. PDR-0001's sector table should be updated to reflect this decision once accepted.
+
 ---
 
 ### Layer 2: AI Routing Layer

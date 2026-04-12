@@ -165,7 +165,7 @@ Rotation event:
 [HoneyDrunk.Agents] — agent lifecycle: register → initialize → execute
     │ IAgentExecutionContext, IAgentLifecycle
     │
-    ├─ [HoneyDrunk.AI] — model inference (IChat Client, IModelProvider)
+    ├─ [HoneyDrunk.AI] — model inference (IChatClient, IModelProvider)
     │       │ Vault → model API keys
     │       └─ Pulse → inference telemetry
     │
