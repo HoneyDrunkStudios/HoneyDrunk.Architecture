@@ -1,10 +1,25 @@
 # ADR-0003: HoneyHub as Organizational Control Plane
 
-**Status:** Proposed
+**Status:** Accepted (Phase 1)
 **Date:** 2026-03-30
+**Accepted:** 2026-04-12
 **Deciders:** HoneyDrunk Studios
 **Sector:** Meta
 **Supersedes:** Partially extends ADR-0002 (Architecture Repo as Agent Command Center)
+
+## Phase Acceptance (2026-04-12)
+
+This ADR was originally Proposed with the full four-layer HoneyHub design as a single commitment. It is now **Accepted in phases** to unblock the first concrete work without waiting for the complete system to be designed.
+
+**Phase 1 (Accepted):** Domain model + knowledge graph API — entities, typed relationships, and a queryable interface for Goals, Features, Tasks, Nodes, ADRs, and Signals. No orchestration engine yet. No projection layer yet. Phase 1 proves the data model and unblocks agent context enrichment.
+
+**Phase 2 (Future):** Orchestration engine — goal decomposition, task sequencing, signal interpretation. Depends on Phase 1 knowledge graph being live and validated.
+
+**Phase 3 (Future):** Projection layer — roadmap views, PRD generation, status reports derived from the graph. Depends on Phase 2 orchestration being stable.
+
+**Phase 4 (Future):** Developer-facing UI — HoneyHub dashboard visualizing the Goal → Signal lifecycle. Explicitly deferred until Phase 2 is validated in production.
+
+The "Positive" consequences in this ADR describe the full system. Only Phase 1 consequences apply immediately. Phases 2–4 are valid future implications, not current commitments.
 
 ## Context
 

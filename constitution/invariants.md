@@ -98,3 +98,14 @@ Rules that must never be violated across the HoneyDrunk Grid. Canary tests enfor
 
 27. **All projects in a solution share one version and move together.**
     When a version bump is warranted, every `.csproj` in the solution (excluding test projects) is updated to the same new version in a single commit. Partial bumps — where some projects in a solution are on a different version than others — are forbidden. Releases are triggered by pushing a git tag; agents never push tags. The first packet to land on a solution in an initiative bumps the version; subsequent packets on the same solution append to the CHANGELOG only. See invariant 26 and ADR-0008.
+
+## AI & Observation Invariants
+
+28. **Application code must never hardcode a model name or provider.**
+    All model selection goes through `IModelRouter` in HoneyDrunk.AI. Routing policies are stored in App Configuration (ADR-0005) and are operator-configurable without a redeploy. See ADR-0010.
+
+29. **Observation connectors must delegate credential resolution to Vault.**
+    No connector in HoneyDrunk.Observe.Connectors stores credentials directly. API tokens, webhook secrets, and connection strings for external systems are resolved via `ISecretStore` at connection establishment. See ADR-0010.
+
+30. **HoneyDrunk.Observe events must be normalized before leaving the Observe boundary.**
+    Raw external formats (GitHub webhook JSON, Azure alert schema, HTTP health probe responses) are never exposed outside HoneyDrunk.Observe. Only normalized `IObservationEvent` types cross the boundary into HoneyHub or other consumers. See ADR-0010.

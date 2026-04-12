@@ -1,0 +1,260 @@
+{
+  "_meta": {
+    "description": "Live health snapshot of every Node in the Grid. Written by CI workflows and agents; read by Claude Code, HoneyHub (when live), and the developer. Not a substitute for the Project board — this tracks repo-level readiness, not individual work items.",
+    "updated": "2026-04-12",
+    "schema_version": "1.0"
+  },
+  "nodes": [
+    {
+      "id": "honeydrunk-kernel",
+      "name": "HoneyDrunk.Kernel",
+      "sector": "Core",
+      "signal": "Live",
+      "version": "0.4.0",
+      "canary_status": "passing",
+      "last_release": "2026-04-05",
+      "active_blockers": [],
+      "notes": "Grid v0.4 stabilization release. Three-ID context model locked. AddHoneyDrunkNode is canonical API."
+    },
+    {
+      "id": "honeydrunk-transport",
+      "name": "HoneyDrunk.Transport",
+      "sector": "Core",
+      "signal": "Live",
+      "version": "0.4.0",
+      "canary_status": "passing",
+      "last_release": "2026-04-05",
+      "active_blockers": [],
+      "notes": "Aligned to Kernel 0.4.0. Azure Service Bus, Storage Queue, and InMemory adapters stable."
+    },
+    {
+      "id": "honeydrunk-vault",
+      "name": "HoneyDrunk.Vault",
+      "sector": "Core",
+      "signal": "Live",
+      "version": "0.4.0",
+      "canary_status": "passing",
+      "last_release": "2026-04-05",
+      "active_blockers": [],
+      "notes": "ADR-0005 env-var-driven bootstrap in place. Awaiting Wave 2 per-Node Key Vault provisioning."
+    },
+    {
+      "id": "honeydrunk-vault-rotation",
+      "name": "HoneyDrunk.Vault.Rotation",
+      "sector": "Core",
+      "signal": "Seed",
+      "version": "0.0.0",
+      "canary_status": "none",
+      "last_release": null,
+      "active_blockers": ["Repo not yet scaffolded"],
+      "notes": "ADR-0006 rotation Function. Bring-up packets filed. Awaiting repo creation (human-only step)."
+    },
+    {
+      "id": "honeydrunk-auth",
+      "name": "HoneyDrunk.Auth",
+      "sector": "Core",
+      "signal": "Live",
+      "version": "0.4.0",
+      "canary_status": "passing",
+      "last_release": "2026-04-05",
+      "active_blockers": [],
+      "notes": "JWT validation and policy-based authorization stable. Vault-backed key retrieval wired."
+    },
+    {
+      "id": "honeydrunk-web-rest",
+      "name": "HoneyDrunk.Web.Rest",
+      "sector": "Core",
+      "signal": "Live",
+      "version": "0.4.0",
+      "canary_status": "passing",
+      "last_release": "2026-04-05",
+      "active_blockers": [],
+      "notes": "Response envelopes, correlation, and exception mapping stable."
+    },
+    {
+      "id": "honeydrunk-data",
+      "name": "HoneyDrunk.Data",
+      "sector": "Core",
+      "signal": "Live",
+      "version": "0.4.0",
+      "canary_status": "passing",
+      "last_release": "2026-04-05",
+      "active_blockers": [],
+      "notes": "Repository pattern, unit of work, tenant-aware data, outbox stable."
+    },
+    {
+      "id": "honeydrunk-notify",
+      "name": "HoneyDrunk.Notify",
+      "sector": "Ops",
+      "signal": "Live",
+      "version": "0.1.0",
+      "canary_status": "none",
+      "last_release": null,
+      "active_blockers": ["Azure Functions deployment pending", "Integration tests pending"],
+      "notes": "SMTP + Resend (email), Twilio (SMS), queue backends implemented. Awaiting first production deployment."
+    },
+    {
+      "id": "pulse",
+      "name": "HoneyDrunk.Pulse",
+      "sector": "Ops",
+      "signal": "Seed",
+      "version": "0.1.0",
+      "canary_status": "none",
+      "last_release": null,
+      "active_blockers": ["Production deployment pending", "Grafana templates pending"],
+      "notes": "Multi-backend telemetry pipeline and OTLP collector implemented. Awaiting production deployment."
+    },
+    {
+      "id": "honeydrunk-actions",
+      "name": "HoneyDrunk.Actions",
+      "sector": "Ops",
+      "signal": "Live",
+      "version": "N/A",
+      "canary_status": "passing",
+      "last_release": "2026-04-10",
+      "active_blockers": ["D6 batch-filing action not yet built (primary bottleneck for initiative launch)"],
+      "notes": "hive-field-mirror.yml shipped (Actions#22 closed). D6 batch-filer will incorporate mirror step, resolving D5 for the primary flow. hive-backfill-issue.sh exists for manual one-offs."
+    },
+    {
+      "id": "honeydrunk-lore",
+      "name": "HoneyDrunk.Lore",
+      "sector": "Meta",
+      "signal": "Seed",
+      "version": "0.0.0",
+      "canary_status": "none",
+      "last_release": null,
+      "active_blockers": ["Repo not yet scaffolded", "Bring-up packets on deck"],
+      "notes": "LLM-compiled living wiki. 6 packets scoped and ready to file. On deck after ADR-0005/0006 wave completes."
+    },
+    {
+      "id": "honeydrunk-architecture",
+      "name": "HoneyDrunk.Architecture",
+      "sector": "Meta",
+      "signal": "Live",
+      "version": "N/A",
+      "canary_status": "passing",
+      "last_release": "2026-04-12",
+      "active_blockers": ["Org Project auto-add not yet enabled", "ADR-0003 Phase 1 scoping needed"],
+      "notes": "Command center. Grid-health.json, contracts.json, sector-interaction-map.md added 2026-04-12."
+    },
+    {
+      "id": "honeydrunk-studios",
+      "name": "HoneyDrunk.Studios",
+      "sector": "Meta",
+      "signal": "Live",
+      "version": "N/A",
+      "canary_status": "passing",
+      "last_release": null,
+      "active_blockers": [],
+      "notes": "Public website. Site-sync workflow active."
+    },
+    {
+      "id": "honeydrunk-agents",
+      "name": "HoneyDrunk.Agents",
+      "sector": "AI",
+      "signal": "Seed",
+      "version": "0.0.0",
+      "canary_status": "none",
+      "last_release": null,
+      "active_blockers": ["Repo not yet scaffolded", "Awaiting AI sector bring-up initiative"],
+      "notes": "Agent runtime and lifecycle. Designed in ai-sector-architecture.md. Repo context docs in repos/HoneyDrunk.Agents/."
+    },
+    {
+      "id": "honeydrunk-ai",
+      "name": "HoneyDrunk.AI",
+      "sector": "AI",
+      "signal": "Seed",
+      "version": "0.0.0",
+      "canary_status": "none",
+      "last_release": null,
+      "active_blockers": ["Repo not yet scaffolded", "Awaiting AI sector bring-up initiative"],
+      "notes": "Model/provider abstraction. Microsoft.Extensions.AI alignment planned Q3 2026."
+    },
+    {
+      "id": "honeydrunk-memory",
+      "name": "HoneyDrunk.Memory",
+      "sector": "AI",
+      "signal": "Seed",
+      "version": "0.0.0",
+      "canary_status": "none",
+      "last_release": null,
+      "active_blockers": ["Repo not yet scaffolded"],
+      "notes": "Agent memory — short-term, long-term, scoped. Designed in ai-sector-architecture.md."
+    },
+    {
+      "id": "honeydrunk-knowledge",
+      "name": "HoneyDrunk.Knowledge",
+      "sector": "AI",
+      "signal": "Seed",
+      "version": "0.0.0",
+      "canary_status": "none",
+      "last_release": null,
+      "active_blockers": ["Repo not yet scaffolded"],
+      "notes": "External knowledge ingestion, embeddings, RAG pipelines."
+    },
+    {
+      "id": "honeydrunk-evals",
+      "name": "HoneyDrunk.Evals",
+      "sector": "AI",
+      "signal": "Seed",
+      "version": "0.0.0",
+      "canary_status": "none",
+      "last_release": null,
+      "active_blockers": ["Repo not yet scaffolded"],
+      "notes": "Prompt evaluation, regression testing, model comparison."
+    },
+    {
+      "id": "honeydrunk-capabilities",
+      "name": "HoneyDrunk.Capabilities",
+      "sector": "AI",
+      "signal": "Seed",
+      "version": "0.0.0",
+      "canary_status": "none",
+      "last_release": null,
+      "active_blockers": ["Repo not yet scaffolded"],
+      "notes": "Tool registry, discovery, permissioning, versioning."
+    },
+    {
+      "id": "honeydrunk-flow",
+      "name": "HoneyDrunk.Flow",
+      "sector": "AI",
+      "signal": "Seed",
+      "version": "0.0.0",
+      "canary_status": "none",
+      "last_release": null,
+      "active_blockers": ["Repo not yet scaffolded"],
+      "notes": "Workflow engine, multi-step pipelines, sagas, compensation."
+    },
+    {
+      "id": "honeydrunk-operator",
+      "name": "HoneyDrunk.Operator",
+      "sector": "AI",
+      "signal": "Seed",
+      "version": "0.0.0",
+      "canary_status": "none",
+      "last_release": null,
+      "active_blockers": ["Repo not yet scaffolded"],
+      "notes": "Human oversight — approvals, safety, circuit breakers, cost controls, audit."
+    },
+    {
+      "id": "honeydrunk-sim",
+      "name": "HoneyDrunk.Sim",
+      "sector": "AI",
+      "signal": "Seed",
+      "version": "0.0.0",
+      "canary_status": "none",
+      "last_release": null,
+      "active_blockers": ["Repo not yet scaffolded"],
+      "notes": "Simulation, plan evaluation, risk analysis."
+    }
+  ],
+  "summary": {
+    "total_nodes": 22,
+    "live": 8,
+    "seed": 14,
+    "canary_passing": 8,
+    "canary_none": 14,
+    "canary_failing": 0,
+    "blocked_nodes": ["honeydrunk-vault-rotation", "honeydrunk-notify", "pulse", "honeydrunk-lore", "honeydrunk-actions", "honeydrunk-agents", "honeydrunk-ai", "honeydrunk-memory", "honeydrunk-knowledge", "honeydrunk-evals", "honeydrunk-capabilities", "honeydrunk-flow", "honeydrunk-operator", "honeydrunk-sim"]
+  }
+}

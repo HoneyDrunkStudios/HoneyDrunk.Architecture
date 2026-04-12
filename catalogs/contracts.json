@@ -1,0 +1,230 @@
+{
+  "_meta": {
+    "description": "Registry of public contracts (interfaces, types, HTTP endpoints, signal events) exposed by each Node. Derived from relationships.json exposes.contracts but expanded with kind, package, and status. Use this before writing code that crosses a Node boundary to find the exact interface to depend on.",
+    "updated": "2026-04-12",
+    "schema_version": "1.0"
+  },
+  "contracts": [
+    {
+      "node": "honeydrunk-kernel",
+      "node_name": "HoneyDrunk.Kernel",
+      "package": "HoneyDrunk.Kernel.Abstractions",
+      "status": "stable",
+      "interfaces": [
+        { "name": "IGridContext", "kind": "interface", "description": "Distributed context with correlation, causation, and baggage. Present in every scoped operation." },
+        { "name": "IGridContextAccessor", "kind": "interface", "description": "Ambient accessor for IGridContext — resolves the current context from the call chain." },
+        { "name": "INodeContext", "kind": "interface", "description": "Static node-scoped metadata singleton — NodeId, NodeName, environment." },
+        { "name": "IOperationContext", "kind": "interface", "description": "Scoped per logical operation. Created at entry points (HTTP, message, job)." },
+        { "name": "IOperationContextAccessor", "kind": "interface", "description": "Ambient accessor for IOperationContext." },
+        { "name": "IStartupHook", "kind": "interface", "description": "Lifecycle extension point — runs during Node startup before serving traffic." },
+        { "name": "IShutdownHook", "kind": "interface", "description": "Lifecycle extension point — runs during graceful shutdown." },
+        { "name": "INodeLifecycle", "kind": "interface", "description": "Aggregated lifecycle coordinator — manages startup and shutdown hooks." },
+        { "name": "IHealthContributor", "kind": "interface", "description": "Plugs into the health aggregation pipeline (/health endpoint)." },
+        { "name": "IReadinessContributor", "kind": "interface", "description": "Plugs into the readiness aggregation pipeline (/ready endpoint)." },
+        { "name": "ITraceEnricher", "kind": "interface", "description": "Adds custom tags/attributes to OpenTelemetry spans." },
+        { "name": "ILogScopeFactory", "kind": "interface", "description": "Creates structured log scopes enriched with GridContext." },
+        { "name": "ITelemetryActivityFactory", "kind": "interface", "description": "Creates Activity instances for trace spans, pre-enriched with GridContext." },
+        { "name": "IAgentExecutionContext", "kind": "interface", "description": "LLM agent execution context — extends IOperationContext with agent identity and scope." },
+        { "name": "CorrelationId", "kind": "type", "description": "ULID-based strongly-typed correlation ID. Never null in a live GridContext." },
+        { "name": "NodeId", "kind": "type", "description": "ULID-based strongly-typed Node identity." },
+        { "name": "TenantId", "kind": "type", "description": "ULID-based strongly-typed tenant identity." },
+        { "name": "ProjectId", "kind": "type", "description": "ULID-based strongly-typed project identity." },
+        { "name": "RunId", "kind": "type", "description": "ULID-based strongly-typed run identity." },
+        { "name": "StudioId", "kind": "type", "description": "ULID-based strongly-typed studio identity." }
+      ]
+    },
+    {
+      "node": "honeydrunk-transport",
+      "node_name": "HoneyDrunk.Transport",
+      "package": "HoneyDrunk.Transport",
+      "status": "stable",
+      "interfaces": [
+        { "name": "ITransportPublisher", "kind": "interface", "description": "Publish messages to a broker. Transport-agnostic." },
+        { "name": "ITransportConsumer", "kind": "interface", "description": "Consume messages from a broker. Transport-agnostic." },
+        { "name": "IMessageHandler<T>", "kind": "interface", "description": "Implement to handle a specific message type. Registered via DI." },
+        { "name": "ITransportEnvelope", "kind": "interface", "description": "Wraps a message with routing metadata, GridContext, and retry state." }
+      ]
+    },
+    {
+      "node": "honeydrunk-vault",
+      "node_name": "HoneyDrunk.Vault",
+      "package": "HoneyDrunk.Vault",
+      "status": "stable",
+      "interfaces": [
+        { "name": "ISecretStore", "kind": "interface", "description": "Read secrets by name. Always resolves latest version — no pinning (invariant 21)." },
+        { "name": "IConfigProvider", "kind": "interface", "description": "Read typed configuration values from the shared App Configuration store." },
+        { "name": "IVaultClient", "kind": "interface", "description": "Low-level Vault client. Prefer ISecretStore for application code." },
+        { "name": "ISecretProvider", "kind": "interface", "description": "Provider slot interface — implement to add a new secret backend (Azure KV, AWS, File, InMemory)." },
+        { "name": "IConfigSource", "kind": "interface", "description": "Provider slot interface — implement to add a new configuration source." }
+      ]
+    },
+    {
+      "node": "honeydrunk-vault-rotation",
+      "node_name": "HoneyDrunk.Vault.Rotation",
+      "package": "HoneyDrunk.Vault.Rotation",
+      "status": "seed",
+      "interfaces": [
+        { "name": "IRotator", "kind": "interface", "description": "Implement per secret type to define rotation logic. Called by the rotation Azure Function." },
+        { "name": "RotationResult", "kind": "type", "description": "Outcome of a rotation attempt — new secret value, version, and audit metadata." }
+      ]
+    },
+    {
+      "node": "honeydrunk-auth",
+      "node_name": "HoneyDrunk.Auth",
+      "package": "HoneyDrunk.Auth.Abstractions",
+      "status": "stable",
+      "interfaces": [
+        { "name": "IAuthenticatedIdentityAccessor", "kind": "interface", "description": "Resolves the authenticated identity from the current GridContext/IOperationContext." },
+        { "name": "IAuthorizationPolicy", "kind": "interface", "description": "Define authorization requirements. Auth validates JWT tokens against policies." },
+        { "name": "AuthenticationResult", "kind": "type", "description": "Result of JWT validation — success/failure, claims, identity." },
+        { "name": "AuthorizationDecision", "kind": "type", "description": "Result of a policy evaluation — allow/deny, reason." }
+      ]
+    },
+    {
+      "node": "honeydrunk-web-rest",
+      "node_name": "HoneyDrunk.Web.Rest",
+      "package": "HoneyDrunk.Web.Rest.Abstractions",
+      "status": "stable",
+      "interfaces": [
+        { "name": "ApiResult<T>", "kind": "type", "description": "Standard success response envelope — data, metadata, correlation ID." },
+        { "name": "ApiResult", "kind": "type", "description": "Non-generic variant for void responses." },
+        { "name": "ApiErrorResponse", "kind": "type", "description": "Standard error envelope — error code, message, correlation ID. Mapped from exceptions." }
+      ]
+    },
+    {
+      "node": "honeydrunk-data",
+      "node_name": "HoneyDrunk.Data",
+      "package": "HoneyDrunk.Data.Abstractions",
+      "status": "stable",
+      "interfaces": [
+        { "name": "IRepository<T>", "kind": "interface", "description": "Generic repository pattern — CRUD over a tenant-aware data store." },
+        { "name": "IUnitOfWork", "kind": "interface", "description": "Coordinates transactions across repositories. Commit, rollback, scoped lifetime." },
+        { "name": "IOutboxStore", "kind": "interface", "description": "Transactional outbox — stores messages within a database transaction for exactly-once delivery via Transport." }
+      ]
+    },
+    {
+      "node": "pulse",
+      "node_name": "HoneyDrunk.Pulse",
+      "package": "HoneyDrunk.Pulse.Contracts",
+      "status": "seed",
+      "interfaces": [
+        { "name": "ITraceSink", "kind": "interface", "description": "Receive trace spans from the OTLP collector. Implement to add a new telemetry backend." },
+        { "name": "ILogSink", "kind": "interface", "description": "Receive structured log entries." },
+        { "name": "IMetricsSink", "kind": "interface", "description": "Receive metric data points." }
+      ]
+    },
+    {
+      "node": "honeydrunk-notify",
+      "node_name": "HoneyDrunk.Notify",
+      "package": "HoneyDrunk.Notify.Abstractions",
+      "status": "live-undeployed",
+      "interfaces": [
+        { "name": "INotificationSender", "kind": "interface", "description": "Send a notification — channel-agnostic. Resolves to the appropriate gateway (email, SMS) based on notification type." },
+        { "name": "INotificationGateway", "kind": "interface", "description": "Provider slot — implement to add a new delivery channel (Resend, SMTP, Twilio, etc.)." }
+      ]
+    },
+    {
+      "node": "honeydrunk-ai",
+      "node_name": "HoneyDrunk.AI",
+      "package": "HoneyDrunk.AI.Abstractions",
+      "status": "seed",
+      "interfaces": [
+        { "name": "IChatClient", "kind": "interface", "description": "Normalized chat completion contract. Aligned with Microsoft.Extensions.AI (Q3 2026 adoption planned)." },
+        { "name": "IEmbeddingGenerator", "kind": "interface", "description": "Generate text embeddings. Aligned with Microsoft.Extensions.AI." },
+        { "name": "IModelProvider", "kind": "interface", "description": "Provider slot — implement per model backend (OpenAI, Anthropic, Azure OpenAI, local/ONNX)." },
+        { "name": "IInferenceResult", "kind": "interface", "description": "Normalized inference response — content, tokens in/out, model ID, latency, cost estimate." }
+      ]
+    },
+    {
+      "node": "honeydrunk-agents",
+      "node_name": "HoneyDrunk.Agents",
+      "package": "HoneyDrunk.Agents.Abstractions",
+      "status": "seed",
+      "interfaces": [
+        { "name": "IAgent", "kind": "interface", "description": "Core agent interface — identity, capability declarations, execution entry point." },
+        { "name": "IAgentExecutionContext", "kind": "interface", "description": "Extends Kernel's IAgentExecutionContext with AI-specific bindings (memory refs, tool bindings)." },
+        { "name": "IAgentLifecycle", "kind": "interface", "description": "Lifecycle hooks for agents: register → initialize → execute → complete → decommission." },
+        { "name": "IToolInvoker", "kind": "interface", "description": "How agents call tools — resolves through Capabilities' tool registry." },
+        { "name": "IAgentMemory", "kind": "interface", "description": "Memory read/write from the agent's perspective — backed by Memory Node storage." }
+      ]
+    },
+    {
+      "node": "honeydrunk-memory",
+      "node_name": "HoneyDrunk.Memory",
+      "package": "HoneyDrunk.Memory.Abstractions",
+      "status": "seed",
+      "interfaces": [
+        { "name": "IMemoryStore", "kind": "interface", "description": "Write, read, search, delete agent memories. Scoped by TenantId/ProjectId/AgentId." },
+        { "name": "IMemoryScope", "kind": "interface", "description": "Scoped memory access — an agent only sees its authorized memories through this interface." },
+        { "name": "IMemorySummarizer", "kind": "interface", "description": "Compress memories beyond a token threshold. Delegates embedding to AI Node." }
+      ]
+    },
+    {
+      "node": "honeydrunk-knowledge",
+      "node_name": "HoneyDrunk.Knowledge",
+      "package": "HoneyDrunk.Knowledge.Abstractions",
+      "status": "seed",
+      "interfaces": [
+        { "name": "IKnowledgeStore", "kind": "interface", "description": "Ingest, query, and delete knowledge sources." },
+        { "name": "IDocumentIngester", "kind": "interface", "description": "Parse and chunk documents into retrievable units, generate embeddings via AI." },
+        { "name": "IRetrievalPipeline", "kind": "interface", "description": "Query → ranked results with source attribution. Used for RAG workflows." },
+        { "name": "IKnowledgeSource", "kind": "interface", "description": "Metadata about an ingested source — origin URL, version, last updated timestamp." }
+      ]
+    },
+    {
+      "node": "honeydrunk-evals",
+      "node_name": "HoneyDrunk.Evals",
+      "package": "HoneyDrunk.Evals.Abstractions",
+      "status": "seed",
+      "interfaces": [
+        { "name": "IEvalRunner", "kind": "interface", "description": "Run a prompt evaluation set and return scored results." },
+        { "name": "IEvalScorer", "kind": "interface", "description": "Score an inference result against expected criteria." },
+        { "name": "IEvalSuite", "kind": "interface", "description": "A named collection of evaluation cases with expected outputs and scoring criteria." }
+      ]
+    },
+    {
+      "node": "honeydrunk-capabilities",
+      "node_name": "HoneyDrunk.Capabilities",
+      "package": "HoneyDrunk.Capabilities.Abstractions",
+      "status": "seed",
+      "interfaces": [
+        { "name": "ICapabilityRegistry", "kind": "interface", "description": "Discover and resolve available tools by name and version." },
+        { "name": "ICapability", "kind": "interface", "description": "A registered tool — schema, version, executor, permission requirements." },
+        { "name": "ICapabilityPermission", "kind": "interface", "description": "Authorization gate for a capability — checked before execution." }
+      ]
+    },
+    {
+      "node": "honeydrunk-flow",
+      "node_name": "HoneyDrunk.Flow",
+      "package": "HoneyDrunk.Flow.Abstractions",
+      "status": "seed",
+      "interfaces": [
+        { "name": "IWorkflow", "kind": "interface", "description": "A named multi-step pipeline — steps, inputs, outputs, compensation logic." },
+        { "name": "IWorkflowEngine", "kind": "interface", "description": "Execute, resume, and compensate workflows." },
+        { "name": "IWorkflowStep", "kind": "interface", "description": "A single unit of work within a workflow — execute, compensate, retry policy." }
+      ]
+    },
+    {
+      "node": "honeydrunk-operator",
+      "node_name": "HoneyDrunk.Operator",
+      "package": "HoneyDrunk.Operator.Abstractions",
+      "status": "seed",
+      "interfaces": [
+        { "name": "IApprovalGate", "kind": "interface", "description": "Require human approval before an agent action proceeds." },
+        { "name": "ICircuitBreaker", "kind": "interface", "description": "Halt agent or workflow execution when safety thresholds are breached." },
+        { "name": "ICostController", "kind": "interface", "description": "Enforce per-agent and per-tenant inference cost limits." },
+        { "name": "IAuditLog", "kind": "interface", "description": "Immutable record of agent actions, decisions, and approvals." }
+      ]
+    },
+    {
+      "node": "honeydrunk-sim",
+      "node_name": "HoneyDrunk.Sim",
+      "package": "HoneyDrunk.Sim.Abstractions",
+      "status": "seed",
+      "interfaces": [
+        { "name": "ISimulator", "kind": "interface", "description": "Run a simulated execution of a plan or workflow and return risk analysis." },
+        { "name": "ISimulationResult", "kind": "interface", "description": "Outcome of a simulation — steps executed, risks identified, confidence score." }
+      ]
+    }
+  ]
+}
