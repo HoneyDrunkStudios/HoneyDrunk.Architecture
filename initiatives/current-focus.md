@@ -10,7 +10,7 @@ What the team (human + agents) should prioritize right now.
 
 Execute the two-wave rollout that standardizes secret and configuration management across the Grid.
 
-- **Wave 1 (nearly complete):** Vault env-driven wiring ✓, App Configuration extension ✓, event-driven cache invalidation ✓, Vault.Rotation repo scaffold ✓, portal walkthroughs ✓, catalog registration ✓ — only OIDC deploy workflow (Actions#20) remains
+- **Wave 1 (nearly complete):** Vault env-driven wiring ✓, App Configuration extension ✓, event-driven cache invalidation ✓, Vault.Rotation repo creation ✓, portal walkthroughs ✓, catalog registration ✓ — only OIDC deploy workflow (Actions#20) remains
 - **Wave 2 (blocked on Wave 1 exit criteria):** Per-Node bootstrap migrations (Auth, Web.Rest, Data, Notify, Pulse, Studios) + Actions secret cleanup and deploy-gate SLA check
 - **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
 - **Blocker resolved:** Architecture#8 (Create Vault.Rotation repo) closed 2026-04-11. Vault.Rotation scaffold is now unblocked. Vault.Rotation bring-up work (repo stubs, managed identity, rotation function) can proceed.

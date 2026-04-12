@@ -16,7 +16,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [x] Wave 1: Vault env-driven `AddVault` wiring (Vault#9 closed 2026-04-12)
 - [x] Wave 1: Vault `AddAppConfiguration` extension (Vault#9 closed 2026-04-12)
 - [x] Wave 1: Vault event-driven cache invalidation (Vault#10 closed 2026-04-12)
-- [x] Wave 1: Vault.Rotation repo scaffold (Architecture#8 closed 2026-04-11 — repo created, unblocking scaffold execution)
+- [x] Wave 1: Vault.Rotation repo creation (Architecture#8 closed 2026-04-11 — repo created, unblocking scaffold execution)
 - [x] Wave 1: Architecture portal walkthroughs (Architecture#7 closed 2026-04-11)
 - [x] Wave 1: Architecture catalog registration for Vault.Rotation (Architecture#7 closed 2026-04-11)
 - [ ] Wave 1: Actions OIDC federated-credential workflow (Actions#20 — open)
