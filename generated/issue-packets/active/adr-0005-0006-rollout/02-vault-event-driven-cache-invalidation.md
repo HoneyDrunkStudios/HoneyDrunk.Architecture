@@ -9,6 +9,7 @@ adrs: ["ADR-0006"]
 wave: 1
 initiative: adr-0005-0006-rollout
 node: honeydrunk-vault
+version_bump: false
 ---
 
 # Feature: Event-driven cache invalidation for `SecretCache` on `SecretNewVersionCreated`
@@ -41,6 +42,17 @@ This must exist before per-Node migration to App Configuration + Managed Identit
 ## Affected Packages
 - `HoneyDrunk.Vault` (cache + invalidator contract)
 - New optional: `HoneyDrunk.Vault.EventGrid` (webhook handler package)
+
+## Versioning
+
+**Bump:** No — packet 01 (`vault-bootstrap-extensions`) already bumped the solution to `0.3.0`. Do not touch any `<Version>` element.
+
+Append your changes to the existing `[0.3.0]` CHANGELOG entry. Do **not** push a git tag.
+
+| Project | Action |
+|---|---|
+| All existing solution projects | No change — already at `0.3.0`, do not modify `<Version>` |
+| `HoneyDrunk.Vault.EventGrid` | New project — set `<Version>0.3.0</Version>` to match the solution's current version |
 
 ## NuGet Dependencies
 

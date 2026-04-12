@@ -9,6 +9,8 @@ adrs: ["ADR-0005"]
 wave: 1
 initiative: adr-0005-0006-rollout
 node: honeydrunk-vault
+version_bump: true
+target_version: 0.3.0
 ---
 
 # Feature: Env-var-driven bootstrap extensions (`AddVault` + `AddAppConfiguration`)
@@ -76,6 +78,25 @@ This packet delivers both halves of the ADR-0005 bootstrap story as one coherent
 - `HoneyDrunk.Vault` (core — extension surface)
 - `HoneyDrunk.Vault.Providers.AzureKeyVault` (new env-var bootstrap entry)
 - New: `HoneyDrunk.Vault.Providers.AppConfiguration` (or co-located under the AzureKeyVault bootstrap package — decide during implementation, keep both extensions consistent)
+
+## Versioning
+
+**Bump:** Yes — this is the first packet to land on `HoneyDrunk.Vault` in this initiative.
+**From:** `0.2.1` → **To:** `0.3.0` (minor — new public API surface)
+
+Bump every non-test project in the solution to `0.3.0` in a single commit before starting feature work:
+
+| Project | Action |
+|---|---|
+| `HoneyDrunk.Vault` | `0.2.1` → `0.3.0` |
+| `HoneyDrunk.Vault.Providers.AzureKeyVault` | `0.2.1` → `0.3.0` |
+| `HoneyDrunk.Vault.Providers.Aws` | `0.2.1` → `0.3.0` |
+| `HoneyDrunk.Vault.Providers.Configuration` | `0.2.1` → `0.3.0` |
+| `HoneyDrunk.Vault.Providers.File` | `0.2.1` → `0.3.0` |
+| `HoneyDrunk.Vault.Providers.InMemory` | `0.2.1` → `0.3.0` |
+| `HoneyDrunk.Vault.Providers.AppConfiguration` | New — starts at `0.3.0` |
+
+Add a `[0.3.0]` CHANGELOG entry covering this packet's changes. Do **not** push a git tag — the human release chore does that after all Vault packets are merged.
 
 ## NuGet Dependencies
 
