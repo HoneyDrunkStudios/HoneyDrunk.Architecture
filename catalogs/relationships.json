@@ -105,7 +105,7 @@
       "id": "pulse",
       "consumes": ["honeydrunk-kernel"],
       "consumed_by": [],
-      "consumed_by_planned": ["honeydrunk-ai", "honeydrunk-evals", "honeydrunk-operator"],
+      "consumed_by_planned": [],
       "blocked_by": [],
       "exposes": {
         "contracts": ["ITraceSink", "ILogSink", "IMetricsSink"],
@@ -167,18 +167,17 @@
     },
     {
       "id": "honeydrunk-ai",
-      "consumes": ["honeydrunk-kernel", "honeydrunk-vault", "pulse"],
+      "consumes": ["honeydrunk-kernel", "honeydrunk-vault"],
       "consumed_by": [],
       "consumed_by_planned": ["honeydrunk-agents", "honeydrunk-memory", "honeydrunk-knowledge", "honeydrunk-evals", "honeydrunk-sim"],
       "blocked_by": [],
       "exposes": {
-        "contracts": ["IChatClient", "IEmbeddingGenerator", "IModelProvider", "IInferenceResult"],
+        "contracts": ["IChatClient", "IEmbeddingGenerator", "IModelProvider", "IInferenceResult", "IModelRouter", "IRoutingPolicy", "IModelCapabilityDeclaration"],
         "packages": ["HoneyDrunk.AI.Abstractions", "HoneyDrunk.AI", "HoneyDrunk.AI.Providers.OpenAI", "HoneyDrunk.AI.Providers.Anthropic", "HoneyDrunk.AI.Providers.AzureOpenAI", "HoneyDrunk.AI.Providers.Local"]
       },
       "consumes_detail": {
-        "honeydrunk-kernel": ["IGridContext", "IOperationContext", "ITraceEnricher", "HoneyDrunk.Kernel.Abstractions"],
-        "honeydrunk-vault": ["ISecretStore", "HoneyDrunk.Vault"],
-        "pulse": ["ITraceSink", "HoneyDrunk.Pulse.Contracts"]
+        "honeydrunk-kernel": ["IGridContext", "IOperationContext", "ITelemetryActivityFactory", "HoneyDrunk.Kernel.Abstractions"],
+        "honeydrunk-vault": ["ISecretStore", "HoneyDrunk.Vault"]
       }
     },
     {
@@ -263,7 +262,7 @@
     },
     {
       "id": "honeydrunk-operator",
-      "consumes": ["honeydrunk-kernel", "honeydrunk-auth", "honeydrunk-data", "pulse"],
+      "consumes": ["honeydrunk-kernel", "honeydrunk-auth", "honeydrunk-data"],
       "consumed_by": [],
       "consumed_by_planned": [],
       "blocked_by": [],
@@ -274,13 +273,12 @@
       "consumes_detail": {
         "honeydrunk-kernel": ["IGridContext", "HoneyDrunk.Kernel.Abstractions"],
         "honeydrunk-auth": ["IAuthorizationPolicy", "HoneyDrunk.Auth.Abstractions"],
-        "honeydrunk-data": ["IRepository", "IUnitOfWork", "HoneyDrunk.Data.Abstractions"],
-        "pulse": ["ITraceSink", "HoneyDrunk.Pulse.Contracts"]
+        "honeydrunk-data": ["IRepository", "IUnitOfWork", "HoneyDrunk.Data.Abstractions"]
       }
     },
     {
       "id": "honeydrunk-evals",
-      "consumes": ["honeydrunk-ai", "pulse"],
+      "consumes": ["honeydrunk-ai"],
       "consumed_by": [],
       "consumed_by_planned": [],
       "blocked_by": [],
@@ -289,8 +287,7 @@
         "packages": ["HoneyDrunk.Evals.Abstractions", "HoneyDrunk.Evals"]
       },
       "consumes_detail": {
-        "honeydrunk-ai": ["IChatClient", "HoneyDrunk.AI.Abstractions"],
-        "pulse": ["ITraceSink", "HoneyDrunk.Pulse.Contracts"]
+        "honeydrunk-ai": ["IChatClient", "HoneyDrunk.AI.Abstractions"]
       }
     },
     {

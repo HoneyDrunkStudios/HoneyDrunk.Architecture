@@ -161,6 +161,50 @@ None of the following is part of this ADR. Each is a discrete follow-up and shou
 - Minor update to the scope agent definition referencing ADR-0008 as its output schema contract.
 - Minor update to the adr-composer agent definition referencing ADR-0008 when it tells the user to delegate to the scope agent.
 
+## Unresolved Consequences
+
+These are known gaps in the ADR-0008 system that have been identified but not yet resolved. They are tracked here so agents reading this ADR know what they cannot rely on today.
+
+### D4 Gap — RESOLVED (2026-04-12)
+
+`HoneyDrunk.Actions#22` delivered and closed. `hive-field-mirror.yml` is a reusable workflow in HoneyDrunk.Actions. It fires on `issues.opened/labeled/unlabeled/edited` events and via `workflow_call`. The `hive-project-mirror.sh` script handles the GraphQL field writes. `hive-backfill-issue.sh` handles manual one-shot backfills. The workflow also adds the issue to The Hive if it isn't already there (via `addProjectV2ItemById`), which partially covers D5.
+
+**Remaining action for D4:** Each sibling repo must add a caller workflow — see D5 below.
+
+### D5 Gap — Superseded by D6 for the Primary Flow
+
+**Portal approach — not viable.** GitHub Projects v2 auto-add workflow only allows single-repo selection in the portal UI; org-wide `repo:HoneyDrunkStudios/*` filter is not exposed. Rejected.
+
+**Why D5 is not the right solution for the primary path:**
+
+The primary flow is: issue packets are authored in Architecture repo → PR merged → a batch-filing action in `HoneyDrunk.Actions` reads packets and creates issues in target repos. If that action calls `hive-project-mirror.sh` immediately after each `gh issue create`, the issue lands on The Hive with all fields populated at filing time. No per-repo event triggers, no auto-add, no deferred sync needed.
+
+D6 (batch-filing action, see below) is the correct fix. When D6 exists and incorporates the mirror step, D5 is fully resolved for all issues filed through the official packet flow.
+
+**Residual gap — out-of-band issues:** Issues filed manually (not through a packet) in any repo will not trigger the mirror. Options:
+- Accept the manual `gh project item-add` + `scripts/hive-backfill-issue.sh` pattern for occasional one-offs.
+- Optionally add a 10-line caller workflow to individual repos as they become active. Not required — this is purely defensive coverage for edge cases.
+
+### D6 Gap — Batch-Filing Action Not Yet Built
+
+**What was promised:** A script/action reads packets from `generated/issue-packets/active/` in the Architecture repo and creates GitHub Issues in the right target repos with correct labels.
+
+**Current state:** No action exists. The `file-issues` Claude agent can generate `gh issue create` commands, but bulk filing is still manual.
+
+**Impact until resolved:** Filing a wave of 10–15 packets requires manual `gh issue create` per packet, followed by a manual `hive-backfill-issue.sh` call per issue to get fields onto The Hive. This is the primary bottleneck for initiative launch speed.
+
+**What D6 must do when built** (this is also the fix for D5 in the primary flow):
+
+1. Triggered from Architecture repo on PR merge to `main` (or manually via `workflow_dispatch`)
+2. Checks out Architecture repo to find newly merged packets in `generated/issue-packets/active/`
+3. For each packet: reads frontmatter (`target_repo`, `labels`, `tier`, `wave`, `adrs`, `initiative`), runs `gh issue create` with correct labels in the target repo
+4. **Immediately calls `hive-project-mirror.sh`** for the new issue URL — adds it to The Hive and sets all fields from packet frontmatter
+5. Sets issue `Status` to `Backlog` on The Hive
+
+This single action replaces the need for per-repo auto-add workflows (D5) and eliminates the manual backfill step entirely.
+
+**`HIVE_FIELD_MIRROR_TOKEN`** must be confirmed as an org secret before this action can run.
+
 ## Alternatives Considered
 
 ### Per-repo Project boards

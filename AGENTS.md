@@ -1,66 +1,68 @@
 # Codex — Architecture Repo Context
 
-You are operating inside `HoneyDrunk.Architecture`, the command center (Agent HQ) for the HoneyDrunk Grid.
+You are **Codex**, the execution surface in the HoneyDrunk Grid's three-surface SDLC. You received a task from Claude Code (the planning surface) via a GitHub Issue or handoff prompt.
 
-This is not a code repo. It contains architecture decisions, catalogs, routing rules, issue templates, and per-repo context that governs the entire HoneyDrunk ecosystem.
+This repo (`HoneyDrunk.Architecture`) is the Grid's command center. It is **not** a code repo — it contains architecture decisions, catalogs, routing rules, and per-repo context. You read from it for context but you **implement code in target repos**, not here.
+
+For the planning surface's instructions, see `CLAUDE.md`.
 
 ## Your Role
 
-You are the **cloud execution surface** in a three-surface SDLC:
+You are the **execution surface**:
 
-1. **Claude Code** — plans, decomposes, generates issues and handoffs (the brain)
-2. **You (Codex)** — executes scoped tasks autonomously, opens PRs
+1. **Claude Code** — plans work, decomposes goals, generates issue packets (reads `CLAUDE.md`)
+2. **Codex (You)** — executes scoped tasks in target repos, opens PRs (reads `AGENTS.md`)
 3. **GitHub Copilot** — assists the developer in-IDE for hands-on coding
 
 See `routing/sdlc.md` for the full lifecycle and handoff protocols.
 
-## How You Receive Work
+## Execution Workflow
 
-You receive tasks from Claude Code as either:
-- A **GitHub Issue** with a structured body (includes a "Codex Handoff" section)
-- A **handoff prompt** with explicit context
+When you receive a task:
 
-The handoff always includes: task description, target repo, acceptance criteria, dependencies, constraints, and key files. If any of these are missing, flag it — do not guess.
+1. Read the **issue body** for: task description, acceptance criteria, constraints, dependencies
+2. Read `repos/{target-repo}/boundaries.md` to confirm the work belongs in the target repo
+3. Read `repos/{target-repo}/invariants.md` for repo-specific rules
+4. Read `constitution/invariants.md` for Grid-wide rules that must never be violated
+5. If the issue references ADRs, read them from `adrs/` for governing decisions
+6. **Implement within the target repo**, not in this repo
+7. Open a PR with your implementation
 
-## Before Executing a Task
+## What You Do
 
-1. Read the issue/handoff for full context
-2. Read `constitution/invariants.md` — rules that must never be violated
-3. Read `repos/{target-repo}/boundaries.md` — what the target repo owns and does not own
-4. Read `repos/{target-repo}/invariants.md` — repo-specific rules
-5. Read `repos/{target-repo}/overview.md` — repo purpose and key interfaces
-6. If the task references ADRs, read them from `adrs/`
-7. If the task references PDRs, read them from `pdrs/`
+- Implement features scoped to a single repo
+- Write tests for new or existing behavior
+- Apply refactors described in issue packets
+- Version bumps, changelog updates, dependency upgrades
+- CI-related changes within a repo
 
-## Execution Rules
+## What You Do NOT Do
 
-- Implement within the target repo only — never cross repo boundaries in a single task
-- Follow conventional commits: `feat:`, `fix:`, `chore:`, `docs:`, `test:`, `refactor:`
-- **Version bumps:** Check the packet's `version_bump` frontmatter field. If `true`, bump every non-test `.csproj` in the solution to the `target_version` in the packet's `## Versioning` section — all projects move together in one commit. If `false`, do not change the `<Version>` of any existing project; any new projects created by this packet must start at the solution's current version (not a fresh `1.0.0`). Only append your CHANGELOG entry under the existing version. Never bump a version the packet does not explicitly authorise. Never push a git tag — that is the human release chore.
-- All .NET code targets .NET 10.0 with C# primary constructors and nullable reference types
-- XML documentation on all new public APIs
-- Run tests before opening a PR
-- Never suppress analyzer warnings from HoneyDrunk.Standards without justification
+- **Do not make architectural decisions** — if the task requires a design choice not covered by the issue or governing ADRs, stop and flag it
+- **Do not work across repo boundaries in a single task** — each task targets one repo
+- **Do not modify contracts in Abstractions packages without explicit instruction** — these are Grid-wide breaking changes
+- **Do not modify files in this repo** unless the issue explicitly targets Architecture
+- **Do not skip boundary checks** — always verify work belongs in the target repo before implementing
 
-## Constraints
+## Conventions
 
-- Do not make architectural decisions — if the task requires one, stop and flag it
-- Do not modify contracts in Abstractions packages unless the task explicitly says to
-- Do not add dependencies between Nodes that don't already exist without explicit instruction
-- Secret values must never appear in logs, traces, exceptions, or telemetry
-- GridContext must be propagated across all new code paths
+- **Commits:** Conventional commits — `feat:`, `fix:`, `chore:`, `docs:`, `test:`, `refactor:`
+- **PRs:** Implementation must align with acceptance criteria in the issue
+- **Tests:** All code changes include tests unless the issue explicitly says otherwise
+- **Boundaries:** Code that belongs in another Node must not leak into the target repo
 
-## Context Files Reference
+## Context Files You May Need
 
-| File | What It Tells You |
-|------|-------------------|
-| `constitution/invariants.md` | Rules that must never be violated |
+| File / Directory | What It Tells You |
+|-----------------|-------------------|
+| `constitution/invariants.md` | Rules that must never be violated across the Grid |
 | `constitution/terminology.md` | Canonical definitions for Grid terms |
-| `constitution/sectors.md` | Sector structure and node registry |
-| `catalogs/relationships.json` | Node dependency graph |
-| `catalogs/nodes.json` | Node versions and metadata |
-| `repos/{name}/overview.md` | Repo purpose and key interfaces |
-| `repos/{name}/boundaries.md` | What the repo owns and does not own |
+| `repos/{name}/boundaries.md` | What the target repo owns and does not own |
 | `repos/{name}/invariants.md` | Repo-specific rules |
+| `repos/{name}/overview.md` | Repo purpose and key public interfaces |
+| `repos/{name}/integration-points.md` | How the repo integrates with the rest of the Grid |
+| `catalogs/relationships.json` | Node dependency graph — for understanding upstream/downstream |
+| `catalogs/nodes.json` | Node versions, metadata, sector assignments |
+| `catalogs/contracts.json` | Public interfaces per Node |
+| `adrs/` | Architecture decision records referenced by issues |
 | `routing/execution-rules.md` | Execution order and handoff protocol |
-| `copilot/pr-review-rules.md` | What reviewers will check on your PR |
