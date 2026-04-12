@@ -48,11 +48,12 @@ Without D6, merging a packet PR stalls at the filing step. Issuing a 15-packet w
 3. For each `.md` file under `packets-dir` not already in the manifest:
    a. Parse YAML frontmatter (`target_repo`, `labels`, `tier`, `wave`, `adrs`, `initiative`, `node`, `actor`)
    b. Build issue body: header note linking back to Architecture packet path + full packet content below the frontmatter
-   c. `gh issue create --repo {target_repo} --title "{h1 from packet}" --body "{body}" --label "{labels}"`
-   d. Capture returned issue URL
-   e. `./scripts/hive-project-mirror.sh --url {issue_url} --project-owner {project_owner} --project-number {project_number}`
-   f. Set `Status=Backlog` and `Actor={actor}` on the board item via GraphQL (reuse hive-project-mirror.sh logic or extend it)
-   g. Append `"{packet_relative_path}": "{issue_url}"` to manifest
+   c. Synthesize full label set: frontmatter `labels` array **plus** `initiative-{initiative}` derived from the `initiative` field — the mirror script reads Initiative from this label; it will not be set without it
+   d. `gh issue create --repo {target_repo} --title "{h1 from packet}" --body "{body}" --label "{all-labels}"`
+   e. Capture returned issue URL
+   f. `./scripts/hive-project-mirror.sh --url {issue_url} ...` — sets Wave, Tier, Node, ADR, Initiative from labels
+   g. Set `Actor` field on the board item via a separate GraphQL `updateProjectV2ItemFieldValue` call using the `actor` frontmatter value — **the mirror script does not handle Actor; this must be an explicit step**
+   h. Append `"{packet_relative_path}": "{issue_url}"` to manifest
 4. Commit updated `filed-packets.json` back to Architecture repo (uses `gh-issue-token` which has `contents:write` on Architecture)
 5. Output a summary table: packet → issue URL
 
@@ -105,7 +106,8 @@ None — CI and shell tooling only.
 - [ ] The Hive board item shows correct Wave, Node, Tier, ADR, Initiative, Actor, and Status=Backlog with no manual steps
 - [ ] Re-running against the same packets creates no duplicate issues (manifest check)
 - [ ] `filed-packets.json` is committed back to Architecture repo after the run
-- [ ] `actor: Agent` in frontmatter → Actor=Agent on board; `actor: Human` → Actor=Human
+- [ ] `initiative: adr-0005-0006-rollout` in frontmatter → `initiative-adr-0005-0006-rollout` label added to issue → Initiative field set on board
+- [ ] `actor: Agent` in frontmatter → Actor=Agent on board; `actor: Human` → Actor=Human (set via direct GraphQL call, not via mirror script)
 - [ ] `scripts/file-packets.sh` runs locally with env vars set
 - [ ] Workflow passes `actionlint`
 
