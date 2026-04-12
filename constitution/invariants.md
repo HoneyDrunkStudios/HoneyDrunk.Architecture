@@ -46,7 +46,10 @@ Rules that must never be violated across the HoneyDrunk Grid. Canary tests enfor
     Each repo has its own solution, CI pipeline, and versioning.
 
 12. **Semantic versioning with CHANGELOG and README.**
-    Breaking changes bump major. New features bump minor. Fixes bump patch. Every package directory must contain a `CHANGELOG.md` following [Keep a Changelog](https://keepachangelog.com/) format and a `README.md` describing the package's purpose, installation, and public API surface. New projects must have both files from the first commit. Every code change that affects behavior must have a corresponding CHANGELOG entry under the correct version heading. Release notes are auto-generated from CHANGELOG entries at tag time (see `HoneyDrunk.Actions` `release/generate-notes` composite action).
+    Breaking changes bump major. New features bump minor. Fixes bump patch. Changelogs follow [Keep a Changelog](https://keepachangelog.com/) format. Two tiers:
+    - **Repo-level `CHANGELOG.md`** (next to the `.slnx` file): Mandatory. Every repo must have one. Covers the full release holistically. Every version that ships must have an entry here. This is the source for auto-generated release notes (see `HoneyDrunk.Actions` `release/generate-notes` composite action).
+    - **Per-package `CHANGELOG.md`** (inside each package directory): Updated only when that specific package has functional changes. Do not add noise entries for packages that were version-bumped solely to align with the solution (see invariant 27). Consumers use these to understand what changed in the package they depend on.
+    Every package directory must also contain a `README.md` describing the package's purpose, installation, and public API surface. New projects must have both files from the first commit.
 
 13. **All public APIs have XML documentation.**
     Enforced by HoneyDrunk.Standards analyzers.
@@ -97,7 +100,7 @@ Rules that must never be violated across the HoneyDrunk Grid. Canary tests enfor
     Any packet that creates or modifies .NET projects must list every `PackageReference` entry required — both additions to existing projects and the full reference list for new projects. `HoneyDrunk.Standards` must be explicitly listed on every new .NET project (StyleCop + EditorConfig analyzers, `PrivateAssets: all`). Cloud agent execution cannot infer or guess package lists; an absent section is grounds to stop and flag rather than proceed. This section must be present before the packet is filed as a GitHub Issue (see invariant 24 — pre-filing amendments are permitted; post-filing corrections require a new packet).
 
 27. **All projects in a solution share one version and move together.**
-    When a version bump is warranted, every `.csproj` in the solution (excluding test projects) is updated to the same new version in a single commit. Partial bumps — where some projects in a solution are on a different version than others — are forbidden. Releases are triggered by pushing a git tag; agents never push tags. The first packet to land on a solution in an initiative bumps the version; subsequent packets on the same solution append to the CHANGELOG only. See invariant 26 and ADR-0008.
+    When a version bump is warranted, every `.csproj` in the solution (excluding test projects) is updated to the same new version in a single commit. Partial bumps — where some projects in a solution are on a different version than others — are forbidden. Releases are triggered by pushing a git tag; agents never push tags. The first packet to land on a solution in an initiative bumps the version; subsequent packets on the same solution append to the CHANGELOG only. The repo-level `CHANGELOG.md` must always get an entry for the new version. Per-package changelogs are updated only for packages with actual changes — do not add alignment-bump noise entries (see invariant 12). See invariant 26 and ADR-0008.
 
 ## AI Invariants
 
