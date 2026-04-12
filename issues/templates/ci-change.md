@@ -41,6 +41,7 @@ node: "{node-id}"
 - [ ] Workflow versioning updated (if breaking)
 - [ ] `docs/CHANGELOG.md` updated
 - [ ] `docs/consumer-usage.md` updated (if interface changed)
+- [ ] README.md updated (if new actions added or usage changed)
 
 ## Dependencies
 <!-- Other issues or version requirements -->

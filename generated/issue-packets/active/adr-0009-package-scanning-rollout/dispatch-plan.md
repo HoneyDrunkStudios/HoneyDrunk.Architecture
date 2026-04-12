@@ -5,19 +5,21 @@
 **Type:** Multi-repo
 **Sector:** Core
 **Site sync required:** No
-**Rollback plan:** Delete the three `.github/workflows/` files from any repo if a workflow causes unexpected failures. No code changes, no version bumps — fully reversible.
+**Rollback plan:** Delete the new `.github/workflows/` files and revert `publish.yml` from any repo if a workflow causes unexpected failures. No application code changes, no version bumps — fully reversible.
 
 ## Summary
 
-ADR-0009 formalises the package scanning policy for the HoneyDrunk Grid. `HoneyDrunk.Actions` already contains all the necessary reusable workflows (`pr-core.yml`, `nightly-security.yml`, `nightly-deps.yml`) — the only missing piece is consumer wiring in each .NET repo.
+ADR-0009 formalises the package scanning policy for the HoneyDrunk Grid. `HoneyDrunk.Actions` already contains all the necessary reusable workflows (`pr-core.yml`, `nightly-security.yml`, `nightly-deps.yml`) and the `release/generate-notes` composite action — the missing piece is consumer wiring in each .NET repo.
 
-This rollout creates three workflow files in each of the 8 .NET repos:
+This rollout creates four workflow files and migrates `publish.yml` release notes in each of the 8 .NET repos:
 
 1. **`pr.yml`** — calls `pr-core.yml@main` on `pull_request` to `main`. Includes vulnerability scan gate at `High+` severity.
 2. **`nightly-security.yml`** — calls `nightly-security.yml@main` nightly at 02:00 UTC. Runs full vulnerability scan, CodeQL SAST, gitleaks secrets, Trivy IaC.
 3. **`nightly-deps.yml`** — calls `nightly-deps.yml@main` weekly on Monday at 03:00 UTC. Reports outdated and deprecated NuGet packages.
+4. **`hive-field-mirror.yml`** — calls `hive-field-mirror.yml@main` on issue events for project board field sync.
+5. **`publish.yml` (modify)** — replace static release-body template with `generate-notes` action that auto-discovers the repo-level `CHANGELOG.md`.
 
-No code changes. No version bumps. Tier 1.
+No application code changes. No version bumps. Tier 1.
 
 ## Execution Model
 
@@ -38,7 +40,9 @@ All packets are parallel — no wave sequencing needed:
 
 ## Exit Criteria
 
-- All 8 repos have `.github/workflows/pr.yml`, `.github/workflows/nightly-security.yml`, and `.github/workflows/nightly-deps.yml`
+- All 8 repos have `.github/workflows/pr.yml`, `.github/workflows/nightly-security.yml`, `.github/workflows/nightly-deps.yml`, and `.github/workflows/hive-field-mirror.yml`
+- All 8 repos have `publish.yml` using `generate-notes` action instead of static body template
+- All 8 repos have a repo-level `CHANGELOG.md` next to the `.slnx` file
 - PR workflow appears as a check on at least one PR in each repo
 - At least one nightly-security run completes successfully per repo (SARIF uploaded to Security tab)
 - At least one nightly-deps run completes successfully per repo (artifact uploaded)

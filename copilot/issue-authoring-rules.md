@@ -68,6 +68,10 @@ Before finalizing an issue packet:
 - [ ] Blocking relationships wired via `addBlockedBy` for every dependency listed
 - [ ] Labels include type, tier, and sector
 - [ ] Frontmatter includes all board fields: `wave`, `initiative`, `node`, `adrs`, `tier`
+- [ ] Acceptance criteria include a repo-level CHANGELOG.md update for any shipped change, using a new version entry when this packet is the bumping packet and appending to the existing solution entry otherwise
+- [ ] Acceptance criteria include per-package CHANGELOG.md update only for packages with actual changes (no noise entries for alignment bumps)
+- [ ] Acceptance criteria include README.md update if public API surface or installation changes
+- [ ] New projects/packages include both CHANGELOG.md and README.md creation in acceptance criteria
 - [ ] Implementation constraints include invariant text (or a direct quoted excerpt) where the exact wording affects behavior; avoid number-only references in constraint sections
 - [ ] ADR decisions relevant to implementation are summarized in the packet body with file links so an executor can verify full context quickly
 

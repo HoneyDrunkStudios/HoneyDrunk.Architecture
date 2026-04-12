@@ -1,5 +1,5 @@
 ---
-name: Wire up PR validation and nightly scan workflows
+name: Wire up CI workflows and dynamic release notes
 type: chore
 tier: 1
 target_repo: HoneyDrunkStudios/HoneyDrunk.Pulse
@@ -12,11 +12,11 @@ node: honeydrunk-pulse
 version_bump: false
 ---
 
-# Chore: Wire up PR validation and nightly scan workflows
+# Chore: Wire up CI workflows and dynamic release notes
 
 ## Summary
 
-Create three GitHub Actions consumer workflow files in `HoneyDrunk.Pulse`. No code changes. No version bump.
+Create CI workflow files and migrate GitHub Release notes from static templates to changelog-driven generation in `HoneyDrunk.Pulse`. No application code changes. No version bump.
 
 ## Target Repo
 
@@ -24,7 +24,7 @@ Create three GitHub Actions consumer workflow files in `HoneyDrunk.Pulse`. No co
 
 ## Motivation
 
-ADR-0009 establishes the package scanning policy for the Grid. `HoneyDrunk.Actions` already provides all the reusable workflows; this packet wires them up in `HoneyDrunk.Pulse`. Until these files exist, no PR validation runs and no vulnerability or outdated-package scans run for this repo.
+ADR-0009 establishes the package scanning policy for the Grid. `HoneyDrunk.Actions` already provides the reusable workflows (`pr-core.yml`, `nightly-security.yml`, `nightly-deps.yml`) and the `release/generate-notes` composite action. This packet wires them up in `HoneyDrunk.Pulse` and replaces the static release-note template in `publish.yml` with auto-discovered changelog extraction.
 
 ## Files to Create
 
@@ -105,14 +105,71 @@ jobs:
       hive-field-mirror-token: ${{ secrets.HIVE_FIELD_MIRROR_TOKEN }}
 ```
 
+## Files to Modify
+
+### `.github/workflows/publish.yml` — Replace static release body with `generate-notes`
+
+Replace the `github-release` job steps with changelog-driven generation. The `generate-notes` action auto-discovers the repo-level `CHANGELOG.md` next to the `.slnx` file and produces release notes with changelog entries, NuGet install blocks, and comparison links.
+
+**Replace the `github-release` job steps with:**
+
+```yaml
+  github-release:
+    name: Create GitHub Release
+    needs: [prepare, release]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Checkout Actions
+        uses: actions/checkout@v4
+        with:
+          repository: HoneyDrunkStudios/HoneyDrunk.Actions
+          ref: main
+          path: .actions
+
+      - name: Generate Release Notes
+        id: notes
+        uses: ./.actions/.github/actions/release/generate-notes
+        with:
+          version: ${{ needs.prepare.outputs.version }}
+          product-name: HoneyDrunk.Pulse
+          product-description: 'Unified observability platform for HoneyDrunk.OS -- telemetry collection, routing, and multi-sink export for .NET 10.'
+          nuget-packages: |
+            HoneyDrunk.Pulse.Contracts
+            HoneyDrunk.Telemetry.Abstractions
+            HoneyDrunk.Telemetry.OpenTelemetry
+            HoneyDrunk.Telemetry.Sink.AzureMonitor
+            HoneyDrunk.Telemetry.Sink.Loki
+            HoneyDrunk.Telemetry.Sink.Mimir
+            HoneyDrunk.Telemetry.Sink.PostHog
+            HoneyDrunk.Telemetry.Sink.Sentry
+            HoneyDrunk.Telemetry.Sink.Tempo
+          docs-url: 'https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse#readme'
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.prepare.outputs.version-tag }}
+          name: HoneyDrunk.Pulse ${{ needs.prepare.outputs.version-tag }}
+          body: ${{ steps.notes.outputs.body }}
+          generate_release_notes: ${{ steps.notes.outputs.has-changelog == 'false' }}
+          draft: false
+          prerelease: false
+```
+
 ## Acceptance Criteria
 
 - [ ] `.github/workflows/pr.yml` exists and calls `pr-core.yml@main`
 - [ ] `.github/workflows/nightly-security.yml` exists and calls `nightly-security.yml@main`
 - [ ] `.github/workflows/nightly-deps.yml` exists and calls `nightly-deps.yml@main`
 - [ ] `.github/workflows/hive-field-mirror.yml` exists and calls `hive-field-mirror.yml@main`
-- [ ] All four workflows are valid YAML (no syntax errors)
-- [ ] No other files are modified
+- [ ] `.github/workflows/publish.yml` `github-release` job uses `generate-notes` action instead of static body
+- [ ] All workflow files are valid YAML (no syntax errors)
+- [ ] Repo-level `CHANGELOG.md` exists next to the `.slnx` file (already created)
 
 ## Dependencies
 
@@ -120,12 +177,13 @@ None.
 
 ## Agent Handoff
 
-**Objective:** Create four GitHub Actions workflow files. No code changes required.
+**Objective:** Create four GitHub Actions workflow files and update `publish.yml` release notes generation. No application code changes required.
 **Target:** HoneyDrunk.Pulse, branch from `main`
 **ADRs:** ADR-0009
 
 **Constraints:**
-- Create files only — do not modify any existing source files
+- Create the four new workflow files
+- Modify only the `github-release` job in `publish.yml` — do not change build/pack/publish jobs
 - Do not add any NuGet packages or project references
 - Do not bump the version
 
@@ -134,3 +192,4 @@ None.
 - New: `.github/workflows/nightly-security.yml`
 - New: `.github/workflows/nightly-deps.yml`
 - New: `.github/workflows/hive-field-mirror.yml`
+- Modified: `.github/workflows/publish.yml`

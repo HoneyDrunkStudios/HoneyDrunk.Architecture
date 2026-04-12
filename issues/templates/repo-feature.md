@@ -39,7 +39,10 @@ node: "{node-id}"
 - [ ] Implementation complete
 - [ ] Unit tests added
 - [ ] XML docs on public APIs
-- [ ] CHANGELOG.md updated
+- [ ] Repo-level CHANGELOG.md updated (create a new version section when this packet bumps; otherwise append to the current version entry)
+- [ ] Per-package CHANGELOG.md updated for packages with actual changes (not for alignment-only bumps)
+- [ ] README.md updated if public API surface or installation changed
+- [ ] New packages include CHANGELOG.md and README.md from first commit
 - [ ] Canary tests pass (if applicable)
 
 ## Dependencies
