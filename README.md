@@ -2,131 +2,93 @@
 
 **The command center for HoneyDrunk Studios' Grid architecture and agentic workflows.**
 
-This repo is the central source of truth for the HoneyDrunk Grid — its topology, invariants, routing rules, and coordination artifacts. Agents and humans use it to plan, route, and execute work across all Grid repos.
+This repo is the central source of truth for the HoneyDrunk Grid — its topology, invariants, routing rules, and coordination artifacts. No application code lives here. Instead, it holds the decisions, catalogs, and agent definitions that govern how work is planned, routed, and executed across every repo in the Grid.
 
-## Structure
+Three AI surfaces share responsibility for the full development lifecycle, and this repo is where it all starts:
+
+| Surface | Role | Entry Point |
+|---------|------|-------------|
+| **Claude Code** | Plan, decompose, generate issues and ADRs | `CLAUDE.md` |
+| **Codex** | Execute scoped tasks, open PRs | `AGENTS.md` |
+| **GitHub Copilot** | In-IDE coding assist | `.github/copilot-instructions.md` |
+
+## How Work Moves Through the Grid
 
 ```
-constitution/              Identity, terminology, invariants, sectors
-├── manifesto.md           What HoneyDrunk Studios believes and builds
-├── terminology.md         Canonical definitions for Grid terms
-├── invariants.md          Rules that must never be violated
-├── sectors.md             Logical groupings of Nodes
-├── naming-conventions.md  Naming standards across the Grid
-└── ai-sector-architecture.md  AI sector design
-
-catalogs/                  Machine-readable registries (JSON)
-├── nodes.json             All Nodes in the Grid
-├── modules.json           All NuGet packages
-├── services.json          Deployable services
-├── relationships.json     Dependency graph between Nodes
-├── signals.json           Cross-Node signal types
-├── compatibility.json     Compatibility matrix
-├── flow_config.json       Agentic flow definitions
-└── flow_tiers.json        Execution tier classifications
-
-adrs/                      Architecture Decision Records
-├── ADR-0001-node-vs-service.md
-├── ADR-0002-honeyhub-command-center.md
-└── ADR-0003-honeyhub-control-plane.md
-
-pdrs/                      Product Decision Records
-└── PDR-0001-honeyhub-platform-observation-and-ai-routing.md
-
-routing/                   Agent routing rules
-├── request-types.md       How to classify incoming work
-├── repo-discovery-rules.md  Which repo handles which work
-├── execution-rules.md     How to execute work after routing
-├── sdlc.md                Three-surface SDLC lifecycle
-└── site-sync-rules.md     When and how to sync the website
-
-initiatives/               Work tracking
-├── active-initiatives.md  In-progress and planned initiatives
-├── current-focus.md       What to prioritize right now
-├── roadmap.md             High-level timeline
-└── releases.md            Release history
-
-infrastructure/            Azure and deployment context
-├── azure-identity-and-secrets.md
-├── azure-naming-conventions.md
-├── azure-provisioning-guide.md
-├── azure-resource-inventory.md
-├── deployment-map.md
-├── tech-stack.md
-└── vendor-inventory.md
-
-issues/templates/          Issue generation templates
-├── architecture-decision.md
-├── bug-fix.md
-├── canary.md
-├── ci-change.md
-├── cross-repo-change.md
-├── dependency-upgrade.md
-├── repo-feature.md
-└── site-sync.md
-
-repos/                     Per-repo context
-├── HoneyDrunk.Auth/
-├── HoneyDrunk.Data/
-├── HoneyDrunk.Kernel/
-├── HoneyDrunk.Notify/
-├── HoneyDrunk.Pulse/
-├── HoneyDrunk.Transport/
-├── HoneyDrunk.Vault/
-├── HoneyDrunk.Web.Rest/
-└── HoneyHub/
-
-copilot/                   Agent behavior rules
-├── global-instructions.md
-├── issue-authoring-rules.md
-├── pr-review-rules.md
-├── setup-steps-guidance.md
-└── agent-skills-map.md
-
-.github/agents/            GitHub Copilot agent definitions
-├── adr-composer.agent.md
-├── netrunner.agent.md
-├── pdr-composer.agent.md
-├── refine.agent.md
-├── review.agent.md
-├── scope.agent.md
-└── site-sync.agent.md
-
-.claude/agents/            Claude Code agent definitions
-├── adr-composer.md
-├── netrunner.md
-├── pdr-composer.md
-├── refine.md
-└── scope.md
-
-generated/                 Output directory (ephemeral)
-├── adr-drafts/            In-progress ADR drafts
-├── dispatch-plans/        Multi-repo execution plans
-├── handoffs/              Agent handoff artifacts
-├── issue-packets/         Generated GitHub Issue artifacts
-├── pdr-drafts/            In-progress PDR drafts
-└── site-sync-packets/     Website content update artifacts
-
-AGENTS.md                  Codex agent context
-CLAUDE.md                  Claude Code agent context
+Intent → Classify → Scope → Issue Packets → GitHub Issues → Execute → PR → Merge → Site Sync
 ```
 
-## How It Works
+1. **Classify** — Every request is typed (`repo-feature`, `cross-repo-change`, `architecture-decision`, `bug-fix`, `ci-change`, `dependency-upgrade`, `canary`, `site-sync`) and assigned a tier using `routing/request-types.md`.
 
-1. **Discuss** an architecture question or feature with an agent
-2. **Route** the work using routing rules to the correct repo(s)
-3. **Generate** structured issue packets or ADR drafts
-4. **Hand off** the artifacts to target repo agents or create GitHub Issues
-5. **Execute** the work in the target repo(s)
-6. **Sync** the website if public-facing changes were made
+2. **Route** — `routing/repo-discovery-rules.md` determines which repo(s) own the work. For cross-repo changes, `catalogs/relationships.json` reveals the dependency graph and cascade order.
 
-## Grid at a Glance
+3. **Scope** — The `scope` agent decomposes work into issue packets grouped by initiative under `generated/issue-packets/active/{initiative}/`. Multi-repo work gets a dispatch plan and wave diagram. The `refine` agent challenges the plan before execution.
 
-| Sector | Nodes |
-|--------|-------|
-| **Core** | Kernel, Transport, Vault, Auth, Web.Rest, Data |
-| **Ops** | Pulse, Notify, Actions |
-| **Meta** | Architecture, Studios |
+4. **File** — Issue packets become GitHub Issues via `scripts/file-packets.ps1`. Each issue lands on **The Hive** project board with Status, Wave, Node, Tier, Actor, and Initiative fields. Blocking relationships are wired via GraphQL.
+
+5. **Execute** — Codex picks up issues and opens PRs in target repos. The `review` agent validates PRs against invariants and boundaries.
+
+6. **Sync** — When changes affect the public Grid (new Node, version bump, signal change), the `site-sync` agent updates the Studios website.
+
+### Execution Tiers
+
+| Tier | Flow | Examples |
+|------|------|----------|
+| **Tier 1** | Auto-execute | Doc fixes, version bumps, changelog updates |
+| **Tier 2** | Plan → Review → Execute | Single-repo features, new providers, CI changes |
+| **Tier 3** | Architecture discussion → ADR → Decompose → Execute | New contracts, new Nodes, boundary changes |
+
+## What Makes It Work
+
+**Invariants** — 30 rules that must never be violated across the Grid. Contracts over frameworks. Context flows everywhere. Small surface, strong contracts. Every agent reads `constitution/invariants.md` before acting.
+
+**Catalogs** — Machine-readable JSON registries (`catalogs/`) that describe every Node, package, service, dependency, contract, and health status. Agents query these to understand the Grid topology. The Studios website renders them into the live Grid map.
+
+**Per-Repo Context** — Every Node has a folder under `repos/` with its boundaries, invariants, integration points, and overview. Agents read these before touching a repo to confirm work belongs there.
+
+**Agent Definitions** — Custom agents under `.claude/agents/` handle specialized tasks (scoping, refining, reviewing, ADR authoring, site syncing, issue filing). Each agent has a defined purpose, tool access, and execution protocol.
+
+**ADRs and PDRs** — Architecture and product decisions are versioned records under `adrs/` and `pdrs/`. They govern how the Grid evolves and are referenced by issue packets so executors understand the "why" behind the work.
+
+## Directory Overview
+
+| Directory | Purpose |
+|-----------|---------|
+| `constitution/` | Grid identity, terminology, invariants, sectors, naming conventions, agent capabilities, feature flows |
+| `catalogs/` | JSON registries — nodes, packages, services, relationships, contracts, health, signals, compatibility |
+| `adrs/` | Architecture Decision Records governing Grid design |
+| `pdrs/` | Product Decision Records governing platform strategy |
+| `routing/` | Request classification, repo discovery, execution rules, SDLC lifecycle, site sync triggers |
+| `repos/` | Per-Node context — boundaries, invariants, overview, integration points for every Grid repo |
+| `initiatives/` | Active initiatives, current focus, roadmap, release history |
+| `infrastructure/` | Azure provisioning guides, naming conventions, resource inventory, deployment maps |
+| `issues/templates/` | Issue packet templates by type (feature, bug, cross-repo, CI, canary, etc.) |
+| `generated/` | Output directory for issue packets, ADR drafts, PDR drafts, site sync packets, incident logs |
+| `copilot/` | Agent behavior rules — issue authoring standards, PR review checklists, global instructions |
+| `.claude/agents/` | Claude Code agent definitions (scope, refine, review, adr-composer, pdr-composer, netrunner, site-sync, file-issues) |
+| `scripts/` | Automation scripts for issue filing and board management |
+
+## The Grid
+
+| Sector | Signal | Nodes |
+|--------|--------|-------|
+| **Core** | Live | Kernel, Transport, Vault, Auth, Web.Rest, Data |
+| **Ops** | Mixed | Pulse (Seed), Notify (Live), Actions (Live) |
+| **Meta** | Mixed | Architecture (Live), Studios (Live), Lore (Seed) |
+| **AI** | Seed | Agents, AI, Memory, Knowledge, Evals, Capabilities, Flow, Operator, Sim |
+| **HoneyNet** | Planned | — |
+| **Creator** | Planned | — |
+| **Market** | Planned | — |
+| **HoneyPlay** | Planned | — |
+| **Cyberware** | Planned | — |
+
+### Core Node Dependency Order
+
+```
+Kernel → Transport → Vault → Auth → Web.Rest → Data
+```
+
+This is the canonical sequencing for cross-repo changes. Upstream merges before downstream.
 
 ## License
 

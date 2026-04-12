@@ -234,7 +234,7 @@ Before outputting any issue:
 - [ ] Labels include type, tier, and sector
 - [ ] Agent Handoff section included with constraints and key files
 - [ ] `## Human Prerequisites` section present (listing portal steps / manual actions, or explicitly "None.")
-- [ ] Acceptance criteria include repo-level CHANGELOG.md update for every version bump (invariant 12)
+- [ ] Acceptance criteria include repo-level CHANGELOG.md update whenever the packet changes shipped behavior — create a new version entry if this is the bumping packet, otherwise append to the existing in-progress version entry (invariants 12, 27)
 - [ ] Acceptance criteria include per-package CHANGELOG.md update only for packages with actual changes — no noise entries for alignment bumps (invariants 12, 27)
 - [ ] Acceptance criteria include README.md update if public API surface or installation changes (invariant 12)
 - [ ] New packages/projects include CHANGELOG.md and README.md creation in acceptance criteria (invariant 12)
