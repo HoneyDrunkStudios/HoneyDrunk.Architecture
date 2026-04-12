@@ -59,18 +59,20 @@ Read all five files:
 4. `initiatives/roadmap.md`
 5. `initiatives/archived-initiatives.md`
 
-### Step 2: Create a Working Branch
+### Step 2: Create or Reuse a Working Branch
 
-Before making any file edits, create a branch:
+Before making any file edits, create or check out the date-based branch. Reusing the branch keeps the same PR open rather than spawning a new one on reruns:
 
 ```bash
 BRANCH="chore/initiatives-sync-$(date +%Y-%m-%d)"
 
-# Clean up stale branch from a previous run on the same date, if any
-git ls-remote --heads origin "${BRANCH}" | grep -q "${BRANCH}" && \
-  git push origin --delete "${BRANCH}" || true
-
-git checkout -b "${BRANCH}"
+if git ls-remote --heads origin "${BRANCH}" | grep -q "${BRANCH}"; then
+  # Branch already exists — fetch and reuse so the existing PR stays open
+  git fetch origin "${BRANCH}"
+  git checkout -b "${BRANCH}" "origin/${BRANCH}"
+else
+  git checkout -b "${BRANCH}"
+fi
 ```
 
 ### Step 3: Update active-initiatives.md
@@ -145,12 +147,20 @@ git diff --cached --quiet && echo "No changes to commit." && exit 0
 git commit -m "chore: sync initiative progress ($(date +%Y-%m-%d))"
 git push origin "${BRANCH}"
 
-gh pr create \
+# Open a new PR, or comment on the existing one if this branch already has one
+EXISTING_PR=$(gh pr list \
   --repo HoneyDrunkStudios/HoneyDrunk.Architecture \
-  --base main \
   --head "${BRANCH}" \
-  --title "chore: sync initiative progress ($(date +%Y-%m-%d))" \
-  --body "$(cat <<'PREOF'
+  --json number \
+  --jq '.[0].number // empty')
+
+if [[ -z "${EXISTING_PR}" ]]; then
+  gh pr create \
+    --repo HoneyDrunkStudios/HoneyDrunk.Architecture \
+    --base main \
+    --head "${BRANCH}" \
+    --title "chore: sync initiative progress ($(date +%Y-%m-%d))" \
+    --body "$(cat <<'PREOF'
 ## Initiatives Sync
 
 Automated sync run. See PR diff for all changes. Items flagged for human review are listed in the agent summary comment below.
@@ -158,6 +168,7 @@ Automated sync run. See PR diff for all changes. Items flagged for human review 
 > Opened by the **initiatives-sync** agent via [agent-run](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/blob/main/.github/workflows/agent-run.yml).
 PREOF
 )"
+fi
 ```
 
 Then post your summary (see Output Summary below) as a PR comment.
