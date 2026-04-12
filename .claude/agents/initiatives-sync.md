@@ -44,7 +44,8 @@ jq -r 'to_entries[] | "\(.key)\t\(.value)"' generated/issue-packets/filed-packet
   | while IFS=$'\t' read -r packet url; do
       result=$(gh issue view "${url}" --json state,title,number,closedAt 2>/dev/null \
                || echo '{"state":"unknown","title":"","number":0,"closedAt":null}')
-      echo "{\"packet\":\"${packet}\",\"url\":\"${url}\",$(echo "${result}" | jq -c '.')}"
+      jq -cn --arg packet "${packet}" --arg url "${url}" --argjson result "${result}" \
+        '$result + {packet:$packet,url:$url}'
     done \
   | jq -s '.' > /tmp/issue-states.json
 cat /tmp/issue-states.json
