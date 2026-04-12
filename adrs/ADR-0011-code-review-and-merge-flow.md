@@ -18,7 +18,7 @@ Some of the pipeline already exists. `HoneyDrunk.Actions` ships `pr-core.yml`, w
 
 This ADR picks up exactly where ADR-0008 D6 stage 5 begins and ends at the merge button. Sector is **Meta**, same as ADR-0008, because this is process architecture for the Grid's execution machinery, not system topology.
 
-This ADR depends on ADR-0007 (agent definitions live in `.claude/agents/`), ADR-0008 (the upstream lifecycle and the packet as immutable spec), ADR-0009 (the PR-time vulnerability gate that already blocks on High+), and ADR-0010 (Proposed — the observation layer whose invariants 28–30 are reserved, which is why this ADR's new invariants begin at 31).
+This ADR depends on ADR-0007 (agent definitions live in `.claude/agents/`), ADR-0008 (the upstream lifecycle and the packet as immutable spec), ADR-0009 (the PR-time vulnerability gate that already blocks on High+), and ADR-0010 (Proposed — the observation layer whose invariants 29–30 are reserved, which is why this ADR's new invariants begin at 31).
 
 ## Decision
 
@@ -74,7 +74,7 @@ Every stage has a defined input → output contract. The contracts are small eno
 | Integration tests *(slot)* | Built assemblies from stage 1, cross-Node test projects wired against contract-compatible fakes (`InMemorySecretStore`, `InMemoryBroker`, `InMemoryQueue` per invariant 15) | Check run, test-results artifact |
 | Static analysis — SonarCloud | Source tree, `sonar-project.properties`, coverage report from unit tests, PR diff | Check run, inline PR annotations, SonarCloud quality gate status |
 | Review agent | Packet file (via issue link), governing ADRs, `constitution/invariants.md`, affected Nodes' `boundaries.md` + `invariants.md`, `catalogs/relationships.json`, `catalogs/contracts.json`, PR diff | **Advisory** PR comment in the format defined by `.claude/agents/review.md` |
-| Copilot review | PR diff, repo `copilot-instructions.md` | Inline PR comments |
+| Copilot review | PR diff, repo `.github/copilot-instructions.md` | Inline PR comments |
 | E2E tests *(slot)* | Deployed test environment, Playwright test project | Check run, run artifacts, Playwright HTML report, trace files for failed runs |
 | Human review | All of the above, aggregated on the PR page | Approving review, merge commit |
 
@@ -192,7 +192,7 @@ The execution model for the review agent is **deliberately local-only**. The hum
 
 The third-party static analysis slot (D2 stage 7) is filled by **SonarCloud**. Tool choice rationale:
 
-- **Free for public HoneyDrunk repos.** The Grid is public by default (see `project_repos_public_by_default`), and SonarCloud's public-repo tier includes PR decoration, branch analysis, and the full C# rule set at zero cost. This is load-bearing: the cost/maintenance argument against self-hosted SonarQube Community Edition does not apply when the service is hosted free.
+- **Free for public HoneyDrunk repos.** The Grid is public by default, and SonarCloud's public-repo tier includes PR decoration, branch analysis, and the full C# rule set at zero cost. This is load-bearing: the cost/maintenance argument against self-hosted SonarQube Community Edition does not apply when the service is hosted free.
 - **Complements the review agent rather than overlapping it.** LLMs (the review agent, Copilot) are weak at quantitative metrics — cognitive complexity scores, cross-file duplication detection, cyclomatic complexity thresholds — and those are exactly what SonarCloud is strong at. The two layers are complementary, not redundant.
 - **Mature .NET support.** SonarCloud's C# analyzer (SonarAnalyzer.CSharp) is a Roslyn analyzer with deep coverage, runs via the standard `dotnet-sonarscanner` CLI, and integrates cleanly with the existing `dotnet test` + coverlet pipeline.
 - **Native GitHub PR decoration.** No bespoke comment-posting workflow required. SonarCloud sets a check run directly from its GitHub App.
@@ -227,7 +227,7 @@ The third-party static analysis slot (D2 stage 7) is filled by **SonarCloud**. T
 
 ### Code Review Invariants
 
-The following invariants must be added to `constitution/invariants.md` under a new **Code Review Invariants** section, numbered 31 onwards (invariants 29–30 are reserved for ADR-0010, and 28 is reserved for ADR-0010's AI section):
+The following invariants must be added to `constitution/invariants.md` under a new **Code Review Invariants** section, numbered 31 onwards (invariants 29–30 are reserved for ADR-0010):
 
 31. **Every PR traverses the tier-1 gate before merge.** Build, unit tests, analyzers, vulnerability scan, and secret scan are required branch-protection checks on every .NET repo in the Grid. Bypassing tier 1 via force-push to `main` or admin override is forbidden except for `hotfix-infra` scenarios where the gate itself is broken. See ADR-0011.
 
