@@ -10,7 +10,7 @@ How AI connects to the rest of the Grid. Every item here represents a cross-Node
 | **Kernel** | `ITelemetryActivityFactory` | Creates spans for inference calls. Emits token counts, latency, model ID, cost as span attributes. |
 | **Kernel** | `IStartupHook`, `IHealthContributor` | Validates provider connectivity at startup. Contributes health check (can reach model endpoint). |
 | **Vault** | `ISecretStore` | Resolves model API keys (OpenAI key, Anthropic key, Azure OpenAI key) at startup. Never hardcoded. |
-| **Pulse** | `ITraceSink` (future) | When Pulse is deployed, inference spans route through Pulse collectors. Until then, OTel SDK emits directly to Azure Monitor. |
+| **Pulse** | _(none — no runtime dependency)_ | AI emits OTel traces via Kernel's `ITelemetryActivityFactory`. When Pulse is deployed, its collectors consume these spans. AI never depends on Pulse at compile or runtime. |
 
 ## Exposes
 
@@ -22,6 +22,7 @@ How AI connects to the rest of the Grid. Every item here represents a cross-Node
 | `IInferenceResult` | Agents, Evals | Normalized response envelope — callers inspect tokens, cost, model ID. |
 | `IModelRouter` | Agents, HoneyHub (future) | Policy-driven model selection. Agents don't hardcode a model — they declare requirements, Router selects. |
 | `IRoutingPolicy` | App Configuration (policy storage) | Policies are loaded from shared App Config and applied by `IModelRouter`. |
+| `IModelCapabilityDeclaration` | Agents, HoneyHub (future), provider adapters | Declares required/available model capabilities used by routing to match workloads to compatible models. |
 
 ## Canary Coverage Required
 

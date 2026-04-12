@@ -1,10 +1,31 @@
-# ADR-0010: Observation Layer — HoneyDrunk.Observe and External Project Visibility
+# ADR-0010: Observation Layer and AI Routing — HoneyDrunk.Observe and IModelRouter
 
-**Status:** Accepted
+**Status:** Proposed
 **Date:** 2026-04-12
 **Deciders:** HoneyDrunk Studios
 **Sector:** Meta
 **Follows from:** PDR-0001 (HoneyHub Platform — Observation and AI Routing layers)
+
+## Open Questions (blocking acceptance)
+
+Before this ADR can be accepted, the following must be resolved:
+
+1. **Observe vs Pulse boundary** — Is `HoneyDrunk.Observe` a genuinely separate Node, or should external-system connectors live under Pulse? Pulse currently owns the internal telemetry pipeline (Grid → external sinks). Observe would own external system ingestion (external → Grid awareness). The directions are opposite and the contracts are different, but the question of whether that justifies a separate repo family for a solo developer is open. If folded into Pulse, this ADR's Node definitions change significantly.
+
+2. **Sector assignment** — ADR-0010 places Observe in **Meta**; PDR-0001 originally placed it in **Ops**. This reassignment is intentional but should be confirmed before catalog entries are written.
+
+## If Accepted — Required Follow-Up Work in Architecture Repo
+
+Accepting this ADR creates catalog obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
+
+- [ ] Add `honeydrunk-observe` and `honeydrunk-observe-connectors` to `catalogs/nodes.json` with full metadata
+- [ ] Add entries to `catalogs/relationships.json` (consumed_by, exposes.contracts, consumes_detail)
+- [ ] Add contract stubs for `IObservationTarget`, `IObservationConnector`, `IObservationEvent` to `catalogs/contracts.json`
+- [ ] Add `honeydrunk-observe` and `honeydrunk-observe-connectors` to `catalogs/grid-health.json` (currently has stubs that should be removed until acceptance)
+- [ ] Create `repos/HoneyDrunk.Observe/` and `repos/HoneyDrunk.Observe.Connectors/` context folders (overview, boundaries, invariants, active-work, integration-points)
+- [ ] Update `constitution/sectors.md` Node table for whichever sector is confirmed (Meta or Ops)
+- [ ] Update ADR index (ADRs/README.md) status from Proposed → Accepted
+- [ ] Update `constitution/invariants.md` to add invariants 28–30 (currently added speculatively — revert if ADR is not accepted)
 
 ## Context
 

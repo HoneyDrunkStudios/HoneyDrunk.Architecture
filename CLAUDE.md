@@ -17,7 +17,7 @@ You are operating inside `HoneyDrunk.Architecture`, the command center (Agent HQ
 - ADR-0007 — `.claude/agents/` is the single source of truth for agent definitions
 - ADR-0008 — Work tracking (issue packets → GitHub Issues → org Project board → Codex execution); **read the Unresolved Consequences section before filing any issues**
 - ADR-0003 — HoneyHub control plane, now Accepted Phase 1 (domain model + knowledge graph API only)
-- ADR-0010 — Observation Layer (HoneyDrunk.Observe + AI Routing in HoneyDrunk.AI)
+- ADR-0010 — Observation Layer + AI Routing (Proposed — blocked on Observe vs Pulse boundary decision; follow-up catalog work listed in ADR)
 
 **Key new files (2026-04-12):**
 - `catalogs/grid-health.json` — live Node health snapshot

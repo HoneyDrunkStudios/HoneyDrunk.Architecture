@@ -246,37 +246,15 @@
       "last_release": null,
       "active_blockers": ["Repo not yet scaffolded"],
       "notes": "Simulation, plan evaluation, risk analysis."
-    },
-    {
-      "id": "honeydrunk-observe",
-      "name": "HoneyDrunk.Observe",
-      "sector": "Meta",
-      "signal": "Seed",
-      "version": "0.0.0",
-      "canary_status": "none",
-      "last_release": null,
-      "active_blockers": ["Repo not yet scaffolded"],
-      "notes": "Observation contracts and normalization. Introduced by ADR-0010. Sector assignment: Meta (overrides PDR-0001 Ops assignment)."
-    },
-    {
-      "id": "honeydrunk-observe-connectors",
-      "name": "HoneyDrunk.Observe.Connectors",
-      "sector": "Meta",
-      "signal": "Seed",
-      "version": "0.0.0",
-      "canary_status": "none",
-      "last_release": null,
-      "active_blockers": ["Repo not yet scaffolded"],
-      "notes": "Provider-slot connectors for external systems (GitHub, Azure, HTTP). Introduced by ADR-0010."
     }
   ],
   "summary": {
-    "total_nodes": 24,
-    "live": 8,
-    "seed": 16,
-    "canary_passing": 8,
-    "canary_none": 16,
+    "total_nodes": 22,
+    "live": 10,
+    "seed": 12,
+    "canary_passing": 9,
+    "canary_none": 13,
     "canary_failing": 0,
-    "blocked_nodes": ["honeydrunk-vault-rotation", "honeydrunk-notify", "pulse", "honeydrunk-lore", "honeydrunk-actions", "honeydrunk-agents", "honeydrunk-ai", "honeydrunk-memory", "honeydrunk-knowledge", "honeydrunk-evals", "honeydrunk-capabilities", "honeydrunk-flow", "honeydrunk-operator", "honeydrunk-sim", "honeydrunk-observe", "honeydrunk-observe-connectors"]
+    "blocked_nodes": ["honeydrunk-vault-rotation", "honeydrunk-notify", "pulse", "honeydrunk-lore", "honeydrunk-actions", "honeydrunk-agents", "honeydrunk-ai", "honeydrunk-memory", "honeydrunk-knowledge", "honeydrunk-evals", "honeydrunk-capabilities", "honeydrunk-flow", "honeydrunk-operator", "honeydrunk-sim"]
   }
 }

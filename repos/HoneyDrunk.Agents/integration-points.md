@@ -9,7 +9,7 @@ How Agents connects to the rest of the Grid. Every item here represents a cross-
 | **Kernel** | `IGridContext`, `INodeContext`, `IOperationContext` | Every agent execution runs inside a Grid context. CorrelationId flows through all agent actions. |
 | **Kernel** | `IStartupHook`, `IShutdownHook` | Agent registry initialization and graceful shutdown of in-flight agents. |
 | **Kernel** | `IAgentExecutionContext` | Agents extends this with AI-specific bindings (memory refs, capability bindings). |
-| **AI** | `IChatClient`, `IModelProvider` | Agents delegates all inference to AI. Agents never calls a model provider directly. |
+| **AI** | `IChatClient` | Agents delegates all inference to AI through chat/routing abstractions. Agents never calls a model provider directly. |
 | **Capabilities** | `ICapabilityRegistry` | Resolves tools by name/version when an agent invokes `IToolInvoker`. |
 | **Memory** | `IMemoryStore`, `IMemoryScope` | Agents reads and writes memory through `IAgentMemory`, which is backed by Memory Node storage. |
 | **Operator** | `IApprovalGate`, `ICircuitBreaker` | Safety gate checked before any agent action that requires human oversight or breaches a cost/risk threshold. |

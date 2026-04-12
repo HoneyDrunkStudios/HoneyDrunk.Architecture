@@ -15,7 +15,7 @@ For product-level strategic decisions, see [PDRs](../pdrs/README.md).
 | [ADR-0007](ADR-0007-claude-agents-as-source-of-truth.md) | `.claude/agents/` as Single Source of Truth | Accepted | 2026-04-09 | Meta | Dropped canonical/generator layer. Agents live directly in `.claude/agents/`; Copilot discovers them there, Codex uses `AGENTS.md`. |
 | [ADR-0008](ADR-0008-work-tracking-and-execution-flow.md) | Work Tracking and Execution Flow | Accepted | 2026-04-09 | Meta | Standardized packet-to-issue-to-board-to-PR lifecycle, org-level project schema, and cloud agent execution flow. **See Unresolved Consequences section for D4/D5/D6 gaps.** |
 | [ADR-0009](ADR-0009-package-scanning-policy.md) | Package Scanning Policy | Accepted | 2026-04-09 | Meta | PR gate on High+ CVEs, nightly deep scans, no Dependabot. 8 rollout packets in flight. |
-| [ADR-0010](ADR-0010-observation-layer.md) | Observation Layer and AI Routing | Accepted | 2026-04-12 | Meta | Defines HoneyDrunk.Observe + Connectors (external project visibility) and AI routing layer in HoneyDrunk.AI (policy-driven model selection). Adds invariants 28–30. |
+| [ADR-0010](ADR-0010-observation-layer.md) | Observation Layer and AI Routing | Proposed | 2026-04-12 | Meta | Proposes HoneyDrunk.Observe + Connectors and IModelRouter in HoneyDrunk.AI. Blocked on Observe vs Pulse boundary decision. Acceptance requires catalog + repo follow-up work listed in the ADR. |
 
 ## Statuses
 

@@ -91,21 +91,20 @@ Telemetry ───────────────────────�
     │ Creates Activity (trace span) with GridContext enrichment
     │
     ▼
-OpenTelemetry SDK (in-process)
+OpenTelemetry SDK (in-process, configured via OTLP exporter)
     │
-    ├─ Trace sink    → ITraceSink (Pulse contract)
-    ├─ Log sink      → ILogSink
-    └─ Metrics sink  → IMetricsSink
+    └─ OTLP export (traces, logs, metrics)
     │
     ▼
 [Pulse.Collector] — OTLP collector, receives spans/logs/metrics
+    │  ITraceSink, ILogSink, IMetricsSink (Pulse-internal contracts)
     │
     ├─ → Azure Monitor
     ├─ → Grafana / Prometheus
     └─ → Custom sinks (per Pulse.Sinks configuration)
 ```
 
-**Key rule:** Nodes emit telemetry; Pulse routes it. Nodes never depend on Pulse at runtime — they depend on Kernel's `ITelemetryActivityFactory`. This keeps the telemetry pipeline replaceable without changing consumers.
+**Key rule:** Nodes emit telemetry; Pulse routes it. Nodes never depend on Pulse at compile or runtime — they emit via Kernel's `ITelemetryActivityFactory` and the OTel SDK's OTLP exporter. `ITraceSink`, `ILogSink`, and `IMetricsSink` are Pulse-internal contracts consumed only by the collector and its sink adapters. This keeps the telemetry pipeline replaceable without changing any emitting Node.
 
 **Current status:** Pulse.Collector is implemented, awaiting production deployment.
 

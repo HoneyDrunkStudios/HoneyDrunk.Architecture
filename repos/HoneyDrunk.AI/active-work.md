@@ -8,11 +8,11 @@ No active work. AI Node is in design phase. The repo context documents (`overvie
 
 ## Prerequisites Before Bring-Up
 
-AI has the fewest upstream dependencies in the AI sector — it depends only on Core Nodes (Kernel, Vault, Pulse), all of which are Live. AI can be the **first AI sector Node to scaffold**.
+AI has the fewest upstream dependencies in the AI sector — it depends on Core Nodes (Kernel, Vault) which are Live, and Ops Node Pulse which is Seed but non-blocking. AI can be the **first AI sector Node to scaffold**.
 
 1. **Kernel** — `IGridContext`, `IOperationContext`, `ITelemetryActivityFactory` (all Live at 0.4.0) ✅
 2. **Vault** — `ISecretStore` for model API key resolution (Live at 0.4.0) ✅
-3. **Pulse** — inference telemetry emission via OTel (Seed, but AI can emit OTel traces directly via Kernel's `ITelemetryActivityFactory` until Pulse is deployed) ✅ (unblocked)
+3. **Pulse** (Ops, Seed) — AI emits inference telemetry via Kernel's `ITelemetryActivityFactory` and OTel SDK directly. No runtime dependency on Pulse. ✅ (unblocked)
 
 ## On-Deck Work (not yet filed)
 

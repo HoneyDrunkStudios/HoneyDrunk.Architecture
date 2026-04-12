@@ -145,7 +145,7 @@
       "status": "seed",
       "interfaces": [
         { "name": "IAgent", "kind": "interface", "description": "Core agent interface — identity, capability declarations, execution entry point." },
-        { "name": "IAgentExecutionContextExtensions", "kind": "interface", "description": "Agents-specific extension of Kernel's IAgentExecutionContext — adds AI-specific bindings (memory refs, tool bindings)." },
+        { "name": "IAgentExecutionContext", "kind": "interface", "description": "Agents-owned execution context extending Kernel's IAgentExecutionContext with AI-specific bindings (memory refs, tool bindings)." },
         { "name": "IAgentLifecycle", "kind": "interface", "description": "Lifecycle hooks for agents: register → initialize → execute → complete → decommission." },
         { "name": "IToolInvoker", "kind": "interface", "description": "How agents call tools — resolves through Capabilities' tool registry." },
         { "name": "IAgentMemory", "kind": "interface", "description": "Memory read/write from the agent's perspective — backed by Memory Node storage." }

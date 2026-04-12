@@ -10,7 +10,7 @@ No active work. Agents Node is in design phase. The repo context documents (`ove
 
 The following must be true before Agents bring-up can start:
 
-1. **HoneyDrunk.AI** must be scaffolded first — Agents depends on `IChatClient` and `IModelProvider` from AI. AI is the inference layer Agents calls into.
+1. **HoneyDrunk.AI** must be scaffolded first — Agents depends on `IChatClient` (and `IModelRouter` for request-level routing) from AI. AI is the inference layer Agents calls into.
 2. **HoneyDrunk.Capabilities** must be scaffolded — Agents depends on `ICapabilityRegistry` for tool resolution via `IToolInvoker`.
 3. **HoneyDrunk.Operator** must have a design stub — the safety gate (`IApprovalGate`, `ICircuitBreaker`) that Agents calls before executing agent actions.
 
