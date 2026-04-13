@@ -31,6 +31,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 **Initiative:** `adr-0009-package-scanning-rollout`  
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)  
 **Description:** Wire CI scan workflows and dynamic release notes across all Nodes. Standardizes vulnerability scanning and auto-generates release summaries from commit history.
+
 **Tracking:**
 - [ ] Kernel wire up CI scan workflows (Kernel#14 — open)
 - [x] Auth wire up CI scan workflows (Auth#6 closed 2026-04-12)
