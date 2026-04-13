@@ -23,8 +23,26 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [ ] Wave 2: Per-Node bootstrap migrations (Auth, Web.Rest, Data, Notify, Pulse, Studios)
 - [ ] Wave 2: Actions direct secret removal + deploy-gate SLA check
 
-> **Sync (2026-04-12):** 4/12 issues closed (33%). Wave 1 is nearly complete — 6 of 7 Wave 1 items done. Only Actions#20 (OIDC federated-credential workflow) remains before Wave 2 can begin. Wave 2 migration issues (Auth#5, Web.Rest#4, Data#4, Notify#1, Pulse#1) and Actions#21 (deploy-gate) all remain open. Note: Vault#12 (Release v0.3.0 tag) is still open — grid-health shows v0.4.0 which may be ahead of the published NuGet version; flag for human review before updating catalogs.
+> **Sync (2026-04-13):** 4/14 issues closed (28.6%). No new closures since 2026-04-12. Wave 1 is still blocked on Actions#20 (OIDC federated-credential workflow). Wave 2 blocked behind Wave 1 completion. All Wave 2 per-Node bootstrap issues (Auth#5, Web.Rest#4, Data#4, Notify#1, Pulse#1) and Actions#21 (deploy-gate) remain open. Status unchanged.
 
+### Package Scanning Rollout (ADR-0009)
+**Status:** In Progress  
+**Scope:** Kernel, Auth, Data, Transport, Vault, Pulse, Notify, Web.Rest  
+**Initiative:** `adr-0009-package-scanning-rollout`  
+**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)  
+**Description:** Wire CI scan workflows and dynamic release notes across all Nodes. Standardizes vulnerability scanning and auto-generates release summaries from commit history.
+
+**Tracking:**
+- [ ] Kernel wire up CI scan workflows (Kernel#14 — open)
+- [x] Auth wire up CI scan workflows (Auth#6 closed 2026-04-12)
+- [ ] Data wire up CI scan workflows (Data#5 — open)
+- [x] Transport wire up CI scan workflows (Transport#14 closed 2026-04-12)
+- [x] Vault wire up CI scan workflows (Vault#13 closed 2026-04-12)
+- [ ] Pulse wire up CI scan workflows (Pulse#2 — open)
+- [ ] Notify wire up CI scan workflows (Notify#2 — open)
+- [ ] Web.Rest wire up CI scan workflows (Web.Rest#5 — open)
+
+> **Sync (2026-04-13):** 3/8 issues closed (37.5%). Three closures in past 24 hours (Auth#6, Transport#14, Vault#13 all on 2026-04-12). Rollout has momentum. Kernel#14, Data#5, Pulse#2, Notify#2, Web.Rest#5 remain open.
 
 ### Vault.Rotation Bring-Up
 **Status:** In Progress  
