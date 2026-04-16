@@ -2,13 +2,13 @@
 
 Centralized view of what shipped across the Grid.
 
-**Last Updated:** 2026-04-13
+**Last Updated:** 2026-04-16
 
 ---
 
 ## Q2 2026
 
-> **Human review required:** The following four entries were auto-detected as release drift — `grid-health.json` reports 0.4.0 for all Core nodes with `last_release: 2026-04-05`, but releases.md has not been updated since 2026-03-22. Verify published NuGet versions and fill in CHANGELOG highlights before merging. Note: Vault#12 ("Release HoneyDrunk.Vault v0.3.0") is still open on the board — there may be a discrepancy between the grid-health version and the published package version.
+> **Human review pending:** Four release drift entries below (Vault, Auth, Web.Rest, Data 0.4.0, last_release: 2026-04-05 per grid-health.json). Awaiting CHANGELOG confirmation and release notes. Note: Vault#12 ("Release HoneyDrunk.Vault v0.3.0") still open — verify whether 0.3.0 or 0.4.0 is the actual published version before finalizing.
 
 ### Pending Verification
 
