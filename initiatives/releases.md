@@ -8,7 +8,7 @@ Centralized view of what shipped across the Grid.
 
 ## Q2 2026
 
-> **Human review pending:** Four release drift entries below (Vault, Auth, Web.Rest, Data 0.4.0, last_release: 2026-04-05 per grid-health.json). Awaiting CHANGELOG confirmation and release notes. Note: Vault#12 ("Release Vault v0.3.0") still open — verify whether 0.3.0 or 0.4.0 is the actual published version before finalizing.
+> **Human review pending:** Four release drift entries below (Vault, Auth, Web.Rest, Data 0.4.0, last_release: 2026-04-05 per grid-health.json). Awaiting CHANGELOG confirmation and release notes. Note: Vault#12 ("Release HoneyDrunk.Vault v0.3.0") still open — verify whether 0.3.0 or 0.4.0 is the actual published version before finalizing.
 
 ### Pending Verification
 

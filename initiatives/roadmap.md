@@ -19,7 +19,7 @@ High-level roadmap for the HoneyDrunk Grid.
 ## Q2 2026 (Apr–Jun)
 
 - [ ] **Config & Secrets Rollout (ADR-0005/0006)** — Env-driven Vault wiring, App Configuration, event-driven invalidation, Vault.Rotation sub-Node, per-Node bootstrap migrations, OIDC deploy workflows, deploy-gate SLA checks *(Wave 1 nearly complete — 6/7 items done; Wave 2 blocked on Actions#20)*
-- [ ] **Package Scanning Rollout (ADR-0009)** — Wire CI scan workflows and dynamic release notes across Kernel, Auth, Data, Transport, Vault, Pulse, Notify, Web.Rest *(8 issues filed; 0 closed — not yet started)*
+- [ ] **Package Scanning Rollout (ADR-0009)** — Wire CI scan workflows and dynamic release notes across Kernel, Auth, Data, Transport, Vault, Pulse, Notify, Web.Rest *(8 issues filed; 3 closed — rollout started, currently stalled)*
 - [ ] Pulse — Production hardening, Grafana dashboard templates, finalize 0.1.0 release
 - [ ] Notify — Azure Functions deployment, finalize 0.1.0 release
 - [ ] HoneyDrunk.AI — Model/provider abstraction, OpenAI + Anthropic providers, Pulse telemetry

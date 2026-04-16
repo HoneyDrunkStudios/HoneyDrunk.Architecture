@@ -73,7 +73,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [ ] Notify aligned to Kernel 0.4.0 patterns
 - [ ] Pulse aligned to Kernel 0.4.0 patterns
 
-> **Sync (2026-04-16):** 6/8 items done. Core nodes (Kernel, Transport, Vault, Auth, Web.Rest, Data) all v0.4.0 aligned. Notify (v0.1.0) and Pulse (v0.1.0) are Seed signal, blocked by Azure deployment per grid-health.json. No new progress in past 4 days. Core objectives met; Notify/Pulse deployment gated on infrastructure provisioning.
+> **Sync (2026-04-16):** 6/8 items done. Core nodes (Kernel, Transport, Vault, Auth, Web.Rest, Data) all v0.4.0 aligned. Notify (v0.1.0) and Pulse (v0.1.0) have signal: Seed, blocked by Azure deployment per grid-health.json. No new progress in past 4 days. Core objectives met; Notify/Pulse deployment gated on infrastructure provisioning.
 
 ### Notification Subsystem Launch
 **Status:** In Progress  
@@ -119,7 +119,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [ ] Lore#5: OpenClaw setup + Lore sourcing skill (human-only)
 - [ ] Architecture#9: Catalog registration for HoneyDrunk.Lore
 
-> **Sync (2026-04-16):** 0/6 issues closed (0%). All Lore bring-up issues remain open (Lore#1–5, Architecture#9). grid-health.json shows Seed signal with active_blockers = ["Repo not yet scaffolded", "Bring-up packets on deck"]. Status: On Deck behind ADR-0005/0006 Wave 1 completion (Actions#20 still blocking). Ready to start once Wave 1 closes.
+> **Sync (2026-04-16):** 0/6 issues closed (0%). All Lore bring-up issues remain open (Lore#1–5, Architecture#9). grid-health.json shows signal: Seed with active_blockers = ["Repo not yet scaffolded", "Bring-up packets on deck"]. Status: On Deck behind ADR-0005/0006 Wave 1 completion (Actions#20 still blocking). Ready to start once Wave 1 closes.
 
 ### Agent Kit
 **Status:** On Deck  
