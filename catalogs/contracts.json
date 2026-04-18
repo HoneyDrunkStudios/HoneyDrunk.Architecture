@@ -124,6 +124,19 @@
       ]
     },
     {
+      "node": "honeydrunk-communications",
+      "node_name": "HoneyDrunk.Communications",
+      "package": "HoneyDrunk.Communications.Abstractions",
+      "status": "seed",
+      "interfaces": [
+        { "name": "ICommunicationOrchestrator", "kind": "interface", "description": "Top-level entry point — given a business event, decides what messages to send, to whom, and when. Delegates delivery to Notify." },
+        { "name": "IMessageIntent", "kind": "interface", "description": "Maps a business event to a message intent — captures the why and what of a communication without prescribing delivery details." },
+        { "name": "IRecipientResolver", "kind": "interface", "description": "Resolves the target audience for a message intent — determines who should receive based on context, roles, and relationships." },
+        { "name": "IPreferenceStore", "kind": "interface", "description": "User communication preferences — opt-in/out, channel preferences, quiet hours, suppression lists." },
+        { "name": "ICadencePolicy", "kind": "interface", "description": "Enforces message frequency and spacing rules per user — prevents notification fatigue and respects rate limits." }
+      ]
+    },
+    {
       "node": "honeydrunk-ai",
       "node_name": "HoneyDrunk.AI",
       "package": "HoneyDrunk.AI.Abstractions",

@@ -206,5 +206,21 @@
     "type": "runtime",
     "version": "0.1.0",
     "description": "Notification dispatch engine"
+  },
+  {
+    "id": "communications-abstractions",
+    "nodeId": "honeydrunk-communications",
+    "name": "HoneyDrunk.Communications.Abstractions",
+    "type": "abstractions",
+    "version": "0.0.0",
+    "description": "Communication orchestration contracts — intents, preferences, cadence, recipient resolution"
+  },
+  {
+    "id": "communications-runtime",
+    "nodeId": "honeydrunk-communications",
+    "name": "HoneyDrunk.Communications",
+    "type": "runtime",
+    "version": "0.0.0",
+    "description": "Communication orchestration engine — workflow execution, preference enforcement, Notify delegation"
   }
 ]

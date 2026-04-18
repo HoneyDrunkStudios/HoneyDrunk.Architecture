@@ -83,3 +83,4 @@ No core Grid nodes are affected at any wave.
 | Date | Event |
 |------|-------|
 | 2026-04-11 | Initiative scoped, 6 issues filed on The Hive, packets written |
+| 2026-04-13 | Packets 01, 03, 05 extended with LLM Wiki v2 patterns (confidence/supersession, consolidation, crystallization, retention decay, self-healing lint, v2 hook trajectory). Filed issues Lore#1, Lore#4, Lore#3 need body sync to match updated packets before Wave 1 work begins. |

@@ -16,14 +16,14 @@ How the Grid's sectors communicate, depend on, and constrain each other. Use thi
           ┌─────────────┼─────────────────┐
           ▼             ▼                 ▼
 ┌──────────────┐  ┌──────────────┐  ┌───────────────────────┐
-│     CORE     │  │     OPS      │  │          AI           │
-│              │  │              │  │                       │
-│ Kernel       │  │ Pulse        │  │ Agents · AI · Memory  │
-│ Transport    │  │ Notify       │  │ Knowledge · Evals     │
-│ Vault        │  │ Actions      │  │ Capabilities · Flow   │
-│ Auth         │  │              │  │ Operator · Sim        │
-│ Web.Rest     │  │              │  │                       │
-│ Data         │  │              │  │                       │
+│     CORE     │  │      OPS       │  │          AI           │
+│              │  │                │  │                       │
+│ Kernel       │  │ Pulse          │  │ Agents · AI · Memory  │
+│ Transport    │  │ Comms → Notify │  │ Knowledge · Evals     │
+│ Vault        │  │ Actions        │  │ Capabilities · Flow   │
+│ Auth         │  │                │  │ Operator · Sim        │
+│ Web.Rest     │  │                │  │                       │
+│ Data         │  │                │  │                       │
 └──────┬───────┘  └──────┬───────┘  └────────────┬──────────┘
        │                 │                        │
        │  provides       │  observes              │  governs
@@ -66,15 +66,18 @@ Core Nodes provide contracts that all other sectors consume:
 Core ──────► Ops
              │
              ├─ Pulse: receives telemetry FROM all sectors
-             ├─ Notify: sends notifications TO external channels (email, SMS)
+             ├─ Communications: decides why/when/who for outbound messages
+             │    └─► Notify: sends notifications TO external channels (email, SMS)
              └─ Actions: provides CI/CD workflows TO all repos
 ```
+
+**Communications ↔ Notify split:** Communications is the decision and orchestration layer — it owns message intent, recipient resolution, preferences, suppression, cadence, and multi-step flows. Notify is the delivery engine — it owns rendering, provider adapters, retries, queueing, and delivery tracking. If the concern is delivery mechanics, it belongs in Notify. If the concern is message logic or workflow, it belongs in Communications.
 
 **Key cross-sector rule:** The Ops ↔ AI boundary is precise:
 - **Pulse owns the data pipeline.** It collects, routes, and stores telemetry. It does not reason about what the data means.
 - **AI sector (specifically Operator) owns the meaning layer.** Operator reads Pulse data to make safety and oversight decisions. It never writes to Pulse.
 
-**Blast radius rule:** Pulse changes affect every Node that emits telemetry (all of them). Actions changes affect every repo's CI pipeline. Scope these carefully and validate with nightly CI runs before rolling out.
+**Blast radius rule:** Pulse changes affect every Node that emits telemetry (all of them). Actions changes affect every repo's CI pipeline. Communications changes affect all message workflows but not delivery mechanics. Scope these carefully and validate with nightly CI runs before rolling out.
 
 ---
 

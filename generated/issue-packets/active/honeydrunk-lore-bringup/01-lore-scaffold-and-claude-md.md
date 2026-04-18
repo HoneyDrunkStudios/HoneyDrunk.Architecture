@@ -35,6 +35,8 @@ The directory structure mirrors Karpathy's validated pattern and matches `HoneyD
 - `output/` â€” query results (rendered markdown, visualizations)
 - `tools/` â€” CLI helpers for search and maintenance
 
+The CLAUDE.md schema doc extends Karpathy's original with the "LLM Wiki v2" patterns documented at https://gist.github.com/rohitg00/2067ab416f7bbe447c1977edaaa681e2 â€” memory lifecycle (confidence, supersession, retention decay), crystallization of explorations back into the wiki, contradiction *resolution* (not just flagging), and the principle that the schema doc itself is the real product and co-evolves with use. The v1 build stays flat-file and minimal; v2 concepts are baked into the operation verbs so the wiki grows toward them without structural rewrites.
+
 ## Proposed Implementation
 
 ### Directory structure
@@ -71,8 +73,8 @@ The CLAUDE.md defines the four operations the LLM performs in this repo. It is t
 #### Operation: Ingest
 Triggered when a new file appears in `raw/`. Steps:
 1. Read the source fully
-2. Identify key concepts, entities, and claims
-3. For each concept: check if a `wiki/` page exists; create or update it
+2. Identify key concepts, typed entities (person, project, library, concept, file, decision), and claims
+3. For each concept: check if a `wiki/` page exists; create or update it. Attach a confidence note to each claim (`confidence: N sources, last-confirmed YYYY-MM-DD`). When new info contradicts existing claims, **supersede** â€” preserve the prior claim with a `superseded-by:` link and timestamp rather than overwriting
 4. Add a source entry to `wiki/indexes/sources.md`
 5. Update topic backlinks in `wiki/indexes/topics.md`
 6. Do not delete or overwrite existing wiki content â€” always extend and reconcile
@@ -82,22 +84,42 @@ Triggered on demand or on a scheduled basis. Steps:
 1. Scan `raw/` for sources not yet reflected in `wiki/`
 2. Run Ingest for each unprocessed source
 3. Identify concept pages that reference the same entity â€” merge into a canonical article
-4. Rebuild `wiki/indexes/` from current wiki state
+4. **Consolidate**: promote repeatedly-reinforced claims (seen across 3+ sources) to stronger confidence; demote unreinforced claims
+5. **Resolve contradictions** when detected: propose the more-likely claim based on source recency, source authority, and supporting count â€” mark the loser as superseded (do not just flag)
+6. Rebuild `wiki/indexes/` from current wiki state
 
 #### Operation: Query
 Triggered when asked a question. Steps:
 1. Search `wiki/` for relevant pages (keyword + semantic scan)
-2. Synthesize an answer from wiki content, citing source pages
+2. Synthesize an answer from wiki content, citing source pages and their confidence
 3. Identify gaps (questions the wiki cannot answer) â€” append them to `wiki/indexes/gaps.md`
 4. File the query result in `output/` as a dated markdown file
+5. **Crystallize**: if the query output meets a quality bar (well-structured, cites sources, surfaces new facts), distill it into first-class `wiki/` content â€” the exploration becomes a source, and any new facts strengthen or challenge existing claims
 
 #### Operation: Lint
 Triggered on demand. Checks:
 1. Orphan pages â€” wiki pages with no backlinks or source attribution
-2. Contradictions â€” claims across wiki pages that conflict
+2. Contradictions â€” claims across wiki pages that conflict; attempt auto-resolution per the Compile rules above, flag only what cannot be resolved
 3. Stale sources â€” `raw/` files processed more than 90 days ago (flag for re-ingest)
-4. Gaps â€” entries in `wiki/indexes/gaps.md` that have no corresponding wiki page
-5. Output a lint report in `output/lint-YYYY-MM-DD.md`
+4. **Retention decay** â€” claims not accessed or reinforced in 6+ months get their confidence decayed; architecture decisions decay slowly, transient bugs decay fast. Decayed claims are not deleted, just deprioritized
+5. **Self-healing** â€” auto-fix what is safe: repair broken cross-references, link orphans where a canonical concept page exists, mark stale claims. Log every auto-fix in the lint report
+6. Gaps â€” entries in `wiki/indexes/gaps.md` that have no corresponding wiki page
+7. Output a lint report in `output/lint-YYYY-MM-DD.md`
+
+#### Schema co-evolution
+This CLAUDE.md **is** the product. It encodes what types of entities exist in the HoneyDrunk domain, how to ingest different source kinds, when to create vs. update a page, quality standards, and contradiction-handling rules. Update it as the wiki grows â€” rough on day one is expected. Every lint pass is an opportunity to tighten it.
+
+#### Extensions (v2 â€” when the wiki outgrows v1)
+The v1 build is flat files + these four operations. Reach for the following only when the wiki passes ~100 pages or the minimal layer stops scaling:
+- **Knowledge graph layer**: typed-entity extraction into a structured graph (`wiki/graph/entities.json`, `wiki/graph/edges.json`) with typed relationships (`uses`, `depends-on`, `caused`, `fixed`, `supersedes`). Enables traversal queries that keyword search misses.
+- **Hybrid search**: BM25 + vector embeddings + graph traversal, fused with reciprocal rank fusion. `index.md` stays as the human-readable catalog.
+- **Consolidation tiers**: working memory (recent observations) â†’ episodic (session digests) â†’ semantic (cross-session facts) â†’ procedural (workflows). Each tier is more compressed, more confident, longer-lived.
+- **Event hooks**: auto-ingest on new `raw/` file, context injection on session start, crystallize on session end, contradiction check on every write, scheduled consolidation + retention decay.
+- **Quality scoring**: every LLM-generated page gets a score (structure, citations, consistency); below threshold triggers rewrite.
+- **Audit trail**: every wiki mutation logged with timestamp, operator, and diff â€” enables bulk reversible operations.
+- **Privacy filter on ingest**: strip secrets/PII before anything hits `wiki/`.
+
+Reference: LLM Wiki v2 â€” https://gist.github.com/rohitg00/2067ab416f7bbe447c1977edaaa681e2
 
 #### Conversion note (for future agents)
 The flat-file implementation is intentional and temporary. When `HoneyDrunk.Knowledge` and `HoneyDrunk.Agents` exist:
@@ -116,6 +138,11 @@ Replace the default README with:
 ## Acceptance Criteria
 - [ ] `raw/`, `wiki/`, `wiki/indexes/`, `output/`, `tools/` directories exist with `.gitkeep`
 - [ ] `CLAUDE.md` defines Identity, Directory contract, and all four operations (Ingest, Compile, Query, Lint)
+- [ ] Ingest operation specifies typed entities, confidence notes, and supersession (not overwrite)
+- [ ] Compile operation specifies consolidation and contradiction *resolution* (not just flagging)
+- [ ] Query operation specifies crystallization of quality outputs back into `wiki/`
+- [ ] Lint operation specifies retention decay and self-healing auto-fixes
+- [ ] `CLAUDE.md` contains a "Schema co-evolution" note and an "Extensions (v2)" section with gist reference
 - [ ] Conversion note is present in `CLAUDE.md` explaining the flat-file-first approach
 - [ ] `README.md` explains purpose, how to use each operation, Obsidian vault note, and Architecture link
 - [ ] No `.NET` code, no NuGet references, no project files â€” flat files only

@@ -44,6 +44,8 @@ This document defines what content belongs in Lore, where to find it, and how to
 
 **RSS agent:** Polls feeds daily, filters against relevance criteria defined here, and drops qualifying items in `raw/` automatically.
 
+**Your own explorations are sources too.** When a query session, debug investigation, or research thread yields something worth keeping, crystallize it â€” write it to `output/` and let the next compile pass pull it into `wiki/`. Treat it exactly like an external article: same relevance criteria, same compile path. This is how the wiki compounds from your own work, not just from the outside world.
+
 ---
 
 ## Categories

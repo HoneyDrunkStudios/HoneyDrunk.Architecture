@@ -94,6 +94,17 @@
       "notes": "SMTP + Resend (email), Twilio (SMS), queue backends implemented. Awaiting first production deployment."
     },
     {
+      "id": "honeydrunk-communications",
+      "name": "HoneyDrunk.Communications",
+      "sector": "Ops",
+      "signal": "Seed",
+      "version": "0.0.0",
+      "canary_status": "none",
+      "last_release": null,
+      "active_blockers": ["Repo not yet scaffolded"],
+      "notes": "Message orchestration and workflow layer. Sits above Notify — decides why/when/who, delegates delivery to Notify."
+    },
+    {
       "id": "pulse",
       "name": "HoneyDrunk.Pulse",
       "sector": "Ops",
@@ -249,12 +260,12 @@
     }
   ],
   "summary": {
-    "total_nodes": 22,
+    "total_nodes": 23,
     "live": 10,
-    "seed": 12,
+    "seed": 13,
     "canary_passing": 9,
-    "canary_none": 13,
+    "canary_none": 14,
     "canary_failing": 0,
-    "blocked_nodes": ["honeydrunk-vault-rotation", "honeydrunk-notify", "pulse", "honeydrunk-lore", "honeydrunk-actions", "honeydrunk-agents", "honeydrunk-ai", "honeydrunk-memory", "honeydrunk-knowledge", "honeydrunk-evals", "honeydrunk-capabilities", "honeydrunk-flow", "honeydrunk-operator", "honeydrunk-sim"]
+    "blocked_nodes": ["honeydrunk-vault-rotation", "honeydrunk-notify", "honeydrunk-communications", "pulse", "honeydrunk-lore", "honeydrunk-actions", "honeydrunk-agents", "honeydrunk-ai", "honeydrunk-memory", "honeydrunk-knowledge", "honeydrunk-evals", "honeydrunk-capabilities", "honeydrunk-flow", "honeydrunk-operator", "honeydrunk-sim"]
   }
 }

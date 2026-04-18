@@ -396,6 +396,51 @@
     "cooldown_days": 14
   },
   {
+    "id": "honeydrunk-communications",
+    "type": "node",
+    "name": "HoneyDrunk.Communications",
+    "public_name": "HoneyDrunk.Communications",
+    "short": "Message orchestration and workflow engine",
+    "description": "Decision and orchestration layer for outbound communications. Determines why, when, and to whom messages are sent. Manages multi-step flows, campaigns, user preferences, suppression, cadence rules, and business-event-to-message-intent mapping. Delegates all delivery mechanics to Notify.",
+    "sector": "Ops",
+    "signal": "Seed",
+    "cluster": "orchestration",
+    "energy": 0,
+    "priority": 25,
+    "flow": 20,
+    "tags": ["orchestration", "workflows", "campaigns", "preferences", "suppression", "cadence", "messaging"],
+    "links": {
+      "repo": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications"
+    },
+    "long_description": {
+      "overview": "HoneyDrunk.Communications is the brain behind outbound messaging. While Notify handles the mechanics of delivery (render, send, retry, track), Communications owns the decision layer: should a message be sent, to whom, when, and as part of what workflow. It maps business events (user signed up, subscription expiring, agent completed task) to message intents, resolves recipients and their preferences, enforces suppression and cadence rules, and orchestrates multi-step communication flows (welcome sequences, re-engagement campaigns, escalation chains). Communications calls Notify's INotificationSender for every outbound message but never touches provider adapters, templates, or retry logic directly.",
+      "why_it_exists": "Without a dedicated orchestration layer, message-sending logic scatters across every Node that needs to communicate with users. That leads to duplicated preference checks, inconsistent cadence enforcement, and no single place to reason about a user's full communication lifecycle.",
+      "primary_audience": "Node developers who need to trigger user-facing communications from business events. Product and growth workflows that require multi-step messaging sequences.",
+      "value_props": [
+        "Business-event-to-message-intent mapping — declare what happened, Communications decides what to send",
+        "Recipient resolution with preference and suppression awareness",
+        "Cadence rules — rate-limit and space out messages per user",
+        "Multi-step flows — welcome sequences, drip campaigns, escalation chains",
+        "Clean separation from delivery mechanics — Communications never touches SMTP or Twilio",
+        "Auditable decision log — every send-or-suppress decision is recorded with reasoning"
+      ],
+      "monetization_signal": "Internal-first. Campaign and lifecycle messaging capabilities may surface in product offerings.",
+      "roadmap_focus": "Define core abstractions (intent mapping, preference resolution, flow engine). First implementation: welcome email sequence using Notify as delivery backend.",
+      "grid_relationship": "Consumes Kernel for Grid context and lifecycle. Consumes Notify's INotificationSender for all delivery. May consume Data for preference and flow state persistence. Pulse receives telemetry on communication decisions.",
+      "integration_depth": "medium",
+      "demo_path": "Fire a UserSignedUp event → Communications resolves intent (welcome email) → checks preferences → calls Notify → records decision.",
+      "signal_quote": "The reason behind every message.",
+      "stability_tier": "experimental",
+      "impact_vector": "communication intelligence"
+    },
+    "foundational": false,
+    "strategy_base": 15,
+    "tier": "none",
+    "time_pressure": 0,
+    "done": false,
+    "cooldown_days": 14
+  },
+  {
     "id": "honeydrunk-actions",
     "type": "node",
     "name": "HoneyDrunk.Actions",
