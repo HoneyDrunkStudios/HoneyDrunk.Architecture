@@ -44,13 +44,13 @@ HTTP Response → external client
 
 ---
 
-## Flow 2: Notification Dispatch
+## Flow 2: Notification Delivery (Notify — low-level)
 
 **Repos touched:** Kernel → Transport → Notify  
-**Trigger:** Any Node needs to send a notification (email, SMS) to a user or system.
+**Trigger:** A caller (Communications or any Node) needs to deliver a message via a specific channel.
 
 ```
-Caller (any Node)
+Caller (Communications, or direct Notify consumer)
     │ INotificationSender (from HoneyDrunk.Notify.Abstractions)
     ▼
 [Notify] — routes to the right channel based on notification type
@@ -77,6 +77,47 @@ Telemetry ───────────────────────�
 4. Notify.Functions / Notify.Worker (deployment changes)
 
 **Current status:** Notify is implemented but not deployed. Transport queue backend is stable.
+
+---
+
+## Flow 2b: Communication Orchestration (Communications — high-level)
+
+**Repos touched:** Kernel → Communications → Notify  
+**Trigger:** A business event occurs (user signed up, subscription expiring, agent completed task) and the system needs to decide whether and how to communicate.
+
+```
+Business Event (from any Node)
+    │ ICommunicationOrchestrator (from HoneyDrunk.Communications.Abstractions)
+    ▼
+[Communications] — maps event to message intent
+    │ IMessageIntent — what message, why
+    │ IRecipientResolver — who should receive
+    │ IPreferenceStore — check opt-outs, channel preferences, quiet hours
+    │ ICadencePolicy — enforce frequency/spacing rules
+    │
+    ├─ SUPPRESS → log decision, do not send
+    │
+    └─ SEND → resolve template + channel
+         │ INotificationSender (delegates to Notify)
+         ▼
+    [Notify] — renders, dispatches, retries, tracks (see Flow 2)
+         │
+         ▼
+    External channel (email inbox, SMS)
+
+Decision log ──────────────────────────────► [Communications] (send/suppress audit)
+Telemetry ─────────────────────────────────► [Pulse] (orchestration decisions, latency)
+```
+
+**Clean rule:** If the concern is delivery mechanics (rendering, retries, provider adapters), it belongs in Notify (Flow 2). If the concern is message logic or workflow (should we send, to whom, when, as part of what sequence), it belongs in Communications (Flow 2b).
+
+**Cross-repo ordering for changes:**
+1. Kernel.Abstractions (if context changes)
+2. Notify.Abstractions (if delivery contract changes)
+3. Communications.Abstractions (if orchestration contracts change)
+4. Communications (implementation changes)
+
+**Current status:** Seed — abstractions not yet scaffolded. Notify delivery backend is available.
 
 ---
 
@@ -199,7 +240,7 @@ Agent opens PR in target repo
 Wave 1: Upstream Node (e.g. Kernel) — bumps version, publishes to NuGet
     │ git tag → CI → NuGet push
     ▼
-Wave 2: Direct consumers (Transport, Vault, Auth, Notify, Pulse)
+Wave 2: Direct consumers (Transport, Vault, Auth, Notify, Communications, Pulse)
     │ update PackageReference, update CHANGELOG, bump own version
     │ canary tests verify integration
     ▼

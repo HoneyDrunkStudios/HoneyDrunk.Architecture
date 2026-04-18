@@ -39,6 +39,15 @@ A source in `raw/` is unprocessed if its filename does not appear in `wiki/index
 ### Schedule
 Daily at 06:00 local time (or configure to preference). Running at start-of-day means new wiki pages are ready when you open Obsidian in the morning.
 
+### Future extensions (v2 hook layer â€” not in scope for this issue)
+The daily trigger is the first of several event-driven hooks the wiki grows toward (see the "Extensions (v2)" section in `CLAUDE.md`, sourced from https://gist.github.com/rohitg00/2067ab416f7bbe447c1977edaaa681e2). When volume or noise warrants it, file follow-up issues for:
+- **Weekly lint + consolidation trigger** â€” runs the Lint operation with retention decay, promotes reinforced claims, resolves contradictions
+- **Crystallize-on-query hook** â€” when a query output scores above the quality threshold, file it back into `wiki/` automatically
+- **Contradiction check on write** â€” before any ingest commit, scan for conflicting claims and attempt auto-resolution
+- **Session-end digest** â€” compress in-session observations into an episodic entry
+
+None of these are built now. They are listed so future agents understand the trajectory and do not rebuild the daily trigger as a monolith when the hook layer arrives.
+
 ## Proposed Implementation
 
 ### Step 1: Configure the scheduled agent via CronCreate

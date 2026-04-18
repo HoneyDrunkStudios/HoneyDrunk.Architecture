@@ -3,27 +3,19 @@
 **Status:** Proposed
 **Date:** 2026-04-12
 **Deciders:** HoneyDrunk Studios
-**Sector:** Meta
+**Sector:** Ops
 **Follows from:** PDR-0001 (HoneyHub Platform — Observation and AI Routing layers)
-
-## Open Questions (blocking acceptance)
-
-Before this ADR can be accepted, the following must be resolved:
-
-1. **Observe vs Pulse boundary** — Is `HoneyDrunk.Observe` a genuinely separate Node, or should external-system connectors live under Pulse? Pulse currently owns the internal telemetry pipeline (Grid → external sinks). Observe would own external system ingestion (external → Grid awareness). The directions are opposite and the contracts are different, but the question of whether that justifies a separate repo family for a solo developer is open. If folded into Pulse, this ADR's Node definitions change significantly.
-
-2. **Sector assignment** — ADR-0010 places Observe in **Meta**; PDR-0001 originally placed it in **Ops**. This reassignment is intentional but should be confirmed before catalog entries are written.
 
 ## If Accepted — Required Follow-Up Work in Architecture Repo
 
 Accepting this ADR creates catalog obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
 
-- [ ] Add `honeydrunk-observe` and `honeydrunk-observe-connectors` to `catalogs/nodes.json` with full metadata
+- [ ] Add `honeydrunk-observe` to `catalogs/nodes.json` with full metadata (include package families: `HoneyDrunk.Observe.Abstractions`, `HoneyDrunk.Observe`, and the `HoneyDrunk.Observe.Connectors.*` provider slots)
 - [ ] Add entries to `catalogs/relationships.json` (consumed_by, exposes.contracts, consumes_detail)
 - [ ] Add contract stubs for `IObservationTarget`, `IObservationConnector`, `IObservationEvent` to `catalogs/contracts.json`
-- [ ] Add `honeydrunk-observe` and `honeydrunk-observe-connectors` to `catalogs/grid-health.json` (currently has stubs that should be removed until acceptance)
-- [ ] Create `repos/HoneyDrunk.Observe/` and `repos/HoneyDrunk.Observe.Connectors/` context folders (overview, boundaries, invariants, active-work, integration-points)
-- [ ] Update `constitution/sectors.md` Node table for whichever sector is confirmed (Meta or Ops)
+- [ ] Add `honeydrunk-observe` to `catalogs/grid-health.json` and remove any `honeydrunk-observe-connectors` stubs (connectors ship from the Observe repo, not a separate Node)
+- [ ] Create `repos/HoneyDrunk.Observe/` context folder (overview, boundaries, invariants, active-work, integration-points)
+- [ ] Update `constitution/sectors.md` Node table to add `HoneyDrunk.Observe` under the Ops sector
 - [ ] Update ADR index (ADRs/README.md) status from Proposed → Accepted
 - [ ] Update `constitution/invariants.md` to add invariants 28–30 (currently added speculatively — revert if ADR is not accepted)
 
@@ -31,7 +23,7 @@ Accepting this ADR creates catalog obligations that must be completed as follow-
 
 PDR-0001 introduced two new layers in the HoneyDrunk platform vision:
 
-1. **Observation Layer** — External project visibility via `HoneyDrunk.Observe` and `HoneyDrunk.Observe.Connectors`. This allows the Grid to connect to and monitor external projects (non-HoneyDrunk repos, third-party services, customer codebases) the way Pulse monitors internal Nodes.
+1. **Observation Layer** — External project visibility via a new `HoneyDrunk.Observe` Node, whose package families include observation contracts and a `HoneyDrunk.Observe.Connectors.*` provider-slot family. This allows the Grid to connect to and monitor external projects (non-HoneyDrunk repos, third-party services, customer codebases) the way Pulse monitors internal Nodes.
 
 2. **AI Routing Layer** — Policy-driven model routing in `HoneyDrunk.AI`. This allows agents and applications to select models based on capability requirements, cost constraints, and context rather than hardcoded provider choices.
 
@@ -47,38 +39,32 @@ This ADR does **not** design the full implementation — that belongs in issue p
 
 **New Node: `HoneyDrunk.Observe`**
 
-This is a new Node in the **Meta sector**. Its job is to define the contracts and runtime for observing external systems.
+One new Node that owns both the observation contracts and the per-system connector packages. This follows the same provider-slot pattern as Vault and Transport, where a single Node houses abstractions and provider packages in one repo family.
 
-**Owns:**
-- Observation context — what it means to "observe" an external project (connection info, health, event subscription)
-- Observation contracts — `IObservationTarget`, `IObservationConnector`, `IObservationEvent`
-- Event normalization — convert external events (GitHub webhooks, deployment notifications, error alerts) into a canonical Grid-compatible format
-- Observation state — track whether an external project is healthy, degraded, or unreachable
+**Package families within the Observe Node:**
 
-**Does NOT own:**
-- Connector implementations (that's HoneyDrunk.Observe.Connectors)
-- Telemetry routing (that's Pulse)
-- Plan adjustments based on observations (that's HoneyHub, when live)
-- Internal Grid telemetry (that stays in Pulse)
-
-**New Node: `HoneyDrunk.Observe.Connectors`**
-
-This is a provider-slot package family (same pattern as Vault providers, Transport adapters). Each connector targets a specific external system.
-
-**Owns:**
-- Connector implementations for external systems:
+- `HoneyDrunk.Observe.Abstractions` — contracts (`IObservationTarget`, `IObservationConnector`, `IObservationEvent`) and the observation-state model.
+- `HoneyDrunk.Observe` — runtime that composes connectors, normalizes events, and tracks observation state.
+- `HoneyDrunk.Observe.Connectors.*` — provider-slot packages, one per external system. First-wave connectors:
   - `HoneyDrunk.Observe.Connectors.GitHub` — webhook receiver, repo health checks, PR/issue state
   - `HoneyDrunk.Observe.Connectors.Azure` — Azure Monitor alerts, deployment state, resource health
   - `HoneyDrunk.Observe.Connectors.Http` — generic HTTP health check connector
-- Authentication per connector (delegates credential resolution to Vault)
+
+Each connector delegates credential resolution to Vault via `ISecretStore`.
+
+**Owns:**
+- Observation contracts and state model
+- Event normalization — convert external events (GitHub webhooks, deployment notifications, error alerts) into a canonical Grid-compatible format
+- Observation state — track whether an external project is healthy, degraded, or unreachable
+- Connector implementations under `HoneyDrunk.Observe.Connectors.*`
 
 **Does NOT own:**
-- Observation contracts (that's HoneyDrunk.Observe)
+- Telemetry routing to external sinks (that's Pulse — opposite direction)
+- Plan adjustments based on observations (that's HoneyHub, when live)
+- Internal Grid telemetry (that stays in Pulse)
 - Routing observations to HoneyHub (that's an integration point, not a connector concern)
 
-**Sector assignment:** Both Observe Nodes belong to **Meta** sector — they are about the Grid's self-awareness and visibility, not about Core runtime, Ops pipelines, or AI cognition.
-
-> **Note:** PDR-0001 originally placed Observe and Observe.Connectors in the **Ops** sector. This ADR intentionally reassigns them to **Meta** because observation is a self-awareness concern (how the Grid perceives external systems), not an operational pipeline concern. PDR-0001's sector table should be updated to reflect this decision once accepted.
+**Sector assignment:** Observe belongs to the **Ops sector**, matching Pulse. Pulse owns outbound telemetry (Grid → external sinks); Observe owns inbound event intake (external systems → Grid). Both are runtime pipelines, not governance — Ops is the consistent bucket. This confirms PDR-0001's original Ops classification.
 
 ---
 
@@ -128,7 +114,7 @@ The following invariants must be added to `constitution/invariants.md`:
 
 ### Negative
 
-- Two new Nodes (Observe, Observe.Connectors) means two new repos, CI pipelines, and versioning to maintain.
+- One new Node (Observe) means a new repo, CI pipeline, and versioning to maintain. Connector packages ship from the same repo following the Vault/Transport provider-slot pattern, avoiding the cost of a separate Node family.
 - AI Routing adds complexity to the inference path — a misconfigured policy could route all requests to an expensive model. Mitigation: policy validation at startup, cost monitoring via Pulse/Operator.
 
 ## Alternatives Considered
@@ -151,7 +137,7 @@ Rejected. Third-party routers introduce an external dependency in the inference 
 
 - Define `IObservationTarget`, `IObservationConnector`, `IObservationEvent` in `HoneyDrunk.Observe.Abstractions`
 - Define `IModelRouter`, `IRoutingPolicy`, `IModelCapabilityDeclaration` in `HoneyDrunk.AI.Abstractions`
-- Create repo context folders (`repos/HoneyDrunk.Observe/`, `repos/HoneyDrunk.Observe.Connectors/`)
+- Create repo context folder (`repos/HoneyDrunk.Observe/`)
 - Update `catalogs/nodes.json`, `catalogs/relationships.json`, `catalogs/contracts.json`
 
 ### Phase 2 — GitHub Connector + Cost-First Routing (First useful increment)

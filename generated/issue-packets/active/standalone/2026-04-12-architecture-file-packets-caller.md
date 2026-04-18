@@ -4,7 +4,7 @@ type: ci-change
 tier: 2
 target_repo: HoneyDrunkStudios/HoneyDrunk.Architecture
 labels: ["ci", "tier-2", "ops", "adr-0008"]
-dependencies: ["2026-04-12-actions-packet-filing-action.md", "2026-04-12-org-secret-gh-issue-token.md"]
+dependencies: ["2026-04-12-actions-packet-filing-action.md"]
 adrs: ["ADR-0008"]
 initiative: standalone
 node: honeydrunk-architecture
@@ -23,9 +23,8 @@ Add `.github/workflows/file-packets.yml` to `HoneyDrunk.Architecture`. This call
 
 ## Dependencies
 
-Both of the following must be complete before this workflow is useful:
+The following must be complete before this workflow is useful:
 - `2026-04-12-actions-packet-filing-action.md` — the reusable workflow it calls must exist in HoneyDrunk.Actions
-- `2026-04-12-org-secret-gh-issue-token.md` — `GH_ISSUE_TOKEN` org secret must exist
 
 ## Proposed Implementation
 
@@ -46,7 +45,6 @@ jobs:
     uses: HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/file-packets.yml@main
     secrets:
       hive-field-mirror-token: ${{ secrets.HIVE_FIELD_MIRROR_TOKEN }}
-      gh-issue-token: ${{ secrets.GH_ISSUE_TOKEN }}
 ```
 
 That is the entire file. All logic lives in `HoneyDrunk.Actions`.
@@ -64,7 +62,7 @@ None.
 - [ ] Workflow file exists at `.github/workflows/file-packets.yml`
 - [ ] Merging a PR that adds a packet to `generated/issue-packets/active/` triggers the workflow automatically
 - [ ] `workflow_dispatch` also triggers it successfully
-- [ ] Both secrets pass through correctly to the reusable workflow
+- [ ] `HIVE_FIELD_MIRROR_TOKEN` passes through correctly to the reusable workflow
 - [ ] Workflow appears in the Actions tab and shows a green run after a test packet merge
 
 ## Referenced ADR Decisions

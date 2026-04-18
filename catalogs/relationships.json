@@ -118,7 +118,7 @@
     {
       "id": "honeydrunk-notify",
       "consumes": ["honeydrunk-kernel"],
-      "consumed_by": [],
+      "consumed_by": ["honeydrunk-communications"],
       "consumed_by_planned": [],
       "blocked_by": [],
       "exposes": {
@@ -127,6 +127,21 @@
       },
       "consumes_detail": {
         "honeydrunk-kernel": ["IGridContext", "HoneyDrunk.Kernel.Abstractions"]
+      }
+    },
+    {
+      "id": "honeydrunk-communications",
+      "consumes": ["honeydrunk-kernel", "honeydrunk-notify"],
+      "consumed_by": [],
+      "consumed_by_planned": ["honeydrunk-flow"],
+      "blocked_by": [],
+      "exposes": {
+        "contracts": ["ICommunicationOrchestrator", "IMessageIntent", "IRecipientResolver", "IPreferenceStore", "ICadencePolicy"],
+        "packages": ["HoneyDrunk.Communications.Abstractions", "HoneyDrunk.Communications"]
+      },
+      "consumes_detail": {
+        "honeydrunk-kernel": ["IGridContext", "HoneyDrunk.Kernel.Abstractions"],
+        "honeydrunk-notify": ["INotificationSender", "HoneyDrunk.Notify.Abstractions"]
       }
     },
     {

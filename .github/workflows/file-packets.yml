@@ -1,0 +1,14 @@
+name: File Issue Packets
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'generated/issue-packets/active/**/*.md'
+  workflow_dispatch: {}
+
+jobs:
+  file:
+    uses: HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/file-packets.yml@main
+    secrets:
+      hive-field-mirror-token: ${{ secrets.HIVE_FIELD_MIRROR_TOKEN }}

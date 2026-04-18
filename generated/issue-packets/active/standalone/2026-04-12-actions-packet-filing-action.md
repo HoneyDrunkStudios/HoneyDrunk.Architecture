@@ -4,7 +4,7 @@ type: ci-change
 tier: 2
 target_repo: HoneyDrunkStudios/HoneyDrunk.Actions
 labels: ["ci", "tier-2", "ops", "automation", "adr-0008"]
-dependencies: ["2026-04-12-org-secret-gh-issue-token.md"]
+dependencies: []
 adrs: ["ADR-0008"]
 initiative: standalone
 node: honeydrunk-actions
@@ -21,14 +21,6 @@ Build a GitHub Actions reusable workflow in `HoneyDrunk.Actions` that reads merg
 
 `HoneyDrunkStudios/HoneyDrunk.Actions`
 
-## Human Prerequisites
-
-Before this work can be executed end-to-end, the following human step must be complete:
-
-- [ ] `GH_ISSUE_TOKEN` org secret created — see packet `2026-04-12-org-secret-gh-issue-token.md`
-
-`HIVE_FIELD_MIRROR_TOKEN` is already in place from Actions#22.
-
 ## Motivation
 
 Without D6, merging a packet PR stalls at the filing step. Issuing a 15-packet wave requires 15 manual `gh issue create` calls across multiple repos, then 15 `hive-backfill-issue.sh` calls. This packet makes filing invisible: merge the PR, the board populates.
@@ -39,7 +31,7 @@ Without D6, merging a packet PR stalls at the filing step. Issuing a 15-packet w
 
 **Triggers (when called via `workflow_call`):**
 - Inputs: `architecture-ref` (branch/SHA to checkout Architecture repo, default `main`), `packets-dir` (default `generated/issue-packets/active`), `project-number` (default `4`), `project-owner` (default `HoneyDrunkStudios`)
-- Secrets: `hive-field-mirror-token`, `gh-issue-token`
+- Secrets: `hive-field-mirror-token` (used for issue creation, Hive field mirroring, and committing the manifest — single token, all permissions)
 
 **Steps:**
 
@@ -51,11 +43,15 @@ Without D6, merging a packet PR stalls at the filing step. Issuing a 15-packet w
    c. Synthesize full label set: frontmatter `labels` array **plus** `initiative-{initiative}` derived from the `initiative` field — the mirror script reads Initiative from this label; it will not be set without it
    d. `gh issue create --repo {target_repo} --title "{h1 from packet}" --body "{body}" --label "{all-labels}"`
    e. Capture returned issue URL
-   f. `./scripts/hive-project-mirror.sh --url {issue_url} ...` — sets Wave, Tier, Node, ADR, Initiative from labels
-   g. Set `Actor` field on the board item via a separate GraphQL `updateProjectV2ItemFieldValue` call using the `actor` frontmatter value — **the mirror script does not handle Actor; this must be an explicit step**
-   h. Append `"{packet_relative_path}": "{issue_url}"` to manifest
-4. Commit updated `filed-packets.json` back to Architecture repo (uses `gh-issue-token` which has `contents:write` on Architecture)
-5. Output a summary table: packet → issue URL
+   f. `./scripts/hive-project-mirror.sh --url {issue_url} --actor {actor} ...` — sets Wave, Tier, Node, ADR, Initiative from labels and Actor from the frontmatter value
+   g. Append `"{packet_relative_path}": "{issue_url}"` to manifest
+4. **Dependency-linking pass** — after all issues are filed, iterate through every packet that has a non-empty `dependencies` array:
+   a. For each entry in `dependencies`, look up the dependency's issue URL in the manifest
+   b. If found, post a comment on the dependent issue: `Blocked by {dependency_issue_url}` — GitHub auto-links the reference so the blocker issue also shows an inbound mention
+   c. If a dependency is not in the manifest (packet not yet filed or external), log a warning and skip — do not fail the run
+   d. This is a second pass by design: dependencies filed in the same batch are resolved because step 3 writes the manifest entry before this pass runs
+5. Commit updated `filed-packets.json` back to Architecture repo (uses `hive-field-mirror-token` which has `contents:write` on Architecture)
+6. Output a summary table: packet → issue URL → linked blockers
 
 ### Filed-packets manifest: `generated/issue-packets/filed-packets.json`
 
@@ -71,11 +67,13 @@ Machine-written by the action. Never hand-edited. Path relative to Architecture 
 
 ### Script: `scripts/file-packets.sh`
 
-Encapsulates the per-packet loop. Called by the workflow. Accepts:
+Encapsulates the per-packet loop and dependency-linking pass. Called by the workflow. Accepts:
 - `--packets-dir` — path to `active/` directory
 - `--manifest` — path to `filed-packets.json`
 - `--project-owner` — default `HoneyDrunkStudios`
 - `--project-number` — default `4`
+- `--link-deps` — run the dependency-linking pass after filing (default: on)
+- `--skip-link-deps` — skip the dependency-linking pass (useful for dry-run or partial filing)
 
 Runnable locally with `GH_TOKEN` and `HIVE_FIELD_MIRROR_TOKEN` set in environment.
 
@@ -107,9 +105,13 @@ None — CI and shell tooling only.
 - [ ] Re-running against the same packets creates no duplicate issues (manifest check)
 - [ ] `filed-packets.json` is committed back to Architecture repo after the run
 - [ ] `initiative: adr-0005-0006-rollout` in frontmatter → `initiative-adr-0005-0006-rollout` label added to issue → Initiative field set on board
-- [ ] `actor: Agent` in frontmatter → Actor=Agent on board; `actor: Human` → Actor=Human (set via direct GraphQL call, not via mirror script)
+- [ ] `actor: Agent` in frontmatter → Actor=Agent on board; `actor: Human` → Actor=Human (set via `--actor` flag on the mirror script)
 - [ ] `scripts/file-packets.sh` runs locally with env vars set
 - [ ] Workflow passes `actionlint`
+- [ ] Filing a packet with `dependencies: ["other-packet.md"]` produces a "Blocked by org/repo#N" comment on the dependent issue after all packets are filed
+- [ ] The blocker issue shows an inbound cross-reference from the dependent issue (GitHub renders this automatically from the comment mention)
+- [ ] Dependencies filed in the same batch are resolved correctly (second-pass design)
+- [ ] A dependency not found in the manifest logs a warning but does not fail the run
 
 ## Referenced ADR Decisions
 
