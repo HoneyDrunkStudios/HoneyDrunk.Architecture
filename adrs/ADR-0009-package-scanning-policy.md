@@ -1,9 +1,9 @@
 # ADR-0009: Package Scanning — Vulnerability and Dependency Freshness
 
 **Status:** Accepted
-**Date:** 2026-04-11
+**Date:** 2026-04-09
 **Deciders:** HoneyDrunk Studios
-**Sector:** Core
+**Sector:** Meta
 
 ## Context
 
