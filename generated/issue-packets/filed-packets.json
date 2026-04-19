@@ -32,5 +32,13 @@
   "generated/issue-packets/active/standalone/2026-04-11-standards-stylecop-analyzer-embedding.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Standards/issues/31",
   "generated/issue-packets/active/standalone/2026-04-12-actions-packet-filing-action.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/27",
   "generated/issue-packets/active/standalone/2026-04-12-architecture-file-packets-caller.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/17",
-  "generated/issue-packets/active/standalone/2026-04-12-org-secret-gh-issue-token.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/16"
+  "generated/issue-packets/active/standalone/2026-04-12-org-secret-gh-issue-token.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/16",
+  "generated/issue-packets/active/adr-0010-observe-ai-routing-phase-1/01-architecture-adr-0010-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/35",
+  "generated/issue-packets/active/adr-0010-observe-ai-routing-phase-1/02-architecture-create-observe-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/36",
+  "generated/issue-packets/active/adr-0010-observe-ai-routing-phase-1/04-ai-add-routing-contracts.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/1",
+  "generated/issue-packets/active/adr-0015-container-apps-rollout/01-architecture-container-apps-walkthroughs.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/37",
+  "generated/issue-packets/active/adr-0015-container-apps-rollout/02-actions-deploy-container-app-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/48",
+  "generated/issue-packets/active/adr-0015-container-apps-rollout/03-notify-functions-release-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/3",
+  "generated/issue-packets/active/adr-0015-container-apps-rollout/04-notify-worker-release-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/4",
+  "generated/issue-packets/active/adr-0015-container-apps-rollout/05-pulse-collector-release-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/3"
 }
