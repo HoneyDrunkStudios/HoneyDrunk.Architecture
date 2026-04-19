@@ -22,7 +22,7 @@ How AI connects to the rest of the Grid. Every item here represents a cross-Node
 | `IInferenceResult` | Agents, Evals | Normalized response envelope — callers inspect tokens, cost, model ID. |
 | `IModelRouter` | Agents, HoneyHub (future) | Policy-driven model selection. Agents don't hardcode a model — they declare requirements, Router selects. |
 | `IRoutingPolicy` | App Configuration (policy storage) | Policies are loaded from shared App Config and applied by `IModelRouter`. |
-| `IModelCapabilityDeclaration` | Agents, HoneyHub (future), provider adapters | Declares required/available model capabilities used by routing to match workloads to compatible models. |
+| `ModelCapabilityDeclaration` | Agents, HoneyHub (future), provider adapters | Declares required/available model capabilities used by routing to match workloads to compatible models. |
 
 ## Canary Coverage Required
 

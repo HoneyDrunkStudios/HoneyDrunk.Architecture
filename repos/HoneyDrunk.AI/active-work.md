@@ -24,7 +24,7 @@ AI has the fewest upstream dependencies in the AI sector — it depends on Core 
   - `HoneyDrunk.AI.Providers.Anthropic`
   - `HoneyDrunk.AI.Providers.AzureOpenAI`
   - `HoneyDrunk.AI.Providers.Local` (ONNX — deferred)
-- AI Routing: `IModelRouter`, `IRoutingPolicy`, `IModelCapabilityDeclaration` (from ADR-0010)
+- AI Routing: `IModelRouter`, `IRoutingPolicy`, `ModelCapabilityDeclaration` (from ADR-0010)
   - Cost-first routing policy as the first implementation
   - Policy storage via App Configuration (ADR-0005)
 - Telemetry: every inference call emits a Pulse span with tokens in/out, latency, model ID, cost estimate

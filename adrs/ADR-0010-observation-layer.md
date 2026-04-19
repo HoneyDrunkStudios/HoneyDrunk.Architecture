@@ -1,6 +1,6 @@
 # ADR-0010: Observation Layer and AI Routing — HoneyDrunk.Observe and IModelRouter
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-04-12
 **Deciders:** HoneyDrunk Studios
 **Sector:** Ops
@@ -79,7 +79,7 @@ This is not a new Node — it is an extension of HoneyDrunk.AI's existing respon
 **New contracts within HoneyDrunk.AI:**
 - `IModelRouter` — given a request with declared capability requirements, select the appropriate model/provider
 - `IRoutingPolicy` — pluggable policy interface (cost-first, capability-first, latency-first, compliance-first)
-- `IModelCapabilityDeclaration` — machine-readable declaration of what a model can do (context window, modalities, function calling support, cost tier)
+- `ModelCapabilityDeclaration` — machine-readable declaration of what a model can do (context window, modalities, function calling support, cost tier)
 
 **Routing policy storage:**
 - Policies live in Azure App Configuration (the shared config store from ADR-0005)
@@ -136,7 +136,7 @@ Rejected. Third-party routers introduce an external dependency in the inference 
 ### Phase 1 — Contracts and Stubs (Scope now)
 
 - Define `IObservationTarget`, `IObservationConnector`, `IObservationEvent` in `HoneyDrunk.Observe.Abstractions`
-- Define `IModelRouter`, `IRoutingPolicy`, `IModelCapabilityDeclaration` in `HoneyDrunk.AI.Abstractions`
+- Define `IModelRouter`, `IRoutingPolicy`, `ModelCapabilityDeclaration` in `HoneyDrunk.AI.Abstractions`
 - Create repo context folder (`repos/HoneyDrunk.Observe/`)
 - Update `catalogs/nodes.json`, `catalogs/relationships.json`, `catalogs/contracts.json`
 

@@ -147,7 +147,7 @@
         { "name": "IModelProvider", "kind": "interface", "description": "Provider slot — implement per model backend (OpenAI, Anthropic, Azure OpenAI, local/ONNX)." },
         { "name": "IModelRouter", "kind": "interface", "description": "Routes inference requests to the most appropriate model/provider based on policy, capability, cost, and runtime constraints." },
         { "name": "IRoutingPolicy", "kind": "interface", "description": "Declares the policy inputs and decision rules used by model routing (quality tier, latency, cost, residency, fallback)." },
-        { "name": "IModelCapabilityDeclaration", "kind": "interface", "description": "Describes a model's declared capabilities and constraints so routing can match requests to supported providers." },
+        { "name": "ModelCapabilityDeclaration", "kind": "type", "description": "Describes a model's declared capabilities and constraints so routing can match requests to supported providers." },
         { "name": "IInferenceResult", "kind": "interface", "description": "Normalized inference response — content, tokens in/out, model ID, latency, cost estimate." }
       ]
     },

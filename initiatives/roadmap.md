@@ -2,7 +2,7 @@
 
 High-level roadmap for the HoneyDrunk Grid.
 
-**Last Updated:** 2026-04-16
+**Last Updated:** 2026-04-18
 
 ## Q1 2026 (Jan–Mar)
 
@@ -23,6 +23,7 @@ High-level roadmap for the HoneyDrunk Grid.
 - [ ] Pulse — Production hardening, Grafana dashboard templates, finalize 0.1.0 release
 - [ ] Notify — Azure Functions deployment, finalize 0.1.0 release
 - [ ] HoneyDrunk.AI — Model/provider abstraction, OpenAI + Anthropic providers, Pulse telemetry
+- [ ] **ADR-0010 Phase 1 (Observation Layer & AI Routing contracts)** — Register HoneyDrunk.Observe in catalogs, scaffold Observe repo with Abstractions package (IObservationTarget, IObservationConnector, IObservationEvent), add IModelRouter/IRoutingPolicy/ModelCapabilityDeclaration to HoneyDrunk.AI.Abstractions, finalize invariants 28–30
 - [ ] HoneyDrunk.Capabilities — Tool registry, discovery, permissioning, initial tool descriptors
 - [ ] HoneyDrunk.Agents — Agent runtime, lifecycle, execution context, tool/memory interfaces
 - [ ] HoneyDrunk.Memory — Agent memory contracts, InMemory provider, Agents integration
@@ -31,6 +32,7 @@ High-level roadmap for the HoneyDrunk Grid.
 
 ## Q3 2026 (Jul–Sep)
 
+- [ ] **ADR-0010 Phase 2 (first useful increment)** — HoneyDrunk.Observe.Connectors.GitHub (webhook receiver + repo health checks), cost-first IRoutingPolicy implementation in HoneyDrunk.AI, routing policies loaded from Azure App Configuration
 - [ ] HoneyDrunk.Knowledge — Document ingestion, RAG pipelines, Azure AI Search provider
 - [ ] HoneyDrunk.Flow — Workflow engine, multi-step pipelines, agent chaining, compensation
 - [ ] HoneyDrunk.Lore — Initial scaffolding, raw ingestion, LLM compilation, wiki maintenance
@@ -50,6 +52,7 @@ High-level roadmap for the HoneyDrunk Grid.
 
 ## Future
 
+- ADR-0010 Phase 3 — Observe → HoneyHub event routing; HoneyHub-consumed routing-policy outcomes as plan-adjustment signals (gated on HoneyHub Phase 1 being live)
 - HoneyDrunk.Sim — Simulation, plan evaluation, risk analysis (when agents operate at scale)
 - HoneyDrunk.Gateway — API gateway with built-in Grid context
 - HoneyDrunk.Jobs — Background job scheduling with Grid integration
