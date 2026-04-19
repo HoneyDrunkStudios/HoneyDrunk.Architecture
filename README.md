@@ -65,7 +65,7 @@ Intent → Classify → Scope → Issue Packets → GitHub Issues → Execute �
 | `issues/templates/` | Issue packet templates by type (feature, bug, cross-repo, CI, canary, etc.) |
 | `generated/` | Output directory for issue packets, ADR drafts, PDR drafts, site sync packets, incident logs |
 | `copilot/` | Agent behavior rules — issue authoring standards, PR review checklists, global instructions |
-| `.claude/agents/` | Claude Code agent definitions (scope, refine, review, adr-composer, pdr-composer, netrunner, site-sync, file-issues) |
+| `.claude/agents/` | Claude Code agent definitions (scope, refine, review, node-audit, adr-composer, pdr-composer, netrunner, site-sync, file-issues) |
 | `scripts/` | Automation scripts for issue filing and board management |
 
 ## The Grid

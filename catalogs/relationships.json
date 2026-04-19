@@ -187,7 +187,7 @@
       "consumed_by_planned": ["honeydrunk-agents", "honeydrunk-memory", "honeydrunk-knowledge", "honeydrunk-evals", "honeydrunk-sim"],
       "blocked_by": [],
       "exposes": {
-        "contracts": ["IChatClient", "IEmbeddingGenerator", "IModelProvider", "IInferenceResult", "IModelRouter", "IRoutingPolicy", "IModelCapabilityDeclaration"],
+        "contracts": ["IChatClient", "IEmbeddingGenerator", "IModelProvider", "IInferenceResult", "IModelRouter", "IRoutingPolicy", "ModelCapabilityDeclaration"],
         "packages": ["HoneyDrunk.AI.Abstractions", "HoneyDrunk.AI", "HoneyDrunk.AI.Providers.OpenAI", "HoneyDrunk.AI.Providers.Anthropic", "HoneyDrunk.AI.Providers.AzureOpenAI", "HoneyDrunk.AI.Providers.Local"]
       },
       "consumes_detail": {

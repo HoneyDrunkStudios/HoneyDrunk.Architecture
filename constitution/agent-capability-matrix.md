@@ -12,6 +12,7 @@ Quick-reference card for all Claude Code agents in `.claude/agents/`. Use this t
 | **netrunner** | Cross-repo discovery needed | Keyword/goal, `catalogs/relationships.json`, `catalogs/nodes.json`, `routing/repo-discovery-rules.md` | Repo list + dependency chain + impact scope | Generate packets, make decisions |
 | **file-issues** | Packets ready to file as GitHub Issues | Issue packets from `generated/issue-packets/active/` | GitHub Issues in target repos (via gh CLI) | Edit packets post-filing, make decisions |
 | **review** | PR opened or execution completed | PR diff, issue packet, ADR constraints | Review comments, pass/fail verdict | Merge, approve in GitHub UI |
+| **node-audit** | Whole-Node health check (not a PR diff) | Node name, catalogs, `repos/{node}/*`, governing ADRs, repo code on disk | Findings report — verdict, blocking/changes/suggest, handoff recommendations | Edit files, file issues, open PRs, decide |
 | **refine** | Draft exists, needs iteration | Draft doc (ADR, PDR, packet, design), feedback | Revised draft | Author from scratch, make binding decisions |
 | **site-sync** | Repo release or content update | Release notes, ADRs, repo state | Site-sync packet in `generated/site-sync-packets/` | Publish to website directly |
 | **initiatives-sync** | Monday/Thursday schedule or manual dispatch | `gh` CLI issue states, `generated/issue-packets/filed-packets.json`, `catalogs/grid-health.json`, `catalogs/nodes.json`, initiative files | Updated `initiatives/` files via PR (new branch per run) | Create issues, modify `filed-packets.json`, make architectural decisions |
@@ -41,6 +42,9 @@ Is there a draft that needs iteration/improvement?
 
 Has a PR been opened and needs a review pass?
   → yes → review
+
+Do I want a whole-repo health audit of a single Node (drift, boundary overlap, producer/consumer correctness)?
+  → yes → node-audit
 
 Did a Node release something that the website should announce?
   → yes → site-sync
@@ -84,6 +88,7 @@ Before any work, load in this order:
 | file-issues | `generated/issue-packets/active/` dispatch plan, `copilot/issue-authoring-rules.md` |
 | initiatives-sync | `generated/issue-packets/filed-packets.json`, `catalogs/grid-health.json`, `catalogs/nodes.json`, `initiatives/` |
 | review | ADRs referenced in packet frontmatter, `constitution/invariants.md` |
+| node-audit | `catalogs/relationships.json`, `catalogs/nodes.json`, `catalogs/contracts.json`, `catalogs/compatibility.json`, `repos/{node}/overview.md`, `boundaries.md`, `invariants.md`, `active-work.md`, governing ADRs, repo code on disk |
 | refine | The draft being refined; its governing ADR/PDR if applicable |
 | site-sync | `routing/site-sync-rules.md`, `generated/site-sync-packets/` |
 
@@ -98,6 +103,7 @@ Goal / User Request
   ├─ pdr-composer → generated/pdr-drafts/{slug}.md
   │
   ├─ netrunner   → [verbal impact analysis — no file output]
+  ├─ node-audit  → [verbal findings report on one Node — no file output]
   │
   └─ scope       → generated/issue-packets/active/{initiative}/
                       ├─ dispatch-plan.md
