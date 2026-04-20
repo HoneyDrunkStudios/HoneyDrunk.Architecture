@@ -8,7 +8,7 @@ Centralized view of what shipped across the Grid.
 
 ## Q2 2026
 
-> **Human review pending:** Four release drift entries below (Vault, Auth, Web.Rest, Data 0.4.0, last_release: 2026-04-05 per grid-health.json). Awaiting CHANGELOG confirmation and release notes. Note: Vault#12 ("Release HoneyDrunk.Vault v0.3.0") still open — verify whether 0.3.0 or 0.4.0 is the actual published version before finalizing.
+> **Human review pending:** Five release entries below still need CHANGELOG confirmation and release notes. Status: Vault#12 (release issue for 0.3.0) still open — verify whether 0.3.0 or 0.4.0 was shipped. Vault.Rotation#4 (0.1.0 release) also pending — repo scaffolded 2026-04-11 but not yet released.
 
 ### Pending Verification
 
@@ -43,6 +43,14 @@ Centralized view of what shipped across the Grid.
 - **Highlights:**
   - Highlights pending — check HoneyDrunk.Data CHANGELOG and confirm tag exists before publishing
 - **Breaking Changes:** Unknown — review CHANGELOG
+
+#### Vault.Rotation 0.1.0
+
+- **Signal:** Seed
+- **Shipped:** Q2 2026 (pending — Vault.Rotation repo created 2026-04-11, issues Vault.Rotation#3–4 open)
+- **Highlights:**
+  - Highlights pending — repo scaffold and Function app implementation in progress (Vault.Rotation#3 open, release pending #4)
+- **Breaking Changes:** N/A (initial release)
 
 ---
 
