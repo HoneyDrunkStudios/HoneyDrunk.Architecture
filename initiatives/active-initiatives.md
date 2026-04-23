@@ -51,7 +51,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [ ] Wave 2: Per-Node bootstrap migrations (Auth, Web.Rest, Data, Notify, Pulse, Studios)
 - [ ] Wave 2: Actions direct secret removal + deploy-gate SLA check
 
-> **Sync (2026-04-20):** 4/15 issues closed (26.7%). Last closed: Vault#10, Vault#9 (both 2026-04-12). Wave 1 blocked on Actions#20 (OIDC federated-credential workflow) — critical gate for Wave 2. Wave 2 per-Node bootstrap issues (Auth#5, Web.Rest#4, Data#4, Notify#1, Pulse#1) waiting behind Wave 1. Also awaiting Vault#12 (release tag) and Vault.Rotation#4 (release tag). No progress on open issues in past 8 days (last activity 2026-04-12). Wave 1 foundation work complete; Wave 2 execution blocked on Actions#20.
+> **Sync (2026-04-23):** 4/15 issues closed (26.7%). Last closed: Vault#10, Vault#9 (both 2026-04-12). Wave 1 blocked on Actions#20 (OIDC federated-credential workflow) — critical gate for Wave 2. Wave 2 per-Node bootstrap issues (Auth#5, Web.Rest#4, Data#4, Notify#1, Pulse#1) waiting behind Wave 1. Also awaiting Vault#12 (release tag) and Vault.Rotation#4 (release tag). No progress on open issues in past 11 days (last activity 2026-04-12). Wave 1 foundation work complete; Wave 2 execution blocked on Actions#20.
 
 ### Container Apps Rollout (ADR-0015)
 **Status:** In Progress  
@@ -67,7 +67,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [ ] Notify#4: Release workflow and Azure bring-up for `Notify.Worker` on Container Apps (open)
 - [ ] Pulse#3: Release workflow and Azure bring-up for `Pulse.Collector` on Container Apps (open)
 
-> **Sync (2026-04-20):** 0/5 issues closed (0%). Initiative scoped and filed 2026-04-12. No progress yet — work is sequenced after ADR-0005/0006 Wave 2 and Notify/Pulse stabilization.
+> **Sync (2026-04-23):** 0/5 issues closed (0%). Initiative scoped and filed 2026-04-12. No progress in 11 days — work is sequenced after ADR-0005/0006 Wave 2 and Notify/Pulse stabilization.
 
 ### Package Scanning Rollout (ADR-0009)
 **Status:** In Progress  
@@ -86,7 +86,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [ ] Notify wire up CI scan workflows (Notify#2 — open)
 - [x] Web.Rest wire up CI scan workflows (Web.Rest#5 closed 2026-04-16)
 
-> **Sync (2026-04-20):** 6/8 issues closed (75%). Momentum resumed 2026-04-16 with Kernel#14, Data#5, Web.Rest#5 closures. Only Pulse#2 and Notify#2 remain open. Rollout near completion — last two issues are infrastructure-gated (both Pulse and Notify awaiting Azure deployment per grid-health.json).
+> **Sync (2026-04-23):** 6/8 issues closed (75%). Momentum resumed 2026-04-16 with Kernel#14, Data#5, Web.Rest#5 closures. Only Pulse#2 and Notify#2 remain open. Rollout near completion — last two issues are infrastructure-gated (both Pulse and Notify awaiting Azure deployment per grid-health.json). No progress in past 7 days; gated on deployment readiness.
 
 ### Vault.Rotation Bring-Up
 **Status:** In Progress  
@@ -96,12 +96,12 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 **Description:** Scaffold HoneyDrunk.Vault.Rotation as a deployable Function Node, wire OIDC + RBAC, and complete ADR-0006 Tier-2 operational setup.
 **Tracking:**
 - [x] Architecture catalog registration + routing keywords (Architecture#7 closed 2026-04-11)
-- [ ] Architecture repo stubs (`repos/HoneyDrunk.Vault.Rotation/*`)
+- [x] Architecture repo stubs (`repos/HoneyDrunk.Vault.Rotation/*`) — included in Architecture#7 closure
 - [ ] Repo scaffold implementation packet execution (Vault.Rotation#3 — open, unblocked by Architecture#8 closed 2026-04-11)
 - [ ] Managed identity + vault RBAC automation
 - [ ] Rotation function runtime + observability
 
-> **Sync (2026-04-20):** 1/5 tracking items complete. Architecture#8 repo creation unblocked Vault.Rotation scaffold execution. Vault.Rotation#3 scaffold issue remains open (unblocked but awaiting Codex execution). No new progress since 2026-04-11.
+> **Sync (2026-04-23):** 2/5 tracking items complete. Architecture#8 repo creation unblocked Vault.Rotation scaffold execution. Vault.Rotation#3 scaffold issue remains open (unblocked but awaiting Codex execution). No new progress since 2026-04-11.
 
 ### Grid v0.4 Stabilization
 **Status:** In Progress  
@@ -117,7 +117,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [ ] Notify aligned to Kernel 0.4.0 patterns
 - [ ] Pulse aligned to Kernel 0.4.0 patterns
 
-> **Sync (2026-04-16):** 6/8 items done. Core nodes (Kernel, Transport, Vault, Auth, Web.Rest, Data) all v0.4.0 aligned. Notify (v0.1.0) and Pulse (v0.1.0) have signal: Seed, blocked by Azure deployment per grid-health.json. No new progress in past 4 days. Core objectives met; Notify/Pulse deployment gated on infrastructure provisioning.
+> **Sync (2026-04-23):** 6/8 items done. Core nodes (Kernel, Transport, Vault, Auth, Web.Rest, Data) all v0.4.0 aligned. Notify (v0.1.0) and Pulse (v0.1.0) have signal: Seed, blocked by Azure deployment per grid-health.json. No new progress in past 7 days. Core objectives met; Notify/Pulse deployment gated on infrastructure provisioning.
 
 ### Notification Subsystem Launch
 **Status:** In Progress  
@@ -132,7 +132,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [ ] Azure Functions deployment
 - [ ] Integration tests with live providers
 
-> **Sync (2026-04-16):** 5/7 items done. Azure Functions deployment and live provider integration tests remain blocked on infrastructure provisioning. grid-health.json confirms active_blockers. No progress in 4 days; gated on deployment infrastructure.
+> **Sync (2026-04-23):** 5/7 items done. Azure Functions deployment and live provider integration tests remain blocked on infrastructure provisioning. grid-health.json confirms active_blockers. No progress in 7 days; gated on deployment infrastructure.
 
 ### Ops: Observability Pipeline
 **Status:** In Progress  
@@ -145,7 +145,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [ ] Production deployment of Pulse.Collector
 - [ ] Dashboard templates for Grafana
 
-> **Sync (2026-04-16):** 3/5 items done. Production Pulse.Collector deployment and Grafana dashboard templates remain. grid-health.json confirms active_blockers. No progress in 4 days; gated on deployment and dashboard work.
+> **Sync (2026-04-23):** 3/5 items done. Production Pulse.Collector deployment and Grafana dashboard templates remain. grid-health.json confirms active_blockers. No progress in 7 days; gated on deployment and dashboard work.
 
 ## Planned
 
@@ -163,7 +163,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [ ] Lore#5: OpenClaw setup + Lore sourcing skill (human-only) (open)
 - [ ] Architecture#9: Catalog registration for HoneyDrunk.Lore (open)
 
-> **Sync (2026-04-20):** 0/6 issues closed (0%). All Lore bring-up issues remain open. grid-health.json shows signal: Seed with active_blockers = ["Repo not yet scaffolded", "Bring-up packets on deck"]. Status: On Deck behind ADR-0005/0006 Wave 1 completion (Actions#20 still blocking Wave 2, thus delaying Lore start). No progress since initial filing (2026-04-12).
+> **Sync (2026-04-23):** 0/6 issues closed (0%). All Lore bring-up issues remain open. grid-health.json shows signal: Seed with active_blockers = ["Repo not yet scaffolded", "Bring-up packets on deck"]. Status: On Deck behind ADR-0005/0006 Wave 1 completion (Actions#20 still blocking Wave 2, thus delaying Lore start). No progress in 11 days since initial filing (2026-04-12).
 
 ### Agent Kit
 **Status:** On Deck  
