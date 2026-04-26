@@ -2,7 +2,7 @@
 
 External vendors, services, and third-party dependencies across the HoneyDrunk Grid.
 
-**Last Updated:** 2026-03-22
+**Last Updated:** 2026-04-26
 
 ---
 

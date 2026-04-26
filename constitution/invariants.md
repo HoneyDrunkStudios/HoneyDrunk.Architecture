@@ -123,10 +123,10 @@ _Invariants 29–30 are reserved for the Observation Layer (ADR-0010). They will
 ## Hosting Platform Invariants
 
 34. **Containerized deployable Nodes run on Azure Container Apps, named `ca-hd-{service}-{env}`, one per Node per environment, with system-assigned Managed Identity.**
-    See ADR-0015 (Proposed — this invariant takes effect when ADR-0015 is accepted).
+    See ADR-0015.
 
 35. **One shared Container Apps Environment (`cae-hd-{env}`) and one shared Azure Container Registry (`acrhdshared{env}`) serve every containerized Node within a given environment.**
-    Per-Node compute environments or registries are forbidden without a follow-up ADR. See ADR-0015 (Proposed — this invariant takes effect when ADR-0015 is accepted).
+    Per-Node compute environments or registries are forbidden without a follow-up ADR. See ADR-0015.
 
 36. **Container App revision mode is `Multiple` with explicit traffic splitting on deploy.**
-    Single-revision mode is forbidden — it removes the rollback seam. See ADR-0015 (Proposed — this invariant takes effect when ADR-0015 is accepted).
+    Single-revision mode is forbidden — it removes the rollback seam. See ADR-0015.
