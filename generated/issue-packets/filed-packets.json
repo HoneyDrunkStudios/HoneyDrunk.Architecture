@@ -40,5 +40,12 @@
   "generated/issue-packets/active/adr-0015-container-apps-rollout/02-actions-deploy-container-app-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/48",
   "generated/issue-packets/active/adr-0015-container-apps-rollout/03-notify-functions-release-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/3",
   "generated/issue-packets/active/adr-0015-container-apps-rollout/04-notify-worker-release-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/4",
-  "generated/issue-packets/active/adr-0015-container-apps-rollout/05-pulse-collector-release-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/3"
+  "generated/issue-packets/active/adr-0015-container-apps-rollout/05-pulse-collector-release-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/3",
+  "generated/issue-packets/active/adr-0011-code-review-pipeline/01-architecture-adr-0011-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/42",
+  "generated/issue-packets/active/adr-0011-code-review-pipeline/02-actions-job-sonarcloud-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/53",
+  "generated/issue-packets/active/adr-0011-code-review-pipeline/03-actions-agent-run-packet-link.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/54",
+  "generated/issue-packets/active/adr-0011-code-review-pipeline/04-architecture-sonarcloud-org-walkthrough.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/43",
+  "generated/issue-packets/active/adr-0011-code-review-pipeline/05a-actions-labels-as-code.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/55",
+  "generated/issue-packets/active/adr-0011-code-review-pipeline/05b-actions-out-of-band-label-fanout.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/56",
+  "generated/issue-packets/active/adr-0011-code-review-pipeline/06-kernel-sonarcloud-onboarding.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Kernel/issues/22"
 }
