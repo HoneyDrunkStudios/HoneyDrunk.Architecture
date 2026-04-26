@@ -143,8 +143,10 @@ Each GitHub repo with deployable services configures **Environments** (Settings 
 | Variable | Repo | Example |
 |----------|------|---------|
 | `NOTIFY_FUNCTION_APP_NAME` | HoneyDrunk.Notify | `func-hd-notify-dev` |
-| `COLLECTOR_APP_NAME` | HoneyDrunk.Pulse | `app-hd-pulse-dev` |
-| `ACR_REGISTRY` | HoneyDrunk.Pulse | `crhddev.azurecr.io` (or omit for GHCR) |
+| `NOTIFY_WORKER_CONTAINER_APP_NAME` | HoneyDrunk.Notify | `ca-hd-notify-worker-dev` |
+| `COLLECTOR_CONTAINER_APP_NAME` | HoneyDrunk.Pulse | `ca-hd-pulse-dev` |
+| `ACR_REGISTRY` | HoneyDrunk.Notify, HoneyDrunk.Pulse | `acrhdshareddev.azurecr.io` |
+| `AZURE_CONTAINER_APPS_ENV` | HoneyDrunk.Notify, HoneyDrunk.Pulse | `cae-hd-dev` |
 | `COLLECTOR_KEYVAULT_SECRETS` | HoneyDrunk.Pulse | Newline-separated secret names |
 
 ### Repository-Level Secrets (not environment-scoped)

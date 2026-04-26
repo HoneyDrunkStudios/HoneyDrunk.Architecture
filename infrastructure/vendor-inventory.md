@@ -68,7 +68,7 @@ External vendors, services, and third-party dependencies across the HoneyDrunk G
 | `azure/webapps-deploy@v3` | Microsoft | App Service deployment |
 | `docker/login-action@v3` | Docker | Container registry login |
 | `gitleaks/gitleaks-action@v2` | Gitleaks | Secret scanning |
-| `aquasecurity/trivy-action@0.28.0` | Aqua Security | Container + IaC vulnerability scanning |
+| `aquasecurity/trivy-action@0.35.0` | Aqua Security | Container + IaC vulnerability scanning |
 | `github/codeql-action@v3` | GitHub | SAST analysis |
 | `anchore/sbom-action@v0` | Anchore | SBOM generation (SPDX) |
 | `EnricoMi/publish-unit-test-result-action@v2` | EnricoMi | Test result reporting |

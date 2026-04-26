@@ -2,7 +2,7 @@
 
 Step-by-step runbook for provisioning Azure resources for a new HoneyDrunk Grid service. All steps use the Azure Portal and GitHub UI.
 
-**Last Updated:** 2026-03-28
+**Last Updated:** 2026-04-25
 
 ---
 
@@ -18,7 +18,7 @@ Step-by-step runbook for provisioning Azure resources for a new HoneyDrunk Grid 
 Provisioning a new service:
 
 1. Create the Resource Group
-2. Create Azure resources (Function App, App Service, Storage, etc.)
+2. Create Azure resources (Function App, Container App, Storage, etc.)
 3. Create the Key Vault and populate secrets
 4. Create the App Registration with OIDC federated credentials
 5. Assign RBAC roles
@@ -26,6 +26,8 @@ Provisioning a new service:
 7. Test the deployment
 
 Use [azure-naming-conventions.md](azure-naming-conventions.md) for all resource names.
+
+> **Containerized Nodes:** Per ADR-0015, every containerized deployable Node runs on **Azure Container Apps**, not App Service. Provisioning relies on the shared Container Registry (`acrhdshared{env}`) and Container Apps Environment (`cae-hd-{env}`) in `rg-hd-platform-{env}`. Stand those up once per environment via the dedicated walkthroughs before standing up any per-Node Container App.
 
 ---
 
@@ -67,29 +69,25 @@ Use [azure-naming-conventions.md](azure-naming-conventions.md) for all resource 
 9. On the **Storage** tab, select the storage account you just created (`sthdnotifydev`)
 10. Click **Review + create** -> **Create**
 
-### Option B: App Service Container (e.g., Pulse)
+### Option B: Container App (e.g., Pulse, Notify.Worker)
 
-#### 2a. App Service Plan
+Per ADR-0015, containerized Nodes run on **Azure Container Apps** with a shared Container Apps Environment and Container Registry per environment.
 
-1. Go to **App Service plans** -> **Create**
-2. **Resource group:** `rg-hd-pulse-dev`
-3. **Name:** `plan-hd-pulse-dev`
-4. **Operating System:** Linux
-5. **Region:** East US
-6. **Pricing plan:** Basic B1 (minimum for containers)
-7. Click **Review + create** -> **Create**
+#### 2a. Provision shared platform resources (once per environment)
 
-#### 2b. App Service
+Both of these live in `rg-hd-platform-{env}` and serve every containerized Node in the environment. Skip to **2b** if they already exist.
 
-1. Go to **App Services** -> **Create** -> **Web App**
-2. **Resource group:** `rg-hd-pulse-dev`
-3. **Name:** `app-hd-pulse-dev`
-4. **Publish:** Container
-5. **Operating System:** Linux
-6. **Region:** East US
-7. **App Service Plan:** select `plan-hd-pulse-dev`
-8. On the **Container** tab, set the image source (GHCR or ACR) and image name
-9. Click **Review + create** -> **Create**
+1. Container Registry — follow [Container Registry creation](container-registry-creation.md) to provision `acrhdshared{env}` (Basic SKU).
+2. Container Apps Environment — follow [Container Apps Environment creation](container-apps-environment-creation.md) to provision `cae-hd-{env}` (Consumption-only, logs to `log-hd-shared-{env}`).
+
+#### 2b. Container App
+
+Follow [Container App creation](container-app-creation.md) to provision `ca-hd-{service}-{env}` in `rg-hd-{service}-{env}`, attached to the shared `cae-hd-{env}` and pulling from `acrhdshared{env}`. Key choices baked into the walkthrough:
+
+- System-assigned Managed Identity with `AcrPull` on the shared ACR and `Key Vault Secrets User` on the Node's vault (Step 5 of this guide can be skipped for Container Apps — RBAC is wired in the walkthrough).
+- Ingress enabled (HTTP/2 for gRPC like Pulse.Collector; disabled for queue-driven workers like Notify.Worker).
+- Revision mode **Multiple** with traffic splitting on deploy (Invariant 36).
+- Bootstrap env vars (`AZURE_KEYVAULT_URI`, `AZURE_APPCONFIG_ENDPOINT`, `ASPNETCORE_ENVIRONMENT`, `HONEYDRUNK_NODE_ID`) seeded at create time.
 
 ---
 
@@ -215,12 +213,21 @@ Then add service-specific variables:
 |----------|-------|
 | `NOTIFY_FUNCTION_APP_NAME` | `func-hd-notify-dev` |
 
+**For Notify.Worker:**
+
+| Variable | Value |
+|----------|-------|
+| `NOTIFY_WORKER_CONTAINER_APP_NAME` | `ca-hd-notify-worker-dev` |
+| `AZURE_CONTAINER_APPS_ENV` | `cae-hd-dev` |
+| `ACR_REGISTRY` | `acrhdshareddev.azurecr.io` |
+
 **For Pulse:**
 
 | Variable | Value |
 |----------|-------|
-| `COLLECTOR_APP_NAME` | `app-hd-pulse-dev` |
-| `ACR_REGISTRY` | ACR login server (or omit to use GHCR) |
+| `COLLECTOR_CONTAINER_APP_NAME` | `ca-hd-pulse-dev` |
+| `AZURE_CONTAINER_APPS_ENV` | `cae-hd-dev` |
+| `ACR_REGISTRY` | `acrhdshareddev.azurecr.io` |
 | `COLLECTOR_KEYVAULT_SECRETS` | Newline-separated secret names |
 
 See [azure-identity-and-secrets.md](azure-identity-and-secrets.md) for the full variable reference.
@@ -234,7 +241,7 @@ See [azure-identity-and-secrets.md](azure-identity-and-secrets.md) for the full 
 3. Click **Run workflow**
 4. Select the `development` environment
 5. Click **Run workflow**
-6. Watch the run — it should authenticate via OIDC, fetch secrets from Key Vault, and deploy to the Function App or App Service
+6. Watch the run — it should authenticate via OIDC, fetch secrets from Key Vault, and deploy to the Function App or Container App
 
 If the run fails, check:
 - **401/403 on Azure login:** Federated credential subject doesn't match (check repo name, environment name, org name in Step 4b)
@@ -246,7 +253,8 @@ If the run fails, check:
 ## Checklist: New Service Provisioning
 
 - [ ] Resource Group created
-- [ ] Azure resources created (Function App / App Service / Storage / etc.)
+- [ ] Azure resources created (Function App / Container App / Storage / etc.)
+- [ ] If containerized: shared `acrhdshared{env}` and `cae-hd-{env}` exist in `rg-hd-platform-{env}`
 - [ ] Key Vault created with Azure RBAC enabled
 - [ ] Key Vault secrets populated
 - [ ] App Registration created with OIDC federated credential

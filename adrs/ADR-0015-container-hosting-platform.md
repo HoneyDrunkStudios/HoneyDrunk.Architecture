@@ -1,6 +1,6 @@
 # ADR-0015: Container Hosting Platform for Deployable Nodes
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-04-18
 **Deciders:** HoneyDrunk Studios
 **Sector:** Infrastructure
