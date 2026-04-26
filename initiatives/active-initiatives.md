@@ -51,7 +51,23 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [ ] Wave 2: Per-Node bootstrap migrations (Auth, Web.Rest, Data, Notify, Pulse, Studios)
 - [ ] Wave 2: Actions direct secret removal + deploy-gate SLA check
 
-> **Sync (2026-04-16):** 4/12 issues closed (33.3%). Last closed: Vault#10, Vault#9 (both 2026-04-12). Wave 1 blocked on Actions#20 (OIDC federated-credential workflow) — critical gate for Wave 2. Wave 2 per-Node bootstrap issues (Auth#5, Web.Rest#4, Data#4, Notify#1, Pulse#1) waiting behind Wave 1. Also awaiting Vault#12 (release tag). No progress in past 4 days.
+> **Sync (2026-04-20):** 4/15 issues closed (26.7%). Last closed: Vault#10, Vault#9 (both 2026-04-12). Wave 1 blocked on Actions#20 (OIDC federated-credential workflow) — critical gate for Wave 2. Wave 2 per-Node bootstrap issues (Auth#5, Web.Rest#4, Data#4, Notify#1, Pulse#1) waiting behind Wave 1. Also awaiting Vault#12 (release tag) and Vault.Rotation#4 (release tag). No progress on open issues in past 8 days (last activity 2026-04-12). Wave 1 foundation work complete; Wave 2 execution blocked on Actions#20.
+
+### Container Apps Rollout (ADR-0015)
+**Status:** In Progress  
+**Scope:** Architecture, Actions, Notify, Pulse  
+**Initiative:** `adr-0015-container-apps-rollout`  
+**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)  
+**Description:** Deploy Notify and Pulse to Azure Container Apps. Includes infrastructure walkthroughs, Container App deployment workflow in Actions, and per-service release workflows.
+
+**Tracking:**
+- [ ] Architecture#37: Infrastructure walkthroughs for Function App, ACR, Container Apps Environment, and Container App (open)
+- [ ] Actions#48: Reusable workflow `job-deploy-container-app.yml` for Azure Container Apps (open)
+- [ ] Notify#3: Release workflow and Azure bring-up for `Notify.Functions` (open)
+- [ ] Notify#4: Release workflow and Azure bring-up for `Notify.Worker` on Container Apps (open)
+- [ ] Pulse#3: Release workflow and Azure bring-up for `Pulse.Collector` on Container Apps (open)
+
+> **Sync (2026-04-20):** 0/5 issues closed (0%). Initiative scoped and filed 2026-04-12. No progress yet — work is sequenced after ADR-0005/0006 Wave 2 and Notify/Pulse stabilization.
 
 ### Package Scanning Rollout (ADR-0009)
 **Status:** In Progress  
@@ -61,16 +77,16 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 **Description:** Wire CI scan workflows and dynamic release notes across all Nodes. Standardizes vulnerability scanning and auto-generates release summaries from commit history.
 
 **Tracking:**
-- [ ] Kernel wire up CI scan workflows (Kernel#14 — open)
+- [x] Kernel wire up CI scan workflows (Kernel#14 closed 2026-04-16)
 - [x] Auth wire up CI scan workflows (Auth#6 closed 2026-04-12)
-- [ ] Data wire up CI scan workflows (Data#5 — open)
+- [x] Data wire up CI scan workflows (Data#5 closed 2026-04-16)
 - [x] Transport wire up CI scan workflows (Transport#14 closed 2026-04-12)
 - [x] Vault wire up CI scan workflows (Vault#13 closed 2026-04-12)
 - [ ] Pulse wire up CI scan workflows (Pulse#2 — open)
 - [ ] Notify wire up CI scan workflows (Notify#2 — open)
-- [ ] Web.Rest wire up CI scan workflows (Web.Rest#5 — open)
+- [x] Web.Rest wire up CI scan workflows (Web.Rest#5 closed 2026-04-16)
 
-> **Sync (2026-04-16):** 3/8 issues closed (37.5%). Three closures on 2026-04-12 (Auth#6, Transport#14, Vault#13). Rollout has momentum but stalled in past 4 days. Kernel#14, Data#5, Pulse#2, Notify#2, Web.Rest#5 remain open. No blockers visible; ready to continue.
+> **Sync (2026-04-20):** 6/8 issues closed (75%). Momentum resumed 2026-04-16 with Kernel#14, Data#5, Web.Rest#5 closures. Only Pulse#2 and Notify#2 remain open. Rollout near completion — last two issues are infrastructure-gated (both Pulse and Notify awaiting Azure deployment per grid-health.json).
 
 ### Vault.Rotation Bring-Up
 **Status:** In Progress  
@@ -81,11 +97,11 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 **Tracking:**
 - [x] Architecture catalog registration + routing keywords (Architecture#7 closed 2026-04-11)
 - [ ] Architecture repo stubs (`repos/HoneyDrunk.Vault.Rotation/*`)
-- [ ] Repo scaffold implementation packet execution (unblocked — Architecture#8 repo creation closed 2026-04-11)
+- [ ] Repo scaffold implementation packet execution (Vault.Rotation#3 — open, unblocked by Architecture#8 closed 2026-04-11)
 - [ ] Managed identity + vault RBAC automation
 - [ ] Rotation function runtime + observability
 
-> **Sync (2026-04-16):** 1/5 tracking items complete. Architecture#8 repo creation (closed 2026-04-11) unblocked Vault.Rotation scaffold execution. Repo stubs and managed identity work now in-flight or on deck. Awaiting Codex handoff progress.
+> **Sync (2026-04-20):** 1/5 tracking items complete. Architecture#8 repo creation unblocked Vault.Rotation scaffold execution. Vault.Rotation#3 scaffold issue remains open (unblocked but awaiting Codex execution). No new progress since 2026-04-11.
 
 ### Grid v0.4 Stabilization
 **Status:** In Progress  
@@ -140,14 +156,14 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)  
 **Description:** Stand up HoneyDrunk.Lore as a flat-file LLM-compiled wiki. Repo scaffolded with `raw/`, `wiki/`, `output/`, `tools/` directories, CLAUDE.md schema doc, sourcing playbook, Obsidian vault configuration, Web Clipper, scheduled ingest agent, and OpenClaw sourcing skill. Inspired by the Karpathy LLM-wiki pattern. Flat-file-first — Knowledge/Agents integration deferred until those nodes exist.  
 **Tracking:**
-- [ ] Lore#1: Repo scaffold + CLAUDE.md schema doc
-- [ ] Lore#2: Obsidian vault setup + Web Clipper (human-only)
-- [ ] Lore#3: Scheduled ingest agent (CronCreate)
-- [ ] Lore#4: sourcing-playbook.md
-- [ ] Lore#5: OpenClaw setup + Lore sourcing skill (human-only)
-- [ ] Architecture#9: Catalog registration for HoneyDrunk.Lore
+- [ ] Lore#1: Repo scaffold + CLAUDE.md schema doc (open)
+- [ ] Lore#2: Obsidian vault setup + Web Clipper (human-only) (open)
+- [ ] Lore#3: Scheduled ingest agent (CronCreate) (open)
+- [ ] Lore#4: sourcing-playbook.md (open)
+- [ ] Lore#5: OpenClaw setup + Lore sourcing skill (human-only) (open)
+- [ ] Architecture#9: Catalog registration for HoneyDrunk.Lore (open)
 
-> **Sync (2026-04-16):** 0/6 issues closed (0%). All Lore bring-up issues remain open (Lore#1–5, Architecture#9). grid-health.json shows signal: Seed with active_blockers = ["Repo not yet scaffolded", "Bring-up packets on deck"]. Status: On Deck behind ADR-0005/0006 Wave 1 completion (Actions#20 still blocking). Ready to start once Wave 1 closes.
+> **Sync (2026-04-20):** 0/6 issues closed (0%). All Lore bring-up issues remain open. grid-health.json shows signal: Seed with active_blockers = ["Repo not yet scaffolded", "Bring-up packets on deck"]. Status: On Deck behind ADR-0005/0006 Wave 1 completion (Actions#20 still blocking Wave 2, thus delaying Lore start). No progress since initial filing (2026-04-12).
 
 ### Agent Kit
 **Status:** On Deck  
