@@ -30,7 +30,7 @@ Create a per-Node Key Vault named `kv-hd-{service}-{env}` in the matching resour
    - Start with **Public endpoint (all networks)** and firewall defaults.
    - Document this as temporary if Private Link migration is planned later.
 6. On **Monitoring + tags**:
-   - Add tags for `node`, `env`, and `initiative` as needed.
+   - Add tags `node={node-id}` and `env={env}`.
 7. Select **Review + create**, then **Create**.
 
 ## Post-create hardening

@@ -2,7 +2,7 @@
 
 What the team (human + agents) should prioritize right now.
 
-**Last Updated:** 2026-04-20
+**Last Updated:** 2026-04-26
 
 ## Primary Focus
 
@@ -23,7 +23,8 @@ Execute the two-wave rollout that standardizes secret and configuration manageme
 Provision Azure infrastructure and get both services running in the development environment.
 
 - **Notify:** Azure Function App (`func-hd-notify-dev`) — queue-triggered email/SMS dispatch
-- **Pulse:** App Service container (`app-hd-pulse-dev`) — OTLP collector for observability
+- **Notify.Worker:** Azure Container App (`ca-hd-notify-worker-dev`) — background worker on `cae-hd-dev` / `acrhdshareddev`
+- **Pulse:** Azure Container App (`ca-hd-pulse-dev`) — OTLP collector for observability, on `cae-hd-dev` / `acrhdshareddev`
 
 **Why now:** All Node packages are built and published. The deployment pipeline (HoneyDrunk.Actions) is ready. The Azure provisioning guide and naming conventions are documented. The only remaining work is creating the Azure resources, wiring OIDC, and running the first deploy.
 

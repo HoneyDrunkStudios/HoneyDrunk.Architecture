@@ -119,3 +119,14 @@ _Invariants 29–30 are reserved for the Observation Layer (ADR-0010). They will
 
 33. **Review-agent and scope-agent context-loading contracts are coupled.**
     The set of files loaded by the review agent (per `.claude/agents/review.md`) must be a superset of the set loaded by the scope agent (per `.claude/agents/scope.md`). Divergence is an anti-pattern; updates to either agent's context-loading section must be mirrored in the other. The coupling exists so there is no class of defect the scope agent could introduce at packet-authoring time that the review agent cannot catch at PR time for lack of information. See ADR-0011 D4 (Proposed — this invariant takes effect when ADR-0011 is accepted).
+
+## Hosting Platform Invariants
+
+34. **Containerized deployable Nodes run on Azure Container Apps, named `ca-hd-{service}-{env}`, one per Node per environment, with system-assigned Managed Identity.**
+    See ADR-0015.
+
+35. **One shared Container Apps Environment (`cae-hd-{env}`) and one shared Azure Container Registry (`acrhdshared{env}`) serve every containerized Node within a given environment.**
+    Per-Node compute environments or registries are forbidden without a follow-up ADR. See ADR-0015.
+
+36. **Container App revision mode is `Multiple` with explicit traffic splitting on deploy.**
+    Single-revision mode is forbidden — it removes the rollback seam. See ADR-0015.
