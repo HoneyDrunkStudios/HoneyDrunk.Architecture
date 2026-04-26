@@ -48,5 +48,6 @@
   "generated/issue-packets/active/adr-0011-code-review-pipeline/05a-actions-labels-as-code.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/55",
   "generated/issue-packets/active/adr-0011-code-review-pipeline/05b-actions-out-of-band-label-fanout.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/56",
   "generated/issue-packets/active/adr-0011-code-review-pipeline/06-kernel-sonarcloud-onboarding.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Kernel/issues/22",
-  "generated/issue-packets/active/adr-0011-code-review-pipeline/07-web-rest-sonarcloud-onboarding.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Web.Rest/issues/11"
+  "generated/issue-packets/active/adr-0011-code-review-pipeline/07-web-rest-sonarcloud-onboarding.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Web.Rest/issues/11",
+  "generated/issue-packets/active/standalone/2026-04-26-actions-file-packets-hardening.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/57"
 }
