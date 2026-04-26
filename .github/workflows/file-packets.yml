@@ -11,4 +11,6 @@ jobs:
   file:
     uses: HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/file-packets.yml@main
     secrets:
+      app-id: ${{ secrets.HIVE_APP_ID }}
+      app-private-key: ${{ secrets.HIVE_APP_PRIVATE_KEY }}
       hive-field-mirror-token: ${{ secrets.HIVE_FIELD_MIRROR_TOKEN }}
