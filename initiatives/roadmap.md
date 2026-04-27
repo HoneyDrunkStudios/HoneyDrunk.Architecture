@@ -2,7 +2,7 @@
 
 High-level roadmap for the HoneyDrunk Grid.
 
-**Last Updated:** 2026-04-20
+**Last Updated:** 2026-04-27
 
 ## Q1 2026 (Jan–Mar)
 
@@ -18,17 +18,17 @@ High-level roadmap for the HoneyDrunk Grid.
 
 ## Q2 2026 (Apr–Jun)
 
-- [ ] **Config & Secrets Rollout (ADR-0005/0006) — Wave 1 complete** *(4/15 issues closed 26.7%; Wave 1 foundation complete: Vault wiring ✓, App Configuration ✓, event-driven invalidation ✓, Vault.Rotation repo ✓, catalog registration ✓. Wave 2 blocked on Actions#20 OIDC federated-credential workflow)*
-- [x] **Package Scanning Rollout (ADR-0009) — 75% complete** *(6/8 issues closed; 6 nodes done [Auth, Transport, Vault, Kernel, Data, Web.Rest]. Pulse#2 and Notify#2 remain, blocked on Azure Functions deployment)*
-- [ ] **ADR-0015 Container Apps Rollout — newly initiated** *(0/5 issues closed; infrastructure walkthroughs, Container Apps deployment workflow, per-service release workflows for Notify and Pulse)*
-- [ ] Pulse — Production hardening, Grafana dashboard templates, finalize 0.1.0 release
+- [x] **Config & Secrets Rollout (ADR-0005/0006) — COMPLETE** *(15/15 issues closed 100%; all Wave 1 + Wave 2 merged. Vault v0.3.0 and Vault.Rotation v0.1.0 released 2026-04-25)*
+- [x] **Package Scanning Rollout (ADR-0009) — COMPLETE** *(8/8 issues closed 100%; all 8 Nodes (Kernel, Auth, Transport, Vault, Data, Web.Rest, Pulse, Notify) have CI scan workflows)*
+- [ ] **ADR-0015 Container Apps Rollout — 40% complete** *(2/5 issues closed; architecture walkthroughs ✓, Container Apps deployment workflow ✓. Three per-service release workflows remain)*
+- [ ] Pulse — Production hardening, Grafana dashboard templates, finalize 0.1.0 release *(awaiting Container Apps deployment)*
 - [ ] Notify — Azure Functions deployment, finalize 0.1.0 release *(packages built, deployment blocked on Azure infrastructure)*
 - [ ] HoneyDrunk.AI — Model/provider abstraction, OpenAI + Anthropic providers, Pulse telemetry
-- [ ] **ADR-0010 Phase 1 (Observation Layer & AI Routing contracts)** *(0/3 issues closed; scoped 2026-04-18 — Observe side ready to file, AI routing deferred pending HoneyDrunk.AI standup ADR)*
+- [ ] **ADR-0010 Phase 1 (Observation Layer & AI Routing)** *(0/3 issues closed; scoped 2026-04-18. Observe side ready to file, AI routing contracts deferred pending HoneyDrunk.AI standup ADR)*
 - [ ] HoneyDrunk.Capabilities — Tool registry, discovery, permissioning, initial tool descriptors
 - [ ] HoneyDrunk.Agents — Agent runtime, lifecycle, execution context, tool/memory interfaces
 - [ ] HoneyDrunk.Memory — Agent memory contracts, InMemory provider, Agents integration
-- [ ] **HoneyDrunk.Lore Bring-Up — newly initiated** *(0/6 issues closed; 6 packets filed 2026-04-12, awaiting Wave 1 completion)*
+- [ ] **HoneyDrunk.Lore Bring-Up** *(0/6 issues closed; 6 packets filed 2026-04-12. Ready to start — ADR-0005/0006 no longer blocking)*
 - [ ] HoneyHub — Initial scaffolding, project orchestration, creator dashboard foundations
 - [ ] Studios website — Architecture documentation pages, version tracking
 

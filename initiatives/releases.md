@@ -2,54 +2,32 @@
 
 Centralized view of what shipped across the Grid.
 
-**Last Updated:** 2026-04-16
+**Last Updated:** 2026-04-27
 
 ---
 
 ## Q2 2026
 
-> **Human review pending:** Five release entries below still need CHANGELOG confirmation and release notes. Status: Vault#12 (release issue for 0.3.0) still open — verify whether 0.3.0 or 0.4.0 was shipped. Vault.Rotation#4 (0.1.0 release) also pending — repo scaffolded 2026-04-11 but not yet released.
+> **Release status:** Vault v0.3.0 and Vault.Rotation v0.1.0 released 2026-04-25 (issues Vault#12 and Vault.Rotation#4 closed). All ADR-0005/0006 rollout work merged; Grid running on env-driven config + per-Node Key Vault bootstrap.
 
-### Pending Verification
-
-#### Vault 0.4.0
+### Vault 0.3.0
 
 - **Signal:** Live
-- **Shipped:** Q2 2026 (2026-04-05 per grid-health.json)
+- **Shipped:** Q2 2026 (2026-04-25 — Vault#12 closed)
 - **Highlights:**
-  - Highlights pending — check HoneyDrunk.Vault CHANGELOG and confirm tag exists before publishing
-- **Breaking Changes:** Unknown — review CHANGELOG
+  - Env-driven `AddVault` bootstrap with Azure App Configuration integration
+  - Event-driven SecretCache invalidation via Event Grid
+  - Per-Node Key Vault support (ADR-0005/0006 Wave 1 foundation)
+- **Breaking Changes:** No — additive changes to v0.2.0
 
-#### Auth 0.4.0
-
-- **Signal:** Live
-- **Shipped:** Q2 2026 (2026-04-05 per grid-health.json)
-- **Highlights:**
-  - Highlights pending — check HoneyDrunk.Auth CHANGELOG and confirm tag exists before publishing
-- **Breaking Changes:** Unknown — review CHANGELOG
-
-#### Web.Rest 0.4.0
-
-- **Signal:** Live
-- **Shipped:** Q2 2026 (2026-04-05 per grid-health.json)
-- **Highlights:**
-  - Highlights pending — check HoneyDrunk.Web.Rest CHANGELOG and confirm tag exists before publishing
-- **Breaking Changes:** Unknown — review CHANGELOG
-
-#### Data 0.4.0
-
-- **Signal:** Live
-- **Shipped:** Q2 2026 (2026-04-05 per grid-health.json)
-- **Highlights:**
-  - Highlights pending — check HoneyDrunk.Data CHANGELOG and confirm tag exists before publishing
-- **Breaking Changes:** Unknown — review CHANGELOG
-
-#### Vault.Rotation 0.1.0
+### Vault.Rotation 0.1.0
 
 - **Signal:** Seed
-- **Shipped:** Q2 2026 (pending — Vault.Rotation repo created 2026-04-11, issues Vault.Rotation#3–4 open)
+- **Shipped:** Q2 2026 (2026-04-25 — Vault.Rotation#4 closed)
 - **Highlights:**
-  - Highlights pending — repo scaffold and Function app implementation in progress (Vault.Rotation#3 open, release pending Vault.Rotation#4)
+  - Initial Azure Function App scaffold for Tier-2 secret rotation
+  - Integration with per-Node Key Vaults
+  - Event-driven invalidation hooks in place
 - **Breaking Changes:** N/A (initial release)
 
 ---

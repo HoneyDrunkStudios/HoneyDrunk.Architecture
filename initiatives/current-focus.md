@@ -2,19 +2,19 @@
 
 What the team (human + agents) should prioritize right now.
 
-**Last Updated:** 2026-04-26
+**Last Updated:** 2026-04-27
 
 ## Primary Focus
 
-### Configuration & Secrets Rollout (ADR-0005 / ADR-0006)
+### Configuration & Secrets Rollout (ADR-0005 / ADR-0006) — **COMPLETE**
 
-Execute the two-wave rollout that standardizes secret and configuration management across the Grid.
+The two-wave rollout that standardizes secret and configuration management across the Grid is fully merged.
 
-- **Wave 1 (nearly complete):** Vault env-driven wiring ✓, App Configuration extension ✓, event-driven cache invalidation ✓, Vault.Rotation repo creation ✓, portal walkthroughs ✓, catalog registration ✓ — only OIDC deploy workflow (Actions#20) remains
-- **Wave 2 (blocked on Wave 1 exit criteria):** Per-Node bootstrap migrations (Auth, Web.Rest, Data, Notify, Pulse, Studios) + Actions secret cleanup and deploy-gate SLA check
+- **Wave 1 (complete):** Vault env-driven wiring ✓, App Configuration extension ✓, event-driven cache invalidation ✓, Vault.Rotation repo creation ✓, portal walkthroughs ✓, catalog registration ✓, OIDC deploy workflow (Actions#20) ✓
+- **Wave 2 (complete):** All per-Node bootstrap migrations merged (Auth, Web.Rest, Data, Notify, Pulse, Studios) ✓. Actions secret cleanup (Actions#21) ✓. Deploy-gate SLA checks ✓. Release tags (Vault v0.3.0, Vault.Rotation v0.1.0) ✓
 - **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
-- **Blocker resolved:** Architecture#8 (Create Vault.Rotation repo) closed 2026-04-11. Vault.Rotation scaffold is now unblocked. Vault.Rotation bring-up work (repo stubs, managed identity, rotation function) can proceed.
-- **Remaining Wave 1 blocker:** Actions#20 (OIDC federated-credential workflow) — still open. This is the last gate before Wave 2.
+- **Status:** All 15 issues merged 2026-04-11 through 2026-04-26. Initiative ready to archive.
+- **Next:** Grid now running with env-driven config and per-Node Key Vault bootstrap. Focus shifts to Azure deployment (Notify, Pulse) and subsequent initiatives.
 
 **See:** `generated/issue-packets/active/adr-0005-0006-rollout/dispatch-plan.md`
 
@@ -32,6 +32,17 @@ Provision Azure infrastructure and get both services running in the development 
 
 ## On Deck
 
+### Deploy Notify and Pulse to Azure
+
+Provision Azure infrastructure (Function App for Notify, Container Apps for Notify.Worker and Pulse.Collector) and run the first deployment. All Node packages are built and published; Actions workflows are ready. Infrastructure walkthroughs complete (Architecture#37, 2026-04-26).
+
+**Key issues:**
+- Notify#3: Release workflow and Azure bring-up for `Notify.Functions`
+- Notify#4: Release workflow and Azure bring-up for `Notify.Worker` on Container Apps
+- Pulse#3: Release workflow and Azure bring-up for `Pulse.Collector` on Container Apps
+
+**See:** `infrastructure/azure-provisioning-guide.md`
+
 ### HoneyDrunk.Lore Bring-Up
 
 Stand up Lore as a flat-file LLM-compiled wiki. 6 issues scoped and on The Hive under initiative `honeydrunk-lore-bringup`. Start with Lore#1 (scaffold) and Architecture#9 (catalog registration) — they are independent and can run in parallel.
@@ -42,10 +53,8 @@ Stand up Lore as a flat-file LLM-compiled wiki. 6 issues scoped and on The Hive 
 
 Stand up the Agent Kit Node — agent execution runtime, tool abstraction, and memory. This is the foundation for AI-powered workflows across the Grid.
 
-### Grid v0.4 Alignment (Notify + Pulse)
+### ADR-0010 Phase 1 (Observation Layer & AI Routing)
 
-Align Notify and Pulse with Kernel 0.4.0 patterns (same alignment the Core Nodes completed). Tracked in `active-initiatives.md`.
+Accept ADR-0010 and ship Phase 1 contracts. Three issues in progress: Architecture#35, Architecture#36, AI#1. Observe repo creation is human-only; AI routing contracts deferred pending HoneyDrunk.AI standup ADR.
 
-### Canary Test Coverage
-
-Expand canary test coverage across all Node boundaries.
+**See:** [active-initiatives.md](active-initiatives.md) → ADR-0010 Observation Layer & AI Routing — Phase 1

@@ -32,27 +32,6 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 > **Sync (2026-04-18):** Initiative scoped today. Packets 01–03 ready to file (Observe side). Packet 04 (AI routing contracts) parked pending HoneyDrunk.AI standup ADR — bundling scaffold with routing contracts would embed foundational-Node architectural decisions silently.
 
-### Configuration & Secrets Rollout (ADR-0005 / ADR-0006)
-**Status:** In Progress
-**Scope:** Vault, Vault.Rotation (new), Architecture, Actions, Auth, Web.Rest, Data, Notify, Pulse, Studios
-**Initiative:** `adr-0005-0006-rollout`
-**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
-**Description:** Per-Node Key Vault + shared App Configuration + env-driven bootstrap model (ADR-0005), plus rotation lifecycle, event-driven invalidation, and deploy-gate SLA checks (ADR-0006). Two waves: foundation then per-Node migration.
-**Tracking:**
-- [x] Issue packets authored (15 packets, 2 waves)
-- [x] Wave 1 issues filed on board (7/7 — Architecture#8 closed 2026-04-11, unblocking Vault.Rotation scaffold)
-- [x] Wave 1: Vault env-driven `AddVault` wiring (Vault#9 closed 2026-04-12)
-- [x] Wave 1: Vault `AddAppConfiguration` extension (Vault#9 closed 2026-04-12)
-- [x] Wave 1: Vault event-driven cache invalidation (Vault#10 closed 2026-04-12)
-- [x] Wave 1: Vault.Rotation repo creation (Architecture#8 closed 2026-04-11 — repo created, unblocking scaffold execution)
-- [x] Wave 1: Architecture portal walkthroughs (Architecture#7 closed 2026-04-11)
-- [x] Wave 1: Architecture catalog registration for Vault.Rotation (Architecture#7 closed 2026-04-11)
-- [ ] Wave 1: Actions OIDC federated-credential workflow (Actions#20 — open)
-- [ ] Wave 2: Per-Node bootstrap migrations (Auth, Web.Rest, Data, Notify, Pulse, Studios)
-- [ ] Wave 2: Actions direct secret removal + deploy-gate SLA check
-
-> **Sync (2026-04-20):** 4/15 issues closed (26.7%). Last closed: Vault#10, Vault#9 (both 2026-04-12). Wave 1 blocked on Actions#20 (OIDC federated-credential workflow) — critical gate for Wave 2. Wave 2 per-Node bootstrap issues (Auth#5, Web.Rest#4, Data#4, Notify#1, Pulse#1) waiting behind Wave 1. Also awaiting Vault#12 (release tag) and Vault.Rotation#4 (release tag). No progress on open issues in past 8 days (last activity 2026-04-12). Wave 1 foundation work complete; Wave 2 execution blocked on Actions#20.
-
 ### Container Apps Rollout (ADR-0015)
 **Status:** In Progress  
 **Scope:** Architecture, Actions, Notify, Pulse  
@@ -61,32 +40,13 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 **Description:** Deploy Notify and Pulse to Azure Container Apps. Includes infrastructure walkthroughs, Container App deployment workflow in Actions, and per-service release workflows.
 
 **Tracking:**
-- [ ] Architecture#37: Infrastructure walkthroughs for Function App, ACR, Container Apps Environment, and Container App (open)
-- [ ] Actions#48: Reusable workflow `job-deploy-container-app.yml` for Azure Container Apps (open)
+- [x] Architecture#37: Infrastructure walkthroughs for Function App, ACR, Container Apps Environment, and Container App (closed 2026-04-26)
+- [x] Actions#48: Reusable workflow `job-deploy-container-app.yml` for Azure Container Apps (closed 2026-04-25)
 - [ ] Notify#3: Release workflow and Azure bring-up for `Notify.Functions` (open)
 - [ ] Notify#4: Release workflow and Azure bring-up for `Notify.Worker` on Container Apps (open)
 - [ ] Pulse#3: Release workflow and Azure bring-up for `Pulse.Collector` on Container Apps (open)
 
-> **Sync (2026-04-20):** 0/5 issues closed (0%). Initiative scoped and filed 2026-04-12. No progress yet — work is sequenced after ADR-0005/0006 Wave 2 and Notify/Pulse stabilization.
-
-### Package Scanning Rollout (ADR-0009)
-**Status:** In Progress  
-**Scope:** Kernel, Auth, Data, Transport, Vault, Pulse, Notify, Web.Rest  
-**Initiative:** `adr-0009-package-scanning-rollout`  
-**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)  
-**Description:** Wire CI scan workflows and dynamic release notes across all Nodes. Standardizes vulnerability scanning and auto-generates release summaries from commit history.
-
-**Tracking:**
-- [x] Kernel wire up CI scan workflows (Kernel#14 closed 2026-04-16)
-- [x] Auth wire up CI scan workflows (Auth#6 closed 2026-04-12)
-- [x] Data wire up CI scan workflows (Data#5 closed 2026-04-16)
-- [x] Transport wire up CI scan workflows (Transport#14 closed 2026-04-12)
-- [x] Vault wire up CI scan workflows (Vault#13 closed 2026-04-12)
-- [ ] Pulse wire up CI scan workflows (Pulse#2 — open)
-- [ ] Notify wire up CI scan workflows (Notify#2 — open)
-- [x] Web.Rest wire up CI scan workflows (Web.Rest#5 closed 2026-04-16)
-
-> **Sync (2026-04-20):** 6/8 issues closed (75%). Momentum resumed 2026-04-16 with Kernel#14, Data#5, Web.Rest#5 closures. Only Pulse#2 and Notify#2 remain open. Rollout near completion — last two issues are infrastructure-gated (both Pulse and Notify awaiting Azure deployment per grid-health.json).
+> **Sync (2026-04-27):** 2/5 issues closed (40%). Infrastructure walkthroughs and Container Apps deployment workflow merged. Three per-service release workflow issues remain open — awaiting implementation.
 
 ### Vault.Rotation Bring-Up
 **Status:** In Progress  
@@ -96,12 +56,13 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 **Description:** Scaffold HoneyDrunk.Vault.Rotation as a deployable Function Node, wire OIDC + RBAC, and complete ADR-0006 Tier-2 operational setup.
 **Tracking:**
 - [x] Architecture catalog registration + routing keywords (Architecture#7 closed 2026-04-11)
-- [ ] Architecture repo stubs (`repos/HoneyDrunk.Vault.Rotation/*`)
-- [ ] Repo scaffold implementation packet execution (Vault.Rotation#3 — open, unblocked by Architecture#8 closed 2026-04-11)
+- [x] Architecture repo stubs (`repos/HoneyDrunk.Vault.Rotation/*`)
+- [x] Repo scaffold implementation (Vault.Rotation#3 closed 2026-04-25)
+- [x] Release milestone: Vault.Rotation v0.1.0 tag (Vault.Rotation#4 closed 2026-04-25)
 - [ ] Managed identity + vault RBAC automation
 - [ ] Rotation function runtime + observability
 
-> **Sync (2026-04-20):** 1/5 tracking items complete. Architecture#8 repo creation unblocked Vault.Rotation scaffold execution. Vault.Rotation#3 scaffold issue remains open (unblocked but awaiting Codex execution). No new progress since 2026-04-11.
+> **Sync (2026-04-27):** 4/6 items complete (67%). Scaffold merged 2026-04-25; v0.1.0 released 2026-04-25. Remaining work: RBAC automation and rotation function runtime (post-release polish).
 
 ### Grid v0.4 Stabilization
 **Status:** In Progress  
