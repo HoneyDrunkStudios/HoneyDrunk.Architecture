@@ -30,7 +30,7 @@ Listed in provisioning order — platform-shared resources first, per-Node resou
 
 - [ADR-0005: Configuration and Secrets Strategy](../adrs/ADR-0005-configuration-and-secrets-strategy.md)
 - [ADR-0006: Secret Rotation and Lifecycle](../adrs/ADR-0006-secret-rotation-and-lifecycle.md)
-- [ADR-0008: Packet Lifecycle](../adrs/ADR-0008-packet-lifecycle.md)
-- [ADR-0012: Actions as CI/CD Control Plane](../adrs/ADR-0012-actions-as-cicd-control-plane.md)
+- [ADR-0008: Packet Lifecycle](../adrs/ADR-0008-work-tracking-and-execution-flow.md)
+- [ADR-0012: Actions as CI/CD Control Plane](../adrs/ADR-0012-grid-cicd-control-plane.md)
 - [ADR-0015: Container Hosting Platform](../adrs/ADR-0015-container-hosting-platform.md)
 - [Grid Invariants](../constitution/invariants.md) — especially invariants 17–22 and 34–36.

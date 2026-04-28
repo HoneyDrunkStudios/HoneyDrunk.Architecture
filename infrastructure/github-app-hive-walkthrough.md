@@ -1,6 +1,6 @@
 # HoneyDrunk Hive GitHub App (GitHub Portal)
 
-**Applies to:** ADR-0008 (Packet Lifecycle), ADR-0012 (Actions as CI/CD Control Plane).
+**Applies to:** ADR-0008 (Work Tracking and Execution Flow), ADR-0012 (Grid CI/CD Control Plane).
 **Related Actions issue:** HoneyDrunkStudios/HoneyDrunk.Actions#57.
 
 ## Goal
@@ -43,10 +43,10 @@ The `.pem` on disk is the only copy GitHub ever shows. After you store the conte
 ### 3. Install the App
 
 1. From the App's settings page sidebar → **Install App** → click **Install** next to `HoneyDrunkStudios`.
-2. Repository access: **All repositories** is the recommended choice for solo-dev simplicity — every current and future Grid repo is auto-covered without re-installing on each new repo. The App's least-privilege scope is enforced at the *operation* level (only Issues / Contents / Metadata / Projects, all with explicit Read or Write grants), not at the repo set.
+2. Repository access: choose **Only select repositories** and tick every repo that hosts a packet `target_repo` — at the time of writing: HoneyDrunk.Architecture, HoneyDrunk.Actions, HoneyDrunk.Auth, HoneyDrunk.Data, HoneyDrunk.Kernel, HoneyDrunk.Notify, HoneyDrunk.Pulse, HoneyDrunk.Standards, HoneyDrunk.Transport, HoneyDrunk.Vault, HoneyDrunk.Vault.Rotation, HoneyDrunk.Web.Rest, HoneyDrunkStudios, HoneyDrunk.AI, HoneyDrunk.Lore.
 3. Click **Install**.
 
-If you ever need stricter per-repo scoping, choose **Only select repositories** and tick every repo that hosts a packet `target_repo` — at the time of writing: HoneyDrunk.Architecture, HoneyDrunk.Actions, HoneyDrunk.Auth, HoneyDrunk.Data, HoneyDrunk.Kernel, HoneyDrunk.Notify, HoneyDrunk.Pulse, HoneyDrunk.Standards, HoneyDrunk.Transport, HoneyDrunk.Vault, HoneyDrunk.Vault.Rotation, HoneyDrunk.Web.Rest, HoneyDrunkStudios, HoneyDrunk.AI, HoneyDrunk.Lore. Adding a new repo means coming back here to update the installation.
+This matches the file-packets hardening rollout plan and keeps the App on the least-privilege repo set as well as the least-privilege permission set. Adding a new repo that hosts packet `target_repo` values means coming back here to update the installation selection.
 
 ### 4. Provision org secrets
 
@@ -111,7 +111,7 @@ A short overlap window (both keys valid simultaneously) is fine. Don't delete th
 
 ## Cross references
 
-- [ADR-0008: Packet Lifecycle](../adrs/ADR-0008-packet-lifecycle.md)
-- [ADR-0012: Actions as CI/CD Control Plane](../adrs/ADR-0012-actions-as-cicd-control-plane.md)
+- [ADR-0008: Packet Lifecycle](../adrs/ADR-0008-work-tracking-and-execution-flow.md)
+- [ADR-0012: Actions as CI/CD Control Plane](../adrs/ADR-0012-grid-cicd-control-plane.md)
 - [`HoneyDrunk.Actions/scripts/file-packets.sh`](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/blob/main/scripts/file-packets.sh) — consumer of the minted token via `GH_TOKEN` and `HIVE_FIELD_MIRROR_TOKEN` env vars.
 - [`HoneyDrunk.Actions/.github/workflows/file-packets.yml`](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/blob/main/.github/workflows/file-packets.yml) — the reusable workflow that mints the App token.
