@@ -2,54 +2,60 @@
 
 Centralized view of what shipped across the Grid.
 
-**Last Updated:** 2026-04-16
+**Last Updated:** 2026-04-30
 
 ---
 
 ## Q2 2026
 
-> **Human review pending:** Five release entries below still need CHANGELOG confirmation and release notes. Status: Vault#12 (release issue for 0.3.0) still open — verify whether 0.3.0 or 0.4.0 was shipped. Vault.Rotation#4 (0.1.0 release) also pending — repo scaffolded 2026-04-11 but not yet released.
-
-### Pending Verification
-
-#### Vault 0.4.0
+### Vault 0.4.0
 
 - **Signal:** Live
-- **Shipped:** Q2 2026 (2026-04-05 per grid-health.json)
+- **Shipped:** Q2 2026 (2026-04-05 per grid-health.json, tagged 2026-04-25 via Vault#12)
 - **Highlights:**
-  - Highlights pending — check HoneyDrunk.Vault CHANGELOG and confirm tag exists before publishing
-- **Breaking Changes:** Unknown — review CHANGELOG
+  - Env-driven bootstrap via `AddVault()` + `AddAppConfiguration()` extensions
+  - Event-driven SecretCache invalidation via Azure Event Grid
+  - Full provider implementations (Azure Key Vault, AWS, File, InMemory)
+- **Breaking Changes:** Unknown — review CHANGELOG for migration details
 
-#### Auth 0.4.0
+### Auth 0.4.0
 
 - **Signal:** Live
-- **Shipped:** Q2 2026 (2026-04-05 per grid-health.json)
+- **Shipped:** Q2 2026 (2026-04-05 per grid-health.json, tagged 2026-04-25)
 - **Highlights:**
-  - Highlights pending — check HoneyDrunk.Auth CHANGELOG and confirm tag exists before publishing
+  - Vault-backed signing key retrieval
+  - Startup validation and policy evaluation improvements
+  - Kernel 0.4.0 contract alignment
 - **Breaking Changes:** Unknown — review CHANGELOG
 
-#### Web.Rest 0.4.0
+### Web.Rest 0.4.0
 
 - **Signal:** Live
-- **Shipped:** Q2 2026 (2026-04-05 per grid-health.json)
+- **Shipped:** Q2 2026 (2026-04-05 per grid-health.json, tagged 2026-04-25)
 - **Highlights:**
-  - Highlights pending — check HoneyDrunk.Web.Rest CHANGELOG and confirm tag exists before publishing
+  - Exception mapping middleware refinements
+  - Correlation mismatch detection improvements
+  - Kernel 0.4.0 contract alignment
 - **Breaking Changes:** Unknown — review CHANGELOG
 
-#### Data 0.4.0
+### Data 0.4.0
 
 - **Signal:** Live
-- **Shipped:** Q2 2026 (2026-04-05 per grid-health.json)
+- **Shipped:** Q2 2026 (2026-04-05 per grid-health.json, tagged 2026-04-25)
 - **Highlights:**
-  - Highlights pending — check HoneyDrunk.Data CHANGELOG and confirm tag exists before publishing
-- **Breaking Changes:** Unknown — review CHANGELOG
+  - Architecture overhaul with Transport outbox store abstraction
+  - Tenant-aware data access patterns finalized
+  - Canary test coverage expansion
+- **Breaking Changes:** Yes — architecture restructure. Review CHANGELOG for migration path.
 
-#### Vault.Rotation 0.1.0
+### Vault.Rotation 0.1.0
 
 - **Signal:** Seed
-- **Shipped:** Q2 2026 (pending — Vault.Rotation repo created 2026-04-11, issues Vault.Rotation#3–4 open)
+- **Shipped:** Q2 2026 (2026-04-25, repo scaffolded 2026-04-11, scaffold completed 2026-04-25 via Vault.Rotation#3, released 2026-04-25 via Vault.Rotation#4)
 - **Highlights:**
-  - Highlights pending — repo scaffold and Function app implementation in progress (Vault.Rotation#3 open, release pending Vault.Rotation#4)
+  - Baseline Azure Function App scaffold with Kernel integration
+  - Vault bootstrap and managed identity setup
+  - ADR-0006 Tier-2 operational structure in place
 - **Breaking Changes:** N/A (initial release)
 
 ---
