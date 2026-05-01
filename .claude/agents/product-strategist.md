@@ -39,7 +39,7 @@ Always load before reasoning, in both modes:
 8. `adrs/` — at minimum scan titles/status; read in full if architecturally relevant to the idea
 9. `initiatives/active-initiatives.md`, `initiatives/roadmap.md` — what the operator is already committed to (opportunity cost is measured against this)
 
-If the idea or opportunity space involves specific Nodes, also load `repos/{NodeName}/overview.md`, `boundaries.md`, and `domain-model.md` for each. Do not privilege any single Node as "the product surface" — HoneyDrunk Studios is the umbrella; HoneyHub, Lore, Knowledge, and every other Node are products under it.
+If the idea or opportunity space involves specific Nodes, use the `repos/` folder name (e.g. `repos/HoneyDrunk.Lore`, `repos/HoneyDrunk.Knowledge`, `repos/HoneyDrunk.AI`, `repos/HoneyHub`) and load `overview.md`, `boundaries.md`, and `invariants.md` for each. Also load `integration-points.md`, `active-work.md`, and `domain-model.md` (if present) for each. Do not privilege any single Node as "the product surface" — HoneyDrunk Studios is the umbrella; every Node is a candidate product under it.
 
 ## Mode 1: Critic
 
