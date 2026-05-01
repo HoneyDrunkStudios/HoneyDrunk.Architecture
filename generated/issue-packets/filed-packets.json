@@ -61,5 +61,7 @@
   "generated/issue-packets/active/adr-0012-grid-cicd-control-plane/07b-actions-sbom-direct-cli-migration.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/66",
   "generated/issue-packets/active/adr-0012-grid-cicd-control-plane/07c-actions-actionlint-docker-ref-decision.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/67",
   "generated/issue-packets/active/adr-0012-grid-cicd-control-plane/08-architecture-caller-permissions-audit.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/51",
-  "generated/issue-packets/active/adr-0012-grid-cicd-control-plane/09-actions-node20-actions-bump.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/68"
+  "generated/issue-packets/active/adr-0012-grid-cicd-control-plane/09-actions-node20-actions-bump.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/68",
+  "generated/issue-packets/active/standalone/2026-04-28-actions-hive-field-mirror-app-auth.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/69",
+  "generated/issue-packets/active/standalone/2026-04-28-actions-hive-field-mirror-cache-and-rest.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/70"
 }
