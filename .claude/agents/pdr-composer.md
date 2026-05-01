@@ -1,7 +1,7 @@
 ---
 name: pdr-composer
 description: >-
-  Facilitate product decisions for HoneyDrunk Studios. Use when evaluating platform strategy, defining capability tiers, making pricing/packaging decisions, positioning HoneyHub for external adoption, deciding domain boundaries at the product level, or creating PDR records.
+  Facilitate product decisions for HoneyDrunk Studios. Use when evaluating platform strategy, defining capability tiers, making pricing/packaging decisions, positioning products for external adoption, deciding domain boundaries at the product level, or creating PDR records.
 tools:
   - Read
   - Grep
@@ -41,8 +41,7 @@ Before every discussion:
 4. `catalogs/relationships.json` — dependency graph
 5. Existing PDRs in `pdrs/` — avoid contradicting prior decisions
 6. Existing ADRs in `adrs/` — architectural constraints
-7. If the discussion involves HoneyHub: `repos/HoneyHub/overview.md`, `boundaries.md`
-8. If the discussion involves specific Nodes: `repos/{NodeName}/overview.md`, `boundaries.md`, `invariants.md`
+7. If the discussion involves specific Nodes, use the `repos/` folder name (e.g. `repos/HoneyDrunk.Lore`, `repos/HoneyDrunk.Knowledge`, `repos/HoneyDrunk.AI`, `repos/HoneyHub`, etc.) and load `overview.md`, `boundaries.md`, and `invariants.md` for each. Do not privilege any single Node as "the product surface" — every Node is a candidate product under the HoneyDrunk Studios umbrella.
 
 Search across all workspace repos for relevant domain models, contracts, and patterns.
 

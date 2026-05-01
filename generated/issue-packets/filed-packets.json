@@ -49,5 +49,17 @@
   "generated/issue-packets/active/adr-0011-code-review-pipeline/05b-actions-out-of-band-label-fanout.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/56",
   "generated/issue-packets/active/adr-0011-code-review-pipeline/06-kernel-sonarcloud-onboarding.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Kernel/issues/22",
   "generated/issue-packets/active/adr-0011-code-review-pipeline/07-web-rest-sonarcloud-onboarding.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Web.Rest/issues/11",
-  "generated/issue-packets/active/standalone/2026-04-26-actions-file-packets-hardening.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/57"
+  "generated/issue-packets/active/standalone/2026-04-26-actions-file-packets-hardening.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/57",
+  "generated/issue-packets/active/adr-0012-grid-cicd-control-plane/01-architecture-adr-0012-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/48",
+  "generated/issue-packets/active/adr-0012-grid-cicd-control-plane/02-architecture-github-notifications-runbook.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/49",
+  "generated/issue-packets/active/adr-0012-grid-cicd-control-plane/03-architecture-tracked-workflows-catalog.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/50",
+  "generated/issue-packets/active/adr-0012-grid-cicd-control-plane/04-actions-grid-health-aggregator.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/61",
+  "generated/issue-packets/active/adr-0012-grid-cicd-control-plane/05-actions-consumer-usage-refresh.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/62",
+  "generated/issue-packets/active/adr-0012-grid-cicd-control-plane/06-actions-action-pins-inventory.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/63",
+  "generated/issue-packets/active/adr-0012-grid-cicd-control-plane/07-actions-d4-retrofit-audit.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/64",
+  "generated/issue-packets/active/adr-0012-grid-cicd-control-plane/07a-actions-trivy-direct-cli-migration.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/65",
+  "generated/issue-packets/active/adr-0012-grid-cicd-control-plane/07b-actions-sbom-direct-cli-migration.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/66",
+  "generated/issue-packets/active/adr-0012-grid-cicd-control-plane/07c-actions-actionlint-docker-ref-decision.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/67",
+  "generated/issue-packets/active/adr-0012-grid-cicd-control-plane/08-architecture-caller-permissions-audit.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/51",
+  "generated/issue-packets/active/adr-0012-grid-cicd-control-plane/09-actions-node20-actions-bump.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/68"
 }
