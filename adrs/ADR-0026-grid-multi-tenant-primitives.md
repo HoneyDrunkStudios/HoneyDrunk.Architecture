@@ -1,6 +1,6 @@
 # ADR-0026: Grid Multi-Tenant Primitives — TenantId, Propagation, Rate-Limit Policy, Vault Scoping, Billing Events
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-05-02
 **Deciders:** HoneyDrunk Studios
 **Sector:** Core (Kernel) · Ops (first consumers: Notify, Communications) · Infrastructure (Vault scoping pattern)
@@ -132,27 +132,32 @@ public enum TenantRateLimitOutcome { Allow, Throttle, Reject }
 
 The `tenant-{tenantId}` prefix uses the ULID string form of `TenantId`. ULIDs are 26 characters; combined with the secret-name suffix, they fit within Azure Key Vault's 127-character secret-name limit comfortably.
 
-**Thin resolver: `TenantScopedSecretResolver`** in `HoneyDrunk.Vault` (the runtime package, not Abstractions, because it composes `ISecretStore`). Pseudocode:
+**Thin resolver: `TenantScopedSecretResolver`** in `HoneyDrunk.Vault` (the runtime package, not Abstractions, because it composes `ISecretStore`). The resolver composes the existing `ISecretStore` contract — `Task<SecretValue> GetSecretAsync(SecretIdentifier, CancellationToken)` and `Task<VaultResult<SecretValue>> TryGetSecretAsync(SecretIdentifier, CancellationToken)` — and returns `SecretValue` (a record carrying the resolved `Identifier`, `Value`, and `Version`). No new overloads or shape changes to `ISecretStore` are introduced. Pseudocode:
 
 ```csharp
 public sealed class TenantScopedSecretResolver(ISecretStore secretStore)
 {
-    public ValueTask<string> ResolveAsync(
+    public async Task<SecretValue> ResolveAsync(
         TenantId tenantId,
         string secretName,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         if (tenantId.IsInternal)
         {
-            return secretStore.GetSecretAsync(secretName, cancellationToken);
+            return await secretStore.GetSecretAsync(
+                new SecretIdentifier(secretName), cancellationToken);
         }
 
         // Try tenant-scoped first; fall back to shared if absent.
         // Fallback is the explicit behavior — Free/Starter tenants share keys.
-        return secretStore.TryGetSecretAsync(
-            $"tenant-{tenantId}-{secretName}",
-            fallback: secretName,
+        var tenantScoped = await secretStore.TryGetSecretAsync(
+            new SecretIdentifier($"tenant-{tenantId}-{secretName}"),
             cancellationToken);
+
+        return tenantScoped.IsSuccess
+            ? tenantScoped.Value!
+            : await secretStore.GetSecretAsync(
+                new SecretIdentifier(secretName), cancellationToken);
     }
 }
 ```
@@ -244,15 +249,23 @@ The dependency rule:
 - `HoneyDrunk.Vault` carries `TenantScopedSecretResolver`. Already depends on `HoneyDrunk.Kernel.Abstractions`. No new package references.
 - Consumer Nodes (Notify, Communications, Notify Cloud) reference `HoneyDrunk.Kernel.Abstractions` for the contracts and bring their own implementations. No transitive runtime dependency on `HoneyDrunk.Kernel` is forced on consumers (Invariant 2 holds).
 
-### D9. Ordering — Kernel ships first, then Vault docs, then consumer Nodes
+### D9. Ordering — coordinated Wave 1 (Kernel + downstream patches), then Vault, then consumer Nodes
 
-The order is sequenced, not parallel:
+The `IGridContext.TenantId` type promotion (D2) reaches four downstream Nodes that read the property today (Data, Transport, Web.Rest, Pulse — see Negative Consequences for the file-level inventory). Shipping Kernel 0.5.0 alone would create a transient broken-restore window for those Nodes. The order is therefore:
 
-1. **Kernel packets land first.** `TenantId.Internal` + `IsInternal` + `IGridContext.TenantId` type promotion + `ITenantRateLimitPolicy` + `TenantRateLimitDecision` + `IBillingEventEmitter` + `BillingEvent` + noop defaults + canary tests + version bump on `HoneyDrunk.Kernel.Abstractions` and `HoneyDrunk.Kernel`. Both packages move together per Invariant 27.
-2. **Vault docs and `TenantScopedSecretResolver` land second.** `HoneyDrunk.Vault/docs/Tenancy.md` plus the resolver in the runtime package. Vault version bump.
-3. **Consumer Nodes land third.** Notify intake adopts `ITenantRateLimitPolicy` (registered as noop in internal composition, real implementation in Notify Cloud composition). Notify Cloud's Stripe billing emitter is the first real `IBillingEventEmitter`. Communications inherits the strong-typed `IGridContext.TenantId` automatically.
+1. **Wave 1 — coordinated multi-repo bump.** All of the following ship in one wave so no consumer ever sees Kernel 0.5.0 without its own matching patch:
+   - `HoneyDrunk.Kernel` + `HoneyDrunk.Kernel.Abstractions` — `TenantId.Internal` + `IsInternal` + `IGridContext.TenantId` and `IOperationContext.TenantId` type promotion + `ITenantRateLimitPolicy` + `TenantRateLimitDecision` + `IBillingEventEmitter` + `BillingEvent` + noop defaults + canary tests + coordinated version bump per Invariant 27.
+   - `HoneyDrunk.Data` — `KernelTenantAccessor` adapts to typed property; coordinated version bump.
+   - `HoneyDrunk.Transport` — `GridContextFactory` adapts to typed `Initialize` signature; coordinated version bump.
+   - `HoneyDrunk.Web.Rest` — `RequestLoggingScopeMiddleware` adapts to typed property and `IsInternal` predicate; coordinated version bump.
+   - `HoneyDrunk.Pulse` — `ActivityEnricher` adapts to typed property + canonical `tenant_id` telemetry tag with cardinality discipline (PDR-0002 §K); coordinated version bump.
 
-This ADR flips Status → Accepted when steps 1 and 2 are landed. Step 3 is consumer-Node work that proceeds under its own ADRs and packets — Notify Cloud standup ADR, Notify multi-tenant primitives packet (which becomes a thin "wire up the consumer side of D8" packet now that the primitives themselves are Kernel-owned), and ADR-0019's Notify refactor.
+   Wave 1 is treated as one logical change — Invariant 27's spirit (one solution moves together) extended to tightly-coupled dependents. Each Node ships its own PR and its own version bump, but they are merged together.
+
+2. **Wave 2 — Vault.** `HoneyDrunk.Vault/docs/Tenancy.md` plus `TenantScopedSecretResolver` in the runtime package. Vault version bump. Lands after Wave 1 publishes (depends on the typed `TenantId`).
+3. **Wave 3 — consumer Nodes (out of scope for this ADR's packets).** Notify intake adopts `ITenantRateLimitPolicy` (registered as noop in internal composition, real implementation in Notify Cloud composition). Notify Cloud's Stripe billing emitter is the first real `IBillingEventEmitter`. Communications inherits the strong-typed `IGridContext.TenantId` automatically. Each consumer-Node adoption proceeds under its own ADR/packets — Notify Cloud standup ADR, Notify multi-tenant primitives packet, ADR-0019's Notify refactor.
+
+This ADR flips Status → Accepted when Waves 1 and 2 land. Wave 3 is consumer-Node work that proceeds under its own ADRs and packets.
 
 ### D10. What this ADR explicitly does **not** decide
 
@@ -302,7 +315,13 @@ Accepting this ADR — and landing the Kernel and Vault halves — unblocks the 
 
 ### Negative
 
-- **Promoting `IGridContext.TenantId` from `string?` to non-nullable `TenantId` is a minor breaking change on `HoneyDrunk.Kernel.Abstractions`.** Every Node that reads the property today will need a one-line update at the use site (string consumers become typed consumers; null-checks become unnecessary because middleware applies the `Internal` default at Grid entry). Mitigation: the audit at the time of this ADR shows zero non-Kernel callsites that read `IGridContext.TenantId` — the property exists on the contract but is consumed only by Kernel's own serializers and middleware. The break is real on paper; the blast radius is empty in practice. Notify Cloud, Communications, and any future consumer pick up the strong, non-nullable type from the start and never write a `??` fallback.
+- **Promoting `IGridContext.TenantId` from `string?` to non-nullable `TenantId` is a minor breaking change on `HoneyDrunk.Kernel.Abstractions`.** Every Node that reads the property today needs a one-line update at the use site (string consumers become typed consumers; null-checks become unnecessary because middleware applies the `Internal` default at Grid entry). The blast radius spans four downstream Nodes:
+  - **Data** — `HoneyDrunk.Data/Tenancy/KernelTenantAccessor.cs` parses `context.TenantId` (string) into Data's own `TenantId` type via `TenantId.FromString`. Becomes a `ToString()` call.
+  - **Transport** — `HoneyDrunk.Transport/Context/GridContextFactory.cs` calls Kernel's `GridContext.Initialize(..., tenantId: envelope.TenantId, ...)`. The signature change reaches this call site.
+  - **Web.Rest** — `HoneyDrunk.Web.Rest.AspNetCore/Middleware/RequestLoggingScopeMiddleware.cs` does `if (!string.IsNullOrWhiteSpace(operationContext.TenantId))` for log scope. Replaced with `if (!operationContext.TenantId.IsInternal)` or removed entirely (the typed value is always present).
+  - **Pulse** — `HoneyDrunk.Telemetry.OpenTelemetry/Enrichment/ActivityEnricher.cs` reads both `IGridContext.TenantId` and `IOperationContext.TenantId` as `string?`. Updated to consume the typed value and short-circuit on `IsInternal` for telemetry tagging discipline.
+
+  Mitigation: this ADR's rollout ships **Kernel + the four downstream patches as a single coordinated wave** (per the dispatch plan), so no broken-restore window is created — every consumer Node moves at the same time as Kernel 0.5.0. Notify Cloud, Communications, and any future consumer pick up the strong, non-nullable type from the start and never write a `??` fallback.
 - **Adding `Internal` sentinel + `IsInternal` predicate to `TenantId` is a minor surface addition.** Backward-compatible; no existing callsite breaks.
 - **Four new contracts in Kernel.Abstractions (`ITenantRateLimitPolicy`, `TenantRateLimitDecision`, `IBillingEventEmitter`, `BillingEvent`) widen Kernel's surface area.** Each is small, the namespace is dedicated (`Tenancy`), and the canary protects shape from drift. The cost is one more thing to maintain in Kernel; the benefit is one place to maintain it instead of N.
 - **`TenantScopedSecretResolver` in Vault runtime introduces a composition layer over `ISecretStore`.** Nodes that have no per-tenant secrets ignore it; Nodes that do, opt in by composing it. The composition shape is documented but is not enforced by canary — it cannot be, because it is a usage pattern. The risk is Notify Cloud or a future Node forgetting to compose it and hard-coding tenant-scoped key resolution. Mitigation: the consumer-Node ADR for any commercial Node references this ADR's D5 explicitly and includes a packet checklist item.
