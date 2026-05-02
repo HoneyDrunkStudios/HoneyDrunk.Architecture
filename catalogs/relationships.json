@@ -184,7 +184,7 @@
       "id": "honeydrunk-ai",
       "consumes": ["honeydrunk-kernel", "honeydrunk-vault"],
       "consumed_by": [],
-      "consumed_by_planned": ["honeydrunk-agents", "honeydrunk-memory", "honeydrunk-knowledge", "honeydrunk-evals", "honeydrunk-sim"],
+      "consumed_by_planned": ["honeydrunk-agents", "honeydrunk-memory", "honeydrunk-knowledge", "honeydrunk-evals", "honeydrunk-sim", "honeydrunk-lore"],
       "blocked_by": [],
       "exposes": {
         "contracts": ["IChatClient", "IEmbeddingGenerator", "IModelProvider", "IInferenceResult", "IModelRouter", "IRoutingPolicy", "ModelCapabilityDeclaration"],
@@ -214,7 +214,7 @@
       "id": "honeydrunk-agents",
       "consumes": ["honeydrunk-kernel", "honeydrunk-ai", "honeydrunk-capabilities"],
       "consumed_by": [],
-      "consumed_by_planned": ["honeydrunk-flow", "honeydrunk-sim"],
+      "consumed_by_planned": ["honeydrunk-flow", "honeydrunk-sim", "honeydrunk-lore"],
       "blocked_by": [],
       "exposes": {
         "contracts": ["IAgent", "IAgentExecutionContext", "IAgentLifecycle", "IToolInvoker", "IAgentMemory"],
