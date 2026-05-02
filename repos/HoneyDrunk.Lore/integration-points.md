@@ -13,7 +13,7 @@ How Lore connects to the rest of the Grid. Every item here is **planned** — Lo
 | **AI** | `IChatClient` | Inference for ingest synthesis, query answering, and lint reasoning | Planned — `AI` is Seed |
 | **Flow** | `IWorkflowEngine` | Orchestrate multi-step compile passes (ingest → consolidate → resolve contradictions → rebuild indexes) as durable workflows | Planned — `Flow` is Seed |
 
-Until those nodes exist, the operations defined in `HoneyDrunk.Lore/CLAUDE.md` are executed directly by Claude Code sessions and (eventually) a `CronCreate` scheduled trigger. There is no compile-time or runtime dependency on any Grid Node today.
+Until those nodes exist, the operations defined in [`HoneyDrunkStudios/HoneyDrunk.Lore/CLAUDE.md`](https://github.com/HoneyDrunkStudios/HoneyDrunk.Lore/blob/main/CLAUDE.md) (the schema doc inside the Lore repo, *not* this Architecture stub) are executed directly by Claude Code sessions and (eventually) a `CronCreate` scheduled trigger. There is no compile-time or runtime dependency on any Grid Node today.
 
 ## Exposes
 
