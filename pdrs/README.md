@@ -9,6 +9,7 @@ For technical architecture decisions, see [ADRs](../adrs/README.md).
 | ID | Title | Status | Date | Sector | Impact |
 |----|-------|--------|------|--------|--------|
 | [PDR-0001](PDR-0001-honeyhub-platform-observation-and-ai-routing.md) | HoneyHub Platform: Observation and AI Routing Layers | Accepted | 2026-03-30 | Meta / AI | Positions HoneyHub as an external-facing platform. Introduces Observation and AI Routing domains. |
+| [PDR-0002](PDR-0002-notify-as-a-service-first-commercial-product.md) | HoneyDrunk Notify: First Commercial Product on the Grid | Proposed | 2026-05-02 | Ops / Meta | Names HoneyDrunk Notify (Notify Cloud architecturally) as the Grid's first commercial app. Reframes PDR-0001 §C — HoneyHub is no longer the external-facing product. Open core: Notify engine OSS (FSL/BSL), `HoneyDrunk.Notify.Cloud` wrapper private. |
 
 ## Statuses
 
