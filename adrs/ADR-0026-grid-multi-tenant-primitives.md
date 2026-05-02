@@ -10,7 +10,7 @@
 
 Accepting this ADR creates Kernel and cross-Node obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
 
-- [ ] Kernel packet — promote `IGridContext.TenantId` from `string?` to `TenantId?` (the existing `HoneyDrunk.Kernel.Abstractions.Identity.TenantId` ULID record struct), update `GridContextMiddleware`, mappers, and `GridContextSerializer` to parse the `X-Tenant-Id` header into the strong type, and apply the `TenantId.Internal` default at request entry when no header is present
+- [ ] Kernel packet — promote `IGridContext.TenantId` from `string?` to `TenantId` (non-nullable; the existing `HoneyDrunk.Kernel.Abstractions.Identity.TenantId` ULID record struct), update `GridContextMiddleware`, mappers, and `GridContextSerializer` to parse the `X-Tenant-Id` header into the strong type and apply the `TenantId.Internal` default at request entry when no header is present so consumers never read null
 - [ ] Kernel packet — add `TenantId.Internal` static (well-known sentinel ULID for non-multi-tenant Grid usage) and `TenantId.IsInternal` predicate; add canary tests pinning the sentinel value
 - [ ] Kernel packet — add `ITenantRateLimitPolicy` and `TenantRateLimitDecision` (record) to `HoneyDrunk.Kernel.Abstractions/Tenancy/`; add `IBillingEventEmitter` and `BillingEvent` (record) to the same namespace; default `NoopTenantRateLimitPolicy` and `NoopBillingEventEmitter` in `HoneyDrunk.Kernel`
 - [ ] Vault packet — document the per-tenant secret scoping pattern (`tenant-{tenantId}-{secretName}`) in `HoneyDrunk.Vault/docs/Tenancy.md`; add a `TenantScopedSecretResolver` extension in `HoneyDrunk.Vault` that wraps `ISecretStore` with tenant-aware lookup and falls back to the Node's standard path when `TenantId.IsInternal` is true. **No contract change to `ISecretStore`** — tenancy is a usage pattern.
@@ -27,7 +27,7 @@ Today, when this ADR was scoped, the question was: should those primitives ship 
 The current Grid state, audited at the time of this ADR, is:
 
 - `HoneyDrunk.Kernel.Abstractions.Identity.TenantId` already exists as a `readonly record struct` wrapping a ULID, with `NewId`, `TryParse`, and implicit conversions to `string` and `Ulid`. This was landed by an earlier scaffold and is the right shape — no new type needed, just promotion to first-class status across the Grid.
-- `IGridContext.TenantId` is exposed as `string?`. The XML doc explicitly says *"This is an identity attribute ONLY - Kernel does not interpret, authorize, or enforce it"* and *"Used for propagation across nodes, logs, telemetry, and tracing."* Today's design preserves that stance (Kernel stays interpretation-free) but tightens the type from `string?` to `TenantId?` so callers cannot stringly-type a malformed identifier into context.
+- `IGridContext.TenantId` is exposed as `string?`. The XML doc explicitly says *"This is an identity attribute ONLY - Kernel does not interpret, authorize, or enforce it"* and *"Used for propagation across nodes, logs, telemetry, and tracing."* Today's design preserves that stance in spirit (Kernel still does not authorize, rate-limit, or bill) but tightens the type from `string?` to non-nullable `TenantId` and centralizes Internal-default application at the Grid-entry boundary so callers cannot stringly-type a malformed identifier into context and never have to write a `??` fallback.
 - `GridHeaderNames.TenantId = "X-Tenant-Id"` is already the canonical wire format. `GridContextMiddleware` already reads it. No new header is introduced.
 - `MultiTenancyMode` enum (`SingleTenant`, `PerRequest`, `ProjectSegmented`) exists in `HoneyDrunk.Kernel.Abstractions.Hosting`. This ADR does not touch the enum; it adds the runtime primitives the `PerRequest` mode needs to be useful.
 - `HoneyDrunk.Vault` has no first-class tenant scoping pattern — the docs mention multi-tenant cache key isolation, but there is no documented convention for "where does a per-tenant Resend key live in `kv-hd-notify-cloud-{env}`."
@@ -51,13 +51,19 @@ Two additions to the existing type:
 
 `TenantId.NewId()` continues to mint random ULIDs for newly provisioned tenants. The `Internal` sentinel is **not** mintable — there is exactly one internal tenant Grid-wide, by definition.
 
-### D2. `IGridContext.TenantId` is promoted from `string?` to `TenantId?`
+### D2. `IGridContext.TenantId` is promoted from `string?` to `TenantId` (non-nullable)
 
 The current shape is `string? TenantId { get; }`. This shape was acceptable when Kernel's role was strictly propagation-without-interpretation, but PDR-0002's §F change set requires every consumer of `IGridContext` (rate limiter, billing emitter, Vault resolver, downstream Nodes) to parse the string into `TenantId` at use site. That is wasteful, error-prone, and silently swallows malformed values.
 
-The new shape is `TenantId? TenantId { get; }`. The header parsing happens once, in `GridContextMiddleware` (and the messaging/job mappers), at Grid entry. If the `X-Tenant-Id` header is present and parses, the strong type lands in context. If the header is absent, `TenantId` is `null` and downstream resolution layers (D3) apply the `Internal` default. If the header is present but malformed, the request is rejected at the gateway with a 400 — this matches the existing defensive-truncation behavior in the middleware and surfaces malformed tenancy as a client error, not a silent default.
+The new shape is `TenantId TenantId { get; }` — non-nullable. Header parsing **and** the Internal default happen once, in `GridContextMiddleware` (and the messaging/job mappers), at Grid entry:
 
-Kernel's stance on tenancy stays interpretation-free: Kernel parses, propagates, and exposes. It does not authorize, rate-limit, or bill. Those concerns live in the layers introduced by D4–D6 below.
+- If the `X-Tenant-Id` header is present and parses, the strong type lands in context.
+- If the header is absent, `TenantId.Internal` lands in context (per D1).
+- If the header is present but malformed, the request is rejected at the gateway with a 400 — this matches the existing defensive-truncation behavior in the middleware and surfaces malformed tenancy as a client error, not a silent default.
+
+Consumers of `IGridContext` therefore always read a non-null `TenantId`. There is no `??` fallback at the consumer site, no null-handling footgun, and no "consumer forgot to default" failure mode. Internal callers — which never set the header — read `TenantId.Internal`, which D4–D6 implementations short-circuit on.
+
+Kernel's stance on tenancy stays interpretation-free in spirit: Kernel parses, applies the documented Internal default at the boundary, propagates, and exposes. It does **not** authorize, rate-limit, or bill. Those concerns live in the layers introduced by D4–D6 below. The Internal default is a parsing fallback, not an authorization decision.
 
 ### D3. Tenant resolution is explicit threading via `IGridContext`, never AsyncLocal
 
@@ -66,23 +72,20 @@ Kernel's stance on tenancy stays interpretation-free: Kernel parses, propagates,
 1. AsyncLocal gets lost across thread-pool boundaries when code is poorly written. A solo dev plus AI agents cannot afford the debug surface that hidden context loss creates.
 2. AsyncLocal undermines test isolation — tests running in parallel in the same process leak tenancy.
 
-The default resolution rule, applied at the Node-runtime layer (not in Kernel itself):
-
-- If `IGridContext.TenantId` is non-null, use it.
-- If `IGridContext.TenantId` is null, treat the operation as tenant `Internal`. This is the rule a tenancy-aware Node applies at the start of every operation that needs a `TenantId`. It is **not** a property on `IGridContext` because Kernel does not interpret tenancy. The rule is implemented as a tiny helper in `HoneyDrunk.Kernel` (`gridContext.TenantId ?? TenantId.Internal`) so every Node applies it identically.
+Defaulting is centralized at the boundary, not at the consumer site (per D2): `GridContextMiddleware` and the messaging/job mappers populate `IGridContext.TenantId` from a parsed `X-Tenant-Id` header or from `TenantId.Internal` when no header is present. Consumers therefore never write `gridContext.TenantId ?? TenantId.Internal` — the property is non-nullable and already carries Internal for header-less requests. This eliminates the "consumer forgot to default" failure mode entirely.
 
 Propagation across Node boundaries:
 
-- HTTP edge → `X-Tenant-Id` header → `GridContextMiddleware` parses → `IGridContext.TenantId` populated (or null).
-- Messaging hop → `MessagingContextMapper` round-trips `TenantId` via the existing baggage / message-properties channel (already wired for the `string?` shape; updated to `TenantId?`).
+- HTTP edge → `X-Tenant-Id` header → `GridContextMiddleware` parses (or applies `Internal` default) → `IGridContext.TenantId` populated.
+- Messaging hop → `MessagingContextMapper` round-trips `TenantId` via the existing baggage / message-properties channel (already wired for the `string?` shape; updated to the non-nullable `TenantId` shape, with Internal-as-default applied on absence).
 - Job hop → `JobContextMapper` — same as messaging.
-- HTTP outbound from a Node — Node-level `HttpClient` configurations that emit `X-Correlation-Id` already exist; tenancy is added to that emission path so downstream Nodes receive the tenant on their own `GridContextMiddleware` parse.
+- HTTP outbound from a Node — Node-level `HttpClient` configurations that emit `X-Correlation-Id` already exist; tenancy is added to that emission path so downstream Nodes receive the tenant on their own `GridContextMiddleware` parse. Internal-tenant requests omit the `X-Tenant-Id` header so the receiving Node's middleware applies its own Internal default.
 
 This is the same mechanism every other context value already uses. No new propagation channel is introduced.
 
 ### D4. Per-tenant rate-limit policy is a Kernel-Abstractions contract, enforced at gateway-layer middleware
 
-The rate-limit primitive is split into two pieces, in two packages:
+The rate-limit primitive is split across a contract surface and a default implementation: the contract types (the interface and the records below) live together in `HoneyDrunk.Kernel.Abstractions.Tenancy`, and the default noop implementation lives in `HoneyDrunk.Kernel`.
 
 **`HoneyDrunk.Kernel.Abstractions.Tenancy.ITenantRateLimitPolicy`** — the contract a tenancy-aware Node consults before doing tenant-billable work:
 
@@ -225,7 +228,7 @@ The boundary is the same shape as ADR-0019 D4's Notify-vs-Communications decisio
 | Surface | Package | Purpose |
 |---|---|---|
 | `TenantId` (record struct) | `HoneyDrunk.Kernel.Abstractions.Identity` (already exists) | Strongly-typed ULID-backed tenant identifier. D1 adds `Internal` sentinel and `IsInternal` predicate. |
-| `IGridContext.TenantId` (typed) | `HoneyDrunk.Kernel.Abstractions.Context` (existing interface) | Promoted from `string?` to `TenantId?` per D2. |
+| `IGridContext.TenantId` (typed) | `HoneyDrunk.Kernel.Abstractions.Context` (existing interface) | Promoted from `string?` to non-nullable `TenantId` per D2 — middleware applies `TenantId.Internal` default at Grid entry so consumers always read a value. |
 | `ITenantRateLimitPolicy`, `TenantRateLimitDecision`, `TenantRateLimitOutcome` | `HoneyDrunk.Kernel.Abstractions.Tenancy` (new namespace) | Rate-limit contract per D4. |
 | `IBillingEventEmitter`, `BillingEvent` | `HoneyDrunk.Kernel.Abstractions.Tenancy` | Billing-event contract per D6. |
 | `NoopTenantRateLimitPolicy`, `NoopBillingEventEmitter` | `HoneyDrunk.Kernel` | Default implementations registered for internal Grid usage and tests. |
@@ -270,7 +273,7 @@ To keep the scope tight and avoid the trap of bundling everything PDR-0002 §F m
 This ADR is "Done" when all of the following are true:
 
 - [ ] `HoneyDrunk.Kernel.Abstractions.Identity.TenantId` ships `Internal` sentinel and `IsInternal` predicate, with the sentinel ULID pinned by canary test.
-- [ ] `IGridContext.TenantId` is `TenantId?`, with `GridContextMiddleware`, `MessagingContextMapper`, `JobContextMapper`, and `GridContextSerializer` updated to parse / round-trip the strong type.
+- [ ] `IGridContext.TenantId` is non-nullable `TenantId`, with `GridContextMiddleware`, `MessagingContextMapper`, `JobContextMapper`, and `GridContextSerializer` updated to parse / round-trip the strong type and apply the `TenantId.Internal` default at Grid entry when no `X-Tenant-Id` header is present.
 - [ ] `HoneyDrunk.Kernel.Abstractions.Tenancy` namespace exists and exports `ITenantRateLimitPolicy`, `TenantRateLimitDecision`, `TenantRateLimitOutcome`, `IBillingEventEmitter`, `BillingEvent`.
 - [ ] `HoneyDrunk.Kernel` ships `NoopTenantRateLimitPolicy` and `NoopBillingEventEmitter` registered in the default DI extensions.
 - [ ] Contract-shape canary covers all four interfaces and is green.
@@ -299,7 +302,7 @@ Accepting this ADR — and landing the Kernel and Vault halves — unblocks the 
 
 ### Negative
 
-- **Promoting `IGridContext.TenantId` from `string?` to `TenantId?` is a minor breaking change on `HoneyDrunk.Kernel.Abstractions`.** Every Node that reads the property today (and reads it as a string) will need a one-line update at the use site. Mitigation: the audit at the time of this ADR shows zero non-Kernel callsites that read `IGridContext.TenantId` — the property exists on the contract but is consumed only by Kernel's own serializers and middleware. The break is real on paper; the blast radius is empty in practice. Notify Cloud, Communications, and any future consumer pick up the strong type from the start.
+- **Promoting `IGridContext.TenantId` from `string?` to non-nullable `TenantId` is a minor breaking change on `HoneyDrunk.Kernel.Abstractions`.** Every Node that reads the property today will need a one-line update at the use site (string consumers become typed consumers; null-checks become unnecessary because middleware applies the `Internal` default at Grid entry). Mitigation: the audit at the time of this ADR shows zero non-Kernel callsites that read `IGridContext.TenantId` — the property exists on the contract but is consumed only by Kernel's own serializers and middleware. The break is real on paper; the blast radius is empty in practice. Notify Cloud, Communications, and any future consumer pick up the strong, non-nullable type from the start and never write a `??` fallback.
 - **Adding `Internal` sentinel + `IsInternal` predicate to `TenantId` is a minor surface addition.** Backward-compatible; no existing callsite breaks.
 - **Four new contracts in Kernel.Abstractions (`ITenantRateLimitPolicy`, `TenantRateLimitDecision`, `IBillingEventEmitter`, `BillingEvent`) widen Kernel's surface area.** Each is small, the namespace is dedicated (`Tenancy`), and the canary protects shape from drift. The cost is one more thing to maintain in Kernel; the benefit is one place to maintain it instead of N.
 - **`TenantScopedSecretResolver` in Vault runtime introduces a composition layer over `ISecretStore`.** Nodes that have no per-tenant secrets ignore it; Nodes that do, opt in by composing it. The composition shape is documented but is not enforced by canary — it cannot be, because it is a usage pattern. The risk is Notify Cloud or a future Node forgetting to compose it and hard-coding tenant-scoped key resolution. Mitigation: the consumer-Node ADR for any commercial Node references this ADR's D5 explicitly and includes a packet checklist item.

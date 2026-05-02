@@ -71,7 +71,7 @@ No `Testing` package is shipped at stand-up. The runtime composition uses `Honey
 
 ### D4. Exposed contracts
 
-Two contracts form the Notify Cloud Node's public boundary inside the Grid, plus one supporting record. These are the surfaces that the Notify Cloud runtime is *internally* composed against; external customers do not compile against them — they consume the REST API and the SDK.
+Four surfaces form the Notify Cloud Node's public boundary inside the Grid: **two interfaces and two supporting records**. These are the surfaces that the Notify Cloud runtime is *internally* composed against; external customers do not compile against them — they consume the REST API and the SDK.
 
 | Contract | Kind | Purpose |
 |---|---|---|
@@ -94,8 +94,8 @@ The dependency direction is strict and one-way:
 
 ```
 Notify Cloud
-  ├─ consumes ──► Communications (ICommunicationOrchestrator) — orchestration delegate
-  ├─ consumes ──► Notify (INotificationSender) — never directly; always via Communications
+  ├─ consumes ──► Communications (ICommunicationOrchestrator) — orchestration delegate (hot path)
+  ├─ consumes ──► Notify (INotificationSender) — diagnostic/smoke-test paths only; hot path is Notify Cloud → Communications → Notify
   ├─ consumes ──► Auth (IApiKeyAuthenticator middleware path — new)
   ├─ consumes ──► Vault (per-tenant secret scoping)
   ├─ consumes ──► Web.Rest (response envelopes, correlation IDs)

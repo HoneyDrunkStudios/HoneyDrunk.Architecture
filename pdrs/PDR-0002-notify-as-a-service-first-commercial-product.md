@@ -671,13 +671,13 @@ Either outcome generates more learning than continuing to ship internal-only Nod
 | Billing infrastructure — Stripe | 2026-05-02 | Stripe metered billing. Re-evaluate if international VAT compliance (which Paddle and LemonSqueezy handle as merchant-of-record but Stripe does not by default) becomes a friction at scale. |
 | Product name and architectural shorthand | 2026-05-02 | Customer-facing brand: **HoneyDrunk Notify**. Internal architectural shorthand: **Notify Cloud**. The "NaaS" abbreviation is dropped — it collides with Network-as-a-Service in cloud parlance. |
 | Final repo name for the commercial wrapper | 2026-05-02 | `HoneyDrunk.Notify.Cloud`. The SDK shared between self-hosters and hosted-service customers stays at `HoneyDrunk.Notify.Client`. |
+| Open-source license for the engine | 2026-05-02 (per [ADR-0027](../adrs/ADR-0027-stand-up-honeydrunk-notify-cloud-node.md) D11) | **FSL (Functional Source License)** for `HoneyDrunk.Notify`, `HoneyDrunk.Notify.Client`, and `HoneyDrunk.Communications`. Two-year auto-conversion to Apache 2.0. Reversible to BSL if FSL produces a concrete friction during v1 launch. |
 
 ## Open Questions
 
 | Question | Owner | Notes |
 |---|---|---|
 | Domain — `notify.honeydrunkstudios.com` vs. a separate brand domain (`honeydrunk-notify.com`, `gridnotify.com`, etc.) | Product | Default proposed: `notify.honeydrunkstudios.com` per §H. Separate brand revisited only if Notify Cloud clears the 90-day bar and grows past the studio's current shape. |
-| Open-source license — FSL vs. BSL for the Notify engine | Architecture / Legal | Default proposed: FSL (Functional Source License). Both prevent hyperscaler rehosting while allowing self-host, modify, and redistribute. FSL has a 2-year automatic conversion to Apache; BSL has a configurable conversion window. Final choice in the `HoneyDrunk.Notify.Cloud` standup ADR. |
 | Support model — email vs. Discord vs. GitHub Discussions for community | Product | Default proposed: email + public Discord. GitHub Discussions if Discord proves too noisy. |
 | Tenant provisioning — fully manual at v1, semi-automated at v1.5, or fully automated at launch | Operations | Default proposed: manual at soft launch (10–20 beta tenants), semi-automated at public launch (signup form auto-provisions tenant ID, API key issuance is automated, Stripe subscription is automated). |
 | Abuse detection threshold — what triggers an automatic tenant pause | Operations / Communications | Default proposed: bounce rate > 10%, spam complaint rate > 0.5%, or 5× normal volume in a 1-hour window. Specific thresholds tuned during soft launch. |
@@ -691,8 +691,8 @@ Either outcome generates more learning than continuing to ship internal-only Nod
 
 | Artifact | Type | Purpose |
 |---|---|---|
-| `HoneyDrunk.Notify.Cloud` standup ADR | ADR | Stand up the new Node per the standup-ADR convention. Names package families, downstream coupling rule, contract-shape canary, dependency surface. |
-| Grid multi-tenant primitives ADR | ADR | Defines `TenantId` propagation, intake-layer rate limit policy, per-tenant Vault scoping, and billing event emission as **Grid-wide** patterns — not Notify-specific. Notify Cloud is the first consumer; future commercial Nodes (if any) inherit the same primitives without retrofitting. The Notify-specific changes in §F are the first concrete application of these Grid-wide primitives. |
+| [ADR-0027](../adrs/ADR-0027-stand-up-honeydrunk-notify-cloud-node.md) — `HoneyDrunk.Notify.Cloud` standup ADR | ADR (Proposed 2026-05-02) | Stands up the new Node per the standup-ADR convention. Names package families, downstream coupling rule, contract-shape canary, dependency surface. Decides FSL as the engine OSS license. |
+| [ADR-0026](../adrs/ADR-0026-grid-multi-tenant-primitives.md) — Grid multi-tenant primitives ADR | ADR (Proposed 2026-05-02) | Defines `TenantId` propagation, intake-layer rate limit policy, per-tenant Vault scoping, and billing event emission as **Grid-wide** patterns — not Notify-specific. Notify Cloud is the first consumer; future commercial Nodes (if any) inherit the same primitives without retrofitting. The Notify-specific changes in §F are the first concrete application of these Grid-wide primitives. |
 | API key authentication pattern ADR | ADR | Defines the `IApiKeyAuthenticator` middleware in HoneyDrunk.Auth, the API key issuance flow, and the storage shape (hashed in Notify Cloud, never raw). Preserves Invariant 10. |
 | Stripe billing integration ADR | ADR | Defines the `BillingEvent` shape, the webhook bridge, and the `HoneyDrunk.Notify.Cloud.Billing.Stripe` provider-slot pattern. |
 | Notify Cloud pricing and tier feature gates design doc | Design doc | Maps tier features to architectural surfaces. Defines what changes in code when a tenant upgrades from Starter to Pro. |
