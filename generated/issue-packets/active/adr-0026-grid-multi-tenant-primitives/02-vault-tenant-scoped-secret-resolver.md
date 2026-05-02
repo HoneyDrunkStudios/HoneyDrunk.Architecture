@@ -4,7 +4,7 @@ type: cross-repo-change
 tier: 2
 target_repo: HoneyDrunkStudios/HoneyDrunk.Vault
 labels: ["feature", "tier-2", "core", "docs", "adr-0026", "wave-2"]
-dependencies: ["Kernel#NN — Grid multi-tenant primitives (packet 01)"]
+dependencies: ["Kernel#NN — Grid multi-tenant primitives (packet 01) — Wave 1 lead"]
 adrs: ["ADR-0026"]
 wave: 2
 initiative: adr-0026-grid-multi-tenant-primitives
@@ -49,6 +49,14 @@ Author a docs page describing the per-tenant secret scoping convention. Match th
    - Applications must never pin to a specific secret version. The resolver passes through to `ISecretStore` which always resolves the latest version.
    - Every Key Vault must have diagnostic settings routed to the shared Log Analytics workspace.
    - Per-secret rotation tier applies as today: a tenant-scoped Resend key is a Tier 2 third-party secret with the same ≤90-day rotation SLA.
+
+   **Telemetry of tenant-scoped secret names.** Vault telemetry traces secret IDENTIFIERS (allowed by Invariant 8 — identifiers are not values). Tenant-scoped identifiers contain the tenant ULID — a customer-identity bytes-marker — embedded in the secret name (e.g., a trace span attribute reading `secret.identifier="tenant-01H2X3Y4Z5...XYZ-resend-api-key"`). This is intentional and acceptable in the v1 design because:
+     - **(a) Vault telemetry is internal-only.** Vault diagnostic settings route to the shared HoneyDrunk Log Analytics workspace; no customer-facing dashboard surfaces Vault telemetry directly.
+     - **(b) Operational correlation requires the tenant ULID.** Vault rotation tooling (`HoneyDrunk.Vault.Rotation`) and on-call investigation need to correlate rotations and access patterns to specific tenants — the tenant ULID in the identifier is the join key that enables that.
+     - **(c) Customer-facing dashboards never expose Vault telemetry directly.** Pulse customer-facing surfaces (when they exist) consume `BillingEvent`s and tenant-scoped trace tags — they do not surface Vault diagnostic settings.
+     - **(d) Tenant ULIDs are not personally identifying on their own.** They are opaque IDs minted by `TenantId.NewId()`; mapping a ULID to a customer name requires access to the tenant onboarding store, which itself has access controls.
+
+   If a future requirement emerges to redact tenant ULIDs in Vault telemetry traces (e.g., a stricter privacy posture for an enterprise customer or a regulatory regime change), the redaction pattern lives in `HoneyDrunk.Vault/Telemetry/` and is non-blocking for v1. The redaction would be a transformation applied to span attributes before sink emission — out of scope for this packet.
 
 7. **Worked example.** Walk through "Pro-tier tenant `01H2X3...` provisions their own Resend key for Notify Cloud's `dev` environment":
    - Operator sets the secret `tenant-01H2X3...-resend-api-key` in `kv-hd-notify-cloud-dev`.
@@ -143,7 +151,7 @@ Add tests in `HoneyDrunk.Vault.Tests` (or whichever test project the runtime pac
 
 ### D. Coordinated version bump
 
-Per Invariant 27, every project in the `HoneyDrunk.Vault` solution moves to the same new version. Vault is currently at `0.2.0` per its overview. Bump to `0.3.0` (minor — additive new public type + new docs page, no breaking change to `ISecretStore`). Update every `.csproj` in the solution to `0.3.0`. Repo-level `CHANGELOG.md` gets a new `0.3.0` entry. Per-package `CHANGELOG.md` for `HoneyDrunk.Vault/` is updated to describe the new resolver and Tenancy docs. Provider-package `CHANGELOG.md`s (`HoneyDrunk.Vault.Providers.AzureKeyVault/`, `Aws/`, `File/`, `Configuration/`, `InMemory/`) get NO entries — they have no actual code changes and per Invariant 12 alignment-only bumps must not add noise entries.
+Per Invariant 27, every project in the `HoneyDrunk.Vault` solution moves to the same new version. Vault is currently at `0.3.0` per the on-disk `HoneyDrunk.Vault.csproj` (verified at packet authoring). Bump to `0.4.0` (minor — additive new public type + new docs page, no breaking change to `ISecretStore`). Update every `.csproj` in the solution to `0.4.0`. Repo-level `CHANGELOG.md` gets a new `0.4.0` entry. Per-package `CHANGELOG.md` for `HoneyDrunk.Vault/` is updated to describe the new resolver and Tenancy docs. Provider-package `CHANGELOG.md`s (`HoneyDrunk.Vault.Providers.AzureKeyVault/`, `Aws/`, `File/`, `Configuration/`, `InMemory/`, `AppConfiguration/`) and `HoneyDrunk.Vault.EventGrid/` get NO entries — they have no actual code changes and per Invariant 12 alignment-only bumps must not add noise entries.
 
 ### E. README touch-up
 
@@ -157,11 +165,11 @@ If the repo-root `README.md` enumerates docs, link the new page from there too.
 - `HoneyDrunk.Vault/HoneyDrunk.Vault/HoneyDrunk.Vault/Tenancy/TenantScopedSecretResolver.cs` (new)
 - `HoneyDrunk.Vault/HoneyDrunk.Vault/HoneyDrunk.Vault/Extensions/` — `AddTenantScopedSecretResolver()` extension (locate the existing DI extension file at execution; add the extension there or in a new `TenancyServiceCollectionExtensions.cs`)
 - Test project (`HoneyDrunk.Vault.Tests` or equivalent) — five new tests per section C
-- `HoneyDrunk.Vault/HoneyDrunk.Vault/HoneyDrunk.Vault/HoneyDrunk.Vault.csproj` — version bump to `0.3.0`
-- Every other `.csproj` in the Vault solution — version bump to `0.3.0` (Invariant 27)
+- `HoneyDrunk.Vault/HoneyDrunk.Vault/HoneyDrunk.Vault/HoneyDrunk.Vault.csproj` — version bump to `0.4.0`
+- Every other `.csproj` in the Vault solution — version bump to `0.4.0` (Invariant 27)
 - `HoneyDrunk.Vault/HoneyDrunk.Vault/HoneyDrunk.Vault/CHANGELOG.md` (per-package) — actual changes documented
 - `HoneyDrunk.Vault/HoneyDrunk.Vault/HoneyDrunk.Vault/README.md` (per-package) — link to docs/Tenancy.md
-- Repo-root `CHANGELOG.md` — new `0.3.0` entry
+- Repo-root `CHANGELOG.md` — new `0.4.0` entry
 - Repo-root `README.md` — link to docs/Tenancy.md if the README indexes docs
 - `HoneyDrunk.Kernel.Abstractions` PackageReference in Vault's `.csproj` — bump to the version produced by packet 01 (likely `0.5.0` — verify against packet 01's actual published version)
 
@@ -186,14 +194,15 @@ No other `<PackageReference>` additions. The resolver is a pure composition laye
 - [ ] Tenancy.md documents the Internal-tenant short-circuit (Internal → shared name, no `tenant-` prefix).
 - [ ] Tenancy.md documents the fallback semantics (try tenant-scoped, fall back to shared).
 - [ ] Tenancy.md inlines the relevant Vault invariants (no logging of values; Vault is the only secret source; never version-pin; diagnostics to Log Analytics; rotation tier applies per secret).
+- [ ] Tenancy.md includes the **"Telemetry of tenant-scoped secret names"** subsection documenting (a) Vault telemetry is internal-only, (b) tenant ULIDs in identifiers are intentional for operational correlation, (c) customer-facing dashboards do not expose Vault telemetry, (d) tenant ULIDs are opaque IDs not personally identifying on their own, and (e) future redaction would live in `HoneyDrunk.Vault/Telemetry/` if a stricter posture is required (non-blocking for v1).
 - [ ] Tenancy.md walks through the worked Pro-tier scenario (operator-provisioned tenant slot → resolver returns scoped value → tenant removes slot → resolver falls back).
 - [ ] `TenantScopedSecretResolver` exists in `HoneyDrunk.Vault.Tenancy` (or chosen namespace) with the shape documented above. Public API has XML docs (Invariant 13).
 - [ ] Resolver consumes `ISecretStore` via composition; does not modify or replace it.
 - [ ] DI extension (e.g., `AddTenantScopedSecretResolver()`) registers the resolver and is documented in Tenancy.md.
 - [ ] All five tests from section C pass.
 - [ ] No secret values appear in any log emitted by the resolver (verifiable via test).
-- [ ] Every `.csproj` in the Vault solution moves from `0.2.0` to `0.3.0` in a single commit (Invariant 27).
-- [ ] Repo-level `CHANGELOG.md` has a new `0.3.0` entry covering the new tenancy docs and resolver.
+- [ ] Every `.csproj` in the Vault solution moves from `0.3.0` to `0.4.0` in a single commit (Invariant 27).
+- [ ] Repo-level `CHANGELOG.md` has a new `0.4.0` entry covering the new tenancy docs and resolver.
 - [ ] Per-package `CHANGELOG.md` for `HoneyDrunk.Vault/` updated. Provider packages get NO `CHANGELOG.md` entries (alignment-only bump — Invariant 12).
 - [ ] Per-package `README.md` for `HoneyDrunk.Vault/` links to `docs/Tenancy.md`.
 - [ ] Vault's `.csproj` reference to `HoneyDrunk.Kernel.Abstractions` is bumped to the version produced by packet 01.
@@ -219,7 +228,7 @@ No other `<PackageReference>` additions. The resolver is a pure composition laye
 
 > **Invariant 9 (Secrets & Trust):** Vault is the only source of secrets. No Node reads secrets directly from environment variables, config files, or provider SDKs. All access goes through `ISecretStore`. **Why it matters here:** The resolver composes `ISecretStore` — it does not read provider SDKs directly. Tenant-scoped secrets remain inside the per-Node Key Vault.
 
-> **Invariant 12 (Packaging):** Semantic versioning with CHANGELOG and README. Two tiers: repo-level (mandatory) and per-package (only when the package has functional changes — no noise entries for alignment bumps). **Why it matters here:** Repo-level `CHANGELOG.md` gets a `0.3.0` entry. Only `HoneyDrunk.Vault/` gets a per-package CHANGELOG entry; the five provider packages get none (alignment-only).
+> **Invariant 12 (Packaging):** Semantic versioning with CHANGELOG and README. Two tiers: repo-level (mandatory) and per-package (only when the package has functional changes — no noise entries for alignment bumps). **Why it matters here:** Repo-level `CHANGELOG.md` gets a `0.4.0` entry. Only `HoneyDrunk.Vault/` gets a per-package CHANGELOG entry; the five provider packages get none (alignment-only).
 
 > **Invariant 13 (Packaging):** All public APIs have XML documentation. **Why it matters here:** `TenantScopedSecretResolver` and its public methods carry XML docs.
 
@@ -229,7 +238,7 @@ No other `<PackageReference>` additions. The resolver is a pure composition laye
 
 > **Invariant 22 (Infrastructure):** Every Key Vault must have diagnostic settings routed to the shared Log Analytics workspace. **Why it matters here:** Tenant-scoped secrets are covered by the Node's vault diagnostics — no per-tenant diagnostics setup needed.
 
-> **Invariant 27 (Versioning):** All projects in a solution share one version and move together. **Why it matters here:** Vault solution moves `0.2.0 → 0.3.0` in one commit. Provider packages bump version but get no per-package CHANGELOG noise.
+> **Invariant 27 (Versioning):** All projects in a solution share one version and move together. **Why it matters here:** Vault solution moves `0.3.0 → 0.4.0` in one commit. Provider packages bump version but get no per-package CHANGELOG noise.
 
 > **Invariant 31 (Code Review):** Every PR traverses the tier-1 gate before merge. **Why it matters here:** Vault's `pr-core.yml` must pass before merge.
 
@@ -255,14 +264,14 @@ No other `<PackageReference>` additions. The resolver is a pure composition laye
 - **The `tenant-` prefix is literal.** Do not parameterize it (no `TenancyOptions.Prefix = "tenant-"`); the convention is fixed by ADR-0026 D5 and parameterizing invites drift across consumer Nodes.
 - **No ADR ID in code comments or README.** Per the no-ADR-in-docs convention, the new XML docs and README sections do NOT mention `ADR-0026`. Tenancy.md is a docs file under `HoneyDrunk.Vault/docs/` and follows the same rule — describe the pattern; do not link to the ADR. (Packet runtime data — this file, frontmatter, CHANGELOG — does reference the ADR.)
 - **Internal short-circuit must skip the tenant-scoped lookup entirely.** Do not "try tenant-scoped first, fall back" for internal callers — that wastes a Key Vault round-trip on every internal call. The `IsInternal` predicate is checked first and the resolver goes straight to the shared name path.
-- **Coordinated bump on every `.csproj`.** Provider packages (`AzureKeyVault`, `Aws`, `File`, `Configuration`, `InMemory`) all bump to `0.3.0` per Invariant 27, but their per-package `CHANGELOG.md` files get NO entries (Invariant 12 — no alignment-bump noise).
+- **Coordinated bump on every `.csproj`.** Provider packages (`AzureKeyVault`, `Aws`, `File`, `Configuration`, `InMemory`, `AppConfiguration`) and `HoneyDrunk.Vault.EventGrid` all bump to `0.4.0` per Invariant 27, but their per-package `CHANGELOG.md` files get NO entries (Invariant 12 — no alignment-bump noise).
 
 ## Labels
 `feature`, `tier-2`, `core`, `docs`, `adr-0026`, `wave-2`
 
 ## Agent Handoff
 
-**Objective:** Ship the Vault half of ADR-0026 step 2 — `docs/Tenancy.md` documenting the `tenant-{tenantId}-{secretName}` convention and a `TenantScopedSecretResolver` runtime composition layer over `ISecretStore`. No contract change. Coordinated solution-wide bump to `0.3.0`.
+**Objective:** Ship the Vault half of ADR-0026 step 2 — `docs/Tenancy.md` documenting the `tenant-{tenantId}-{secretName}` convention and a `TenantScopedSecretResolver` runtime composition layer over `ISecretStore`. No contract change. Coordinated solution-wide bump to `0.4.0`.
 
 **Target:** `HoneyDrunk.Vault`, branch from `main`.
 
@@ -283,7 +292,7 @@ No other `<PackageReference>` additions. The resolver is a pure composition laye
 - `tenant-` prefix is literal — not parameterized.
 - No ADR ID in code / README / Tenancy.md.
 - Internal short-circuit skips the tenant-scoped lookup entirely (no wasted round-trip).
-- Coordinated `0.2.0 → 0.3.0` bump on every `.csproj`. Provider packages bump but get no CHANGELOG noise.
+- Coordinated `0.3.0 → 0.4.0` bump on every `.csproj`. Provider packages bump but get no CHANGELOG noise.
 
 **Inlined Invariant Text (for review without leaving the target repo):**
 

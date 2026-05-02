@@ -1,6 +1,6 @@
 # ADR-0026: Grid Multi-Tenant Primitives — TenantId, Propagation, Rate-Limit Policy, Vault Scoping, Billing Events
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-05-02
 **Deciders:** HoneyDrunk Studios
 **Sector:** Core (Kernel) · Ops (first consumers: Notify, Communications) · Infrastructure (Vault scoping pattern)

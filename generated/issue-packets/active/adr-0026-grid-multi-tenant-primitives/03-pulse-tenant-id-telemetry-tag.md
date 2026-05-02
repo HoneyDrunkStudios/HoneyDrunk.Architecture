@@ -3,12 +3,13 @@ name: Cross-Repo Change
 type: cross-repo-change
 tier: 2
 target_repo: HoneyDrunkStudios/HoneyDrunk.Pulse
-labels: ["feature", "tier-2", "ops", "telemetry", "adr-0026", "wave-2"]
-dependencies: ["Kernel#NN — Grid multi-tenant primitives (packet 01)"]
+labels: ["feature", "tier-2", "ops", "telemetry", "adr-0026", "wave-1"]
+dependencies: ["Kernel#NN — Grid multi-tenant primitives (packet 01) — Wave 1 lead"]
 adrs: ["ADR-0026"]
-wave: 2
+wave: 1
 initiative: adr-0026-grid-multi-tenant-primitives
 node: pulse
+coordinated_with: ["HoneyDrunk.Kernel", "HoneyDrunk.Data", "HoneyDrunk.Transport", "HoneyDrunk.Web.Rest"]
 ---
 
 # Feature: Adopt typed TenantId on tenant_id telemetry tag with PDR-0002 cardinality discipline
@@ -20,9 +21,9 @@ Update `ActivityEnricher` (and any sibling enrichers in `HoneyDrunk.Telemetry.Op
 `HoneyDrunkStudios/HoneyDrunk.Pulse`
 
 ## Motivation
-PDR-0002 §F lists `tenant_id` as a Pulse telemetry tag that needs cardinality discipline — at v1, paying customers are measured in tens, not millions. ADR-0026 D1–D2 promote `IGridContext.TenantId` from `string?` to a non-nullable `TenantId` strong type, making the existing Pulse enricher's `string.IsNullOrEmpty(context.TenantId)` checks obsolete. After packet 01 ships, the enricher must consume the typed value instead.
+PDR-0002 §F lists `tenant_id` as a Pulse telemetry tag that needs cardinality discipline — at v1, paying customers are measured in tens, not millions. ADR-0026 D1–D2 promote `IGridContext.TenantId` and `IOperationContext.TenantId` from `string?` to a non-nullable `TenantId` strong type, making the existing Pulse enricher's `string.IsNullOrEmpty(context.TenantId)` checks obsolete (file `HoneyDrunk.Telemetry.OpenTelemetry/Enrichment/ActivityEnricher.cs` lines 31-34 and 53-56). After packet 01 ships, the enricher must consume the typed value instead.
 
-This packet ships the Pulse half of ADR-0026 step 2 (alongside the Vault packet — they can run in parallel since they're in different repos with no inter-dependency). It depends on the Kernel packet (#01) for the typed `TenantId` and the `IsInternal` predicate.
+**This packet is part of the coordinated Wave 1.** Per ADR-0026 D9 (revised) and the dispatch plan, Pulse is one of four downstream sister packets in Wave 1 (alongside Data, Transport, Web.Rest) that adapt to Kernel 0.5.0's typed `TenantId`. Each ships its own PR and version bump; the merge order within Wave 1 is **Kernel first**, then Data / Transport / Web.Rest / Pulse merge as soon as Kernel publishes (so each downstream restore resolves to Kernel 0.5.0 at PR-build time). Pulse is not Wave 2 — Wave 2 is Vault, which depends on the typed `TenantId` for its resolver but is not itself a typed-`TenantId` consumer-Node patch.
 
 The cardinality discipline is the load-bearing rule: emitting `tenant_id` as a metric label without a customer-count ceiling would cause cardinality explosion in any time-series backend (Mimir, Prometheus, Azure Monitor metrics). PDR-0002 §K turns "tenant cardinality grows out of control" into an explicit kill criterion for Notify Cloud — if the customer count crosses a threshold that would cause Pulse cost to exceed value, the Notify Cloud product is killed. That ceiling is what makes `tenant_id` safe as a metric tag at v1.
 
@@ -158,9 +159,10 @@ No other `<PackageReference>` additions. The change is consuming an already-refe
 - **Kernel#NN — Grid multi-tenant primitives (packet 01).** Hard dependency: typed `IGridContext.TenantId` and `TenantId.IsInternal`. Must be merged and the resulting NuGet version published before this packet can build green.
 
 ## Downstream Unblocks
+- Wave 1 closure — once this packet merges (alongside the other Wave 1 sister packets — Data 01a, Transport 01b, Web.Rest 01c), Kernel 0.5.0 has working consumers and Wave 2 (Vault) can begin.
 - Notify Cloud's telemetry has a single canonical source for the `tenant_id` tag — `IGridContext.TenantId.ToString()` filtered through `IsInternal`.
 - Communications inherits the typed enrichment automatically.
-- Architecture catalog packet (#04) — flips ADR-0026 to Accepted only after packets 01 + 02 + this packet + the Architecture catalog packet all merge.
+- Architecture catalog packet (#04) — flips ADR-0026 to Accepted after Wave 1 (this packet + 01 + 01a + 01b + 01c) and Wave 2 (Vault packet 02) all merge.
 - A future packet can wire the operator alarm at the documented 200-distinct-tenant-ID threshold.
 
 ## Referenced Invariants
@@ -184,7 +186,7 @@ No other `<PackageReference>` additions. The change is consuming an already-refe
 **ADR-0026 (Grid Multi-Tenant Primitives):**
 - **D1 — `TenantId` is a Kernel-Abstractions primitive.** This packet consumes the new `Internal` static and `IsInternal` predicate from packet 01.
 - **D2 — `IGridContext.TenantId` is promoted to non-nullable `TenantId`.** This packet adopts the typed shape in the enricher.
-- **D9 — Ordering.** Pulse adopts the typed shape after Kernel ships (parallel-or-after Vault).
+- **D9 — Ordering — coordinated Wave 1.** Pulse adopts the typed shape in the same wave as Kernel 0.5.0 ships, alongside Data, Transport, and Web.Rest. Operational order: Kernel PR merges first within Wave 1 so the resulting Kernel 0.5.0 packages publish; Pulse PR then merges as soon as its build is green against published 0.5.0.
 - **Unblocks (Pulse tenant-scoped telemetry):** "The `tenant_id` tag on Pulse telemetry has a single canonical source — `IGridContext.TenantId.ToString()` — so cardinality discipline is uniform across emitters." This packet is what realizes that uniform source.
 
 **PDR-0002 (Notify Cloud) §F + §K — context only.**
@@ -202,7 +204,7 @@ No other `<PackageReference>` additions. The change is consuming an already-refe
 - **Coordinated bump on every `.csproj`.** Sink packages bump to `0.2.0` per Invariant 27 but get no per-package CHANGELOG entries (Invariant 12).
 
 ## Labels
-`feature`, `tier-2`, `ops`, `telemetry`, `adr-0026`, `wave-2`
+`feature`, `tier-2`, `ops`, `telemetry`, `adr-0026`, `wave-1`
 
 ## Agent Handoff
 
@@ -212,7 +214,7 @@ No other `<PackageReference>` additions. The change is consuming an already-refe
 
 **Context:**
 - Goal: One canonical source for the `tenant_id` telemetry tag, with cardinality discipline at the source.
-- Feature: ADR-0026 Grid Multi-Tenant Primitives, step 2 of D9 ordering (parallel with Vault packet).
+- Feature: ADR-0026 Grid Multi-Tenant Primitives, Wave 1 (coordinated multi-repo bump alongside Kernel + Data + Transport + Web.Rest).
 - ADRs: ADR-0026 (multi-tenant primitives), PDR-0002 (Notify Cloud — context only for the cardinality envelope).
 
 **Acceptance Criteria:** As listed above.

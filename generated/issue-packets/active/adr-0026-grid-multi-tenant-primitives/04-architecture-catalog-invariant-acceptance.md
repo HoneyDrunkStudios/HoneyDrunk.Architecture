@@ -4,7 +4,7 @@ type: repo-feature
 tier: 2
 target_repo: HoneyDrunkStudios/HoneyDrunk.Architecture
 labels: ["feature", "tier-2", "docs", "governance", "adr-0026", "wave-3"]
-dependencies: ["Kernel#NN — Grid multi-tenant primitives (packet 01)", "Vault#NN — Tenant-scoped secret resolver (packet 02)"]
+dependencies: ["Kernel#NN — Grid multi-tenant primitives (packet 01)", "Data#NN — KernelTenantAccessor typed adoption (packet 01a)", "Transport#NN — GridContextFactory typed adoption (packet 01b)", "Web.Rest#NN — RequestLoggingScopeMiddleware typed adoption (packet 01c)", "Vault#NN — Tenant-scoped secret resolver (packet 02)"]
 adrs: ["ADR-0026"]
 wave: 3
 initiative: adr-0026-grid-multi-tenant-primitives
@@ -14,20 +14,22 @@ node: honeydrunk-architecture
 # Feature: ADR-0026 catalog updates, multi-tenant boundary invariant, and Status flip to Accepted
 
 ## Summary
-Land the Architecture-side obligations of ADR-0026: append the multi-tenant boundary invariant to `constitution/invariants.md` (assigning the next available number, currently 37); add catalog entries for the four new Kernel surfaces in `catalogs/contracts.json`; update `repos/HoneyDrunk.Kernel/boundaries.md` and `invariants.md` to reflect the tenancy primitives; update `repos/HoneyDrunk.Vault/boundaries.md` to add the `TenantScopedSecretResolver` composition pattern with link to `docs/Tenancy.md`; flip ADR-0026 Status from Proposed to Accepted; record acceptance in `initiatives/active-initiatives.md` and `initiatives/releases.md` (or wherever ADR acceptances are tracked).
+Land the Architecture-side obligations of ADR-0026: append the multi-tenant boundary invariant to `constitution/invariants.md` (assigning the next available number, currently 37); add catalog entries for the four new Kernel surfaces in `catalogs/contracts.json`; update `catalogs/grid-health.json` Kernel + Vault + Data + Transport + Web.Rest + Pulse `version` entries to the shipped versions and Kernel's `notes` to mention the Tenancy namespace; update `repos/HoneyDrunk.Kernel/boundaries.md` and `invariants.md` to reflect the tenancy primitives; update `repos/HoneyDrunk.Vault/boundaries.md` to add the `TenantScopedSecretResolver` composition pattern with link to `docs/Tenancy.md`; add a D7-enforcement checklist line to `copilot/issue-authoring-rules.md`; flip ADR-0026 Status from Proposed to Accepted; record acceptance in `initiatives/active-initiatives.md` and `initiatives/releases.md` (or wherever ADR acceptances are tracked).
 
 ## Target Repo
 `HoneyDrunkStudios/HoneyDrunk.Architecture`
 
 ## Motivation
-Per ADR-0026's "If Accepted — Required Follow-Up Work" section and per the Grid's ADR acceptance workflow (memory: feedback_adr_workflow), the scope agent flips Status to Accepted only after the implementation packets ship. Packets 01 (Kernel) and 02 (Vault) deliver the runtime side; this packet closes the loop on the Architecture knowledge base so:
+Per ADR-0026's "If Accepted — Required Follow-Up Work" section and per the Grid's ADR acceptance workflow (memory: feedback_adr_workflow), the scope agent flips Status to Accepted only after the implementation packets ship. Wave 1 (packets 01 + 01a + 01b + 01c + 03) ships the typed-`TenantId` primitives and the four downstream-Node adaptations. Wave 2 (packet 02) ships the Vault tenancy resolver. This packet (Wave 3) closes the loop on the Architecture knowledge base so:
 
 1. The constitution carries the new boundary rule that prevents the PDR-0002 §K kill criterion 2 failure mode (multi-tenanting bleeds into core dispatch in a way internal callers must know about).
 2. `catalogs/contracts.json` reflects the four new public Kernel surfaces, so downstream agents know the contracts exist when scoping consumer-Node work (Notify Cloud, Communications, future commercial Nodes).
-3. The per-Node boundary docs reflect the new responsibilities, so the review agent and future scope agents have a single source for "what does Kernel own / what does Vault own" that includes the tenancy primitives.
-4. The ADR's index entry flips to Accepted, and the active-initiatives tracker records the closure.
+3. `catalogs/grid-health.json` reflects the shipped Kernel 0.5.0 + Vault 0.4.0 + Data 0.5.0 + Transport 0.5.0 + Web.Rest 0.4.0 + Pulse 0.2.0 versions (per the Wave 1 + Wave 2 coordinated rollout) and Kernel's `notes` field mentions the new Tenancy namespace. Per ADR-0026 Catalog Obligations, this is an explicit Architecture-side obligation.
+4. The per-Node boundary docs reflect the new responsibilities, so the review agent and future scope agents have a single source for "what does Kernel own / what does Vault own" that includes the tenancy primitives.
+5. `copilot/issue-authoring-rules.md` carries a D7-enforcement checklist line so any future packet touching a tenancy-aware Node verifies `ITenantRateLimitPolicy` and `IBillingEventEmitter` references live only in `Intake/` or post-dispatch tail paths. The static analyzer remains future work per ADR Open Questions §2.
+6. The ADR's index entry flips to Accepted, and the active-initiatives tracker records the closure.
 
-This packet is the third wave — runs strictly after packets 01 and 02 are merged AND the Kernel + Vault NuGet packages are published. The Pulse packet (#03) can be in flight in parallel; this packet does not block on Pulse, but the Pulse adoption is a Done-When item on ADR-0026 and the active-initiatives tracker should reflect that as a separate checkbox.
+This packet is **Wave 3 — runs strictly after Wave 1 (the five-packet coordinated bump) and Wave 2 (Vault) are merged AND the resulting NuGet packages are published.** Pragmatic acceptance reading is preserved: if Pulse packet 03 is somehow still open at this packet's execution time (Wave 1 was scoped as a single coordinated wave but operationally the four downstream PRs may merge in any order after Kernel publishes), it can stay open while ADR Status flips, with a tracking note.
 
 ## Proposed Implementation
 
@@ -97,6 +99,39 @@ Update `_meta.updated` to today's date (2026-05-02 or the actual date the packet
 
 If `catalogs/contracts.json` has any per-Node "exposes" or "status" field that should reflect the new namespace, verify and update at execution. The contracts.json uses interfaces keyed under `node` + `package` — additions here do not change schema shape.
 
+### B2. Update `catalogs/grid-health.json`
+
+Per ADR-0026 Catalog Obligations, `catalogs/grid-health.json` Kernel entry's `notes` is updated to mention the Tenancy namespace, and the version fields for every Node that bumped in Wave 1 + Wave 2 are updated to reflect the shipped versions. Verified at packet authoring against on-disk `.csproj` files:
+
+| Node entry id | Version field today (in grid-health.json) | New version | Source-of-truth `.csproj` |
+|---|---|---|---|
+| `honeydrunk-kernel` | `0.4.0` | `0.5.0` | `HoneyDrunk.Kernel/HoneyDrunk.Kernel/HoneyDrunk.Kernel/HoneyDrunk.Kernel.csproj` |
+| `honeydrunk-vault` | `0.4.0` (today's grid-health.json says 0.4.0 but the on-disk Vault.csproj is 0.3.0; treat the grid-health.json value as the value to bump *to* the version this packet's predecessors actually shipped — `0.4.0`) | `0.4.0` | `HoneyDrunk.Vault/HoneyDrunk.Vault/HoneyDrunk.Vault/HoneyDrunk.Vault.csproj` (after packet 02 merges, this file will read `0.4.0`) |
+| `honeydrunk-data` | `0.4.0` | `0.5.0` | `HoneyDrunk.Data/HoneyDrunk.Data/HoneyDrunk.Data/HoneyDrunk.Data.csproj` (after packet 01a merges) |
+| `honeydrunk-transport` | `0.4.0` | `0.5.0` | `HoneyDrunk.Transport/HoneyDrunk.Transport/HoneyDrunk.Transport/HoneyDrunk.Transport.csproj` (after packet 01b merges) |
+| `honeydrunk-web-rest` | `0.4.0` | `0.4.0` (today's grid-health says 0.4.0; the on-disk Web.Rest.AspNetCore.csproj is 0.3.0; this packet's predecessor 01c bumps to `0.4.0` so grid-health stays accurate) | `HoneyDrunk.Web.Rest/HoneyDrunk.Web.Rest/HoneyDrunk.Web.Rest.AspNetCore/HoneyDrunk.Web.Rest.AspNetCore.csproj` (after packet 01c merges) |
+| `pulse` | `0.1.0` | `0.2.0` | `HoneyDrunk.Pulse/HoneyDrunk.Pulse/HoneyDrunk.Telemetry.OpenTelemetry/HoneyDrunk.Telemetry.OpenTelemetry.csproj` (after packet 03 merges) |
+
+**Version-divergence note:** `catalogs/grid-health.json` and the on-disk `.csproj` files are not always in lock-step at the time a packet is authored — `grid-health.json` is sometimes updated ahead of (or behind) actual ship state. At this packet's execution time, the agent should:
+1. Re-read each on-disk `.csproj` for its actual `<Version>` value.
+2. Re-read `catalogs/grid-health.json` for the recorded `version` value.
+3. Update `grid-health.json` to match the on-disk `.csproj` value (the on-disk `.csproj` is the source of truth — that is what shipped).
+
+Additional `notes` field update for the `honeydrunk-kernel` entry — current text:
+```
+"Grid v0.4 stabilization release. Three-ID context model locked. AddHoneyDrunkNode is canonical API."
+```
+Replace with:
+```
+"Grid v0.5 release. Three-ID context model locked; tenancy primitives in HoneyDrunk.Kernel.Abstractions.Tenancy (ITenantRateLimitPolicy, IBillingEventEmitter, TenantRateLimitDecision, BillingEvent). IGridContext.TenantId and IOperationContext.TenantId promoted to non-nullable typed TenantId with Internal sentinel."
+```
+
+If any other Node's `notes` field needs a one-line update to reflect the typed-TenantId adoption (e.g., Vault's note may want to mention `TenantScopedSecretResolver`), update at execution. Do not refactor unrelated entries.
+
+Update `_meta.updated` to today's date (or the actual packet execution date).
+
+Cross-validate: `jq . catalogs/grid-health.json` must succeed before commit. The Studios website data import consumes this file.
+
 ### C. Update `repos/HoneyDrunk.Kernel/boundaries.md`
 
 Today's `boundaries.md` says Kernel owns "Identity grammar (strongly-typed ID primitives)" and lists what it does NOT own. Update the "What Kernel Owns" section to add a new bullet:
@@ -141,10 +176,10 @@ Add a clarifying bullet to "What Vault Does NOT Own":
 Append a "Recent Changes" entry (or update the existing structure to reflect Vault's new minor):
 
 ```markdown
-## Recent Changes (v0.3.0)
+## Recent Changes (v0.4.0)
 
 - `TenantScopedSecretResolver` (composition over `ISecretStore`)
-- `docs/Tenancy.md` documents the per-tenant secret naming convention and fallback semantics
+- `docs/Tenancy.md` documents the per-tenant secret naming convention, fallback semantics, and telemetry-of-tenant-scoped-secret-names policy
 - Adopted typed `TenantId` from Kernel 0.5.0 (no contract change to `ISecretStore`)
 ```
 
@@ -214,15 +249,33 @@ Check if `initiatives/releases.md` tracks per-Node version releases. If it does,
 
 If ADR-0019 is referenced in `active-initiatives.md` as in-progress, add a one-line note that ADR-0026 supersedes ADR-0019's tenancy concerns — Communications inherits the typed `IGridContext.TenantId` automatically. This is informational; ADR-0019 is not blocked or invalidated.
 
+### L. Update `copilot/issue-authoring-rules.md` with a D7 enforcement checklist line
+
+The static analyzer that mechanically enforces ADR-0026 D7 (flagging `ITenantRateLimitPolicy` / `IBillingEventEmitter` references inside `Routing/`, `Worker/`, or `Providers/` folders) is future work per ADR-0026 Open Questions §2. In the meantime, the discipline is human-enforced at packet authoring time and at PR review time. Add a line to the existing "Quality Checks" section in `copilot/issue-authoring-rules.md` (verified path at packet authoring — the file lives at `HoneyDrunk.Architecture/copilot/issue-authoring-rules.md` and currently has 86 lines ending with the Anti-Patterns section).
+
+The new checklist line goes inside the existing `## Quality Checks` checklist block (lines ~63-76 today, the bulleted `- [ ]` items between "Before finalizing an issue packet:" and "## Anti-Patterns"). Append:
+
+```markdown
+- [ ] When a packet touches a tenancy-aware Node, verify `ITenantRateLimitPolicy` and `IBillingEventEmitter` references live only in `Intake/` or post-dispatch tail paths, not in `Routing/`, `Worker/`, or `Providers/`. (Manual D7 enforcement until the static analyzer ships per ADR-0026 Open Questions §2.)
+```
+
+This is a discipline reminder for scope agents authoring packets that touch any tenancy-aware Node (Notify, Notify Cloud, Communications, future commercial Nodes). It does not affect packets in non-tenancy-aware Nodes (Kernel, Vault, Pulse contracts, Architecture, etc.).
+
+If the file's structure has shifted between packet authoring and execution (e.g., the Quality Checks section moved or a different checklist block was added), find the canonical location and append the line there. The placement matters less than the line being present and discoverable.
+
+Per memory `feedback_no_adr_in_docs`, the line uses "ADR-0026" inline only because Architecture knowledge-base docs (constitution, catalogs, ADR index, Architecture-internal copilot rules) reference ADRs by design — that is the established precedent. Outside Architecture, the rule is no ADR ID in code/READMEs.
+
 ## Affected Files
 
 - `constitution/invariants.md` (edit — append invariant 37)
 - `catalogs/contracts.json` (edit — add 5 entries to honeydrunk-kernel package, update existing TenantId description, bump `_meta.updated`)
+- `catalogs/grid-health.json` (edit — bump version fields for honeydrunk-kernel, honeydrunk-vault, honeydrunk-data, honeydrunk-transport, honeydrunk-web-rest, pulse to match on-disk `.csproj` values; update honeydrunk-kernel `notes` to mention Tenancy namespace and the typed IGridContext.TenantId / IOperationContext.TenantId promotion; bump `_meta.updated`)
+- `copilot/issue-authoring-rules.md` (edit — append D7 enforcement checklist line to the Quality Checks block)
 - `repos/HoneyDrunk.Kernel/boundaries.md` (edit — Kernel-owns + Kernel-does-not-own bullets)
 - `repos/HoneyDrunk.Kernel/invariants.md` (edit — append invariant 8)
 - `repos/HoneyDrunk.Kernel/active-work.md` (edit — Recent Changes for v0.5.0)
 - `repos/HoneyDrunk.Vault/boundaries.md` (edit — Vault-owns + Vault-does-not-own bullets)
-- `repos/HoneyDrunk.Vault/active-work.md` (edit — Recent Changes for v0.3.0)
+- `repos/HoneyDrunk.Vault/active-work.md` (edit — Recent Changes for v0.4.0)
 - `adrs/ADR-0026-grid-multi-tenant-primitives.md` (edit — Status flip; provisional → 37 in three places; If-Accepted checklist marks)
 - `initiatives/active-initiatives.md` (edit — new entry)
 - `initiatives/releases.md` (optional edit — if it tracks per-Node releases)
@@ -243,11 +296,22 @@ None. Pure docs / catalog / governance changes.
 - [ ] `catalogs/contracts.json` `honeydrunk-kernel` entry has the five new entries (`ITenantRateLimitPolicy`, `TenantRateLimitDecision`, `TenantRateLimitOutcome`, `IBillingEventEmitter`, `BillingEvent`) AND the existing `TenantId` description is updated to mention `Internal` + `IsInternal`.
 - [ ] `catalogs/contracts.json` `_meta.updated` is bumped to the execution date.
 - [ ] `catalogs/contracts.json` validates as well-formed JSON (`jq . catalogs/contracts.json` succeeds with no error). Tools that consume this file (Studios website data import, agent context loaders) must not break — verify with `jq` before committing.
+- [ ] `catalogs/grid-health.json` updated:
+  - `honeydrunk-kernel.version` set to the on-disk `HoneyDrunk.Kernel.csproj` Version (target: `0.5.0`).
+  - `honeydrunk-kernel.notes` mentions the `HoneyDrunk.Kernel.Abstractions.Tenancy` namespace and the typed `IGridContext.TenantId` / `IOperationContext.TenantId` promotion with Internal sentinel.
+  - `honeydrunk-vault.version` set to the on-disk `HoneyDrunk.Vault.csproj` Version (target: `0.4.0`).
+  - `honeydrunk-data.version` set to the on-disk `HoneyDrunk.Data.csproj` Version (target: `0.5.0`).
+  - `honeydrunk-transport.version` set to the on-disk `HoneyDrunk.Transport.csproj` Version (target: `0.5.0`).
+  - `honeydrunk-web-rest.version` set to the on-disk `HoneyDrunk.Web.Rest.AspNetCore.csproj` Version (target: `0.4.0`).
+  - `pulse.version` set to the on-disk Pulse package Version (target: `0.2.0`).
+  - `_meta.updated` bumped to today's date.
+  - File validates as well-formed JSON (`jq . catalogs/grid-health.json`).
+- [ ] `copilot/issue-authoring-rules.md` updated — Quality Checks block has a new D7 enforcement checklist line.
 - [ ] `repos/HoneyDrunk.Kernel/boundaries.md` updated with the tenancy-owns and tenancy-does-not-own bullets.
 - [ ] `repos/HoneyDrunk.Kernel/invariants.md` updated with the new Kernel-specific invariant about interpretation-free tenancy.
 - [ ] `repos/HoneyDrunk.Kernel/active-work.md` updated with the v0.5.0 Recent Changes entry.
 - [ ] `repos/HoneyDrunk.Vault/boundaries.md` updated with the `TenantScopedSecretResolver` bullet and the slot-lifecycle exclusion.
-- [ ] `repos/HoneyDrunk.Vault/active-work.md` updated with the v0.3.0 Recent Changes entry.
+- [ ] `repos/HoneyDrunk.Vault/active-work.md` updated with the v0.4.0 Recent Changes entry.
 - [ ] `adrs/ADR-0026-grid-multi-tenant-primitives.md` Status header is `Accepted` (was `Proposed`).
 - [ ] All three `provisional` / `final number assigned` references in the ADR are replaced with the actual final number.
 - [ ] If-Accepted checklist in the ADR has the Kernel + Vault + Architecture items checked. The Pulse item is checked only if packet 03 has merged at execution time; otherwise it remains unchecked with a note.
@@ -260,19 +324,24 @@ None. Pure docs / catalog / governance changes.
 
 The agent ships the doc edits and Status flip. The human does the gating check before merging:
 
-- [ ] **Confirm packet 01 (Kernel) merged AND `HoneyDrunk.Kernel.Abstractions` 0.5.0 + `HoneyDrunk.Kernel` 0.5.0 are published to the Grid's NuGet feed.** If not, this packet's Status flip is premature — wait.
-- [ ] **Confirm packet 02 (Vault) merged AND `HoneyDrunk.Vault` 0.3.0 is published.** Same gating — Status flip requires both Kernel + Vault per ADR-0026 D9 + Done When list.
-- [ ] **Decide on Pulse packet status.** Pulse packet (#03) is part of ADR-0026's Done-When list ("`tenant_id` low-cardinality telemetry tag with PDR-0002 §K cardinality discipline"). Two readings:
+- [ ] **Confirm Wave 1 merged AND published.** Specifically:
+  - `HoneyDrunk.Kernel.Abstractions` 0.5.0 + `HoneyDrunk.Kernel` 0.5.0 published to the Grid's NuGet feed (packet 01).
+  - `HoneyDrunk.Data` 0.5.0 published (packet 01a).
+  - `HoneyDrunk.Transport` 0.5.0 published (packet 01b).
+  - `HoneyDrunk.Web.Rest.AspNetCore` 0.4.0 published (packet 01c).
+  - Pulse packages 0.2.0 — see pragmatic vs. strict below.
+- [ ] **Confirm Wave 2 merged AND published.** `HoneyDrunk.Vault` 0.4.0 (and provider/EventGrid alignment-bumped sibling packages) published.
+- [ ] **Decide on Pulse packet status (pragmatic vs. strict).** Pulse packet (#03) is part of Wave 1 in the dispatch plan, but the Done-When item it satisfies ("`tenant_id` low-cardinality telemetry tag with PDR-0002 §K cardinality discipline") is consumer-side telemetry, not a primitive-contract change. Two readings:
   - **Strict:** Wait for Pulse to merge before flipping Status to Accepted.
-  - **Pragmatic:** Status flip when Kernel + Vault land (the primitives themselves are settled and shipped); Pulse adoption is a downstream consumer-side change that does not affect the primitive contracts. The ADR explicitly says "Step 3 is consumer-Node work that proceeds under its own ADRs and packets" — Pulse adoption is consumer-side.
-  - **Recommendation:** Pragmatic. Flip when Kernel + Vault land. Track Pulse as an open checkbox in `active-initiatives.md`. Confirm before merge: this packet defaults to the pragmatic reading; if you prefer strict, hold this packet until Pulse merges.
+  - **Pragmatic:** Status flip when the four hard Wave 1 packets + Vault land (the primitives themselves are settled and shipped); Pulse adoption is a downstream consumer-side change that does not affect the primitive contracts.
+  - **Recommendation:** Pragmatic. Flip when Kernel + Data + Transport + Web.Rest + Vault land. Track Pulse as an open checkbox in `active-initiatives.md`. Confirm before merge: this packet defaults to the pragmatic reading; if you prefer strict, hold this packet until Pulse merges.
+- [ ] **Verify on-disk `.csproj` versions before updating `grid-health.json`.** The packet documents target versions, but `grid-health.json` is updated to match the **actual** on-disk `.csproj` values at execution time (those are the source of truth). Re-read each `.csproj` before bumping `grid-health.json`.
 - [ ] **Verify the assigned invariant number.** Open `constitution/invariants.md` at execution time. If the highest invariant is 36, the new one is 37. If a new invariant landed between authoring and execution and 37 was claimed, take the next available number and update the ADR text in three places.
 - [ ] **No portal / Azure work.** This is documentation only.
 
 ## Dependencies
-- **Kernel#NN — Grid multi-tenant primitives (packet 01).** Hard. Packet 01 must merge AND publish before this packet runs.
-- **Vault#NN — Tenant-scoped secret resolver (packet 02).** Hard. Packet 02 must merge AND publish before this packet runs.
-- **Pulse#NN — tenant_id telemetry tag adoption (packet 03).** Soft. This packet can ship with packet 03 still open per the pragmatic reading (see Human Prerequisites). If you take the strict reading, packet 03 is hard.
+- **Wave 1 — coordinated multi-repo bump (packets 01 + 01a + 01b + 01c + 03).** Hard for Kernel + Data + Transport + Web.Rest. Pulse (packet 03) is soft per the pragmatic reading (see Human Prerequisites). The four hard dependencies must merge AND publish before this packet runs.
+- **Wave 2 — Vault tenant-scoped secret resolver (packet 02).** Hard. Vault 0.4.0 must merge AND publish before this packet runs.
 
 ## Downstream Unblocks
 - Notify Cloud standup ADR (PDR-0002 §Recommended Follow-Up Artifacts) can reference Accepted ADR-0026 + invariant 37 + the catalog entries when it is drafted.
@@ -304,6 +373,8 @@ The agent ships the doc edits and Status flip. The human does the gating check b
 - **The number 37 is assigned at execution time, not at packet authoring.** Verify by reading `constitution/invariants.md` first; take the next available number; update the ADR text in three places to match. The packet uses 37 throughout for clarity but the number is configurable.
 - **The new boundary invariant text is verbatim from ADR-0026 D7.** Do not paraphrase — the wording is settled by the ADR. Copy it exactly (modulo trivial Markdown formatting).
 - **`catalogs/contracts.json` must remain valid JSON.** Run `jq . catalogs/contracts.json` before committing. A malformed file breaks the Studios website data import pipeline (Studios consumes Architecture catalogs as static JSON per its overview).
+- **`catalogs/grid-health.json` must also remain valid JSON.** Run `jq . catalogs/grid-health.json` before committing. Same Studios-consumption constraint.
+- **`grid-health.json` versions are sourced from on-disk `.csproj` files at execution time, not from this packet's table.** The packet documents target versions for clarity; the agent re-reads each `.csproj` at execution to confirm the actual shipped value.
 - **The ADR Status flip is the load-bearing change in this packet.** All other edits are reflective. If the Status flip is missed, the ADR remains Proposed and downstream agents will not treat its decisions as binding.
 - **Pragmatic vs strict acceptance.** Default behavior: flip Status when Kernel + Vault land, even if Pulse is still open. The ADR's D9 explicitly says step 3 is consumer-Node work proceeding under its own packets. The human can override at PR review by holding the Status flip until Pulse merges.
 - **No new initiatives.** This packet does not create a follow-up initiative. The Notify Cloud standup ADR and any other downstream work are tracked separately.
@@ -334,10 +405,11 @@ The agent ships the doc edits and Status flip. The human does the gating check b
 **Constraints:** Per Constraints section above. Specifically:
 - Verify the assigned invariant number at execution; update ADR text in three places if it isn't 37.
 - Boundary invariant text is verbatim from ADR-0026 D7.
-- `catalogs/contracts.json` must remain valid JSON (`jq` check).
+- `catalogs/contracts.json` AND `catalogs/grid-health.json` must remain valid JSON (`jq` checks).
+- `grid-health.json` version values come from re-reading on-disk `.csproj` files at execution; the packet's table is reference, not source-of-truth.
 - The Status flip is the load-bearing edit — do not skip it.
-- Pragmatic reading is default: flip Status when Kernel + Vault land, even if Pulse is open.
-- No ADR ID in code / READMEs (architecture-knowledge-base docs are an exception per existing precedent).
+- Pragmatic reading is default: flip Status when Wave 1 hard packets (01 + 01a + 01b + 01c) + Wave 2 (02) land, even if Pulse (03) is open.
+- No ADR ID in code / READMEs (architecture-knowledge-base docs are an exception per existing precedent — `copilot/issue-authoring-rules.md` is itself an architecture-knowledge-base doc).
 
 **Inlined Invariant Text (for review without leaving the target repo):**
 
@@ -348,6 +420,8 @@ The agent ships the doc edits and Status flip. The human does the gating check b
 **Key Files:**
 - `constitution/invariants.md`
 - `catalogs/contracts.json`
+- `catalogs/grid-health.json`
+- `copilot/issue-authoring-rules.md`
 - `repos/HoneyDrunk.Kernel/boundaries.md`, `invariants.md`, `active-work.md`
 - `repos/HoneyDrunk.Vault/boundaries.md`, `active-work.md`
 - `adrs/ADR-0026-grid-multi-tenant-primitives.md`
