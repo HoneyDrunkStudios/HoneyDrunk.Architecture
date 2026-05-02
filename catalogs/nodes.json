@@ -973,18 +973,18 @@
   },
   {
     "id": "honeydrunk-lore",
-    "type": "node",
+    "type": "application",
     "name": "HoneyDrunk.Lore",
     "public_name": "HoneyDrunk.Lore",
     "short": "LLM-compiled living knowledge wiki",
-    "description": "The Hive's compiled knowledge surface. Ingests raw sources, LLM-compiles into a structured browsable wiki, self-maintains indexes and backlinks, runs health checks, and answers complex queries. Living knowledge that grows with every interaction.",
+    "description": "Flat-file wiki maintained by LLMs. Ingests raw sources, compiles structured markdown, self-maintains indexes and backlinks, answers queries, and runs health checks. Consumed by agents and the solo developer as the ecosystem's compiled research surface.",
     "sector": "Meta",
     "signal": "Seed",
     "cluster": "knowledge",
     "energy": 0,
     "priority": 60,
     "flow": 0,
-    "tags": ["knowledge-base", "wiki", "llm-compiled", "obsidian", "markdown", "research", "self-maintaining"],
+    "tags": ["knowledge", "wiki", "lore", "ai", "flat-file", "obsidian"],
     "links": {
       "repo": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Lore"
     },

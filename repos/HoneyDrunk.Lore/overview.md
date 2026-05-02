@@ -2,7 +2,7 @@
 
 **Sector:** Meta  
 **Version:** TBD  
-**Framework:** .NET 10.0 / Markdown  
+**Framework:** Markdown (flat-file v1; delegates to Grid Nodes when they ship — Lore itself never adds .NET code)  
 **Repo:** `HoneyDrunkStudios/HoneyDrunk.Lore`
 
 ## Purpose
