@@ -63,5 +63,14 @@
   "generated/issue-packets/active/adr-0012-grid-cicd-control-plane/08-architecture-caller-permissions-audit.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/51",
   "generated/issue-packets/active/adr-0012-grid-cicd-control-plane/09-actions-node20-actions-bump.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/68",
   "generated/issue-packets/active/standalone/2026-04-28-actions-hive-field-mirror-app-auth.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/69",
-  "generated/issue-packets/active/standalone/2026-04-28-actions-hive-field-mirror-cache-and-rest.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/70"
+  "generated/issue-packets/active/standalone/2026-04-28-actions-hive-field-mirror-cache-and-rest.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/70",
+  "generated/issue-packets/active/adr-0013-communications-bringup/01-architecture-adr-0013-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/57",
+  "generated/issue-packets/active/adr-0013-communications-bringup/02-architecture-create-communications-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/58",
+  "generated/issue-packets/active/adr-0026-grid-multi-tenant-primitives/01-kernel-multi-tenant-primitives.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Kernel/issues/24",
+  "generated/issue-packets/active/adr-0026-grid-multi-tenant-primitives/01a-data-tenant-accessor-typed-adoption.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Data/issues/15",
+  "generated/issue-packets/active/adr-0026-grid-multi-tenant-primitives/01b-transport-grid-context-factory-typed-adoption.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Transport/issues/22",
+  "generated/issue-packets/active/adr-0026-grid-multi-tenant-primitives/01c-web-rest-request-logging-scope-typed-adoption.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Web.Rest/issues/13",
+  "generated/issue-packets/active/adr-0026-grid-multi-tenant-primitives/02-vault-tenant-scoped-secret-resolver.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Vault/issues/27",
+  "generated/issue-packets/active/adr-0026-grid-multi-tenant-primitives/03-pulse-tenant-id-telemetry-tag.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/9",
+  "generated/issue-packets/active/adr-0026-grid-multi-tenant-primitives/04-architecture-catalog-invariant-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/59"
 }
