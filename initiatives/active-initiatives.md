@@ -41,13 +41,13 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 **Tracking:**
 - [x] Architecture#61: Rename agent + capability matrix (packet 01)
-- [x] Architecture#62: Add packet lifecycle and Hive-Sync invariant for lifecycle (packet 02)
-- [x] Architecture#63: Track non-initiative board items + Hive-Sync invariant for board coverage (packet 03)
-- [x] Architecture#64: Surface Proposed-ADR acceptance queue (packet 04)
-- [x] Architecture#65: ADR/PDR auto-acceptance + README index sync (packet 05)
-- [x] Architecture#66: Drift detection + close out the rollout (packet 06)
+- [ ] Architecture#62: Add packet lifecycle and Hive-Sync invariant for lifecycle (packet 02)
+- [ ] Architecture#63: Track non-initiative board items + Hive-Sync invariant for board coverage (packet 03)
+- [ ] Architecture#64: Surface Proposed-ADR acceptance queue (packet 04)
+- [ ] Architecture#65: ADR/PDR auto-acceptance + README index sync (packet 05)
+- [ ] Architecture#66: Drift detection + close out the rollout (packet 06)
 
-> **Sync (2026-05-03):** ADR-0014 rollout implementation complete in combined PR scope. Architecture#61 is closed; Architecture#62-#66 are expected to close when this rollout PR merges.
+> **Sync (2026-05-03):** ADR-0014 rollout implementation is complete in combined PR scope. Architecture#61 is closed; Architecture#62-#66 remain open until this rollout PR merges.
 
 
 ### Configuration & Secrets Rollout (ADR-0005 / ADR-0006)
