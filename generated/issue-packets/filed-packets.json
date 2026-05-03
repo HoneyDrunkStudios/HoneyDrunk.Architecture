@@ -72,5 +72,11 @@
   "generated/issue-packets/active/adr-0026-grid-multi-tenant-primitives/01c-web-rest-request-logging-scope-typed-adoption.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Web.Rest/issues/13",
   "generated/issue-packets/active/adr-0026-grid-multi-tenant-primitives/02-vault-tenant-scoped-secret-resolver.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Vault/issues/27",
   "generated/issue-packets/active/adr-0026-grid-multi-tenant-primitives/03-pulse-tenant-id-telemetry-tag.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/9",
-  "generated/issue-packets/active/adr-0026-grid-multi-tenant-primitives/04-architecture-catalog-invariant-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/59"
+  "generated/issue-packets/active/adr-0026-grid-multi-tenant-primitives/04-architecture-catalog-invariant-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/59",
+  "generated/issue-packets/active/adr-0014-hive-sync-rollout/01-architecture-rename-to-hive-sync.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/61",
+  "generated/issue-packets/active/adr-0014-hive-sync-rollout/02-architecture-packet-lifecycle.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/62",
+  "generated/issue-packets/active/adr-0014-hive-sync-rollout/03-architecture-board-items-tracking.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/63",
+  "generated/issue-packets/active/adr-0014-hive-sync-rollout/04-architecture-proposed-adrs-queue.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/64",
+  "generated/issue-packets/active/adr-0014-hive-sync-rollout/05-architecture-adr-pdr-auto-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/65",
+  "generated/issue-packets/active/adr-0014-hive-sync-rollout/06-architecture-drift-detection.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/66"
 }
