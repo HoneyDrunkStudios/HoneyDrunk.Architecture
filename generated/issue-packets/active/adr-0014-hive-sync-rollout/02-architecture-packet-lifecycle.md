@@ -149,7 +149,7 @@ git mv generated/issue-packets/retired generated/issue-packets/completed
 
 This is a one-time directory rename. After it lands, all backfill moves and all future agent runs use `completed/` as the destination. The pre-existing `filed-packets.json` mismatch for `2026-04-12-org-secret-gh-issue-token.md` (its key still reads `active/standalone/...`) is corrected by Step 2a's DRIFT branch later in the backfill — Step 0a only handles the directory rename, not the JSON key.
 
-**Step 0b: Hoist `/tmp/issue-states.json` generation.** The Step 1b shell pipeline (already in `hive-sync.md` from Phase 1) populates `/tmp/issue-states.json` from `filed-packets.json` plus `gh issue view` calls. Run that pipeline next — every subsequent step in the backfill reads `/tmp/issue-states.json`. A cloud agent executing this packet from a fresh checkout has no warm `/tmp` cache; if Step 1b is skipped, the backfill produces no moves and silently passes.
+**Step 0b: Hoist `/tmp/issue-states.json` generation.** The Step 1b shell pipeline (already in `hive-sync.md` from Phase 1) populates `/tmp/issue-states.json` from `filed-packets.json` plus `gh issue view` calls. Run that pipeline next — every subsequent step in the backfill reads `/tmp/issue-states.json`. An OpenClaw agent executing this packet from a fresh checkout/session has no warm `/tmp` cache; if Step 1b is skipped, the backfill produces no moves and silently passes.
 
 **Step 1: Dry-run preview (mandatory).** Before any `git mv` or `jq` rewrite runs, the agent generates a textual preview of every action the backfill would take, posts it as a PR description (or as the first commit's body), and only then proceeds:
 
@@ -237,7 +237,7 @@ mv /tmp/filed-packets.json.new generated/issue-packets/filed-packets.json
 
 **Idempotency / recovery on interruption.** If the agent crashes between Phase A and Phase B (moves done, JSON not yet updated), recovery is `git checkout -- generated/issue-packets/` to roll back. Re-run the backfill from Step 1 (dry-run preview) — the SKIP branch in Step 8.2 handles already-completed entries, and the DRIFT branch in Step 2a handles the manually-moved exception, so a re-run produces the same end state. Do not re-run partial steps; always start from the dry-run preview.
 
-**Diff noise on Windows hosts.** Per `project_windows_crlf_gotcha.md`, `jq` on the user's Windows box emits CRLF line endings. The cloud agent infra runs on Linux and emits LF, so the rewrite produced by the workflow is LF-clean. If the dry-run is performed locally on Windows for sanity, the resulting JSON's line endings will be CRLF — discard the local dry-run JSON and let the cloud workflow produce the actual commit, or pipe through `tr -d '\r'` after `jq` to normalize.
+**Diff noise on Windows hosts.** Per `project_windows_crlf_gotcha.md`, `jq` on the user's Windows box emits CRLF line endings. OpenClaw may run on Windows or Linux depending on host, so normalize generated JSON before commit. If the dry-run is performed locally on Windows for sanity, the resulting JSON's line endings may be CRLF — pipe through `tr -d '\r'`, `dos2unix`, or an equivalent normalization step before committing.
 
 **Closed-packet inventory at scoping time** (2026-05-02; a snapshot, may shift between scoping and execution):
 
@@ -370,7 +370,7 @@ Reason: this packet edits `.claude/agents/hive-sync.md`, which does not exist un
 **Acceptance Criteria:** As listed above.
 
 **Dependencies:**
-- Packet 01 (this initiative, Wave 1) must merge first. The `hive-sync.md` file and `hive-sync.yml` workflow are products of Packet 01.
+- Packet 01 (this initiative, Wave 1) must merge first. The `hive-sync.md` file and `infrastructure/openclaw/hive-sync.md` runbook are products of Packet 01.
 
 **Constraints:**
 - **Invariant 24** (full text above) — packet body content must not be edited. The lifecycle operation is a path-only move. `git mv` is the canonical command; copy + delete is forbidden because the diff would lose the rename.

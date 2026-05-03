@@ -2,13 +2,13 @@
 
 **Initiative:** `adr-0014-hive-sync-rollout`
 **Sector:** Meta
-**Governing ADR:** [ADR-0014 — Hive–Architecture Reconciliation Agent](../../../../adrs/ADR-0014-hive-architecture-reconciliation-agent.md) (Proposed 2026-04-16; this initiative flips it to Accepted via the Phase 5 auto-flip logic on the first sync run after Packet 06 closes — every implementing packet's issue is closed at that moment, satisfying the auto-flip trigger)
+**Governing ADR:** [ADR-0014 — Hive–Architecture Reconciliation Agent](../../../../adrs/ADR-0014-hive-architecture-reconciliation-agent.md) (Proposed 2026-04-16; this initiative flips it to Accepted via the Phase 5 auto-flip logic on the first OpenClaw sync run after Packet 06 closes — every implementing packet's issue is closed at that moment, satisfying the auto-flip trigger)
 **Trigger:** ADR-0014 phase plan executes the six-phase rollout for renaming `initiatives-sync` to `hive-sync`, adding the packet lifecycle, non-initiative board tracking, Proposed-ADR queue, ADR/PDR auto-acceptance + README index sync, and drift detection.
 **Single repo:** `HoneyDrunkStudios/HoneyDrunk.Architecture`
 
 ## Summary
 
-ADR-0014 redefines the agent that reconciles Architecture state with The Hive. Today, `initiatives-sync` only knows about packet-sourced issues and never moves completed packets out of `active/`. After this initiative, a renamed `hive-sync` agent owns six jobs: (1) initiative reconciliation (unchanged), (2) packet lifecycle management (`active/` → `completed/`), (3) non-initiative board tracking (`board-items.md`), (4) Proposed-ADR/PDR acceptance queue (`proposed-adrs.md`), (5) ADR/PDR auto-acceptance + README index sync, and (6) drift detection (`drift-report.md`).
+ADR-0014 redefines the agent that reconciles Architecture state with The Hive. Today, `initiatives-sync` only knows about packet-sourced issues, runs through a GitHub Actions/Anthropic pipeline, and never moves completed packets out of `active/`. After this initiative, a renamed `hive-sync` agent runs through OpenClaw scheduled/manual execution and owns six jobs: (1) initiative reconciliation (unchanged), (2) packet lifecycle management (`active/` → `completed/`), (3) non-initiative board tracking (`board-items.md`), (4) Proposed-ADR/PDR acceptance queue (`proposed-adrs.md`), (5) ADR/PDR auto-acceptance + README index sync, and (6) drift detection (`drift-report.md`).
 
 Each phase corresponds to one packet. Packets sit on a strict serial chain because every packet edits `.claude/agents/hive-sync.md` in overlapping regions — running them in parallel would force later PRs to absorb earlier renumbering. **Strict 1 → 2 → 3 → 4 → 5 → 6 serial execution is the chosen path for review-bandwidth reasons.** A solo dev reviewing one PR at a time prefers the linear order; isolated parallelization (e.g., Packets 03 and 04 after Packet 02 lands) is technically possible at the cost of one rebase but is not the planned path.
 
@@ -52,7 +52,7 @@ Wave 6: Drift detection + meta-agent exclusion list (D9)
 
 ## Phase Mapping
 
-- **Wave 1 = ADR-0014 Phase 1** — pure rename (D1, D5). Same behavior; new name. ADR-0014 stays in `Proposed`.
+- **Wave 1 = ADR-0014 Phase 1** — agent rename + runtime migration from GitHub Actions/Anthropic to OpenClaw scheduled/manual execution (D1, D5). Same reconciliation behavior; new name/runtime. ADR-0014 stays in `Proposed`.
 - **Wave 2 = ADR-0014 Phase 2** — D2 packet lifecycle, D4 single-writer rule, lifecycle invariant, one-time backfill.
 - **Wave 3 = ADR-0014 Phase 3** — D3 non-initiative tracking, board-coverage invariant, seed run from current Hive state.
 - **Wave 4 = ADR-0014 Phase 4** — D6 Proposed-ADR queue (read-only surface). Seed run from current `adrs/` Proposed entries. ADR-0014 itself appears in the seed because its Status is still `Proposed` at this point — the auto-flip happens later, after Packet 06 closes.
@@ -67,7 +67,7 @@ Wave 6: Drift detection + meta-agent exclusion list (D9)
 
 Each phase is a single PR against `HoneyDrunk.Architecture/main`. Rollback for any phase is a `git revert` on that PR.
 
-- **Phase 1 revert** restores `initiatives-sync.md`, the workflow file name, and all references. ADR-0014 stays in `Proposed` (no flip happened in Phase 1).
+- **Phase 1 revert** restores `initiatives-sync.md`, restores the retired `initiatives-sync.yml` workflow if needed, removes the OpenClaw runbook, and restores references. ADR-0014 stays in `Proposed` (no flip happened in Phase 1).
 - **Phase 2 revert** removes the lifecycle logic from `hive-sync.md`. Packets that the backfill moved to `completed/` are moved back to `active/` (the revert restores the old paths in `filed-packets.json` and `git mv`s the packets back). The agent reverts to "no lifecycle management." The lifecycle invariant added in this phase is removed from `constitution/invariants.md` in the same revert.
 - **Phase 3 revert** removes `board-items.md` and the GraphQL query logic. The board-coverage invariant added in this phase is removed from `constitution/invariants.md` in the same revert.
 - **Phase 4 revert** removes `proposed-adrs.md` and the ADR-frontmatter scan logic. Phase 4 does **not** flip ADR-0014's Status, does **not** edit `adrs/README.md`, and does **not** touch the capability-matrix caveat — those concerns moved to Phases 5 (auto-flip) and 6 (caveat removal). The Phase 4 revert is therefore a clean removal of the read-only queue surface.
@@ -78,15 +78,15 @@ Phases revert independently as long as later phases have not added cross-referen
 
 ## Acceptance Workflow Notes
 
-Per the [ADR acceptance workflow](../../../../adrs/README.md), ADRs are filed Proposed. The scope agent flips the status to Accepted **after** the implementing PR(s) merge. For ADR-0014, the implementation spans six PRs across Waves 1-6; the flip is performed **automatically** by the Phase 5 auto-flip logic (which Packet 05 introduces) on the first sync run after Packet 06 closes — at which point every implementing packet's issue is closed, and the auto-flip's trigger condition is satisfied. ADR-0014 is treated identically to every other Proposed ADR; the validation that auto-flip works correctly on the originating ADR is a deliberate end-to-end test of the new behavior.
+Per the [ADR acceptance workflow](../../../../adrs/README.md), ADRs are filed Proposed. The scope agent flips the status to Accepted **after** the implementing PR(s) merge. For ADR-0014, the implementation spans six PRs across Waves 1-6; the flip is performed **automatically** by the Phase 5 auto-flip logic (which Packet 05 introduces) on the first OpenClaw sync run after Packet 06 closes — at which point every implementing packet's issue is closed, and the auto-flip's trigger condition is satisfied. ADR-0014 is treated identically to every other Proposed ADR; the validation that auto-flip works correctly on the originating ADR is a deliberate end-to-end test of the new behavior.
 
 **Why the flip is deferred to the auto-flip after Wave 6:**
 
 - ADR-0014 mandates new invariants and surfaces across all six phases (D1-D9). If the ADR were marked `Accepted` in any earlier wave, the on-disk state would not match the ADR text for the duration of the rollout (3-6 weeks). A reader of `adrs/ADR-0014-...md` would see an Accepted ADR whose mandated behaviors did not yet exist.
 - The user-memory rule "scope agent flips status to Accepted after PR merge, never on first draft" is satisfied — and one step better, the **agent itself** flips it after every implementing PR has merged. ADR-0014 is treated identically to every other Proposed ADR.
-- This is also the **end-to-end validation** that the Phase 5 auto-flip logic works correctly. The originating ADR is the natural test case — if the auto-flip is buggy, ADR-0014 stays Proposed and the bug is loud (visible in `proposed-adrs.md`, in the ADR's frontmatter, and in `adrs/README.md`). If the auto-flip is correct, ADR-0014 lands as Accepted on the first run after Packet 06 closes — concrete proof the new behavior works.
+- This is also the **end-to-end validation** that the Phase 5 auto-flip logic works correctly under the OpenClaw scheduled/manual runtime. The originating ADR is the natural test case — if the auto-flip is buggy, ADR-0014 stays Proposed and the bug is loud (visible in `proposed-adrs.md`, in the ADR's frontmatter, and in `adrs/README.md`). If the auto-flip is correct, ADR-0014 lands as Accepted on the first OpenClaw run after Packet 06 closes — concrete proof the new behavior works.
 
-ADR-0014 itself is treated identically to every other Proposed ADR. The Phase 5 auto-flip logic (Packet 05) fires for any Proposed ADR whose implementing packets are all closed. Once Packet 06 closes, that condition is satisfied for ADR-0014 — the next sync run will auto-flip it to Accepted. No manual flip is performed mid-rollout. This validates the auto-flip logic against the originating ADR.
+ADR-0014 itself is treated identically to every other Proposed ADR. The Phase 5 auto-flip logic (Packet 05) fires for any Proposed ADR whose implementing packets are all closed. Once Packet 06 closes, that condition is satisfied for ADR-0014 — the next OpenClaw sync run will auto-flip it to Accepted. No manual flip is performed mid-rollout. This validates the auto-flip logic against the originating ADR.
 
 ## Filing Commands
 
