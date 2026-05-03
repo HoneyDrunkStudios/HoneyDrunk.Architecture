@@ -32,6 +32,22 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 > **Sync (2026-04-18):** Initiative scoped today. Packets 01–03 ready to file (Observe side). Packet 04 (AI routing contracts) parked pending HoneyDrunk.AI standup ADR — bundling scaffold with routing contracts would embed foundational-Node architectural decisions silently.
 
+### Hive Sync Rollout (ADR-0014)
+**Status:** In Progress
+**Scope:** Architecture
+**Initiative:** `adr-0014-hive-sync-rollout`
+**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
+**Description:** Rename the legacy initiative sync agent to `hive-sync` and broaden its mandate to cover the packet lifecycle (active → completed), non-initiative board items, the Proposed-ADR/PDR queue, ADR/PDR auto-acceptance + README index sync, and a drift report. Closes the drift introduced by nightly-security issues having no Architecture-repo presence, completed packets lingering in `active/`, and ADRs/PDRs that drift out of sync with their implementing work or with the rest of the repo. Single repo (Architecture); six sequential phases. ADR-0014 itself auto-flips to Accepted via Phase 5's logic on the first run after Packet 06 closes.
+
+**Tracking:**
+- [ ] Architecture#61: Rename agent + capability matrix (packet 01)
+- [ ] Architecture#62: Add packet lifecycle and Hive-Sync invariant for lifecycle (packet 02)
+- [ ] Architecture#63: Track non-initiative board items + Hive-Sync invariant for board coverage (packet 03)
+- [ ] Architecture#64: Surface Proposed-ADR acceptance queue (packet 04)
+- [ ] Architecture#65: ADR/PDR auto-acceptance + README index sync (packet 05)
+- [ ] Architecture#66: Drift detection + close out the rollout (packet 06)
+
+
 ### Configuration & Secrets Rollout (ADR-0005 / ADR-0006)
 **Status:** In Progress
 **Scope:** Vault, Vault.Rotation (new), Architecture, Actions, Auth, Web.Rest, Data, Notify, Pulse, Studios
