@@ -4,7 +4,7 @@
 
 ## Runtime Contract
 
-- **Schedule:** Monday/Thursday, matching the former cadence unless Oleg changes it in OpenClaw cron.
+- **Schedule:** Monday/Thursday at 06:00 UTC (`0 6 * * 1,4`), matching the former cadence unless Oleg changes it in OpenClaw cron.
 - **Target:** isolated OpenClaw `agentTurn`, not GitHub Actions.
 - **Working repo:** `HoneyDrunkStudios/HoneyDrunk.Architecture`.
 - **Prompt source:** `.claude/agents/hive-sync.md`.

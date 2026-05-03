@@ -64,7 +64,7 @@ These apply to all agents:
 - **Claude Code agents plan and generate artifacts; they do not execute code changes.** Execution is Codex or Copilot.
 - **Agents do not modify files inside other repos directly.** Cross-repo work goes through issue packets → GitHub Issues → Codex.
 - **Agents do not make binding architectural decisions alone.** ADR drafts go to the developer for review before Accepted status.
-- **Agents do not push to remote.** No `git push`, no `gh pr create` except `file-issues` (which is authorized for `gh issue create`) and `hive-sync` (which runs via OpenClaw scheduled/manual agent job, creates a date-based branch, and opens or updates a PR for full Architecture-repo reconciliation with The Hive — initiative files, packet lifecycle, board items, and Proposed-ADR queue).
+- **Agents do not push to remote.** No `git push`, no `gh pr create` except `file-issues` (which is authorized for `gh issue create`) and `hive-sync` (which runs via OpenClaw scheduled/manual agent job, creates a date-based branch, and opens or updates a reconciliation PR). During ADR-0014 Packet 01, `hive-sync` still performs initiative-file reconciliation only; packets 02-06 expand it to packet lifecycle, board items, Proposed-ADR queue, ADR/PDR auto-acceptance, README sync, and drift detection.
 
 ---
 
