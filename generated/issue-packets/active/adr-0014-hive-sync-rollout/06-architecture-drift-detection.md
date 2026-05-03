@@ -353,7 +353,7 @@ Update the existing "Hive Sync Rollout (ADR-0014)" entry in `initiatives/active-
 After Packet 06 lands, the initiative is genuinely complete. Add the closing Sync annotation under the entry's tracking list:
 
 ```markdown
-> **Sync ({merge-date}):** All six packets closed. ADR-0014 will auto-flip to Accepted on the next sync run via the Phase 5 logic — the trigger is "every implementing packet's issue closed," which is now true. Initiative complete. The `hive-sync` agent now owns six reconciliation surfaces: initiative tracking files (D1), packet lifecycle (D2), board items (D3), Proposed-ADR/PDR queue (D6) with auto-acceptance (D7), README index Status/Date columns (D8), and drift report (D9). Ready to archive — the next scheduled `hive-sync` run takes ownership of the archival sequence.
+> **Sync ({merge-date}):** All six packets closed. ADR-0014 will auto-flip to Accepted on the next sync run via the Phase 5 logic — the trigger is "every implementing packet's issue closed," which is now true. Initiative complete. The `hive-sync` agent now owns six reconciliation surfaces: initiative tracking files (D1), packet lifecycle (D2), board items (D3), Proposed-ADR/PDR queue (D6) with auto-acceptance (D7), README index Status/Date columns (D8), and drift report (D9). Ready to archive — the next scheduled/manual OpenClaw `hive-sync` run takes ownership of the archival sequence.
 ```
 
 The expected post-merge archival behavior — six steps the next sync run should perform automatically:
@@ -397,13 +397,13 @@ None. This is a docs/markdown change; no .NET projects touched.
   - All five drift category sections (Invariants / Matrix Rows with No Agent File / Agent Files with No Matrix Row / Missing Repos / ADR-Named Missing Nodes), each with either a populated table or `_No drift detected._`
   - The "Auth Issues" subsection inside the Missing Repos section
   - If no drift exists in any category: the file's body is replaced with the single empty-state line from 11g
-- [ ] No catalog file (`catalogs/*.json`), no constitution file (`constitution/*.md` other than the matrix exclusion-list section being added), no agent file (`.claude/agents/*.md`), and no ADR/PDR file is modified by this PR. `git diff -- catalogs/ constitution/ .claude/ adrs/ pdrs/` after the agent runs in CI shows changes only in the matrix file's new exclusion-list section (one-time addition by this packet) and the agent file's Step 11 / Constraints additions.
+- [ ] No catalog file (`catalogs/*.json`), no constitution file (`constitution/*.md` other than the matrix exclusion-list section being added), no agent file (`.claude/agents/*.md`), and no ADR/PDR file is modified by this PR. `git diff -- catalogs/ constitution/ .claude/ adrs/ pdrs/` after the OpenClaw agent run shows changes only in the matrix file's new exclusion-list section (one-time addition by this packet) and the agent file's Step 11 / Constraints additions.
 - [ ] `constitution/agent-capability-matrix.md` contains the "Meta-Agent Exclusion List" section per Part D — a brief pointer paragraph that references `hive-sync.md` Step 11d as the canonical list, **not** a duplicate of the entries.
 - [ ] `constitution/agent-capability-matrix.md` no longer contains the rollout-status caveat that Packet 01 attached to the `hive-sync` row (per Part E). The row's Trigger / Consumes / Produces / Sync Responsibility text is unchanged.
 - [ ] The exclusion list lives only in `hive-sync.md` Step 11d. The matrix doc's snapshot listing of agent names (intended for human-readable orientation) does not have to match Step 11d byte-for-byte; the runtime list in Step 11d is authoritative.
-- [ ] On the **second** scheduled run after this PR merges, items that persisted from the first run keep their First Surfaced dates. (The first run seeds today's date everywhere; the second run validates persistence.)
+- [ ] On the **second** scheduled/manual OpenClaw run after this PR merges, items that persisted from the first run keep their First Surfaced dates. (The first run seeds today's date everywhere; the second run validates persistence.)
 - [ ] `initiatives/active-initiatives.md` "Hive Sync Rollout (ADR-0014)" entry shows Packet 06's checkbox as checked and contains the closing Sync annotation per Part F. The entry is ready to be archived by the next sync run, and ADR-0014 is queued for auto-flip on the same run.
-- [ ] **End-to-end validation criterion (post-merge, observed by the human reviewer):** after this PR merges and all six issues close, the next scheduled `hive-sync` run produces a PR in which:
+- [ ] **End-to-end validation criterion (post-merge, observed by the human reviewer):** after this PR merges and all six issues close, the next scheduled/manual OpenClaw `hive-sync` run produces a PR in which:
   1. `adrs/ADR-0014-hive-architecture-reconciliation-agent.md` Status frontmatter line reads `**Status:** Accepted` (auto-flipped by the Phase 5 logic — Packets 01-06 all carry `accepts: ["ADR-0014"]` and their issues are all closed).
   2. `adrs/README.md` ADR-0014 row Status column reads `Accepted`.
   3. `initiatives/proposed-adrs.md` "Flipped This Run" section includes ADR-0014 (or, if the file is rewritten before reading the auto-flipped ADRs, the section is regenerated correctly on the run after).
@@ -417,8 +417,8 @@ None. This is a docs/markdown change; no .NET projects touched.
 
 None for the agent-side code changes. Operational notes for the human reviewer:
 
-- [ ] After merge, observe the **first scheduled Monday/Thursday run** of `hive-sync.yml` to confirm `drift-report.md` is regenerated correctly. Expect the file to contain whatever drift exists on `main` at that moment — possibly populated, possibly empty. Spot-check a few entries against the actual repo state.
-- [ ] After the **second** scheduled run, verify First Surfaced dates persisted for any items that were present in both runs. (The persistence logic in 11h is the trickiest part of this packet to get right; the second-run check is the validator.)
+- [ ] After merge, observe the **first scheduled/manual OpenClaw run** of `hive-sync` to confirm `drift-report.md` is regenerated correctly. Expect the file to contain whatever drift exists on `main` at that moment — possibly populated, possibly empty. Spot-check a few entries against the actual repo state.
+- [ ] After the **second** scheduled/manual OpenClaw run, verify First Surfaced dates persisted for any items that were present in both runs. (The persistence logic in 11h is the trickiest part of this packet to get right; the second-run check is the validator.)
 - [ ] After merge, observe that the next sync run also performs the six-step archival described in Part F (above). If any step is missed, manually complete it and file a follow-up issue noting the gap.
 
 ## Referenced Invariants
@@ -451,7 +451,7 @@ Reason: this packet adds Step 11 after Step 10 (lifecycle, from Packet 02). Pack
 
 ## Agent Handoff
 
-**Objective:** Add Step 11 (Drift Detection) to `hive-sync`. Create `initiatives/drift-report.md` with five drift categories. Add the meta-agent exclusion list to both the agent file and the capability matrix. Remove the rollout-status caveat that Packet 01 attached to the matrix's `hive-sync` row. Close out the ADR-0014 rollout by checking off Packet 06 and adding the closing Sync annotation. ADR-0014 itself will auto-flip to Accepted on the first scheduled run after this PR merges (the trigger condition — every implementing packet's issue closed — is satisfied at that moment).
+**Objective:** Add Step 11 (Drift Detection) to `hive-sync`. Create `initiatives/drift-report.md` with five drift categories. Add the meta-agent exclusion list to both the agent file and the capability matrix. Remove the rollout-status caveat that Packet 01 attached to the matrix's `hive-sync` row. Close out the ADR-0014 rollout by checking off Packet 06 and adding the closing Sync annotation. ADR-0014 itself will auto-flip to Accepted on the first scheduled/manual OpenClaw run after this PR merges (the trigger condition — every implementing packet's issue closed — is satisfied at that moment).
 
 **Target:** `HoneyDrunkStudios/HoneyDrunk.Architecture`, branch from `main` (suggested branch name: `chore/adr-0014-hive-sync-phase-6`).
 

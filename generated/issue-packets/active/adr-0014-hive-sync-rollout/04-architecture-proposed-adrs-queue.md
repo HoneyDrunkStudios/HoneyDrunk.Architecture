@@ -205,7 +205,7 @@ None. This is a docs/markdown change; no .NET projects touched.
 
 None for the agent-side code changes. Operational note for the human reviewer:
 
-- [ ] After merge, observe the **next scheduled Monday/Thursday run** of `hive-sync.yml` to confirm the agent regenerates `proposed-adrs.md` correctly from live filesystem state. The first run is the seed (this PR); the second run is the validation. Confirm ADR-0014 **does** appear in the table at this point (it's still `Proposed`); the auto-flip happens later, after Packet 06 closes.
+- [ ] After merge, observe the **next scheduled/manual OpenClaw run** of `hive-sync` to confirm the agent regenerates `proposed-adrs.md` correctly from live filesystem state. The first run is the seed (this PR); the second run is the validation. Confirm ADR-0014 **does** appear in the table at this point (it's still `Proposed`); the auto-flip happens later, after Packet 06 closes.
 
 This is a post-merge sanity check, not a blocker on PR merge. The full archival of the Hive Sync Rollout initiative is owned by Packet 06.
 

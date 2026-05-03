@@ -15,7 +15,7 @@ node: honeydrunk-architecture
 # Feature: Rename `initiatives-sync` agent to `hive-sync`
 
 ## Summary
-Rename the `.claude/agents/initiatives-sync.md` agent to `.claude/agents/hive-sync.md` (verbatim copy + delete), rename the `.github/workflows/initiatives-sync.yml` scheduled workflow to `hive-sync.yml`, update the agent capability matrix to swap the row, and propagate the rename across cross-references in `CLAUDE.md`, `AGENTS.md`, and other repo-level documents. **No behavior change.** The agent still does only initiative reconciliation after this packet — Phases 2-6 add the new responsibilities. **ADR-0014 stays in `Proposed` status throughout the rollout** and auto-flips to `Accepted` via the Phase 5 auto-flip logic on the first sync run after Packet 06 closes, treated identically to every other Proposed ADR.
+Rename the `.claude/agents/initiatives-sync.md` agent to `.claude/agents/hive-sync.md` (verbatim copy + delete), retire the `.github/workflows/initiatives-sync.yml` Anthropic/Claude-Code pipeline, add an OpenClaw runbook for the scheduled/manual `hive-sync` job, update the agent capability matrix to swap the row, and propagate the rename across cross-references in `CLAUDE.md`, `AGENTS.md`, and other repo-level documents. **No behavior change.** The agent still does only initiative reconciliation after this packet — Phases 2-6 add the new responsibilities. **ADR-0014 stays in `Proposed` status throughout the rollout** and auto-flips to `Accepted` via the Phase 5 auto-flip logic on the first sync run after Packet 06 closes, treated identically to every other Proposed ADR.
 
 ## Target Repo
 `HoneyDrunkStudios/HoneyDrunk.Architecture`
@@ -24,7 +24,7 @@ Rename the `.claude/agents/initiatives-sync.md` agent to `.claude/agents/hive-sy
 
 ADR-0014 broadens the sync agent's mandate from initiative-only reconciliation to full Hive board reconciliation, packet lifecycle management, non-initiative item tracking, and Proposed-ADR queue surfacing. The rename from `initiatives-sync` to `hive-sync` is the first step — it makes the broader scope discoverable from the agent name itself, and it gives subsequent phases a stable target file (`hive-sync.md`) to build on.
 
-This packet is the entry point for the six-phase rollout. It is a **pure rename**: agent file renamed verbatim with seven targeted name-change edits, workflow file renamed verbatim with two targeted edits, capability-matrix row swapped, and cross-references propagated. No behavior change; no invariants added; ADR-0014 stays in `Proposed` status until the Phase 5 auto-flip logic fires after Packet 06 closes.
+This packet is the entry point for the six-phase rollout. It is mostly a **pure rename**, plus one intentional runtime change: `hive-sync` is run by OpenClaw as a scheduled/manual agent job instead of by a GitHub Actions workflow that calls the Anthropic API. The agent file is renamed verbatim with targeted name-change edits, the CI workflow is removed, the OpenClaw runbook is added, the capability-matrix row is swapped, and cross-references are propagated. No reconciliation behavior changes; no invariants added; ADR-0014 stays in `Proposed` status until the Phase 5 auto-flip logic fires after Packet 06 closes.
 
 ## Scope
 
@@ -40,24 +40,26 @@ All edits are in the `HoneyDrunk.Architecture` repo. No code (no `.cs` files). N
    - Change the opening paragraph from `You are the **Initiatives Sync** agent.` to `You are the **Hive Sync** agent.`
    - Change the branch-name template from `chore/initiatives-sync-$(date +%Y-%m-%d)` to `chore/hive-sync-$(date +%Y-%m-%d)`.
    - Change the PR title template from `chore: sync initiative progress ($(date +%Y-%m-%d))` to `chore: sync hive state ($(date +%Y-%m-%d))`.
-   - Change the PR-body link from `the **initiatives-sync** agent via [agent-run]` to `the **hive-sync** agent via [agent-run]`.
-   - Change the `agent-run` link in the PR body from `agent: initiatives-sync` reference to `agent: hive-sync` (the link targets the same workflow file).
+   - Change the PR-body wording from `the **initiatives-sync** agent via [agent-run]` to `the **hive-sync** agent via OpenClaw`.
    - Change the Output Summary heading from `## Initiatives Sync — {date}` to `## Hive Sync — {date}`.
 3. Delete `.claude/agents/initiatives-sync.md`. The old file is removed in the same commit; no redirect, no compatibility shim.
 
-The Workflow body, Decision Rules, Constraints, and Gather Data steps are **not modified** in this packet. Subsequent phases (02, 03, 04) add new steps; this phase is a pure rename.
+The reconciliation Workflow body, Decision Rules, Constraints, and Gather Data steps are **not modified** in this packet beyond the targeted naming/PR wording above. Subsequent phases (02, 03, 04) add new reconciliation steps; this phase is a rename plus runtime migration to OpenClaw.
 
-### Part B — Rename the workflow file
+### Part B — Retire the GitHub Actions agent-run pipeline and document the OpenClaw job
 
-1. Read `.github/workflows/initiatives-sync.yml` in full.
-2. Create `.github/workflows/hive-sync.yml` containing the same content with the following edits and **no others**:
-   - Change the top-level `name:` field from `Initiatives Sync` to `Hive Sync`.
-   - Change the `with: agent:` value from `initiatives-sync` to `hive-sync`.
-3. Delete `.github/workflows/initiatives-sync.yml`.
+1. Read `.github/workflows/initiatives-sync.yml` in full so the removed runtime is reviewable.
+2. Delete `.github/workflows/initiatives-sync.yml`. Do **not** create `.github/workflows/hive-sync.yml`.
+3. Add `infrastructure/openclaw/hive-sync.md` documenting the OpenClaw runtime contract for this job:
+   - schedule: Monday/Thursday, matching the current cadence unless Oleg later changes it in OpenClaw cron;
+   - target: isolated OpenClaw `agentTurn`, not GitHub Actions;
+   - working repo: `HoneyDrunk.Architecture`;
+   - prompt source: `.claude/agents/hive-sync.md`;
+   - allowed tools/capabilities: read/write/edit files, run `gh`, run GraphQL via `gh api graphql`, create/update the reconciliation PR;
+   - output: concise executive summary to Oleg with files changed, PR URL, and any blockers;
+   - safety: read-only with respect to The Hive board except for PR creation in Architecture; no GraphQL mutations to board fields.
 
-The cron schedule (`0 6 * * 1,4`), `workflow_dispatch`, permissions block, the `uses:` reference to `HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/agent-run.yml@main`, the `provider`, `model`, `max-turns`, and the `secrets` block are all preserved verbatim. The `INITIATIVES_SYNC_TOKEN` GitHub secret name is preserved — renaming the secret is out-of-scope and would require a coordinated org-secret update; the token's logical owner is the same agent under either name.
-
-**Cron-window note.** The schedule fires Monday/Thursday 06:00 UTC. If this PR sits open across a scheduled fire time, the run may be skipped: GitHub fires scheduled workflows from the default branch's view, and the deleted workflow on `main` is gone once merged while the new file on a feature branch does not fire on schedule. Workflows on feature branches do not fire on schedule. One missed run is acceptable; the next scheduled run after merge picks up under the new name. If you need the next sync immediately, manually dispatch `hive-sync.yml` after merge.
+The old workflow used `HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/agent-run.yml@main`, `provider: claude`, and `secrets.ANTHROPIC_API_KEY`. That is intentionally retired. The GitHub Actions pipeline is no longer the brain; OpenClaw owns scheduling/manual execution, and GitHub remains the source of truth plus PR surface. If a CI file is ever reintroduced, it should be a dumb health/validation trigger, not an Anthropic API caller.
 
 ### Part C — Update the agent capability matrix
 
@@ -66,7 +68,7 @@ In `constitution/agent-capability-matrix.md`:
 1. **Replace the `initiatives-sync` row** in the main agent table (currently the last row) with a `hive-sync` row matching the structure of the other rows. The new row must read:
 
 ```markdown
-| **hive-sync** | Monday/Thursday schedule or manual dispatch | `gh` CLI issue states, `generated/issue-packets/filed-packets.json`, GraphQL Hive board state, `catalogs/grid-health.json`, `catalogs/nodes.json`, `adrs/ADR-*.md` frontmatter, initiative files | Updated `initiatives/` files via PR (new branch per run), packet moves (active → completed), `board-items.md`, `proposed-adrs.md` | Create issues, modify `filed-packets.json` entries (may update existing paths only), make architectural decisions |
+| **hive-sync** | OpenClaw Monday/Thursday schedule or manual OpenClaw dispatch | `gh` CLI issue states, `generated/issue-packets/filed-packets.json`, GraphQL Hive board state, `catalogs/grid-health.json`, `catalogs/nodes.json`, `adrs/ADR-*.md` frontmatter, initiative files | Updated `initiatives/` files via PR (new branch per run), packet moves (active → completed), `board-items.md`, `proposed-adrs.md` | Create issues, modify `filed-packets.json` entries (may update existing paths only), make architectural decisions |
 ```
 
    The "Consumes" and "Produces" columns reflect the **full** post-Phase-4 mandate, not the Phase-1 reality. Doing the capability-matrix update once at the rename avoids three subsequent matrix edits in Phases 2-4. The actual behavior at the end of this packet is still initiative-only reconciliation; the matrix forecasts the rollout.
@@ -84,14 +86,14 @@ Do initiative tracking files need reconciliation with GitHub issue states?
 
 ```
 Do Architecture-repo files need reconciliation with The Hive (initiatives, packet lifecycle, non-initiative items, Proposed-ADR queue)?
-  → yes → hive-sync (automated Monday/Thursday, or invoke manually)
+  → yes → hive-sync (OpenClaw scheduled Monday/Thursday, or invoke manually)
 ```
 
 3. **Update the Execution Rules bullet** that mentions the agent:
 
    Find: `and `initiatives-sync` (which runs via Claude Code Action in CI, creates a date-based branch, and opens or updates a PR for initiative-file reconciliation).`
 
-   Replace with: `and `hive-sync` (which runs via Claude Code Action in CI, creates a date-based branch, and opens or updates a PR for full Architecture-repo reconciliation with The Hive — initiative files, packet lifecycle, board items, and Proposed-ADR queue).`
+   Replace with: `and `hive-sync` (which runs via OpenClaw scheduled/manual agent job, creates a date-based branch, and opens or updates a PR for full Architecture-repo reconciliation with The Hive — initiative files, packet lifecycle, board items, and Proposed-ADR queue).`
 
 4. **Update the Agent-specific additional context table.** Replace the row:
 
@@ -115,7 +117,7 @@ Run a repo-wide search for the literal string `initiatives-sync` after Parts A-C
 - **Existing in-flight packets under `generated/issue-packets/active/`** — historical references to `initiatives-sync` in already-filed packets must not be edited (invariant 24: packets are immutable once filed). Leave them as-is. The set of files matching this rule includes any Wave 2+ packet of any other in-flight initiative; it is acceptable for those packets to mention `initiatives-sync` because they were filed before this rename.
 - **`CLAUDE.md`** at the repo root — if it references the agent by name, update to `hive-sync`.
 - **`AGENTS.md`** at the repo root — if it references the agent by name, update to `hive-sync`.
-- **Any `.github/workflows/*.yml` file other than the renamed one** — none should reference the agent by name today, but the search is the verifier.
+- **Any `.github/workflows/*.yml` file** — no workflow should call the sync agent after this packet. The old Anthropic-backed pipeline is intentionally removed; OpenClaw owns the runtime.
 
 The verifier command for the agent executing this packet:
 
@@ -131,7 +133,7 @@ On 2026-05-02, repo-level `CLAUDE.md`, `AGENTS.md`, and `README.md` do not conta
 
 This packet does **not** create `initiatives/board-items.md` or `initiatives/proposed-adrs.md`. Those files are introduced by Packets 03 and 04 respectively. This packet does not modify `constitution/invariants.md`. The two Hive-Sync invariants are added by Packets 02 and 03.
 
-This packet does **not** add lifecycle logic to the agent file. The Workflow steps in `hive-sync.md` after this packet are byte-identical to `initiatives-sync.md`'s Workflow steps (modulo the seven name-change edits in Part A). Validation: the Step 1 through Step 8 substantive content (the GraphQL queries, file lists, decision rules, output formats) must be unchanged after Part A.
+This packet does **not** add lifecycle logic to the agent file. The agent workflow steps in `hive-sync.md` after this packet are byte-identical to `initiatives-sync.md`'s Workflow steps (modulo the targeted name/PR wording edits in Part A). Validation: the Step 1 through Step 8 substantive content (the GraphQL queries, file lists, decision rules, output formats) must be unchanged after Part A.
 
 This packet does **not** flip ADR-0014's status. The ADR remains `Proposed` for the duration of the rollout and auto-flips on the first sync run after Packet 06 closes, via the Phase 5 auto-flip logic. Bundling the acceptance flip with any single phase was considered and rejected: an Accepted ADR with missing invariants/surfaces would misrepresent the on-disk state during the rollout. Letting the auto-flip handle ADR-0014 makes it the end-to-end validation that the new behavior works on the originating ADR.
 
@@ -162,10 +164,11 @@ In `initiatives/roadmap.md`, add an entry under the "Process & Tooling" or equiv
 
 ## Affected Files
 
-- `.claude/agents/hive-sync.md` — **new** (verbatim copy of `initiatives-sync.md` with seven targeted edits per Part A)
+- `.claude/agents/hive-sync.md` — **new** (verbatim copy of `initiatives-sync.md` with targeted name/PR wording edits per Part A)
 - `.claude/agents/initiatives-sync.md` — **deleted**
-- `.github/workflows/hive-sync.yml` — **new** (verbatim copy of `initiatives-sync.yml` with two targeted edits per Part B)
+- `infrastructure/openclaw/hive-sync.md` — **new** (OpenClaw scheduled/manual runtime contract)
 - `.github/workflows/initiatives-sync.yml` — **deleted**
+- `.github/workflows/hive-sync.yml` — **must not exist**
 - `constitution/agent-capability-matrix.md` — row swap, decision tree, execution rules, additional-context table
 - `CLAUDE.md` — if referenced
 - `AGENTS.md` — if referenced
@@ -173,7 +176,7 @@ In `initiatives/roadmap.md`, add an entry under the "Process & Tooling" or equiv
 - `initiatives/roadmap.md` — new entry under Process & Tooling
 - `CHANGELOG.md` — append entry referencing the agent rename (create the file if it does not yet exist; one bullet per phase across the rollout)
 
-The new agent file and the new workflow file are **created**; the old files are **deleted** in the same PR. Git diff for the rename is two creates + two deletes plus textual diffs in the new files where the seven/two name edits were made.
+The new agent file and the new OpenClaw runtime runbook are **created**; the old agent file and old GitHub Actions workflow are **deleted** in the same PR. Git diff for the rename is two creates + two deletes plus textual diffs in the new files where the targeted name/runtime edits were made.
 
 ## NuGet Dependencies
 
@@ -188,11 +191,11 @@ None. This is a docs/markdown/YAML change; no .NET projects touched.
 
 ## Acceptance Criteria
 
-- [ ] `.claude/agents/hive-sync.md` exists and contains the seven targeted edits described in Part A; all other content is byte-identical to the deleted `.claude/agents/initiatives-sync.md`.
+- [ ] `.claude/agents/hive-sync.md` exists and contains the targeted name/PR wording edits described in Part A; all other reconciliation logic is byte-identical to the deleted `.claude/agents/initiatives-sync.md`.
 - [ ] `.claude/agents/initiatives-sync.md` does not exist.
-- [ ] `.github/workflows/hive-sync.yml` exists with `name: Hive Sync` and `agent: hive-sync`.
 - [ ] `.github/workflows/initiatives-sync.yml` does not exist.
-- [ ] The cron schedule, permissions block, and `uses:` reference in `hive-sync.yml` are byte-identical to `initiatives-sync.yml`.
+- [ ] `.github/workflows/hive-sync.yml` does not exist.
+- [ ] `infrastructure/openclaw/hive-sync.md` exists and documents the OpenClaw scheduled/manual runtime contract.
 - [ ] `constitution/agent-capability-matrix.md` no longer contains a row for `initiatives-sync`. It contains exactly one row for `hive-sync` with the Consumes/Produces columns specified in Part C, plus the rollout-status caveat described in Part C.1.
 - [ ] `constitution/agent-capability-matrix.md` decision tree, execution rules, and Agent-specific additional context table are updated per Part C (1)-(4).
 - [ ] `git grep -n "initiatives-sync"` returns matches only inside `adrs/ADR-*.md`, `generated/issue-packets/active/**/*.md` (filed before this packet), or `generated/issue-packets/retired/**/*.md`. No matches in `.claude/`, `.github/workflows/`, `constitution/`, `CLAUDE.md`, `AGENTS.md`, or `initiatives/`.
@@ -201,14 +204,14 @@ None. This is a docs/markdown/YAML change; no .NET projects touched.
 - [ ] `initiatives/active-initiatives.md` contains a "Hive Sync Rollout (ADR-0014)" In Progress entry with the six-item Tracking list described in Part F.
 - [ ] `initiatives/roadmap.md` references `adr-0014-hive-sync-rollout`.
 - [ ] The PR diff touches only the files listed in Affected Files.
-- [ ] The Monday/Thursday scheduled workflow under the new name (`hive-sync.yml`) runs successfully on its next trigger and produces a PR identical **in structure** (same five initiative files reconciled, same PR title pattern under the new name) to what `initiatives-sync.yml` produced. The PR title text changes from `chore: sync initiative progress (...)` to `chore: sync hive state (...)`; the title pattern, branch convention, body layout, and reconciled-file set are unchanged. This criterion is verified post-merge by observing the next scheduled run; reviewers may dry-run via `workflow_dispatch` after merge to confirm.
+- [ ] The OpenClaw `hive-sync` scheduled/manual job runs successfully on its next trigger and produces a PR identical **in structure** (same five initiative files reconciled, same PR title pattern under the new name) to what `initiatives-sync.yml` produced. The PR title text changes from `chore: sync initiative progress (...)` to `chore: sync hive state (...)`; the title pattern, branch convention, body layout, and reconciled-file set are unchanged. This criterion is verified post-merge by observing the next OpenClaw run; reviewers may ask Honeyclaw/Oleg to trigger it manually if immediate validation is needed.
 - [ ] Repo-level `CHANGELOG.md` entry created or appended for this version with a one-line summary referencing the agent rename. (If `CHANGELOG.md` does not exist at the repo root, create it with a single H1 `# Changelog` and an `## Unreleased` section, then append the entry under that section. Subsequent packets append to the same file.)
 
 ## Human Prerequisites
 
 None. This packet is fully delegable.
 
-The `INITIATIVES_SYNC_TOKEN` GitHub repository secret is **not** renamed by this packet. The workflow continues to read `secrets.INITIATIVES_SYNC_TOKEN` after rename. Renaming the secret is a separate human-only chore (org-secret rename + workflow update) that does not block this rollout. If a future packet wants to rename it, it should be a standalone packet, not bundled here.
+The `ANTHROPIC_API_KEY` usage in the old GitHub Actions workflow is removed with the workflow. The `INITIATIVES_SYNC_TOKEN` secret may remain in GitHub until Oleg cleans it up, but it is no longer consumed by this runtime. OpenClaw uses the machine's authenticated `gh` context for issue/project reads and PR creation.
 
 ## Referenced Invariants
 
@@ -226,7 +229,7 @@ This invariant does not directly govern the `hive-sync` agent (which is neither 
 
 **ADR-0014 D5 (Capability matrix updates):** Remove the `initiatives-sync` row. Add a `hive-sync` row with Trigger, Consumes, Produces, and Sync Responsibility describing the full broadened mandate. The agent's tool list is unchanged from `initiatives-sync` (Read, Grep, Glob, Edit, Write, Bash, TodoWrite); no new tools are required.
 
-**ADR-0014 Phase Plan, Phase 1 exit criterion:** "the agent runs on its Monday/Thursday schedule under the new name and produces the same PR it did before." This is the post-merge validation criterion in the Acceptance Criteria list.
+**ADR-0014 Phase Plan, Phase 1 exit criterion:** "the agent runs on its Monday/Thursday schedule under the new name and produces the same PR it did before." This now means the OpenClaw scheduled/manual job, not a GitHub Actions Anthropic pipeline.
 
 ## Dependencies
 
@@ -238,7 +241,7 @@ None. This packet is the entry point for the initiative.
 
 ## Agent Handoff
 
-**Objective:** Rename the `initiatives-sync` agent to `hive-sync` (verbatim copy + delete + workflow rename + capability matrix swap + cross-reference cleanup). No behavior change. ADR-0014 stays in `Proposed` throughout the rollout and auto-flips on the first sync run after Packet 06 closes, via the Phase 5 auto-flip logic.
+**Objective:** Rename the `initiatives-sync` agent to `hive-sync` (verbatim copy + delete + OpenClaw runtime migration + capability matrix swap + cross-reference cleanup). No behavior change. ADR-0014 stays in `Proposed` throughout the rollout and auto-flips on the first sync run after Packet 06 closes, via the Phase 5 auto-flip logic.
 
 **Target:** `HoneyDrunkStudios/HoneyDrunk.Architecture`, branch from `main` (suggested branch name: `chore/adr-0014-hive-sync-phase-1`).
 
@@ -254,16 +257,16 @@ None. This packet is the entry point for the initiative.
 **Constraints:**
 - **Invariant 24** (full text above) — do not edit any file under `generated/issue-packets/active/` or `generated/issue-packets/retired/`. Filed packets, including those that mention `initiatives-sync`, stay frozen.
 - **Invariant 33** (full text above) — the rename must not modify `.claude/agents/scope.md` or the context-loading section of `.claude/agents/review.md`. The capability matrix is metadata and is in scope.
-- **Pure rename, no behavior change.** The Workflow body of `hive-sync.md` after Part A must be byte-identical to `initiatives-sync.md`'s Workflow body except for the seven targeted edits (name, description, headings, branch template, PR title, PR body link, output summary heading). No new Step, no removed Step, no logic changes. The verifier is a structured diff: a reviewer should be able to look at the new file and the deleted file side-by-side and see only those seven edits.
-- **Workflow-file rename preserves the secret name.** `INITIATIVES_SYNC_TOKEN` is not renamed.
+- **Agent logic rename, no reconciliation behavior change.** The agent workflow body of `hive-sync.md` after Part A must be byte-identical to `initiatives-sync.md`'s workflow body except for the targeted name/PR wording edits. No new reconciliation Step, no removed reconciliation Step, no lifecycle logic yet. The runtime migration is isolated to deleting the GitHub Actions pipeline and documenting the OpenClaw job.
+- **Runtime migration removes the Anthropic pipeline.** The old GitHub Actions workflow is deleted; no replacement workflow calls the Anthropic API.
 - **ADR-0014 stays in Proposed.** Do not edit the ADR's Status front-matter line. Do not edit the `adrs/README.md` Status column for ADR-0014. The flip is owned by the Phase 5 auto-flip logic on the first sync run after Packet 06 closes.
 - **Accepted ADRs are immutable historical records.** Part D leaves references inside other ADR files untouched.
 
 **Key Files:**
 - `.claude/agents/initiatives-sync.md` — read in full, then delete.
-- `.claude/agents/hive-sync.md` — create with the seven targeted edits.
+- `.claude/agents/hive-sync.md` — create with the targeted name/PR wording edits.
 - `.github/workflows/initiatives-sync.yml` — read in full, then delete.
-- `.github/workflows/hive-sync.yml` — create with the two targeted edits.
+- `infrastructure/openclaw/hive-sync.md` — create with the OpenClaw scheduled/manual runtime contract.
 - `constitution/agent-capability-matrix.md` — replace four locations per Part C.
 - `adrs/README.md` — update the description column for the ADR-0014 row only; leave the Status column unchanged.
 - `initiatives/active-initiatives.md` — add new In Progress entry.

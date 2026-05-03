@@ -232,7 +232,7 @@ The file `initiatives/proposed-adrs.md` was created by Packet 04 with an ADRs-on
 
 The first agent run after Packet 05 lands rewrites the file to the new structure from live state. The PR for Packet 05 itself does not pre-seed the file with the new structure — the rewrite happens on the first sync run, exactly the same way every other tracking file in this rollout is seeded.
 
-If you want the new structure visible immediately in the merge commit (e.g., for review confidence), the executing agent **may** dry-run the new logic locally and include the resulting file in the PR. This is optional — the next scheduled run will produce it regardless.
+If you want the new structure visible immediately in the merge commit (e.g., for review confidence), the executing OpenClaw agent **may** dry-run the new logic locally and include the resulting file in the PR. This is optional — the next scheduled/manual OpenClaw run will produce it regardless.
 
 ### Part E — Initiative trackers
 
@@ -296,7 +296,7 @@ None. This is a docs/markdown change; no .NET projects touched.
 - [ ] Step 9c writes sed-miss anomalies to `proposed-adrs.md` "Anomalies" section (not just PR description).
 - [ ] The Constraints block contains the bounded-authority text from Part B (replaces the prior "never modifies any ADR file" bullet) plus the new anomaly-surface bullet.
 - [ ] `.claude/agents/scope.md` is updated per Part F to instruct writing `accepts:` for new packets, with the example and convention rules described there. The `adrs:` field convention is unchanged.
-- [ ] On the first scheduled run after this PR merges:
+- [ ] On the first scheduled/manual OpenClaw run after this PR merges:
   - Every Proposed ADR with at least one packet declaring it in `accepts:` whose every issue is `closed` is flipped to `Accepted` (subject to the `MAX_FLIPS_PER_RUN` cap). The flip is a single-line `**Status:**` edit; the ADR body is unchanged.
   - Every Proposed PDR matching the same criterion is flipped.
   - `adrs/README.md` and `pdrs/README.md` index rows have Status and Date columns matching the post-flip frontmatter (rstrip applied; annotated values skipped).
@@ -313,7 +313,7 @@ None. This packet is fully delegable.
 
 **Operational note for the human reviewer:**
 
-- [ ] After merge, observe the **first scheduled Monday/Thursday run** of `hive-sync.yml`. Spot-check that any ADRs/PDRs flipped to Accepted in that run are correctly identified — i.e., their implementing packets are genuinely all closed. If a flip is wrong (rare; would indicate a packet's `adrs:` frontmatter is misleading), manually revert the ADR's Status to `Proposed` in a follow-up PR. The agent will not re-flip until at least one issue closes again, so the manual revert is stable.
+- [ ] After merge, observe the **first scheduled/manual OpenClaw run** of `hive-sync`. Spot-check that any ADRs/PDRs flipped to Accepted in that run are correctly identified — i.e., their implementing packets are genuinely all closed. If a flip is wrong (rare; would indicate a packet's `adrs:` frontmatter is misleading), manually revert the ADR's Status to `Proposed` in a follow-up PR. The agent will not re-flip until at least one issue closes again, so the manual revert is stable.
 
 ## Referenced Invariants
 

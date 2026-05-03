@@ -158,7 +158,7 @@ After this packet lands, the "Hive Sync Invariants" section contains the lifecyc
 Use this template, substituting `{N}` with the value from Step 1:
 
 ```markdown
-{N}. **The Architecture repo tracks all Hive board items.** Every issue on The Hive (org Project #4) is represented in either an initiative tracking file (for packet-originated work, including `active-initiatives.md`, `archived-initiatives.md`, etc.) or `initiatives/board-items.md` (for non-initiative work — nightly-security issues, grid-health-aggregator issues, and any other issue mirrored onto The Hive without a `filed-packets.json` entry). The `hive-sync` agent is responsible for maintaining this correspondence and runs Monday/Thursday on schedule plus manual dispatch. See ADR-0014 D1, D3.
+{N}. **The Architecture repo tracks all Hive board items.** Every issue on The Hive (org Project #4) is represented in either an initiative tracking file (for packet-originated work, including `active-initiatives.md`, `archived-initiatives.md`, etc.) or `initiatives/board-items.md` (for non-initiative work — nightly-security issues, grid-health-aggregator issues, and any other issue mirrored onto The Hive without a `filed-packets.json` entry). The `hive-sync` agent is responsible for maintaining this correspondence and runs through OpenClaw scheduled/manual execution. See ADR-0014 D1, D3.
 ```
 
 **Existing-section safety net.** If the "Hive Sync Invariants" section does not exist (because Packet 02 was reverted or has not yet landed), this packet is out of order — its dependency declaration requires Packet 02 first. Surface the error rather than creating the section here.
@@ -215,7 +215,7 @@ None. This is a docs/markdown change; no .NET projects touched.
 
 - [x] Architecture-only edits. No other repo touched.
 - [x] No new code or build artifact.
-- [x] No GraphQL **mutations** introduced — query-only access to The Hive. The `secrets.INITIATIVES_SYNC_TOKEN` must have the **`read:project`** scope (classic PAT) or the org-level **`Projects: Read-only`** permission (fine-grained PAT) for the `projectV2` query in Step 8a to succeed; verifying that scope is a Human Prerequisite below, not an assumption made by this packet.
+- [x] No GraphQL **mutations** introduced — query-only access to The Hive. The OpenClaw host's authenticated `gh` context must have the **`read:project`** scope (classic PAT) or the org-level **`Projects: Read-only`** permission (fine-grained PAT) for the `projectV2` query in Step 8a to succeed; verifying that scope is a Human Prerequisite below, not an assumption made by this packet.
 - [x] Invariant 24 preserved — no edits to existing filed packets.
 - [x] Invariant 33 preserved — `scope.md` and `review.md` context-loading sections are untouched.
 
@@ -269,7 +269,7 @@ None. This is a docs/markdown change; no .NET projects touched.
 
 **Pre-merge (BLOCKING — verify before approving the PR):**
 
-- [ ] **Verify the `INITIATIVES_SYNC_TOKEN` PAT scope.** The Step 8a GraphQL query (`organization.projectV2`) requires either the classic-PAT scope `read:project` or the fine-grained-PAT permission `Projects: Read-only` at the **organization** level. Open GitHub → Settings → Developer settings → Personal access tokens, find the token backing the `INITIATIVES_SYNC_TOKEN` repo secret, and confirm the scope is present. If absent, expand the scope before merging. **Document the verified scope in the PR body** so the merge gate is auditable.
+- [ ] **Verify the OpenClaw host `gh` auth scope.** The Step 8a GraphQL query (`organization.projectV2`) requires either the classic-PAT scope `read:project` or the fine-grained-PAT permission `Projects: Read-only` at the **organization** level. From the OpenClaw host, run `gh auth status` and the dry-run query below. If absent, update the host credential before merging. **Document the verified scope in the PR body** so the merge gate is auditable.
 - [ ] **Run the GraphQL query as a dry-run** before the agent commits the PR. From a developer machine where `gh auth status` shows authentication for `HoneyDrunkStudios`, run the exact query from Step 8a and confirm it returns at least one item (or empty results — but no permission error):
 
   ```bash
@@ -287,11 +287,11 @@ None. This is a docs/markdown change; no .NET projects touched.
   }' | jq '.data.organization.projectV2.items.nodes | length'
   ```
 
-  If the response is a number (item count) the scope is sufficient. If it is `null` or an error mentions `INSUFFICIENT_SCOPES`, the token must be expanded before merge. The dry-run uses the developer's own `gh auth` not the workflow's secret, but the same scope rules apply — if `read:project` works locally, the workflow's PAT with the same scope will work in CI.
+  If the response is a number (item count) the scope is sufficient. If it is `null` or an error mentions `INSUFFICIENT_SCOPES`, the OpenClaw host credential must be expanded before merge. The dry-run should use the same `gh auth` context that the scheduled OpenClaw job will use.
 
 **Post-merge (sanity checks, not blockers):**
 
-- [ ] After merge, observe the **next scheduled Monday/Thursday run** of `hive-sync.yml` to confirm the GraphQL query executes successfully under `INITIATIVES_SYNC_TOKEN` in CI. If the dry-run passed but the CI run fails, the workflow's secret may point at a different PAT than the one verified above — surface this as an `infrastructure/` cleanup follow-up.
+- [ ] After merge, observe the **next scheduled/manual OpenClaw run** of `hive-sync` to confirm the GraphQL query executes successfully under OpenClaw's authenticated `gh` context. If the dry-run passed but the scheduled run fails, the OpenClaw host auth differs from the verified shell auth — surface this as an `infrastructure/` cleanup follow-up.
 - [ ] Confirm that `board-items.md` is regenerated correctly on the second run as well. The first run is the seed (created by this packet's PR); the second run validates that the agent regenerates the file from live GraphQL state without leaving stale content.
 
 ## Referenced Invariants
