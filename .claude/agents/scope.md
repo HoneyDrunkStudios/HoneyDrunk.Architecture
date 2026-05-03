@@ -109,6 +109,23 @@ For each work unit:
 
 Every packet must include frontmatter, summary, context, scope, acceptance criteria, human prerequisites, dependencies, and labels per `copilot/issue-authoring-rules.md`.
 
+
+### Decision Acceptance Frontmatter (`accepts:`)
+
+Packet frontmatter may include both `adrs:` and `accepts:`:
+
+```yaml
+adrs: ["ADR-0026", "PDR-0002"]
+accepts: ["PDR-0002"]   # this packet implements PDR-0002; ADR-0026 is only referenced
+```
+
+- `adrs:` means decisions referenced or touched by the packet. It is a cataloging field for human review and drift detection.
+- `accepts:` means this packet's closure, together with every other packet declaring the same decision in `accepts:`, is the acceptance trigger for a Proposed ADR/PDR.
+- Only Proposed ADRs/PDRs go in `accepts:`. Already-Accepted decisions belong in `adrs:` or may be omitted if irrelevant.
+- Omit `accepts:` or use an empty list when the packet does not gate any decision acceptance.
+- A packet may list multiple decisions in `accepts:` when it implements multiple Proposed decisions.
+- Legacy packets filed before the `accepts:` convention are not auto-flip eligible. Their ADRs/PDRs remain manually flippable by the scope agent until rescoped with new `accepts:`-bearing packets.
+
 ### Agent Handoff
 
 Append a handoff section to every issue packet (this is what downstream agents read to execute):

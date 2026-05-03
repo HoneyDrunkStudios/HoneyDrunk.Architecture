@@ -18,10 +18,10 @@ High-level roadmap for the HoneyDrunk Grid.
 
 ## Q2 2026 (Apr–Jun)
 
-- [ ] **Config & Secrets Rollout (ADR-0005/0006) — Wave 1 complete** *(4/15 issues closed 26.7%; Wave 1 foundation complete: Vault wiring ✓, App Configuration ✓, event-driven invalidation ✓, Vault.Rotation repo ✓, catalog registration ✓. Wave 2 blocked on Actions#20 OIDC federated-credential workflow)*
-- [x] **Package Scanning Rollout (ADR-0009) — 75% complete** *(6/8 issues closed; 6 nodes done [Auth, Transport, Vault, Kernel, Data, Web.Rest]. Pulse#2 and Notify#2 remain, blocked on Azure Functions deployment)*
-- [ ] **Hive Sync Rollout (ADR-0014) — 0/6 issues closed** *(Packet 01 PR open; renames the legacy initiative sync agent to hive-sync, moves runtime to OpenClaw scheduled/manual execution, then adds packet lifecycle, board-items tracking, Proposed-ADR queue, ADR/PDR auto-acceptance, README sync, and drift detection across packets 02-06)*
-- [ ] **ADR-0015 Container Apps Rollout — newly initiated** *(0/5 issues closed; infrastructure walkthroughs, Container Apps deployment workflow, per-service release workflows for Notify and Pulse)*
+- [ ] **Config & Secrets Rollout (ADR-0005/0006) — packet rollout complete** *(15/15 issues closed; ready for archive/exit-criteria review)*
+- [x] **Package Scanning Rollout (ADR-0009) — complete** *(8/8 issues closed; ready for archive review)*
+- [ ] **Hive Sync Rollout (ADR-0014) — implementation PR ready** *(1/6 issues closed; Packet 01 merged. Packets 02-06 are implemented together in the final rollout PR: packet lifecycle, board-items tracking, Proposed ADR/PDR queue, auto-acceptance + README sync, and drift detection)*
+- [ ] **ADR-0015 Container Apps Rollout — underway** *(2/5 issues closed; walkthroughs + reusable deploy workflow complete; Notify/Pulse release work remains)*
 - [ ] Pulse — Production hardening, Grafana dashboard templates, finalize 0.1.0 release
 - [ ] Notify — Azure Functions deployment, finalize 0.1.0 release *(packages built, deployment blocked on Azure infrastructure)*
 - [ ] HoneyDrunk.AI — Model/provider abstraction, OpenAI + Anthropic providers, Pulse telemetry
@@ -29,7 +29,7 @@ High-level roadmap for the HoneyDrunk Grid.
 - [ ] HoneyDrunk.Capabilities — Tool registry, discovery, permissioning, initial tool descriptors
 - [ ] HoneyDrunk.Agents — Agent runtime, lifecycle, execution context, tool/memory interfaces
 - [ ] HoneyDrunk.Memory — Agent memory contracts, InMemory provider, Agents integration
-- [ ] **HoneyDrunk.Lore Bring-Up — newly initiated** *(0/6 issues closed; 6 packets filed 2026-04-12, awaiting Wave 1 completion)*
+- [ ] **HoneyDrunk.Lore Bring-Up — underway** *(4/6 issues closed; scheduled ingest and OpenClaw setup remain)*
 - [ ] HoneyHub — Initial scaffolding, project orchestration, creator dashboard foundations
 - [ ] Studios website — Architecture documentation pages, version tracking
 

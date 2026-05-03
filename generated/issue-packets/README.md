@@ -15,8 +15,8 @@ issue-packets/
 │   │   └── 15-...
 │   └── standalone/
 │       └── {YYYY-MM-DD}-{target-repo-short}-{description}.md
-└── archive/
-    └── {initiative-slug}/                       (frozen, same structure)
+└── completed/
+    └── {initiative-slug}/                       (closed packets, same structure)
 ```
 
 ## What each artifact is for
@@ -35,9 +35,9 @@ issue-packets/
 2. **Packet-filing script** files each packet as a GitHub Issue in its target repo
 3. **Org Project board** auto-adds the issues via the `repo:HoneyDrunkStudios/*` filter
 4. **Execution** — cloud or local agent picks up items when `Status` → `Ready`, opens PRs
-5. **Archival** — when every packet in the initiative reaches `Done` and the dispatch plan's exit criteria are met, move the entire `active/{slug}/` folder to `archive/{slug}/` in one commit
+5. **Completion** — when a filed issue closes, `hive-sync` moves that packet from `active/` to `completed/` and updates `filed-packets.json` in the same PR
 
-**Partial archival is forbidden.** An initiative is either wholly active or wholly archived.
+**Packet lifecycle is issue-driven.** Closed packet files live under `completed/`; open packet files remain under `active/`. Dispatch plans move once the initiative has no active packet files left.
 
 ## Naming conventions
 
@@ -52,7 +52,7 @@ issue-packets/
 ## Folder rules
 
 - `active/` — every initiative currently in flight, plus `active/standalone/` for one-offs
-- `archive/` — completed initiatives, moved as a whole
+- `completed/` — closed issue packets and completed initiative dispatch plans, moved by `hive-sync` only
 - `ls active/` answers "what rollouts are in flight?" at the filesystem level
 
 ## References
