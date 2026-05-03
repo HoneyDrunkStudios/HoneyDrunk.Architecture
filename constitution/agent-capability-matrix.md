@@ -15,7 +15,9 @@ Quick-reference card for all Claude Code agents in `.claude/agents/`. Use this t
 | **node-audit** | Whole-Node health check (not a PR diff) | Node name, catalogs, `repos/{node}/*`, governing ADRs, repo code on disk | Findings report — verdict, blocking/changes/suggest, handoff recommendations | Edit files, file issues, open PRs, decide |
 | **refine** | Draft exists, needs iteration | Draft doc (ADR, PDR, packet, design), feedback | Revised draft | Author from scratch, make binding decisions |
 | **site-sync** | Repo release or content update | Release notes, ADRs, repo state | Site-sync packet in `generated/site-sync-packets/` | Publish to website directly |
-| **initiatives-sync** | Monday/Thursday schedule or manual dispatch | `gh` CLI issue states, `generated/issue-packets/filed-packets.json`, `catalogs/grid-health.json`, `catalogs/nodes.json`, initiative files | Updated `initiatives/` files via PR (new branch per run) | Create issues, modify `filed-packets.json`, make architectural decisions |
+| **hive-sync** | OpenClaw Monday/Thursday schedule or manual OpenClaw dispatch | `gh` CLI issue states, `generated/issue-packets/filed-packets.json`, GraphQL Hive board state, `catalogs/grid-health.json`, `catalogs/nodes.json`, `adrs/ADR-*.md` frontmatter, initiative files | Updated `initiatives/` files via PR (new branch per run), packet moves (active → completed), `board-items.md`, `proposed-adrs.md` | Create issues, modify `filed-packets.json` entries (may update existing paths only), make architectural decisions |
+
+> **Status:** `hive-sync` is rolling out across ADR-0014 packets 01-06. The packet-lifecycle (active → completed), `board-items.md`, `proposed-adrs.md`, ADR/PDR auto-acceptance, README index sync, and `drift-report.md` surfaces become live as Packets 02-06 land.
 
 ---
 
@@ -49,8 +51,8 @@ Do I want a whole-repo health audit of a single Node (drift, boundary overlap, p
 Did a Node release something that the website should announce?
   → yes → site-sync
 
-Do initiative tracking files need reconciliation with GitHub issue states?
-  → yes → initiatives-sync (automated weekly, or invoke manually)
+Do Architecture-repo files need reconciliation with The Hive (initiatives, packet lifecycle, non-initiative items, Proposed-ADR queue)?
+  → yes → hive-sync (OpenClaw scheduled Monday/Thursday, or invoke manually)
 ```
 
 ---
@@ -62,7 +64,7 @@ These apply to all agents:
 - **Claude Code agents plan and generate artifacts; they do not execute code changes.** Execution is Codex or Copilot.
 - **Agents do not modify files inside other repos directly.** Cross-repo work goes through issue packets → GitHub Issues → Codex.
 - **Agents do not make binding architectural decisions alone.** ADR drafts go to the developer for review before Accepted status.
-- **Agents do not push to remote.** No `git push`, no `gh pr create` except `file-issues` (which is authorized for `gh issue create`) and `initiatives-sync` (which runs via Claude Code Action in CI, creates a date-based branch, and opens or updates a PR for initiative-file reconciliation).
+- **Agents do not push to remote.** No `git push`, no `gh pr create` except `file-issues` (which is authorized for `gh issue create`) and `hive-sync` (which runs via OpenClaw scheduled/manual agent job, creates a date-based branch, and opens or updates a PR for full Architecture-repo reconciliation with The Hive — initiative files, packet lifecycle, board items, and Proposed-ADR queue).
 
 ---
 
@@ -86,7 +88,7 @@ Before any work, load in this order:
 | pdr-composer | Existing PDRs in `PDRs/` for format and precedent |
 | netrunner | `catalogs/relationships.json`, `catalogs/nodes.json`, `routing/repo-discovery-rules.md` |
 | file-issues | `generated/issue-packets/active/` dispatch plan, `copilot/issue-authoring-rules.md` |
-| initiatives-sync | `generated/issue-packets/filed-packets.json`, `catalogs/grid-health.json`, `catalogs/nodes.json`, `initiatives/` |
+| hive-sync | `generated/issue-packets/filed-packets.json`, `catalogs/grid-health.json`, `catalogs/nodes.json`, `initiatives/`, `adrs/ADR-*.md` (frontmatter), GraphQL Hive board query results |
 | review | ADRs referenced in packet frontmatter, `constitution/invariants.md` |
 | node-audit | `catalogs/relationships.json`, `catalogs/nodes.json`, `catalogs/contracts.json`, `catalogs/compatibility.json`, `repos/{node}/overview.md`, `boundaries.md`, `invariants.md`, `active-work.md`, governing ADRs, repo code on disk |
 | refine | The draft being refined; its governing ADR/PDR if applicable |

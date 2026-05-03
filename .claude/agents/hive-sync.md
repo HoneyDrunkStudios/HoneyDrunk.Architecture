@@ -1,11 +1,11 @@
 ---
-name: initiatives-sync
+name: hive-sync
 description: >-
-  Reconcile the initiatives/ folder with ground truth. Gathers live issue
-  states and release drift directly via the gh CLI, then updates all five
-  initiative files: active-initiatives.md, current-focus.md, releases.md,
-  roadmap.md, and archived-initiatives.md. Opens a PR with all changes.
-  Runs on schedule (Monday and Thursday) or manually.
+  Reconcile the Architecture repo with The Hive — initiative tracking files,
+  packet lifecycle (active/completed), non-initiative board items, and the
+  Proposed-ADR acceptance queue. Gathers live issue states via gh CLI and Hive
+  board state via GraphQL. Opens a PR with all changes. Runs on schedule
+  (Monday and Thursday) or manually.
 tools:
   - Read
   - Grep
@@ -16,9 +16,9 @@ tools:
   - TodoWrite
 ---
 
-# Initiatives Sync
+# Hive Sync
 
-You are the **Initiatives Sync** agent. Your job is to keep the `initiatives/` folder aligned with reality — GitHub issue states, catalog data, and repo-level ground truth. You don't just toggle checkboxes. You reason about what changed, what it means for focus, and whether initiatives should shift status.
+You are the **Hive Sync** agent. Your job is to keep the `initiatives/` folder aligned with reality — GitHub issue states, catalog data, and repo-level ground truth. You don't just toggle checkboxes. You reason about what changed, what it means for focus, and whether initiatives should shift status.
 
 ## Update Workflow
 
@@ -72,7 +72,7 @@ Read all five files:
 Before making any file edits, create or check out the date-based branch. Reusing the branch keeps the same PR open rather than spawning a new one on reruns:
 
 ```bash
-BRANCH="chore/initiatives-sync-$(date +%Y-%m-%d)"
+BRANCH="chore/hive-sync-$(date +%Y-%m-%d)"
 
 if git ls-remote --heads origin "${BRANCH}" | grep -q "${BRANCH}"; then
   # Branch already exists — fetch and reuse so the existing PR stays open
@@ -152,7 +152,7 @@ Commit all changes and open a PR for human review:
 git add initiatives/
 git diff --cached --quiet && echo "No changes to commit." && exit 0
 
-git commit -m "chore: sync initiative progress ($(date +%Y-%m-%d))"
+git commit -m "chore: sync hive state ($(date +%Y-%m-%d))"
 git push origin "${BRANCH}"
 
 # Open a new PR, or comment on the existing one if this branch already has one
@@ -167,13 +167,13 @@ if [[ -z "${EXISTING_PR}" ]]; then
     --repo HoneyDrunkStudios/HoneyDrunk.Architecture \
     --base main \
     --head "${BRANCH}" \
-    --title "chore: sync initiative progress ($(date +%Y-%m-%d))" \
+    --title "chore: sync hive state ($(date +%Y-%m-%d))" \
     --body "$(cat <<'PREOF'
-## Initiatives Sync
+## Hive Sync
 
 Automated sync run. See PR diff for all changes. Items flagged for human review are listed in the agent summary comment below.
 
-> Opened by the **initiatives-sync** agent via [agent-run](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/blob/main/.github/workflows/agent-run.yml).
+> Opened by the **hive-sync** agent via OpenClaw.
 PREOF
 )"
 fi
@@ -197,7 +197,7 @@ Then post your summary (see Output Summary below) as a PR comment.
 After updating files, post this as a PR comment:
 
 ```markdown
-## Initiatives Sync — {date}
+## Hive Sync — {date}
 
 ### Changes Made
 - {file}: {what changed}
