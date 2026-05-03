@@ -130,3 +130,9 @@ _Invariants 29–30 are reserved for the Observation Layer (ADR-0010). They will
 
 36. **Container App revision mode is `Multiple` with explicit traffic splitting on deploy.**
     Single-revision mode is forbidden — it removes the rollback seam. See ADR-0015.
+
+## Hive Sync Invariants
+
+37. **Completed issue packets are moved to `completed/`.** When a filed issue is closed on GitHub, the `hive-sync` agent moves its source packet from `generated/issue-packets/active/` to `generated/issue-packets/completed/` and updates the path key in `generated/issue-packets/filed-packets.json`. No other agent moves packets between lifecycle directories. The `hive-sync` agent may update existing entries' paths in `filed-packets.json` but may not add or remove entries (that remains the `file-issues` agent's exclusive concern). See ADR-0014 D2, D4.
+
+38. **The Architecture repo tracks all Hive board items.** Every issue on The Hive (org Project #4) is represented in either an initiative tracking file (for packet-originated work, including `active-initiatives.md`, `archived-initiatives.md`, etc.) or `initiatives/board-items.md` (for non-initiative work — nightly-security issues, grid-health-aggregator issues, and any other issue mirrored onto The Hive without a `filed-packets.json` entry). The `hive-sync` agent is responsible for maintaining this correspondence and runs through OpenClaw scheduled/manual execution. See ADR-0014 D1, D3.
