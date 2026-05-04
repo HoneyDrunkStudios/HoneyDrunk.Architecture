@@ -25,6 +25,10 @@ These rules apply to all agents operating within the HoneyDrunk Grid.
 - XML documentation on all public APIs
 - Conventional commits: `feat:`, `fix:`, `chore:`, `docs:`, `test:`, `refactor:`
 - HoneyDrunk.Standards analyzers enforced
+- Before creating a new helper, mapper, validator, factory, extension method, or orchestration method, scan the current type, sibling types, and repo-level shared locations for existing behavior to reuse or extend.
+- Prefer cohesive shared methods over one-off near-duplicates; extract repeated logic once the same shape appears twice or when the behavior is becoming a policy boundary.
+- Do not create generic utility dumping grounds. Keep shared code close to its domain unless it is clearly cross-cutting.
+- If duplication is intentional because two paths are expected to diverge, call that out in the PR or a short code comment.
 
 ## Communication
 
