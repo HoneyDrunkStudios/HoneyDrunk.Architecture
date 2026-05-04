@@ -9,12 +9,14 @@
 - **Working repo:** `HoneyDrunkStudios/HoneyDrunk.Architecture`.
 - **Prompt source:** `.claude/agents/hive-sync.md`.
 - **Allowed tools/capabilities:** read/write/edit files, run `gh`, run GraphQL via `gh api graphql`, create or update the reconciliation PR.
-- **Output:** concise executive summary to Oleg with files changed, PR URL, and any blockers.
+- **Output:** concise executive summary to Oleg with files changed, PR URL, completed packet manifest entries pruned, and any blockers.
 - **Safety:** read-only with respect to The Hive board except for PR creation in Architecture; no GraphQL mutations to board fields.
 
 ## Runtime Boundary
 
 GitHub remains the source of truth and PR surface. OpenClaw owns scheduling, reasoning, branch creation, commits, and PR creation/update. If a GitHub Actions workflow is ever reintroduced, it should be a dumb health or validation trigger, not an Anthropic/Claude API caller and not the reasoning brain.
+
+`generated/issue-packets/filed-packets.json` is treated as an active/recent filing de-dupe manifest. Hive Sync may prune completed entries after their issue has been closed for at least 30 days; completed packet files remain in `generated/issue-packets/completed/` as the durable archive.
 
 ## Auth Expectations
 
