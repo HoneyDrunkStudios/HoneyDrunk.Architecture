@@ -78,5 +78,11 @@
   "generated/issue-packets/completed/standalone/2026-04-12-org-secret-gh-issue-token.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/16",
   "generated/issue-packets/completed/standalone/2026-04-26-actions-file-packets-hardening.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/57",
   "generated/issue-packets/completed/standalone/2026-04-28-actions-hive-field-mirror-app-auth.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/69",
-  "generated/issue-packets/completed/standalone/2026-04-28-actions-hive-field-mirror-cache-and-rest.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/70"
+  "generated/issue-packets/completed/standalone/2026-04-28-actions-hive-field-mirror-cache-and-rest.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/70",
+  "generated/issue-packets/active/adr-0013-communications-bringup/03-communications-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications/issues/2",
+  "generated/issue-packets/active/adr-0013-communications-bringup/04-communications-phase1-contracts.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications/issues/3",
+  "generated/issue-packets/active/adr-0013-communications-bringup/05-communications-phase2-welcome-flow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications/issues/4",
+  "generated/issue-packets/active/adr-0016-honeydrunk-ai-standup/01-architecture-ai-catalog-registration.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/72",
+  "generated/issue-packets/active/adr-0016-honeydrunk-ai-standup/02-architecture-ai-invariants.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/73",
+  "generated/issue-packets/active/adr-0016-honeydrunk-ai-standup/03-ai-node-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/2"
 }
