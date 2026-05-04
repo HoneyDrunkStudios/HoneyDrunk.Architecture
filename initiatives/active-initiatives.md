@@ -41,13 +41,13 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 **Tracking:**
 - [x] Architecture#61: Rename agent + capability matrix (packet 01)
-- [ ] Architecture#62: Add packet lifecycle and Hive-Sync invariant for lifecycle (packet 02)
-- [ ] Architecture#63: Track non-initiative board items + Hive-Sync invariant for board coverage (packet 03)
-- [ ] Architecture#64: Surface Proposed-ADR acceptance queue (packet 04)
-- [ ] Architecture#65: ADR/PDR auto-acceptance + README index sync (packet 05)
-- [ ] Architecture#66: Drift detection + close out the rollout (packet 06)
+- [x] Architecture#62: Add packet lifecycle and Hive-Sync invariant for lifecycle (packet 02)
+- [x] Architecture#63: Track non-initiative board items + Hive-Sync invariant for board coverage (packet 03)
+- [x] Architecture#64: Surface Proposed-ADR acceptance queue (packet 04)
+- [x] Architecture#65: ADR/PDR auto-acceptance + README index sync (packet 05)
+- [x] Architecture#66: Drift detection + close out the rollout (packet 06)
 
-> **Sync (2026-05-03):** ADR-0014 rollout implementation is complete in combined PR scope. Architecture#61 is closed; Architecture#62-#66 remain open until this rollout PR merges.
+> **Sync (2026-05-04):** ADR-0014 rollout implementation is merged; Architecture#61-#66 are closed. Hive Sync is active under OpenClaw cron and ready for archive/exit-criteria review.
 
 
 ### Configuration & Secrets Rollout (ADR-0005 / ADR-0006)
@@ -176,12 +176,12 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 **Tracking:**
 - [x] Lore#1: Repo scaffold + CLAUDE.md schema doc (closed)
 - [x] Lore#2: Obsidian vault setup + Web Clipper (human-only) (closed)
-- [ ] Lore#3: Scheduled ingest agent (CronCreate) (open)
+- [x] Lore#3: Scheduled ingest agent (CronCreate) (closed)
 - [x] Lore#4: sourcing-playbook.md (closed)
-- [ ] Lore#5: OpenClaw setup + Lore sourcing skill (open)
+- [x] Lore#5: OpenClaw setup + Lore sourcing skill (closed)
 - [x] Architecture#9: Catalog registration for HoneyDrunk.Lore (closed)
 
-> **Sync (2026-05-03):** 4/6 issues closed (66.7%). Scaffold, catalog registration, sourcing playbook, and Obsidian setup are complete. Scheduled ingest and OpenClaw setup remain open, though local Lore sourcing/cron work is actively being prepared.
+> **Sync (2026-05-04):** 6/6 issues closed (100%). Lore bring-up packets are closed; ready for archive/exit-criteria review.
 
 ### Agent Kit
 **Status:** On Deck  

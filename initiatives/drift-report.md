@@ -5,7 +5,7 @@ inconsistencies between Accepted decisions and the rest of the Architecture
 repo. The agent surfaces these — it does not fix them. Resolution is the
 scope/adr-composer/human's responsibility.
 
-Last synced: 2026-05-03
+Last synced: 2026-05-04
 
 ## Invariants Named in ADRs but Missing from `invariants.md`
 
