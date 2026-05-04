@@ -1,6 +1,6 @@
 # ADR-0014: Hive–Architecture Reconciliation Agent
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-04-16
 **Deciders:** HoneyDrunk Studios
 **Sector:** Meta

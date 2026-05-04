@@ -1,19 +1,19 @@
-# Board Items — Non-Initiative Work
+# Board Items - Non-Initiative Work
 
 Tracked automatically by the hive-sync agent. Items listed here are on
 The Hive but did not originate from a scoped issue packet. The agent does
-not set or modify Hive fields — that is the responsibility of the mirror
+not set or modify Hive fields - that is the responsibility of the mirror
 workflow (for auto-wired issues) or the file-issues agent (for packets).
 This file is read-only with respect to The Hive board.
 
-Last synced: 2026-05-03
+Last synced: 2026-05-04
 
 ## Open
 
 | Issue | Repo | Category | Labels | Opened |
 |-------|------|----------|--------|--------|
 | [#50 Follow-up: add Container Apps deploy smoke test](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/50) | HoneyDrunk.Actions | other | ci, tier-2, adr-0015 | 2026-04-25 |
-| [#33 Feature: Accept ADR-0010 — register HoneyDrunk.Observe, wire AI routing contrac…](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/33) | HoneyDrunk.Architecture | other | feature, tier-2, wave-1, docs, meta, catalog, adr-0010, initiative-adr-0010-observe-ai-routing-phase-1 | 2026-04-19 |
+| [#33 Feature: Accept ADR-0010 — register HoneyDrunk.Observe, wire AI routing contracts into catalogs, finalize invariants](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/33) | HoneyDrunk.Architecture | other | feature, tier-2, wave-1, docs, meta, catalog, adr-0010, initiative-adr-0010-observe-ai-routing-phase-1 | 2026-04-19 |
 | [#34 Chore: Create `HoneyDrunk.Observe` GitHub repo (human-only)](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/34) | HoneyDrunk.Architecture | other | chore, tier-1, wave-1, new-node, human-only, meta, adr-0010, initiative-adr-0010-observe-ai-routing-phase-1 | 2026-04-19 |
 
 ## Recently Closed (last 30 days)

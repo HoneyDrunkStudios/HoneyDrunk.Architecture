@@ -2,7 +2,7 @@
 
 What the team (human + agents) should prioritize right now.
 
-**Last Updated:** 2026-04-26
+**Last Updated:** 2026-05-04
 
 ## Primary Focus
 
@@ -34,7 +34,7 @@ Provision Azure infrastructure and get both services running in the development 
 
 ### HoneyDrunk.Lore Bring-Up
 
-Stand up Lore as a flat-file LLM-compiled wiki. 6 issues scoped and on The Hive under initiative `honeydrunk-lore-bringup`. Start with Lore#1 (scaffold) and Architecture#9 (catalog registration) — they are independent and can run in parallel.
+Stand up Lore as a flat-file LLM-compiled wiki. 6 issues scoped and closed on The Hive under initiative `honeydrunk-lore-bringup`. Perform archive/exit-criteria review before promoting next Lore work.
 
 **See:** [active-initiatives.md](active-initiatives.md) → HoneyDrunk.Lore Bring-Up
 
