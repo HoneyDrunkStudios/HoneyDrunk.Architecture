@@ -1,6 +1,7 @@
 ---
 title: "Consolidate Vault.Rotation placeholder rotators"
 repo: "HoneyDrunkStudios/HoneyDrunk.Vault.Rotation"
+target_repo: "HoneyDrunkStudios/HoneyDrunk.Vault.Rotation"
 node: "HoneyDrunk.Vault.Rotation"
 request_type: "repo-feature"
 tier: "tier-2"

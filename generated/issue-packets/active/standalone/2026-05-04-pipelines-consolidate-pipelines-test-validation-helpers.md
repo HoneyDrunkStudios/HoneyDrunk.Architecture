@@ -1,6 +1,7 @@
 ---
 title: "Consolidate Pipelines test validation helpers"
 repo: "HoneyDrunkStudios/HoneyDrunk.Pipelines"
+target_repo: "HoneyDrunkStudios/HoneyDrunk.Pipelines"
 node: "HoneyDrunk.Pipelines"
 request_type: "repo-feature"
 tier: "tier-2"

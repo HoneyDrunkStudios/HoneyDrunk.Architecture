@@ -1,6 +1,7 @@
 ---
 title: "Consolidate Pulse HTTP OTLP sink helpers"
 repo: "HoneyDrunkStudios/HoneyDrunk.Pulse"
+target_repo: "HoneyDrunkStudios/HoneyDrunk.Pulse"
 node: "HoneyDrunk.Pulse"
 request_type: "repo-feature"
 tier: "tier-2"

@@ -1,6 +1,7 @@
 ---
 title: "Consolidate Communications tenant predicates"
 repo: "HoneyDrunkStudios/HoneyDrunk.Communications"
+target_repo: "HoneyDrunkStudios/HoneyDrunk.Communications"
 node: "HoneyDrunk.Communications"
 request_type: "repo-feature"
 tier: "tier-2"
