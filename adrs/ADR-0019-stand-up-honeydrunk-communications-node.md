@@ -2,6 +2,7 @@
 
 **Status:** Proposed
 **Date:** 2026-04-19
+**Supersedes:** [ADR-0013](ADR-0013-communications-orchestration-layer.md)
 **Deciders:** HoneyDrunk Studios
 **Sector:** Ops
 

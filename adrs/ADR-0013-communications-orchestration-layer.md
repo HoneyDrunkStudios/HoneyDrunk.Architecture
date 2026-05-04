@@ -8,7 +8,7 @@
 
 ## Supersession Note
 
-ADR-0013 captured the initial boundary decision: Notify owns delivery mechanics; Communications owns message decision logic and workflow. ADR-0019 is now the canonical stand-up ADR for `HoneyDrunk.Communications`; it keeps that boundary rule, adds the final package-family shape, contract canary requirement, `ICommunicationDecisionLog`, and folds the Notify policy-surface refactor into the acceptance window.
+ADR-0013 captured the initial boundary decision: Notify owns delivery mechanics; Communications owns message decision logic and workflow. ADR-0019 is now the canonical stand-up ADR for `HoneyDrunk.Communications`; it keeps that boundary rule, adds the final package-family shape, contract-shape canary requirement, `ICommunicationDecisionLog`, and folds the Notify refactor into the acceptance window.
 
 ## Context
 
