@@ -62,6 +62,21 @@ If a second tool ever emerges that requires a genuinely different file format an
 - **Adding a third tool that needs a different format requires reintroducing generation.** Accepted. We'll build the generator when we actually have two targets, not in anticipation of having them.
 - **ADR-0004's "survives vendor format changes" argument is lost.** True in theory, but Claude Code's format has been stable and the cost of a future migration is bounded.
 
+## Operational Addendum: OpenClaw Skills
+
+OpenClaw does not consume `.claude/agents/*.md` as first-class named agents. It can still **read those files as source instructions** and use OpenClaw's own runtime primitives (`sessions_spawn`, scheduled tasks, tools, and workspace skills), but that is not equivalent to Claude Code invoking `@scope` or `@adr-composer` directly.
+
+Therefore, `.claude/agents/*.md` remains the source of truth for Claude Code and Copilot agent definitions, and any newly added Architecture agent must also be mirrored by an **OpenClaw skill** when the behavior is expected to be reusable from OpenClaw.
+
+Required maintenance rule:
+
+1. When adding or materially changing `.claude/agents/{name}.md`, decide whether OpenClaw should be able to reuse that workflow.
+2. If yes, create or update the matching OpenClaw skill with the same routing intent, core workflow, context-loading contract, and handoff/output expectations.
+3. Keep the OpenClaw skill concise and adapted to OpenClaw primitives rather than copying Claude-specific tool names verbatim.
+4. Update `copilot/agent-skills-map.md` so the agent inventory records the OpenClaw skill pairing.
+
+This is intentionally a **companion-skill rule**, not a new canonical generation layer. The Architecture repo already chose direct `.claude/agents/` maintenance over a generator; OpenClaw compatibility is maintained by explicit paired skills for workflows that need it.
+
 ## Alternatives Considered
 
 ### Keep ADR-0004 as-is
