@@ -1,9 +1,14 @@
 # ADR-0013: Communications Orchestration Layer — HoneyDrunk.Communications
 
-**Status:** Proposed
+**Status:** Superseded by [ADR-0019](ADR-0019-stand-up-honeydrunk-communications-node.md)
 **Date:** 2026-04-16
+**Superseded:** 2026-05-04
 **Deciders:** HoneyDrunk Studios
 **Sector:** Ops
+
+## Supersession Note
+
+ADR-0013 captured the initial boundary decision: Notify owns delivery mechanics; Communications owns message decision logic and workflow. ADR-0019 is now the canonical stand-up ADR for `HoneyDrunk.Communications`; it keeps that boundary rule, adds the final package-family shape, contract canary requirement, `ICommunicationDecisionLog`, and folds the Notify policy-surface refactor into the acceptance window.
 
 ## Context
 
