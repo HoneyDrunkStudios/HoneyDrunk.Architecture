@@ -73,7 +73,8 @@ Required maintenance rule:
 1. When adding or materially changing `.claude/agents/{name}.md`, decide whether OpenClaw should be able to reuse that workflow.
 2. If yes, create or update the matching OpenClaw skill with the same routing intent, core workflow, context-loading contract, and handoff/output expectations.
 3. Keep the OpenClaw skill concise and adapted to OpenClaw primitives rather than copying Claude-specific tool names verbatim.
-4. Update `copilot/agent-skills-map.md` so the agent inventory records the OpenClaw skill pairing.
+4. Update `copilot/agent-skills-map.md` so the agent inventory records the OpenClaw skill pairing by skill identifier.
+5. Runtime skill files live in the OpenClaw host workspace `skills/` directory; in-repo operational runbooks or scheduled-work contracts may live under `infrastructure/openclaw/` when the workflow needs auditable Architecture-repo context.
 
 This is intentionally a **companion-skill rule**, not a new canonical generation layer. The Architecture repo already chose direct `.claude/agents/` maintenance over a generator; OpenClaw compatibility is maintained by explicit paired skills for workflows that need it.
 

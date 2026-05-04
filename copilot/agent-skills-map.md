@@ -67,11 +67,11 @@ Work flows through three AI surfaces. See `/routing/sdlc.md` for the full lifecy
 | **Codex** | Execute tasks autonomously in the cloud | Single repo per task | Autonomous implementation from well-scoped issues |
 | **GitHub Copilot** | In-IDE coding, debugging, exploration | Single repo (open in editor) | Line-by-line precision, interactive iteration |
 
-OpenClaw is an operator/runtime surface around these workflows. It does not load `.claude/agents/*.md` as native named agents, but it can read them as instruction sources and delegate work through OpenClaw sub-sessions. For repeatable Architecture workflows, pair the Claude/Copilot agent with an OpenClaw skill instead of relying on ad hoc prompt copying.
+OpenClaw is an operator/runtime surface around these workflows. It does not load `.claude/agents/*.md` as native named agents, but it can read them as instruction sources and delegate work through OpenClaw `sessions_spawn` sub-agent sessions. For repeatable Architecture workflows, pair the Claude/Copilot agent with an OpenClaw skill instead of relying on ad hoc prompt copying.
 
 ## Agent Inventory (Claude Code Surface)
 
-Agents that run within the Claude Code / Architecture repo context:
+Complete inventory of agents under `.claude/agents/` that run within the Claude Code / Architecture repo context. OpenClaw skill names refer to companion skills in the OpenClaw workspace `skills/` directory; use `—` only when no reusable OpenClaw pairing exists yet.
 
 | Agent | Purpose | Invokes | OpenClaw skill |
 |-------|---------|---------|----------------|
@@ -89,7 +89,7 @@ Agents that run within the Claude Code / Architecture repo context:
 
 ## OpenClaw Skill Pairing Rule
 
-When adding a new Architecture agent under `.claude/agents/`, also add or update the corresponding OpenClaw skill if OpenClaw should invoke that workflow repeatedly.
+When adding a new Architecture agent under `.claude/agents/`, or materially changing an existing agent's routing intent, context contract, or output contract, also add or update the corresponding OpenClaw skill if OpenClaw should invoke that workflow repeatedly.
 
 The OpenClaw skill should preserve:
 
