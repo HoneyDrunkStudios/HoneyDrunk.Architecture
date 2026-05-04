@@ -1,6 +1,7 @@
 ---
 title: "Clarify Standards ownership versus Builds defaults"
 repo: "HoneyDrunkStudios/HoneyDrunk.Standards"
+target_repo: "HoneyDrunkStudios/HoneyDrunk.Standards"
 node: "HoneyDrunk.Standards"
 request_type: "repo-feature"
 tier: "tier-2"

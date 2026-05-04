@@ -1,6 +1,7 @@
 ---
 title: "Clarify Builds ownership versus Standards policy"
 repo: "HoneyDrunkStudios/HoneyDrunk.Builds"
+target_repo: "HoneyDrunkStudios/HoneyDrunk.Builds"
 node: "HoneyDrunk.Builds"
 request_type: "repo-feature"
 tier: "tier-2"

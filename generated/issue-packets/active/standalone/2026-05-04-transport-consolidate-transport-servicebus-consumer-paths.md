@@ -1,6 +1,7 @@
 ---
 title: "Consolidate Service Bus consumer orchestration paths"
 repo: "HoneyDrunkStudios/HoneyDrunk.Transport"
+target_repo: "HoneyDrunkStudios/HoneyDrunk.Transport"
 node: "HoneyDrunk.Transport"
 request_type: "repo-feature"
 tier: "tier-2"

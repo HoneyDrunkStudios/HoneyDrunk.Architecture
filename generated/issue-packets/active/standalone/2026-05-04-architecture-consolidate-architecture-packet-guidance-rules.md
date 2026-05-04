@@ -1,6 +1,7 @@
 ---
 title: "Consolidate Architecture packet and guidance rules"
 repo: "HoneyDrunkStudios/HoneyDrunk.Architecture"
+target_repo: "HoneyDrunkStudios/HoneyDrunk.Architecture"
 node: "HoneyDrunk.Architecture"
 request_type: "repo-feature"
 tier: "tier-2"

@@ -1,6 +1,7 @@
 ---
 title: "Consolidate Notify template and provider helpers"
 repo: "HoneyDrunkStudios/HoneyDrunk.Notify"
+target_repo: "HoneyDrunkStudios/HoneyDrunk.Notify"
 node: "HoneyDrunk.Notify"
 request_type: "repo-feature"
 tier: "tier-2"

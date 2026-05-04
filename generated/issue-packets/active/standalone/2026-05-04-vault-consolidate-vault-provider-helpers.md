@@ -1,6 +1,7 @@
 ---
 title: "Consolidate Vault provider bootstrap and store helpers"
 repo: "HoneyDrunkStudios/HoneyDrunk.Vault"
+target_repo: "HoneyDrunkStudios/HoneyDrunk.Vault"
 node: "HoneyDrunk.Vault"
 request_type: "repo-feature"
 tier: "tier-2"

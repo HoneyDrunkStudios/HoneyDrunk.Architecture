@@ -1,6 +1,7 @@
 ---
 title: "Consolidate Kernel duplicate context and identity helpers"
 repo: "HoneyDrunkStudios/HoneyDrunk.Kernel"
+target_repo: "HoneyDrunkStudios/HoneyDrunk.Kernel"
 node: "HoneyDrunk.Kernel"
 request_type: "repo-feature"
 tier: "tier-2"

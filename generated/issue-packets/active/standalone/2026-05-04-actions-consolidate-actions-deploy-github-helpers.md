@@ -1,6 +1,7 @@
 ---
 title: "Consolidate Actions deploy and GitHub helpers"
 repo: "HoneyDrunkStudios/HoneyDrunk.Actions"
+target_repo: "HoneyDrunkStudios/HoneyDrunk.Actions"
 node: "HoneyDrunk.Actions"
 request_type: "repo-feature"
 tier: "tier-2"

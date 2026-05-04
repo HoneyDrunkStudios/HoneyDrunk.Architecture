@@ -1,6 +1,7 @@
 ---
 title: "Consolidate Web.Rest API result failure factories"
 repo: "HoneyDrunkStudios/HoneyDrunk.Web.Rest"
+target_repo: "HoneyDrunkStudios/HoneyDrunk.Web.Rest"
 node: "HoneyDrunk.Web.Rest"
 request_type: "repo-feature"
 tier: "tier-2"

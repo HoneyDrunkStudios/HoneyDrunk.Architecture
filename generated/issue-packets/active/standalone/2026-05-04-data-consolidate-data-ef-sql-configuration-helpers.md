@@ -1,6 +1,7 @@
 ---
 title: "Consolidate Data EF and SQL configuration helpers"
 repo: "HoneyDrunkStudios/HoneyDrunk.Data"
+target_repo: "HoneyDrunkStudios/HoneyDrunk.Data"
 node: "HoneyDrunk.Data"
 request_type: "repo-feature"
 tier: "tier-2"
