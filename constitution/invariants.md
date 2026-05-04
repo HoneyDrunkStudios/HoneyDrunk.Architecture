@@ -21,10 +21,10 @@ Rules that must never be violated across the HoneyDrunk Grid. Canary tests enfor
 ## Context Invariants
 
 5. **GridContext must be present in every scoped operation.**
-   Every HTTP request, message handler, and background job must have a populated `IGridContext`.
+   Every HTTP request, message handler, and background job must have a populated `IGridContext`, including a non-null `TenantId`.
 
-6. **CorrelationId is never null or empty in a live GridContext.**
-   It is generated at the entry point and propagated through all downstream calls.
+6. **CorrelationId and TenantId are never null or empty in a live GridContext.**
+   `CorrelationId` is generated at the entry point and propagated through all downstream calls. Missing tenant context defaults to `TenantId.Internal`; external tenant values must be valid `TenantId` ULIDs.
 
 7. **Context mappers are static and stateless.**
    `HttpContextMapper`, `MessagingContextMapper`, `JobContextMapper` — no instance state.
@@ -36,6 +36,9 @@ Rules that must never be violated across the HoneyDrunk Grid. Canary tests enfor
 
 9. **Vault is the only source of secrets.**
    No Node reads secrets directly from environment variables, config files, or provider SDKs. All access goes through `ISecretStore`.
+
+9a. **Tenant-scoped secrets are a Vault usage pattern, not an `ISecretStore` contract change.**
+   Tenant-owned secrets use `tenant-{tenantId}-{secretName}` and resolve through `TenantScopedSecretResolver`; `TenantId.Internal` uses the standard node-level secret path.
 
 10. **Auth tokens are validated, never issued.**
     HoneyDrunk.Auth validates JWT Bearer tokens. It is not an identity provider.

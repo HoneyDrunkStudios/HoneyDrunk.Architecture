@@ -7,7 +7,9 @@
 - Configuration foundation (hierarchical scoping)
 - Agent interop (serialization, execution contexts)
 - Telemetry hooks (enrichers, log scopes)
-- Identity grammar (strongly-typed ID primitives)
+- Identity grammar (strongly-typed ID primitives, including `TenantId.Internal`)
+- Multi-tenant context propagation primitives (`IGridContext.TenantId`, `IOperationContext.TenantId`)
+- Tenancy policy extension points (`ITenantRateLimitPolicy`, `IBillingEventEmitter`) with replaceable no-op defaults
 - Service discovery primitives (Node descriptors, capabilities, manifests)
 
 ## What Kernel Does NOT Own
@@ -20,6 +22,7 @@
 - **Authentication** — Token validation, authorization belong in HoneyDrunk.Auth.
 - **Telemetry backends** — Sink implementations belong in HoneyDrunk.Pulse.
 - **Business logic** — Kernel is infrastructure, not domain logic.
+- **Tenant policy decisions** — Kernel defines rate-limit/billing seams and no-op defaults; product Nodes own policy, quotas, billing plans, and enforcement behavior.
 
 ## Boundary Decision Tests
 

@@ -1,7 +1,7 @@
 {
   "_meta": {
     "description": "Registry of public contracts (interfaces, types, HTTP endpoints, signal events) exposed by each Node. Derived from relationships.json exposes.contracts but expanded with kind, package, and status. Use this before writing code that crosses a Node boundary to find the exact interface to depend on.",
-    "updated": "2026-04-12",
+    "updated": "2026-05-04",
     "schema_version": "1.0"
   },
   "contracts": [
@@ -23,11 +23,16 @@
         { "name": "IReadinessContributor", "kind": "interface", "description": "Plugs into the readiness aggregation pipeline (/ready endpoint)." },
         { "name": "ITraceEnricher", "kind": "interface", "description": "Adds custom tags/attributes to OpenTelemetry spans." },
         { "name": "ILogScopeFactory", "kind": "interface", "description": "Creates structured log scopes enriched with GridContext." },
+        { "name": "ITenantRateLimitPolicy", "kind": "interface", "description": "Evaluates replaceable per-tenant rate-limit decisions. Kernel supplies a no-op default; product Nodes own policy." },
+        { "name": "IBillingEventEmitter", "kind": "interface", "description": "Emits normalized tenant billing events. Kernel supplies a no-op default; product Nodes own commercial integration." },
+        { "name": "BillingEvent", "kind": "type", "description": "Normalized tenant billing event envelope for commercial Nodes." },
+        { "name": "TenantRateLimitDecision", "kind": "type", "description": "Result of tenant rate-limit evaluation." },
+        { "name": "TenantRateLimitOutcome", "kind": "type", "description": "Allow/deny outcome enum for tenant rate-limit evaluation." },
         { "name": "ITelemetryActivityFactory", "kind": "interface", "description": "Creates Activity instances for trace spans, pre-enriched with GridContext." },
         { "name": "IAgentExecutionContext", "kind": "interface", "description": "LLM agent execution context — extends IOperationContext with agent identity and scope." },
         { "name": "CorrelationId", "kind": "type", "description": "ULID-based strongly-typed correlation ID. Never null in a live GridContext." },
         { "name": "NodeId", "kind": "type", "description": "ULID-based strongly-typed Node identity." },
-        { "name": "TenantId", "kind": "type", "description": "ULID-based strongly-typed tenant identity." },
+        { "name": "TenantId", "kind": "type", "description": "ULID-based strongly-typed tenant identity with `TenantId.Internal` sentinel for Grid-internal operations." },
         { "name": "ProjectId", "kind": "type", "description": "ULID-based strongly-typed project identity." },
         { "name": "RunId", "kind": "type", "description": "ULID-based strongly-typed run identity." },
         { "name": "StudioId", "kind": "type", "description": "ULID-based strongly-typed studio identity." }
@@ -55,7 +60,8 @@
         { "name": "IConfigProvider", "kind": "interface", "description": "Read typed configuration values from the shared App Configuration store." },
         { "name": "IVaultClient", "kind": "interface", "description": "Low-level Vault client. Prefer ISecretStore for application code." },
         { "name": "ISecretProvider", "kind": "interface", "description": "Provider slot interface — implement to add a new secret backend (Azure KV, AWS, File, InMemory)." },
-        { "name": "IConfigSource", "kind": "interface", "description": "Provider slot interface — implement to add a new configuration source." }
+        { "name": "IConfigSource", "kind": "interface", "description": "Provider slot interface — implement to add a new configuration source." },
+        { "name": "TenantScopedSecretResolver", "kind": "type", "description": "ADR-0026 tenant-aware resolver layered over ISecretStore. Resolves `tenant-{tenantId}-{secretName}` first for external tenants and falls back to the standard node path; internal tenants use the standard path directly." }
       ]
     },
     {
@@ -110,7 +116,8 @@
       "interfaces": [
         { "name": "ITraceSink", "kind": "interface", "description": "Receive trace spans from the OTLP collector. Implement to add a new telemetry backend." },
         { "name": "ILogSink", "kind": "interface", "description": "Receive structured log entries." },
-        { "name": "IMetricsSink", "kind": "interface", "description": "Receive metric data points." }
+        { "name": "IMetricsSink", "kind": "interface", "description": "Receive metric data points." },
+        { "name": "TelemetryTagKeys.HoneyDrunk.TenantId", "kind": "constant", "description": "Standard `honeydrunk.tenant_id` telemetry tag. Low-cardinality only; bounded by Notify Cloud cardinality criteria." }
       ]
     },
     {
