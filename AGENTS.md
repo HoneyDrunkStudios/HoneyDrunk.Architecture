@@ -50,6 +50,7 @@ When you receive a task:
 - **PRs:** Implementation must align with acceptance criteria in the issue
 - **Tests:** All code changes include tests unless the issue explicitly says otherwise
 - **Boundaries:** Code that belongs in another Node must not leak into the target repo
+- **Reusable logic:** Before adding a new helper, mapper, validator, factory, extension method, or orchestration method, scan the current type, sibling types, and repo-level shared locations for existing behavior to reuse or extend. Prefer cohesive shared methods over one-off near-duplicates; justify intentional duplication when behavior should diverge.
 
 ## Context Files You May Need
 

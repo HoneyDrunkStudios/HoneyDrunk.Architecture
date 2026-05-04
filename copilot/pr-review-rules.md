@@ -23,6 +23,8 @@ Rules for agents when reviewing pull requests.
 - [ ] HoneyDrunk.Standards analyzers pass (no suppressions added)
 - [ ] Primary constructors used where appropriate
 - [ ] Nullable reference types respected (no `!` suppression without justification)
+- [ ] New helper/mapper/validator/orchestration methods were checked against existing reusable methods before adding one-off logic
+- [ ] Repeated logic is consolidated into cohesive shared methods, or intentional duplication is justified because behavior should diverge
 - [ ] Tests added for new behavior
 - [ ] CHANGELOG.md updated
 
