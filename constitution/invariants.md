@@ -23,8 +23,8 @@ Rules that must never be violated across the HoneyDrunk Grid. Canary tests enfor
 5. **GridContext must be present in every scoped operation.**
    Every HTTP request, message handler, and background job must have a populated `IGridContext`, including a non-null `TenantId`.
 
-6. **CorrelationId and TenantId are never null or empty in a live GridContext.**
-   `CorrelationId` is generated at the entry point and propagated through all downstream calls. Missing tenant context defaults to `TenantId.Internal`; external tenant values must be valid `TenantId` ULIDs.
+6. **CorrelationId is never null or empty, and TenantId is never absent, in a live GridContext.**
+   `CorrelationId` is generated at the entry point and propagated through all downstream calls. Missing tenant context defaults to the `TenantId.Internal` sentinel; external tenant values must be valid `TenantId` ULIDs.
 
 7. **Context mappers are static and stateless.**
    `HttpContextMapper`, `MessagingContextMapper`, `JobContextMapper` — no instance state.
@@ -139,3 +139,7 @@ _Invariants 29–30 are reserved for the Observation Layer (ADR-0010). They will
 37. **Completed issue packets are moved to `completed/`.** When a filed issue is closed on GitHub, the `hive-sync` agent moves its source packet from `generated/issue-packets/active/` to `generated/issue-packets/completed/` and updates the path key in `generated/issue-packets/filed-packets.json`. No other agent moves packets between lifecycle directories. The `hive-sync` agent may update existing entries' paths in `filed-packets.json` but may not add or remove entries (that remains the `file-issues` agent's exclusive concern). See ADR-0014 D2, D4.
 
 38. **The Architecture repo tracks all Hive board items.** Every issue on The Hive (org Project #4) is represented in either an initiative tracking file (for packet-originated work, including `active-initiatives.md`, `archived-initiatives.md`, etc.) or `initiatives/board-items.md` (for non-initiative work — nightly-security issues, grid-health-aggregator issues, and any other issue mirrored onto The Hive without a `filed-packets.json` entry). The `hive-sync` agent is responsible for maintaining this correspondence and runs through OpenClaw scheduled/manual execution. See ADR-0014 D1, D3.
+
+## Multi-Tenant Boundary Invariants
+
+39. **Tenant mechanics stay at intake and post-dispatch boundaries.** Tenant resolution, tenant rate-limit checks, billing-event emission, and tenant-scoped secret lookup must live in intake middleware/orchestration edges or post-dispatch tails. Core dispatch paths for internal Grid callers must remain tenant-agnostic and default to `TenantId.Internal` without caller-specific branches. See ADR-0026.
