@@ -16,36 +16,24 @@ Every issue must include:
 
 ## Blocking Relationships
 
-After filing issues, wire native GitHub blocking relationships for every dependency listed in the Dependencies section. Do not leave dependencies as body text only.
+The `dependencies:` array in packet frontmatter is the **canonical, machine-readable** source of blocking relationships. The body's `## Dependencies` section is human narrative explaining *why* — it is not parsed by the filing pipeline.
 
-Use the GraphQL `addBlockedBy` mutation:
+### `dependencies:` schema
 
-```bash
-gh api graphql -f query='
-mutation {
-  addBlockedBy(input: {
-    issueId: "<blocked-issue-node-id>"
-    blockingIssueId: "<blocking-issue-node-id>"
-  }) {
-    issue { number }
-    blockingIssue { number }
-  }
-}'
-```
+Each entry must use one of two qualified reference forms:
 
-Get issue node IDs with:
-```bash
-gh api graphql -f query='
-{
-  repository(owner: "HoneyDrunkStudios", name: "<repo>") {
-    issues(first: 20) {
-      nodes { number id }
-    }
-  }
-}'
-```
+- **`"packet:NN"`** — another packet in the **same initiative folder**, identified by its two-digit ordinal prefix (or `NN` + suffix letter, e.g. `"packet:07a"`). Resolved at filing time once the referenced packet has a manifest entry.
+  - Example: `dependencies: ["packet:01", "packet:04"]`
+- **`"{Repo}#N"` or `"{owner}/{repo}#N"`** — already-filed issue in another repo. Bare `Repo` short-names expand to `HoneyDrunkStudios/HoneyDrunk.{Repo}` (so `"Architecture#9"` → `HoneyDrunkStudios/HoneyDrunk.Architecture#9`).
+  - Example: `dependencies: ["packet:01", "Architecture#9"]`
 
-Every `Dependencies` entry in an issue body must have a corresponding `addBlockedBy` call. This surfaces the blocking chain natively in the GitHub UI and on The Hive board.
+Forbidden — these were ambiguous and silently broke the wiring step:
+
+- Bare integers: `dependencies: [1, 2]`
+- Narrative strings: `dependencies: ["Issue #1 (scaffold)"]` or `dependencies: ["Architecture#NN — ADR text (packet 01)"]`
+- Filename slugs: `dependencies: ["01-foo-bar"]`
+
+The filing pipeline (`HoneyDrunk.Actions/scripts/file-packets.sh`) consumes this field, resolves each entry to an issue node ID, then calls `addBlockedBy` so the relationship surfaces natively in the GitHub UI and on The Hive board. Any unresolvable entry produces a `::warning::` in the workflow log; the build does not fail, so check the summary on every run.
 
 ## Naming Convention for Issue Packets
 

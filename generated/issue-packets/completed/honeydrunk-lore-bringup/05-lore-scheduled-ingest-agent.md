@@ -10,18 +10,20 @@ initiative: honeydrunk-lore-bringup
 node: honeydrunk-lore
 ---
 
-# Feature: Scheduled ingest â€” daily agent to auto-compile raw/ sources
+# Feature: Scheduled ingest â€” weekly agent to auto-compile raw/ sources
 
 ## Summary
-Set up a Claude Code scheduled remote agent (via CronCreate) that runs daily, checks `raw/` for sources not yet reflected in `wiki/`, and runs the ingest operation for each. This eliminates the manual step of asking Claude to compile after clipping â€” content flows in via Web Clipper, the agent processes it overnight.
+Set up a Claude Code scheduled remote agent (via CronCreate) that runs weekly, checks `raw/` for sources not yet reflected in `wiki/`, and runs the ingest operation for each. This eliminates the manual step of asking Claude to compile after content arrives â€” content accumulates in `raw/` from multiple producers throughout the week, and the agent processes the batch in one Sunday pass.
 
 ## Target Repo
 `HoneyDrunkStudios/HoneyDrunk.Lore`
 
 ## Motivation
-The wiki compounds only if compilation is frictionless. Without automation, the workflow is: clip article â†’ remember to open Claude Code â†’ ask it to compile. That friction causes `raw/` to accumulate unprocessed sources. The scheduled agent removes the "remember to compile" step entirely â€” you clip, it compiles.
+The wiki compounds only if compilation is frictionless. Without automation, the workflow is: produce content â†’ remember to open Claude Code â†’ ask it to compile. That friction causes `raw/` to accumulate unprocessed sources. The scheduled agent removes the "remember to compile" step entirely.
 
-Claude Code's CronCreate creates a remote trigger that runs on a cron schedule. The agent wakes up, reads `raw/` against `wiki/indexes/sources.md`, ingest any unprocessed files, and commits the result. The next time you open Obsidian, new wiki pages are already there.
+`raw/` has multiple producers: OpenClaw scheduled sourcing (issue #5, runs every 1â€"2 days walking `sourcing-playbook.md`), Web Clipper (browser extension, anytime), and the on-demand "add URL to Lore" Telegram trigger (also issue #5). The weekly ingest agent does not distinguish between them â€" every file in `raw/` gets the same compile treatment. Expect 20â€"50 items to accumulate per week, processed in one Sunday batch.
+
+Claude Code's CronCreate creates a remote trigger that runs on a cron schedule. The agent wakes up, reads `raw/` against `wiki/indexes/sources.md`, ingests any unprocessed files, and commits the result. The next time you open Obsidian on Monday morning, a week's worth of new wiki pages is already there.
 
 ## How it works
 
@@ -37,7 +39,7 @@ A source in `raw/` is unprocessed if its filename does not appear in `wiki/index
 6. If nothing new: exit silently (no empty commits)
 
 ### Schedule
-Daily at 06:00 local time (or configure to preference). Running at start-of-day means new wiki pages are ready when you open Obsidian in the morning.
+Weekly on Sunday at 06:00 local time (or configure to preference). Running at the start of the week means a full week's worth of accumulated `raw/` items is processed in one batch, with new wiki pages ready when you open Obsidian on Monday morning.
 
 ### Future extensions (v2 hook layer â€” not in scope for this issue)
 The daily trigger is the first of several event-driven hooks the wiki grows toward (see the "Extensions (v2)" section in `CLAUDE.md`, sourced from https://gist.github.com/rohitg00/2067ab416f7bbe447c1977edaaa681e2). When volume or noise warrants it, file follow-up issues for:
@@ -54,7 +56,7 @@ None of these are built now. They are listed so future agents understand the tra
 Use the Claude Code `/schedule` skill or CronCreate directly to create a scheduled remote trigger on `HoneyDrunkStudios/HoneyDrunk.Lore`:
 
 ```
-Cron: 0 6 * * *   (daily at 06:00)
+Cron: 0 6 * * 0   (weekly on Sunday at 06:00)
 Repo: HoneyDrunkStudios/HoneyDrunk.Lore
 Branch: main
 Prompt: (see agent prompt below)
@@ -97,7 +99,7 @@ Update the stub created in issue #1 to include the expected heading structure:
 ```
 
 ## Acceptance Criteria
-- [ ] Scheduled remote trigger created via CronCreate, running daily at 06:00
+- [ ] Scheduled remote trigger created via CronCreate, running weekly on Sunday at 06:00
 - [ ] Agent prompt reads CLAUDE.md before operating (not hardcoded behavior)
 - [ ] `wiki/indexes/sources.md` has the `## Processed` heading contract
 - [ ] CLAUDE.md Ingest operation updated with sources.md append contract
