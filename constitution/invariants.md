@@ -143,3 +143,13 @@ _Invariants 29–30 are reserved for the Observation Layer (ADR-0010). They will
 ## Multi-Tenant Boundary Invariants
 
 39. **Tenant mechanics stay at intake and post-dispatch boundaries.** Tenant resolution, tenant rate-limit checks, billing-event emission, and tenant-scoped secret lookup must live in intake middleware/orchestration edges or post-dispatch tails. Core dispatch paths for internal Grid callers must remain tenant-agnostic and default to `TenantId.Internal` without caller-specific branches. See ADR-0026.
+
+## Communications Invariants
+
+40. **Downstream Nodes take a runtime dependency only on `HoneyDrunk.Communications.Abstractions`.** Composition against `HoneyDrunk.Communications` is a host-time concern; packaged testing fixtures, when introduced, are test-time only. See ADR-0019.
+
+41. **Preference enforcement, cadence rules, and suppression logic for outbound messages live in HoneyDrunk.Communications, not in HoneyDrunk.Notify.** Notify owns delivery mechanics; Communications owns decision logic. See ADR-0019 D4.
+
+42. **Every orchestrated send records a decision-log entry via `ICommunicationDecisionLog`.** A send without a recorded decision is a build or runtime failure, depending on the enforcement point selected by the consuming host. See ADR-0019.
+
+43. **Communications CI must include a contract-shape canary for the hot-path orchestration contracts.** Shape drift on `ICommunicationOrchestrator`, `IMessageIntent` / `MessageIntent`, `IPreferenceStore`, or `ICadencePolicy` is a build failure unless paired with an intentional version bump. See ADR-0019 D8.
