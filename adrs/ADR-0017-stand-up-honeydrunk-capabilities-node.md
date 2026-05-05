@@ -40,7 +40,7 @@ Tool *implementations* live in the Node that owns the domain (a "query database"
 
 The Capabilities Node ships the following package families, mirroring ADR-0016's package-family pattern for AI:
 
-- `HoneyDrunk.Capabilities.Abstractions` — all interfaces, the `CapabilityDescriptor` record, and the invocation request/response shapes. Zero runtime dependencies beyond `HoneyDrunk.Kernel` abstractions.
+- `HoneyDrunk.Capabilities.Abstractions` — all interfaces, the `CapabilityDescriptor` record, and the invocation request/response shapes. Zero runtime dependencies beyond `Microsoft.Extensions.*` abstractions.
 - `HoneyDrunk.Capabilities` — runtime composition: default `ICapabilityRegistry`, default `ICapabilityInvoker`, DI wiring.
 - `HoneyDrunk.Capabilities.Testing` — opt-in testing fixture package carrying an in-memory registry and dispatcher implementation for deterministic unit and integration tests. Consumed by downstream Nodes in test projects, never in production composition.
 
