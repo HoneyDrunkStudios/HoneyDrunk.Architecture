@@ -1,7 +1,7 @@
 {
   "_meta": {
     "description": "Registry of public contracts (interfaces, types, HTTP endpoints, signal events) exposed by each Node. Derived from relationships.json exposes.contracts but expanded with kind, package, and status. Use this before writing code that crosses a Node boundary to find the exact interface to depend on.",
-    "updated": "2026-05-04",
+    "updated": "2026-05-05",
     "schema_version": "1.0"
   },
   "contracts": [
@@ -124,23 +124,32 @@
       "node": "honeydrunk-notify",
       "node_name": "HoneyDrunk.Notify",
       "package": "HoneyDrunk.Notify.Abstractions",
-      "status": "live-undeployed",
+      "status": "live",
       "interfaces": [
-        { "name": "INotificationSender", "kind": "interface", "description": "Send a notification — channel-agnostic. Resolves to the appropriate gateway (email, SMS) based on notification type." },
-        { "name": "INotificationGateway", "kind": "interface", "description": "Provider slot — implement to add a new delivery channel (Resend, SMTP, Twilio, etc.)." }
+        { "name": "INotificationSender", "kind": "interface", "description": "Send a channel-agnostic notification through Notify intake and delivery mechanics. Decision-layer policy belongs in Communications." },
+        { "name": "INotificationGateway", "kind": "interface", "description": "Delivery gateway slot used by Notify runtime/provider implementations; it enqueues/dispatches structurally valid notifications and does not evaluate recipient preference/cadence policy." }
       ]
     },
     {
       "node": "honeydrunk-communications",
       "node_name": "HoneyDrunk.Communications",
       "package": "HoneyDrunk.Communications.Abstractions",
-      "status": "seed",
+      "status": "live",
       "interfaces": [
-        { "name": "ICommunicationOrchestrator", "kind": "interface", "description": "Top-level entry point — given a business event, decides what messages to send, to whom, and when. Delegates delivery to Notify." },
-        { "name": "IMessageIntent", "kind": "interface", "description": "Maps a business event to a message intent — captures the why and what of a communication without prescribing delivery details." },
-        { "name": "IRecipientResolver", "kind": "interface", "description": "Resolves the target audience for a message intent — determines who should receive based on context, roles, and relationships." },
-        { "name": "IPreferenceStore", "kind": "interface", "description": "User communication preferences — opt-in/out, channel preferences, quiet hours, suppression lists." },
-        { "name": "ICadencePolicy", "kind": "interface", "description": "Enforces message frequency and spacing rules per user — prevents notification fatigue and respects rate limits." }
+        { "name": "ICommunicationOrchestrator", "kind": "interface", "description": "Top-level entry point for evaluating and sending outbound communication intents. Decides send/suppress/schedule outcomes and delegates approved delivery to Notify." },
+        { "name": "IMessageIntent", "kind": "interface", "description": "Business-event message intent boundary: stable intent kind, trigger event id, recipient, and payload." },
+        { "name": "MessageIntent", "kind": "type", "description": "Immutable value-shaped implementation of IMessageIntent for simple communication flows." },
+        { "name": "IRecipientResolver", "kind": "interface", "description": "Resolves one or more recipients targeted by a communication intent." },
+        { "name": "IPreferenceStore", "kind": "interface", "description": "Tenant-scoped recipient communication preferences: opt-out, suppressed intent kinds, quiet hours, and channel preference." },
+        { "name": "ICadencePolicy", "kind": "interface", "description": "Tenant-scoped cadence policy that returns allow, suppress, or defer verdicts for recipient/intent tuples." },
+        { "name": "ICommunicationDecisionLog", "kind": "interface", "description": "Append-only audit sink for every Communications send-or-suppress decision." },
+        { "name": "CommunicationDecisionLogEntry", "kind": "type", "description": "Audit record containing decision id, timestamp, tenant, intent kind, recipient, message decision, and correlation id." },
+        { "name": "MessageDecision", "kind": "type", "description": "Result of evaluating or sending a communication intent: outcome, reason, optional scheduled time, and optional correlation key." },
+        { "name": "MessageDecisionOutcome", "kind": "type", "description": "Allowed, Sent, SuppressedByPreference, SuppressedByCadence, Scheduled, or Failed." },
+        { "name": "RecipientHandle", "kind": "type", "description": "Recipient identity plus preferred channel hint." },
+        { "name": "RecipientPreferences", "kind": "type", "description": "Tenant-scoped preference snapshot for a recipient." },
+        { "name": "CadenceVerdict", "kind": "type", "description": "Cadence policy result: outcome, optional defer time, and audit-friendly reason." },
+        { "name": "CadenceOutcome", "kind": "type", "description": "Cadence verdict outcome enum: Allow, Suppress, or Defer." }
       ]
     },
     {

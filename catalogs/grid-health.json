@@ -87,22 +87,22 @@
       "name": "HoneyDrunk.Notify",
       "sector": "Ops",
       "signal": "Live",
-      "version": "0.1.0",
-      "canary_status": "none",
-      "last_release": null,
-      "active_blockers": ["Azure Functions deployment pending", "Integration tests pending"],
-      "notes": "SMTP + Resend (email), Twilio (SMS), queue backends implemented. Awaiting first production deployment."
+      "version": "0.2.0",
+      "canary_status": "passing",
+      "last_release": "2026-05-05",
+      "active_blockers": [],
+      "notes": "Delivery/intake Node released at v0.2.0 after ADR-0019 refactor. Notify owns structural validation, queue-backed intake, provider dispatch, retry/delivery mechanics; preference/cadence policy moved to Communications."
     },
     {
       "id": "honeydrunk-communications",
       "name": "HoneyDrunk.Communications",
       "sector": "Ops",
-      "signal": "Seed",
-      "version": "0.0.0",
-      "canary_status": "none",
-      "last_release": null,
-      "active_blockers": ["Repo not yet scaffolded"],
-      "notes": "Message orchestration and workflow layer. Sits above Notify — decides why/when/who, delegates delivery to Notify."
+      "signal": "Live",
+      "version": "0.1.0",
+      "canary_status": "passing",
+      "last_release": "2026-05-05",
+      "active_blockers": [],
+      "notes": "v0.1.0 packages released. Contracts and welcome-flow runtime are stood up: intents, recipient resolution, preference store, cadence policy, decision log, and Notify delegation. Durable stores/testing package remain deferred."
     },
     {
       "id": "pulse",

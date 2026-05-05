@@ -2,7 +2,7 @@
 
 Centralized view of what shipped across the Grid.
 
-**Last Updated:** 2026-04-16
+**Last Updated:** 2026-05-05
 
 ---
 
@@ -51,6 +51,28 @@ Centralized view of what shipped across the Grid.
 - **Highlights:**
   - Highlights pending — repo scaffold and Function app implementation in progress (Vault.Rotation#3 open, release pending Vault.Rotation#4)
 - **Breaking Changes:** N/A (initial release)
+
+### Communications 0.1.0
+
+- **Signal:** Live
+- **Shipped:** 2026-05-05
+- **Highlights:**
+  - Initial `HoneyDrunk.Communications.Abstractions` and runtime packages released
+  - Public orchestration contracts for intents, recipient resolution, preferences, cadence, decisions, and decision logs
+  - Welcome-email runtime slice delegates approved delivery to Notify
+  - In-memory preference/cadence/decision-log implementations for bring-up
+- **Breaking Changes:** N/A (initial release)
+
+### Notify 0.2.0
+
+- **Signal:** Live
+- **Shipped:** 2026-05-05
+- **Highlights:**
+  - ADR-0019 boundary refactor: Notify now owns intake/delivery mechanics only
+  - Removed Notify-owned policy evaluation surface and default policy pipeline
+  - Renamed runtime `Orchestration/` area to `Intake/`
+  - Azure Functions deploy workflow completed after release
+- **Breaking Changes:** Yes — removed pre-1.0 policy evaluation types; no downstream users yet
 
 ---
 
@@ -148,7 +170,8 @@ See [roadmap.md](roadmap.md) for planned work.
 | Node | Next Version | Target | Key Goal |
 |------|-------------|--------|----------|
 | Pulse | 0.1.0 GA | Q2 2026 | Production hardening, Grafana dashboards |
-| Notify | 0.1.0 GA | Q2 2026 | Azure Functions deployment finalization |
+| HoneyDrunk.Communications | 0.2.0 | Q2 2026 | Durable stores/testing package if needed by first consumers |
+| Notify | 0.3.0 | Q2 2026 | Provider hardening and production smoke coverage |
 | Agent Kit | 0.1.0 | Q2 2026 | Agent execution runtime, tool abstraction |
 | Orchestrator | 0.1.0 | Q2 2026 | Workflow orchestration, multi-step pipelines |
 | HoneyHub | 0.1.0 | Q2–Q3 2026 | Project orchestration, creator dashboard |

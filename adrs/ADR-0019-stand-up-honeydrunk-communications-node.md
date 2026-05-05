@@ -10,13 +10,13 @@
 
 Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
 
-- [ ] Create `HoneyDrunk.Communications` GitHub repo (human-only step — public default per Grid posture)
-- [ ] Scaffold packet — solution structure with `HoneyDrunk.Communications.Abstractions` and `HoneyDrunk.Communications`, HoneyDrunk.Standards wiring, CI pipeline via HoneyDrunk.Actions shared workflows, InMemory fixtures for preference store and cadence policy
-- [ ] Create `repos/HoneyDrunk.Communications/` context folder in the Architecture repo (`overview.md`, `boundaries.md`, `invariants.md`, `active-work.md`, `integration-points.md`) — matching the template used by `repos/HoneyDrunk.Agents/`
-- [ ] Reconcile `catalogs/contracts.json`: confirm the cataloged contracts (`ICommunicationOrchestrator`, `IMessageIntent`, `IRecipientResolver`, `IPreferenceStore`, `ICadencePolicy`) against the final contract shape, and add any additional records introduced by this stand-up (`MessageIntent` if promoted to a value type — see D3) plus the `ICommunicationDecisionLog` surface added in D3
-- [ ] Update `catalogs/grid-health.json` Communications entry to reflect the stood-up contract surface and scaffold expectations
-- [ ] Wire the contract-shape canary into Actions for the frozen contracts named in D8
-- [ ] **Notify refactor packet** — migrate `INotificationPolicy` conceptually into `IPreferenceStore` + `ICadencePolicy`, remove `INotificationPolicy` / `PolicyEvaluationResult` / `RejectionReason.PolicyDenied` from `HoneyDrunk.Notify.Abstractions`, delete `AllowAllPolicy` and `CompositePolicyPipeline`, remove the policy-evaluation step from `NotificationGateway.EnqueueAsync`, rename Notify's `Orchestration/` folder to `Intake/`, and update Notify's `boundaries.md`. This is part of acceptance, not a follow-up — see D11 and Consequences.
+- [x] Create `HoneyDrunk.Communications` GitHub repo (human-only step — public default per Grid posture)
+- [x] Scaffold packet — solution structure with `HoneyDrunk.Communications.Abstractions` and `HoneyDrunk.Communications`, HoneyDrunk.Standards wiring, CI pipeline via HoneyDrunk.Actions shared workflows, InMemory fixtures for preference store and cadence policy
+- [x] Create `repos/HoneyDrunk.Communications/` context folder in the Architecture repo (`overview.md`, `boundaries.md`, `invariants.md`, `active-work.md`, `integration-points.md`) — matching the template used by `repos/HoneyDrunk.Agents/`
+- [x] Reconcile `catalogs/contracts.json`: confirm the cataloged contracts (`ICommunicationOrchestrator`, `IMessageIntent`, `IRecipientResolver`, `IPreferenceStore`, `ICadencePolicy`) against the final contract shape, and add any additional records introduced by this stand-up (`MessageIntent` if promoted to a value type — see D3) plus the `ICommunicationDecisionLog` surface added in D3
+- [x] Update `catalogs/grid-health.json` Communications entry to reflect the stood-up contract surface and scaffold expectations
+- [x] Wire the contract-shape canary into Actions for the frozen contracts named in D8
+- [x] **Notify refactor packet** — migrate `INotificationPolicy` conceptually into `IPreferenceStore` + `ICadencePolicy`, remove `INotificationPolicy` / `PolicyEvaluationResult` / `RejectionReason.PolicyDenied` from `HoneyDrunk.Notify.Abstractions`, delete `AllowAllPolicy` and `CompositePolicyPipeline`, remove the policy-evaluation step from `NotificationGateway.EnqueueAsync`, rename Notify's `Orchestration/` folder to `Intake/`, and update Notify's `boundaries.md`. This is part of acceptance, not a follow-up — see D11 and Consequences.
 - [ ] Scope agent assigns final invariant numbers when flipping Status → Accepted
 
 ## Context

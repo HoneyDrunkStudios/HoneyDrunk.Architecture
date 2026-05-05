@@ -136,7 +136,7 @@
       "consumed_by_planned": ["honeydrunk-flow"],
       "blocked_by": [],
       "exposes": {
-        "contracts": ["ICommunicationOrchestrator", "IMessageIntent", "IRecipientResolver", "IPreferenceStore", "ICadencePolicy"],
+        "contracts": ["ICommunicationOrchestrator", "IMessageIntent", "MessageIntent", "IRecipientResolver", "IPreferenceStore", "ICadencePolicy", "ICommunicationDecisionLog", "CommunicationDecisionLogEntry", "MessageDecision", "RecipientHandle", "RecipientPreferences", "CadenceVerdict"],
         "packages": ["HoneyDrunk.Communications.Abstractions", "HoneyDrunk.Communications"]
       },
       "consumes_detail": {

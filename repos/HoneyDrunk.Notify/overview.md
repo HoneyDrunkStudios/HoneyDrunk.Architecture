@@ -1,23 +1,23 @@
 # HoneyDrunk.Notify — Overview
 
 **Sector:** Ops  
-**Version:** 0.1.0  
-**Framework:** .NET 10.0  
+**Version:** 0.2.0
+**Framework:** .NET 10.0
 **Repo:** `HoneyDrunkStudios/HoneyDrunk.Notify`
 
 ## Purpose
 
-Channel-agnostic notification dispatching with multi-provider support. Email (SMTP, Resend) and SMS (Twilio) with queue-backed async dispatch.
+Channel-agnostic notification intake and delivery with multi-provider support. Notify handles structural validation, queue-backed intake, provider dispatch, retries, and delivery outcomes. Recipient preference, cadence, suppression, and workflow decisions belong in HoneyDrunk.Communications.
 
 ## Key Packages
 
 | Package | Type | Description |
 |---------|------|-------------|
-| `HoneyDrunk.Notify.Abstractions` | Abstractions | Notification channel contracts |
-| `HoneyDrunk.Notify` | Runtime | Dispatch engine |
+| `HoneyDrunk.Notify.Abstractions` | Abstractions | Notification intake/delivery contracts |
+| `HoneyDrunk.Notify` | Runtime | Intake and delivery engine |
+| `HoneyDrunk.Notify.Functions` | Service | Azure Functions queue-triggered delivery host |
 | `HoneyDrunk.Notify.Hosting.AspNetCore` | Hosting | ASP.NET Core integration |
-| `HoneyDrunk.Notify.Providers.Email.Smtp` | Provider | SMTP email |
-| `HoneyDrunk.Notify.Providers.Email.Resend` | Provider | Resend email |
-| `HoneyDrunk.Notify.Providers.Sms.Twilio` | Provider | Twilio SMS |
-| `HoneyDrunk.Notify.Queue.AzureStorage` | Provider | Azure Storage queue |
-| `HoneyDrunk.Notify.Queue.InMemory` | Testing | In-memory queue |
+
+## ADR-0019 Boundary Cleanup
+
+v0.2.0 removed Notify-owned recipient policy evaluation (`INotificationPolicy`, `PolicyEvaluationResult`, `PolicyDenied`, default policy pipeline) and renamed the runtime `Orchestration/` area to `Intake/`. Notify is now the delivery Node; Communications is the decision Node.
