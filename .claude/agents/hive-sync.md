@@ -32,7 +32,7 @@ Collect all ground truth before editing files.
 3. `catalogs/nodes.json`
 4. `initiatives/releases.md`
 
-**1b. Query GitHub issue states.** Gather every issue from `filed-packets.json` in one shell pass and write `/tmp/issue-states.json`. Do not query one issue per later step; all downstream reasoning reuses this file.
+**1b. Query GitHub issue states.** Gather every issue from `filed-packets.json` in one shell pass and write `/tmp/issue-states.json`. Do not query one issue per later step; all downstream reasoning reuses this file. These pre-prune issue states are also the source of truth for completed-manifest pruning in Step 11.
 
 **1c. Detect release drift.** Compare `catalogs/grid-health.json` `last_release` values to `initiatives/releases.md`.
 
@@ -79,6 +79,8 @@ When an initiative is 100% closed and exit criteria are met, move the initiative
 
 Query results from Step 1f are compared against the packet issue URLs in `filed-packets.json`. Issues on The Hive that are not packet-sourced are rendered to `initiatives/board-items.md`.
 
+`filed-packets.json` intentionally retains completed packet issue URLs until at least 30 days after the issue closes, so recently closed packet-sourced issues do not temporarily show up as non-initiative board items. Step 11 prunes older completed entries after this reconciliation has already used the current run's pre-prune manifest.
+
 Rules:
 
 - Open items are always listed.
@@ -113,16 +115,30 @@ Annotated statuses such as `Accepted (Phase 1)` or `Superseded by ...` are autho
 For every `/tmp/issue-states.json` entry whose state is closed:
 
 1. Resolve the packet path from `filed-packets.json`.
-2. Skip paths already under `generated/issue-packets/completed/`.
+2. Skip paths already under `generated/issue-packets/completed/` for movement, but keep them eligible for Step 11 pruning.
 3. If the JSON path is missing on disk, search `completed/` for the same basename. If found, update the JSON key only; if not found, abort as an orphan.
 4. Move existing closed packets from `generated/issue-packets/active/...` to `generated/issue-packets/completed/...` with `git mv`, preserving the initiative/standalone subdirectory layout.
-5. Update the existing path key in `generated/issue-packets/filed-packets.json` while preserving the issue URL. The agent may not add or remove entries.
+5. Update the existing path key in `generated/issue-packets/filed-packets.json` while preserving the issue URL.
 6. If an initiative directory has no remaining active packet files and only a dispatch plan remains, move its dispatch plan to the matching `completed/{initiative}/dispatch-plan.md` path.
 7. Keep `active/standalone/` even when empty.
 
-The packet move and JSON rewrite are committed atomically with the rest of the sync PR. Packet contents are never edited.
+### Step 11: Prune Completed Filed Packet Entries
 
-### Step 11: Drift Detection
+After Step 10 moves closed packet files, prune stale completed entries from `generated/issue-packets/filed-packets.json` so the manifest remains a compact active/recent de-dupe index instead of growing forever.
+
+For every `filed-packets.json` entry whose path is under `generated/issue-packets/completed/`:
+
+1. Resolve its issue state from `/tmp/issue-states.json`; if the issue was not queried, abort rather than guessing.
+2. Keep the entry unless the issue state is `closed` and `closedAt` is at least 30 days before the sync run date.
+3. Remove entries that satisfy both conditions. Do not delete or edit the completed packet file itself.
+4. Sort/preserve deterministic JSON formatting after removals.
+5. Include a PR summary note listing how many completed manifest entries were pruned.
+
+Rationale: `file-issues` only scans `generated/issue-packets/active/**`, so completed packet entries are not needed for future filing once they are outside the 30-day board reconciliation window. Keeping the 30-day buffer prevents recently closed packet-sourced issues from being misclassified as non-initiative board items.
+
+The packet move, completed-entry pruning, and JSON rewrite are committed atomically with the rest of the sync PR. Packet contents are never edited.
+
+### Step 12: Drift Detection
 
 Run last before commit. Scan the post-mutation repo for inconsistencies between Accepted ADRs/PDRs and catalogs, constitution, and agent files. Render `initiatives/drift-report.md`; do not auto-fix.
 
@@ -136,7 +152,7 @@ Initial categories:
 
 Preserve `First Surfaced` dates from the previous drift report by category and item identity. This sticky date is the single exception to the fully-rewritten tracking-file rule.
 
-### Step 12: Commit and Open PR
+### Step 13: Commit and Open PR
 
 Commit changes and open/update a PR. If Step 9 flips one or more ADRs/PDRs, append `(N flips)` to the PR title. Post a summary comment listing files changed, human-review items, and initiative health.
 
@@ -153,7 +169,7 @@ Commit changes and open/update a PR. If Step 9 flips one or more ADRs/PDRs, appe
 ## Constraints
 
 - Never delete tracking checkboxes — only check them off or add annotations.
-- Never **add or remove entries** in `filed-packets.json`; `file-issues` owns entry creation/removal. `hive-sync` may update an existing entry's path key when moving its packet from `active/` to `completed/`.
+- Never add new entries to `filed-packets.json`; `file-issues` owns entry creation. `hive-sync` may update an existing entry's path key when moving its packet from `active/` to `completed/`, and may remove completed entries only under Step 11's closed-and-older-than-30-days pruning rule.
 - Never create GitHub issues — that's `scope` and `file-issues`.
 - Keep initiative-tracking edits within `initiatives/`. Packet moves between `generated/issue-packets/active/` and `generated/issue-packets/completed/` are explicitly authorized.
 - Never modify packet file contents under `generated/issue-packets/`; moving a packet is a path change only.
