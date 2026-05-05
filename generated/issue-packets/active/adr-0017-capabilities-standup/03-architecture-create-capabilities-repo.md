@@ -7,7 +7,7 @@ labels: ["chore", "tier-1", "meta", "new-node", "adr-0017", "human-only", "wave-
 dependencies: ["packet:01"]
 adrs: ["ADR-0017"]
 wave: 2
-initiative: adr-0017-honeydrunk-capabilities-standup
+initiative: adr-0017-capabilities-standup
 node: honeydrunk-architecture
 actor: human
 ---
@@ -59,7 +59,7 @@ These commands seed labels on the new repo, file `04-capabilities-node-scaffold.
 **Important order-of-operations:** Per the dispatch plan's filing-order rule, packet 04 cannot be filed until packet 02's PR has merged (so the assigned invariant numbers are locked in `constitution/invariants.md`) and any required pre-filing amendments to `04-capabilities-node-scaffold.md` have been applied. If packet 02 has not yet merged at the time this chore is being closed, file packet 04 **after** packet 02 lands — not now.
 
 ```bash
-PACKETS="generated/issue-packets/active/adr-0017-honeydrunk-capabilities-standup"
+PACKETS="generated/issue-packets/active/adr-0017-capabilities-standup"
 
 # 1. Seed the new repo with the labels the filing command needs.
 #    Color choices follow the existing convention used by other Grid repos:
@@ -80,7 +80,7 @@ echo "Filed: $ISSUE_URL"
 # 3. Add to The Hive — field IDs per infrastructure/github-projects-field-ids.md
 gh project item-add 4 --owner HoneyDrunkStudios --url "$ISSUE_URL"
 
-# 4. Set board fields (Wave 3 / Initiative adr-0017-honeydrunk-capabilities-standup / Node honeydrunk-capabilities / Tier 2 / Actor Agent)
+# 4. Set board fields (Wave 3 / Initiative adr-0017-capabilities-standup / Node honeydrunk-capabilities / Tier 2 / Actor Agent)
 # See infrastructure/github-projects-field-ids.md for current option IDs; apply via `gh project item-edit`.
 # (If that file does not exist yet, copy field option IDs from another already-filed packet's project-item state, e.g. an ADR-0016 or ADR-0026 issue.)
 ```

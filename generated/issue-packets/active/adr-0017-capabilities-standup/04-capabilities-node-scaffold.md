@@ -7,7 +7,7 @@ labels: ["feature", "tier-2", "ai", "scaffolding", "new-node", "adr-0017"]
 dependencies: ["packet:01", "packet:02", "packet:03"]
 adrs: ["ADR-0017"]
 wave: 3
-initiative: adr-0017-honeydrunk-capabilities-standup
+initiative: adr-0017-capabilities-standup
 node: honeydrunk-capabilities
 ---
 
