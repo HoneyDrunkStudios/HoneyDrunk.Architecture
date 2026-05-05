@@ -4,7 +4,7 @@ Tracked automatically by the hive-sync agent. ADRs/PDRs with all implementing
 issues closed are auto-flipped to Accepted on each run; the rest are listed
 here with progress.
 
-Last synced: 2026-05-04
+Last synced: 2026-05-05
 
 ## Awaiting (no `accepts:`-declaring packets yet)
 
@@ -18,7 +18,6 @@ and remain manually-flippable until rescoped.
 |----|-------|--------|-------|------------------|
 | [ADR-0011](../adrs/ADR-0011-code-review-and-merge-flow.md) | Code Review and Merge Flow | Meta | 2026-04-12 | 22 |
 | [ADR-0012](../adrs/ADR-0012-grid-cicd-control-plane.md) | HoneyDrunk.Actions as the Grid CI/CD Control Plane | Meta | 2026-04-13 | 21 |
-| [ADR-0013](../adrs/ADR-0013-communications-orchestration-layer.md) | Communications Orchestration Layer — HoneyDrunk.Communications | Ops | 2026-04-16 | 18 |
 | [ADR-0016](../adrs/ADR-0016-stand-up-honeydrunk-ai-node.md) | Stand Up the HoneyDrunk.AI Node — Inference Substrate for the AI Sector | AI | 2026-04-19 | 15 |
 | [ADR-0017](../adrs/ADR-0017-stand-up-honeydrunk-capabilities-node.md) | Stand Up the HoneyDrunk.Capabilities Node — Tool Registry and Dispatch Substrate for the AI Sector | AI | 2026-04-19 | 15 |
 | [ADR-0018](../adrs/ADR-0018-stand-up-honeydrunk-operator-node.md) | Stand Up the HoneyDrunk.Operator Node — Human-Policy Enforcement and Audit Substrate for the AI Sector | AI | 2026-04-19 | 15 |

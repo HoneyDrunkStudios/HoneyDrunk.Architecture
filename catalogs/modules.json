@@ -196,31 +196,31 @@
     "nodeId": "honeydrunk-notify",
     "name": "HoneyDrunk.Notify.Abstractions",
     "type": "abstractions",
-    "version": "0.1.0",
-    "description": "Notification channel contracts"
+    "version": "0.2.0",
+    "description": "Notification intake/delivery contracts after ADR-0019 policy-boundary cleanup"
   },
   {
     "id": "notify-runtime",
     "nodeId": "honeydrunk-notify",
     "name": "HoneyDrunk.Notify",
     "type": "runtime",
-    "version": "0.1.0",
-    "description": "Notification dispatch engine"
+    "version": "0.2.0",
+    "description": "Notification delivery runtime with intake mechanics, provider dispatch, and no recipient preference/cadence policy evaluation"
   },
   {
     "id": "communications-abstractions",
     "nodeId": "honeydrunk-communications",
     "name": "HoneyDrunk.Communications.Abstractions",
     "type": "abstractions",
-    "version": "0.0.0",
-    "description": "Communication orchestration contracts — intents, preferences, cadence, recipient resolution"
+    "version": "0.1.0",
+    "description": "Communication orchestration contracts — intents, preferences, cadence, recipient resolution, decisions, and decision logs"
   },
   {
     "id": "communications-runtime",
     "nodeId": "honeydrunk-communications",
     "name": "HoneyDrunk.Communications",
     "type": "runtime",
-    "version": "0.0.0",
-    "description": "Communication orchestration engine — workflow execution, preference enforcement, Notify delegation"
+    "version": "0.1.0",
+    "description": "Communication orchestration runtime — welcome flow, preference/cadence checks, decision logging, and Notify delegation"
   }
 ]

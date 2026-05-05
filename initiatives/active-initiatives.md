@@ -147,10 +147,10 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [x] SMS provider (Twilio)
 - [x] Queue backends (Azure Storage, InMemory)
 - [x] Background worker
-- [ ] Azure Functions deployment
+- [x] Azure Functions deployment workflow
 - [ ] Integration tests with live providers
 
-> **Sync (2026-04-16):** 5/7 items done. Azure Functions deployment and live provider integration tests remain blocked on infrastructure provisioning. grid-health.json confirms active_blockers. No progress in 4 days; gated on deployment infrastructure.
+> **Sync (2026-05-05):** 6/7 items done. Notify v0.2.0 released and the Azure Functions deploy workflow completed. Live provider integration tests remain as production-hardening work.
 
 ### Ops: Observability Pipeline
 **Status:** In Progress  

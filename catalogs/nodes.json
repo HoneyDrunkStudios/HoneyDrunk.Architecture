@@ -356,7 +356,7 @@
     "name": "HoneyDrunk.Notify",
     "public_name": "HoneyDrunk.Notify",
     "short": "Unified notifications across communication channels",
-    "description": "Channel-agnostic notification dispatch system with multi-provider email (SMTP, Resend), SMS (Twilio), template rendering, and queue-based async delivery.",
+    "description": "Channel-agnostic notification intake and delivery system with multi-provider email/SMS support, template rendering, queue-backed async delivery, and retry mechanics. Recipient preference/cadence policy belongs in Communications.",
     "sector": "Ops",
     "signal": "Live",
     "cluster": "infrastructure",
@@ -368,7 +368,7 @@
       "repo": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify"
     },
     "long_description": {
-      "overview": "HoneyDrunk.Notify is the Grid's outbound notification layer — a channel-agnostic system for dispatching messages across email, SMS, and future channels. It provides a unified contract surface (INotificationSender, INotificationGateway, INotificationPolicy) with pluggable providers: SMTP and Resend for email, Twilio for SMS. Template rendering, idempotency keys, delivery tracking, and queue-based async dispatch ensure reliable, auditable delivery.",
+      "overview": "HoneyDrunk.Notify is the Grid delivery layer for outbound notifications. It receives structurally valid notification requests through intake contracts, handles template/render/provider/queue/retry mechanics, and deliberately does not decide recipient preference, cadence, suppression, or lifecycle workflow policy after the ADR-0019 refactor.",
       "why_it_exists": "Without unified notification infrastructure, outbound communication drifts in reliability, security, and delivery patterns across nodes.",
       "primary_audience": "Service developers and node owners needing reliable, multi-channel outbound notifications with consistent delivery semantics.",
       "value_props": [
@@ -380,10 +380,10 @@
         "Secure credential management via deploy-time Key Vault injection"
       ],
       "monetization_signal": "Internal-first; provider ecosystem may expand to push notifications, webhooks, and partner integrations.",
-      "roadmap_focus": "Push notification channel, webhook dispatch, adaptive send policies based on Pulse metrics.",
+      "roadmap_focus": "Production deployment stabilization, provider coverage, push/webhook channels, and delivery reliability. Adaptive recipient send policy belongs in Communications.",
       "grid_relationship": "Consumes Kernel for Grid context, lifecycle hooks, and telemetry. Provider credentials are injected at deploy time via Azure Key Vault (not the HoneyDrunk.Vault package).",
       "integration_depth": "medium",
-      "demo_path": "Send a notification via INotificationSender → provider dispatches email/SMS → track delivery status.",
+      "demo_path": "Receive a notification request via INotificationSender → intake validates delivery shape → provider dispatches email/SMS → track delivery status.",
       "signal_quote": "When the Hive speaks, it's heard everywhere.",
       "stability_tier": "beta",
       "impact_vector": "communication reliability"
@@ -400,10 +400,10 @@
     "type": "node",
     "name": "HoneyDrunk.Communications",
     "public_name": "HoneyDrunk.Communications",
-    "short": "Message orchestration and workflow engine",
-    "description": "Decision and orchestration layer for outbound communications. Determines why, when, and to whom messages are sent. Manages multi-step flows, campaigns, user preferences, suppression, cadence rules, and business-event-to-message-intent mapping. Delegates all delivery mechanics to Notify.",
+    "short": "Outbound message decision and orchestration substrate",
+    "description": "Decision and orchestration layer for outbound communications. Determines why, when, and to whom messages are sent; enforces preferences and cadence; records decisions; delegates delivery mechanics to Notify.",
     "sector": "Ops",
-    "signal": "Seed",
+    "signal": "Live",
     "cluster": "orchestration",
     "energy": 0,
     "priority": 25,
@@ -413,7 +413,7 @@
       "repo": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications"
     },
     "long_description": {
-      "overview": "HoneyDrunk.Communications is the brain behind outbound messaging. While Notify handles the mechanics of delivery (render, send, retry, track), Communications owns the decision layer: should a message be sent, to whom, when, and as part of what workflow. It maps business events (user signed up, subscription expiring, agent completed task) to message intents, resolves recipients and their preferences, enforces suppression and cadence rules, and orchestrates multi-step communication flows (welcome sequences, re-engagement campaigns, escalation chains). Communications calls Notify's INotificationSender for every outbound message but never touches provider adapters, templates, or retry logic directly.",
+      "overview": "HoneyDrunk.Communications is the Grid decision layer for outbound messaging. It maps business events to message intents, resolves recipients, evaluates tenant-scoped preferences and cadence, records every send-or-suppress decision, and delegates approved delivery to Notify through INotificationSender. v0.1.0 ships the public contract surface and a welcome-email runtime slice.",
       "why_it_exists": "Without a dedicated orchestration layer, message-sending logic scatters across every Node that needs to communicate with users. That leads to duplicated preference checks, inconsistent cadence enforcement, and no single place to reason about a user's full communication lifecycle.",
       "primary_audience": "Node developers who need to trigger user-facing communications from business events. Product and growth workflows that require multi-step messaging sequences.",
       "value_props": [
@@ -425,12 +425,12 @@
         "Auditable decision log — every send-or-suppress decision is recorded with reasoning"
       ],
       "monetization_signal": "Internal-first. Campaign and lifecycle messaging capabilities may surface in product offerings.",
-      "roadmap_focus": "Define core abstractions (intent mapping, preference resolution, flow engine). First implementation: welcome email sequence using Notify as delivery backend.",
-      "grid_relationship": "Consumes Kernel for Grid context and lifecycle. Consumes Notify's INotificationSender for all delivery. May consume Data for preference and flow state persistence. Pulse receives telemetry on communication decisions.",
+      "roadmap_focus": "Durable preference/cadence/decision-log stores, reusable testing package, and deeper lifecycle/campaign workflows once Flow/Data integration is ready.",
+      "grid_relationship": "Consumes Kernel for tenant identity, context, health, lifecycle, and telemetry. Consumes Notify.Abstractions for delivery delegation through INotificationSender. Data/Flow/Transport edges remain deferred until durable stores or event/workflow ingress are selected.",
       "integration_depth": "medium",
-      "demo_path": "Fire a UserSignedUp event → Communications resolves intent (welcome email) → checks preferences → calls Notify → records decision.",
+      "demo_path": "Receive a UserSignedUp intent → check preferences and cadence → record MessageDecision → delegate approved welcome email to Notify.",
       "signal_quote": "The reason behind every message.",
-      "stability_tier": "experimental",
+      "stability_tier": "beta",
       "impact_vector": "communication intelligence"
     },
     "foundational": false,
