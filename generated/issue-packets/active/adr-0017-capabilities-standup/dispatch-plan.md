@@ -1,6 +1,6 @@
 # Dispatch Plan — ADR-0017 HoneyDrunk.Capabilities Standup
 
-**Initiative:** `adr-0017-honeydrunk-capabilities-standup`
+**Initiative:** `adr-0017-capabilities-standup`
 **Sector:** AI
 **Governing ADR:** [ADR-0017 — Stand Up the HoneyDrunk.Capabilities Node](../../../../adrs/ADR-0017-stand-up-honeydrunk-capabilities-node.md) (Proposed 2026-04-19; stays Proposed across all four packet PRs. Flips to Accepted only after every packet in this initiative is closed, as a separate post-merge housekeeping step the scope agent runs — see "Status-flip handling" below.)
 **Trigger:** ADR-0017 in the Proposed queue. Five AI-sector Nodes (Agents, Operator, Memory, Knowledge, Evals) plus every domain Node that exposes agent-callable tools (Data, Notify, Vault) are blocked on `HoneyDrunk.Capabilities.Abstractions` existing. This initiative builds the tool-registry and dispatch substrate that unblocks them.
@@ -65,7 +65,7 @@ Packet 04 hard-codes invariant numbers in its body and acceptance criteria. File
 
 **Packet 02 must be filed, its PR merged, and the assigned invariant numbers locked in `constitution/invariants.md` before packet 04 is filed.**
 
-If packet 02's collision check at edit time forces a renumber away from the assumed 43/44/45/46 — for example because ADR-0016 lands first and takes 40/41/42 (consuming the next-three-free that ADR-0026 left at 39), then ADR-0010 Phase 1 lands and takes 29-30, or some other ADR grabs slots in the interim — the packet 04 source file at `generated/issue-packets/active/adr-0017-honeydrunk-capabilities-standup/04-capabilities-node-scaffold.md` MUST be amended in place before push (it has not been filed yet at that point — invariant 24's pre-filing carve-out applies).
+If packet 02's collision check at edit time forces a renumber away from the assumed 43/44/45/46 — for example because ADR-0016 lands first and takes 40/41/42 (consuming the next-three-free that ADR-0026 left at 39), then ADR-0010 Phase 1 lands and takes 29-30, or some other ADR grabs slots in the interim — the packet 04 source file at `generated/issue-packets/active/adr-0017-capabilities-standup/04-capabilities-node-scaffold.md` MUST be amended in place before push (it has not been filed yet at that point — invariant 24's pre-filing carve-out applies).
 
 **Packets 02 and 04 cannot be filed in the same push.** Concretely:
 
@@ -116,6 +116,6 @@ The exception is packet 03 (the human chore), which itself contains a "Next Step
 
 ## Archival
 
-Per ADR-0008 D10, when every packet in this initiative reaches `Done` on the org Project board and `HoneyDrunk.Capabilities 0.1.0` is published to NuGet, the entire `active/adr-0017-honeydrunk-capabilities-standup/` folder moves to `archive/adr-0017-honeydrunk-capabilities-standup/` in a single commit. Partial archival is forbidden.
+Per ADR-0008 D10, when every packet in this initiative reaches `Done` on the org Project board and `HoneyDrunk.Capabilities 0.1.0` is published to NuGet, the entire `active/adr-0017-capabilities-standup/` folder moves to `archive/adr-0017-capabilities-standup/` in a single commit. Partial archival is forbidden.
 
 The hive-sync agent moves individual closed packet files from `active/` to `completed/` per invariant 37 — that is per-packet lifecycle. Initiative-level archival is the post-completion sweep that follows after the whole folder reaches `Done`.

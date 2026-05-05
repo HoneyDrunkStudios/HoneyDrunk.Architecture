@@ -7,7 +7,7 @@ labels: ["chore", "tier-2", "architecture", "ai", "adr-0017", "constitution"]
 dependencies: ["packet:01"]
 adrs: ["ADR-0017"]
 wave: 1
-initiative: adr-0017-honeydrunk-capabilities-standup
+initiative: adr-0017-capabilities-standup
 node: honeydrunk-capabilities
 ---
 
@@ -46,7 +46,7 @@ Working assumption: ADR-0016 packet 02 lands first (it is also Wave 1 and depend
 If the assigned numbers shift away from 43-46:
 
 - The corresponding bullets in ADR-0017's Consequences section ("New invariants (proposed for `constitution/invariants.md`)") at lines 128-131 are updated to state the assigned numbers.
-- The packet 04 source file at `generated/issue-packets/active/adr-0017-honeydrunk-capabilities-standup/04-capabilities-node-scaffold.md` is amended in place before push. Per the dispatch plan's filing-order rule, packet 04 is not filed until this packet has merged, so the pre-filing carve-out under invariant 24 applies.
+- The packet 04 source file at `generated/issue-packets/active/adr-0017-capabilities-standup/04-capabilities-node-scaffold.md` is amended in place before push. Per the dispatch plan's filing-order rule, packet 04 is not filed until this packet has merged, so the pre-filing carve-out under invariant 24 applies.
 - `repos/HoneyDrunk.Capabilities/integration-points.md` (created in packet 01) references the canary invariant by phrase ("number assigned at acceptance") rather than by number, so no edit is required there. If for some reason a number has been baked into that file already, update it.
 
 ### Where the four entries land in `constitution/invariants.md`
@@ -104,7 +104,7 @@ Packet 04 (the scaffold) hard-codes the assumed invariant numbers 43-46 in rough
 After determining the actually-assigned numbers, run:
 
 ```bash
-rg -n '\b4[3-6]\b' generated/issue-packets/active/adr-0017-honeydrunk-capabilities-standup/04-capabilities-node-scaffold.md
+rg -n '\b4[3-6]\b' generated/issue-packets/active/adr-0017-capabilities-standup/04-capabilities-node-scaffold.md
 ```
 
 Use ripgrep (`rg`), not `grep` — Windows Git Bash's `grep` boundary semantics differ subtly from ripgrep's. For each match, replace the old number with the assigned one. The matches are concentrated in the Constraints and Referenced Invariants sections; verify by re-running the rg query and confirming zero hits at the old numbers and the expected count at the new numbers. Where a reference is purely narrative ("the Capabilities downstream-coupling invariant"), the number does not need to be there at all — those phrase-keyed references are preferred per the packet's existing pattern. The numbers stay in places where they are genuinely needed (e.g. parenthetical "default 43" annotations, the actual `constitution/invariants.md` insertion).
@@ -118,7 +118,7 @@ If renumbered, update the changelog line to state the actually-assigned numbers.
 ## Affected Files
 - `constitution/invariants.md`
 - `adrs/ADR-0017-stand-up-honeydrunk-capabilities-node.md` (only if the assigned numbers differ from 43/44/45/46 — update the Consequences "New invariants" bullets)
-- `generated/issue-packets/active/adr-0017-honeydrunk-capabilities-standup/04-capabilities-node-scaffold.md` (only if the assigned numbers differ from 43/44/45/46 — pre-filing amendment per invariant 24's carve-out)
+- `generated/issue-packets/active/adr-0017-capabilities-standup/04-capabilities-node-scaffold.md` (only if the assigned numbers differ from 43/44/45/46 — pre-filing amendment per invariant 24's carve-out)
 - `CHANGELOG.md`
 
 ## NuGet Dependencies
@@ -137,7 +137,7 @@ None. Architecture is a knowledge repo.
 - [ ] **Each new invariant entry carries the qualifier `(Proposed — this invariant takes effect when ADR-0017 is accepted)`** at the end of its body. ADR-0017 stays at `Status: Proposed` for this entire initiative — the Status flip is a separate post-merge housekeeping step. This pattern matches existing entries 28 (ADR-0010), 31, 32, 33 (ADR-0011) which all carry the same qualifier shape.
 - [ ] Existing entries (28, 29-30 reservation, 31-39) are unmodified.
 - [ ] If invariant numbers shifted away from 43-46, the corresponding bullets in ADR-0017's Consequences section ("New invariants (proposed for `constitution/invariants.md`)") at lines 128-131 are updated to match.
-- [ ] If invariant numbers shifted away from 43-46, the packet 04 source file at `generated/issue-packets/active/adr-0017-honeydrunk-capabilities-standup/04-capabilities-node-scaffold.md` is amended before that packet is filed. After determining the assigned numbers, run `rg -n '\b4[3-6]\b' generated/issue-packets/active/adr-0017-honeydrunk-capabilities-standup/04-capabilities-node-scaffold.md` and update each match to the actually-assigned number. Use ripgrep (`rg`), not `grep`, for predictable boundary semantics on Windows Git Bash. After replacement, re-run the rg query and confirm zero hits at the old numbers. The dispatch plan's filing-order rule guarantees packet 04 has not been filed yet at the time this packet's PR merges.
+- [ ] If invariant numbers shifted away from 43-46, the packet 04 source file at `generated/issue-packets/active/adr-0017-capabilities-standup/04-capabilities-node-scaffold.md` is amended before that packet is filed. After determining the assigned numbers, run `rg -n '\b4[3-6]\b' generated/issue-packets/active/adr-0017-capabilities-standup/04-capabilities-node-scaffold.md` and update each match to the actually-assigned number. Use ripgrep (`rg`), not `grep`, for predictable boundary semantics on Windows Git Bash. After replacement, re-run the rg query and confirm zero hits at the old numbers. The dispatch plan's filing-order rule guarantees packet 04 has not been filed yet at the time this packet's PR merges.
 - [ ] `CHANGELOG.md` Unreleased section updated with the four invariant numbers actually assigned.
 
 ## Human Prerequisites
@@ -187,7 +187,7 @@ None.
 **Key Files:**
 - `constitution/invariants.md` — append four entries (Option A: under a new `## AI Sector — Capabilities Invariants` section; Option B: inside `## AI Invariants`)
 - `adrs/ADR-0017-stand-up-honeydrunk-capabilities-node.md` — only edited if numbers shifted from 43/44/45/46 (lines 128-131 in the Consequences section)
-- `generated/issue-packets/active/adr-0017-honeydrunk-capabilities-standup/04-capabilities-node-scaffold.md` — only edited if numbers shifted from 43/44/45/46
+- `generated/issue-packets/active/adr-0017-capabilities-standup/04-capabilities-node-scaffold.md` — only edited if numbers shifted from 43/44/45/46
 - `CHANGELOG.md`
 
 **Contracts:** None.

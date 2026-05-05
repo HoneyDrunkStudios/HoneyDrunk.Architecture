@@ -7,7 +7,7 @@ labels: ["chore", "tier-2", "architecture", "ai", "adr-0017"]
 dependencies: []
 adrs: ["ADR-0017"]
 wave: 1
-initiative: adr-0017-honeydrunk-capabilities-standup
+initiative: adr-0017-capabilities-standup
 node: honeydrunk-capabilities
 ---
 
@@ -152,7 +152,7 @@ Replace with:
   "version": "0.0.0",
   "canary_status": "none",
   "last_release": null,
-  "active_blockers": ["GitHub repo not yet created (Architecture#NN — packet 03 of adr-0017-honeydrunk-capabilities-standup)", "Scaffold packet (Capabilities#NN — packet 04 of adr-0017-honeydrunk-capabilities-standup) not yet executed"],
+  "active_blockers": ["GitHub repo not yet created (Architecture#NN — packet 03 of adr-0017-capabilities-standup)", "Scaffold packet (Capabilities#NN — packet 04 of adr-0017-capabilities-standup) not yet executed"],
   "notes": "ADR-0017 standup ADR Proposed 2026-04-19 (Status flip to Accepted is a separate post-merge housekeeping step after the initiative completes). Catalog surface registered (4 contracts per D3: ICapabilityRegistry, CapabilityDescriptor, ICapabilityInvoker, ICapabilityGuard). Integration-points doc filed at repos/HoneyDrunk.Capabilities/integration-points.md. Awaiting GitHub repo creation (human-only) and scaffold execution: HoneyDrunk.Capabilities.Abstractions (4 contracts, zero HoneyDrunk dependencies), HoneyDrunk.Capabilities runtime (default registry, invoker, Auth-backed guard), HoneyDrunk.Capabilities.Testing (in-memory registry/dispatcher fixture), Standards wiring, CI with contract-shape canary scoped to Abstractions (D8)."
 }
 ```
@@ -332,7 +332,7 @@ Add a new entry under `## In Progress`, immediately after the "ADR-0010 Observat
 ### ADR-0017 HoneyDrunk.Capabilities Standup
 **Status:** In Progress
 **Scope:** Architecture, HoneyDrunk.Capabilities (new repo)
-**Initiative:** `adr-0017-honeydrunk-capabilities-standup`
+**Initiative:** `adr-0017-capabilities-standup`
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
 **Description:** Stand up `HoneyDrunk.Capabilities` as the AI sector's tool-registry and dispatch substrate per ADR-0017. Catalog reconciliation (drop placeholder `ICapability`/`ICapabilityPermission`, add four D3 contracts), four new invariants for D9 / D6 / D5+D10 / D8, human-only repo creation, and the scaffold packet (three packages: `Abstractions`, runtime, `Testing` fixture). Unblocks Agents, Operator, Memory, Knowledge, Evals, and any domain Node that registers a callable tool.
 
