@@ -21,7 +21,6 @@ and remain manually-flippable until rescoped.
 | [ADR-0016](../adrs/ADR-0016-stand-up-honeydrunk-ai-node.md) | Stand Up the HoneyDrunk.AI Node — Inference Substrate for the AI Sector | AI | 2026-04-19 | 15 |
 | [ADR-0017](../adrs/ADR-0017-stand-up-honeydrunk-capabilities-node.md) | Stand Up the HoneyDrunk.Capabilities Node — Tool Registry and Dispatch Substrate for the AI Sector | AI | 2026-04-19 | 15 |
 | [ADR-0018](../adrs/ADR-0018-stand-up-honeydrunk-operator-node.md) | Stand Up the HoneyDrunk.Operator Node — Human-Policy Enforcement and Audit Substrate for the AI Sector | AI | 2026-04-19 | 15 |
-| [ADR-0019](../adrs/ADR-0019-stand-up-honeydrunk-communications-node.md) | Stand Up the HoneyDrunk.Communications Node — Orchestration Substrate Above Notify | Ops | 2026-04-19 | 15 |
 | [ADR-0020](../adrs/ADR-0020-stand-up-honeydrunk-agents-node.md) | Stand Up the HoneyDrunk.Agents Node — Agent Runtime Substrate for the AI Sector | AI | 2026-04-19 | 15 |
 | [ADR-0021](../adrs/ADR-0021-stand-up-honeydrunk-knowledge-node.md) | Stand Up the HoneyDrunk.Knowledge Node — External Knowledge Ingestion and Retrieval Substrate for the AI Sector | AI | 2026-04-19 | 15 |
 | [ADR-0022](../adrs/ADR-0022-stand-up-honeydrunk-memory-node.md) | Stand Up the HoneyDrunk.Memory Node — Agent-Memory Substrate for the AI Sector | AI | 2026-04-19 | 15 |
@@ -55,4 +54,4 @@ ADRs/PDRs whose Status was changed by **this** sync run from `Proposed` to `Acce
 
 | ID | Title | Sector | Date |
 |----|-------|--------|------|
-| [ADR-0014](../adrs/ADR-0014-hive-architecture-reconciliation-agent.md) | Hive–Architecture Reconciliation Agent | Meta | 2026-04-16 |
+| [ADR-0019](../adrs/ADR-0019-stand-up-honeydrunk-communications-node.md) | Stand Up the HoneyDrunk.Communications Node — Orchestration Substrate Above Notify | Ops | 2026-04-19 |

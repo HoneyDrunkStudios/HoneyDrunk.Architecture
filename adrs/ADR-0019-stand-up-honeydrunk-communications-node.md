@@ -1,6 +1,6 @@
 # ADR-0019: Stand Up the HoneyDrunk.Communications Node — Orchestration Substrate Above Notify
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-04-19
 **Supersedes:** [ADR-0013](ADR-0013-communications-orchestration-layer.md)
 **Deciders:** HoneyDrunk Studios
@@ -17,7 +17,7 @@ Accepting this ADR creates catalog and cross-repo obligations that must be compl
 - [x] Update `catalogs/grid-health.json` Communications entry to reflect the stood-up contract surface and scaffold expectations
 - [x] Wire the contract-shape canary into Actions for the frozen contracts named in D8
 - [x] **Notify refactor packet** — migrate `INotificationPolicy` conceptually into `IPreferenceStore` + `ICadencePolicy`, remove `INotificationPolicy` / `PolicyEvaluationResult` / `RejectionReason.PolicyDenied` from `HoneyDrunk.Notify.Abstractions`, delete `AllowAllPolicy` and `CompositePolicyPipeline`, remove the policy-evaluation step from `NotificationGateway.EnqueueAsync`, rename Notify's `Orchestration/` folder to `Intake/`, and update Notify's `boundaries.md`. This is part of acceptance, not a follow-up — see D11 and Consequences.
-- [ ] Scope agent assigns final invariant numbers when flipping Status → Accepted
+- [x] Scope agent assigns final invariant numbers when flipping Status → Accepted
 
 ## Context
 
@@ -47,9 +47,10 @@ The Communications Node ships the following package families, mirroring ADR-0016
 
 - `HoneyDrunk.Communications.Abstractions` — all interfaces, records, request/response shapes, decision-log entry shapes. Zero runtime dependencies beyond `HoneyDrunk.Kernel` abstractions and `HoneyDrunk.Notify.Abstractions`.
 - `HoneyDrunk.Communications` — runtime composition: default `ICommunicationOrchestrator`, default `ICadencePolicy`, default decision logger, DI wiring.
-- `HoneyDrunk.Communications.Testing` — opt-in testing fixture package carrying in-memory `IPreferenceStore` and `ICadencePolicy` implementations, a deterministic clock hook for cadence tests, and a recording decision logger for assertion-based tests. Consumed by downstream Nodes in test projects, never in production composition.
 
-No `Providers.*` slot is introduced at stand-up. Preference storage backends (SQL, Cosmos, etc.) are deferred to a later ADR — see Open Questions.
+A future `HoneyDrunk.Communications.Testing` package may be introduced when a downstream consumer needs packaged fixtures. Until then, the in-memory preference store, cadence policy, and decision log live in the runtime/tests and are not a stand-up acceptance gate.
+
+No `Providers.*` slot is introduced at stand-up. Preference storage backends (SQL, Cosmos, etc.) and packaged testing fixtures are deferred to later consumer-driven work — see Open Questions.
 
 ### D3. Exposed contracts
 
@@ -90,7 +91,7 @@ This is the same pattern ADR-0017 D10 applied for Capabilities → Auth: the dep
 
 ### D6. Preferences and decision log — default implementations are in-memory at stand-up
 
-The stand-up does not commit to a persistence backend for `IPreferenceStore` or `ICommunicationDecisionLog`. Default implementations in `HoneyDrunk.Communications` are in-process (per-host dictionaries with reasonable defaults: everything allowed, no quiet hours, no suppression). The `HoneyDrunk.Communications.Testing` package supplies deterministic fixtures for tests.
+The stand-up does not commit to a persistence backend for `IPreferenceStore` or `ICommunicationDecisionLog`. Default implementations in `HoneyDrunk.Communications` are in-process (per-host dictionaries with reasonable defaults: everything allowed, no quiet hours, no suppression). Deterministic fixtures can be packaged later once a downstream consumer needs a shared testing package.
 
 Persistent implementations are a later ADR (see Open Questions). The stand-up's job is to ship the contract surface and the in-memory defaults so downstream Nodes can compile and run end-to-end in development. Production deployment will not happen on in-memory preferences — that's a production-readiness gate, not a stand-up gate.
 
@@ -107,13 +108,13 @@ A contract-shape canary is added to the Communications Node's CI: it fails the b
 - `IPreferenceStore`
 - `ICadencePolicy`
 
-These four are the hot path for every downstream consumer. `IRecipientResolver` and `ICommunicationDecisionLog` are guarded too but are lower-churn surfaces; they are included in the canary but flagged as non-blocking for the initial scaffold — the canary enforces all six on release candidates, not on every PR. This matches ADR-0016 D8 and ADR-0017 D8's rationale for hot-path protection.
+These four are the hot path for every downstream consumer and the canary is required to hard-fail PR, main, and tag/release builds on unversioned shape drift. `IRecipientResolver` and `ICommunicationDecisionLog` are guarded too as lower-churn surfaces; their checks may start as warning-only in the initial scaffold, but they must become hard failures before the first consumer depends on them directly. This matches ADR-0016 D8 and ADR-0017 D8's rationale for hot-path protection.
 
 ### D9. Downstream coupling rule
 
-Downstream Nodes that trigger communications (any Grid Node with a business event that should surface to a user) compile **only** against `HoneyDrunk.Communications.Abstractions`. They do not take a runtime dependency on `HoneyDrunk.Communications` or on `HoneyDrunk.Communications.Testing` in production composition. Composition — which preference store is active, which cadence policy is in force, which decision log backend is wired — is a host-time concern, resolved at application startup.
+Downstream Nodes that trigger communications (any Grid Node with a business event that should surface to a user) compile **only** against `HoneyDrunk.Communications.Abstractions`. They do not take a runtime dependency on `HoneyDrunk.Communications` in production composition. Composition — which preference store is active, which cadence policy is in force, which decision log backend is wired — is a host-time concern, resolved at application startup.
 
-Test projects may reference `HoneyDrunk.Communications.Testing` to pick up the in-memory fixtures. Production projects must not.
+If a packaged `HoneyDrunk.Communications.Testing` fixture library is introduced later, test projects may reference it, but production projects must not.
 
 This is the same abstraction/runtime split already applied for AI, Capabilities, Vault, and Transport.
 
@@ -130,7 +131,7 @@ The refactor scope, as of this ADR, is exactly:
 1. **Remove from `HoneyDrunk.Notify.Abstractions`:** `INotificationPolicy`, `PolicyEvaluationResult`, and the `RejectionReason.PolicyDenied` enum value. The remaining `RejectionReason` values (`ValidationFailed`, `DuplicateIdempotencyKey`, `ChannelUnavailable`, `TemplateNotFound`) stay — they are delivery-shaped.
 2. **Migrate the concepts to Communications:** `INotificationPolicy`'s responsibilities are absorbed by `IPreferenceStore` + `ICadencePolicy`; `PolicyEvaluationResult` has no analogue on the Communications side (the decision is carried by `ICommunicationDecisionLog` entries and send vs. suppress is modeled as orchestrator return shape, not a transformed request); the `PolicyDenied` rejection concept becomes a decision-log entry in Communications rather than a Notify-surface rejection.
 3. **Delete from `HoneyDrunk.Notify`:** `Policies/AllowAllPolicy.cs` and `Policies/CompositePolicyPipeline.cs`. The `Policies/` folder is removed if empty after these deletions.
-4. **Remove the policy-evaluation step from `NotificationGateway.EnqueueAsync`** (lines ~69–81 at the time of this ADR). The gateway becomes strictly "validate shape, dedupe, render, enqueue." The XML doc on `EnqueueAsync` tightens to match — drop any "evaluates policies" language.
+4. **Remove the policy-evaluation step from `NotificationGateway.EnqueueAsync`** (lines ~69-81 at the time of this ADR). The gateway becomes strictly "validate shape, dedupe, render, enqueue." The XML doc on `EnqueueAsync` tightens to match — drop any "evaluates policies" language.
 5. **Rename `HoneyDrunk.Notify/Orchestration/` to `HoneyDrunk.Notify/Intake/`.** "Orchestration" is the word Communications is claiming; Notify's gateway-and-enqueuer pair is an intake pipeline, not orchestration. This is a non-breaking internal rename.
 6. **Update `repos/HoneyDrunk.Notify/boundaries.md`** to move "User preferences" from a bare "Notify does NOT own" bullet to an explicit "Owned by HoneyDrunk.Communications" callout with the D4 decision test inlined.
 
@@ -147,7 +148,7 @@ Acceptance of this ADR requires both halves of the move:
 **Half 1 — Communications standup (new Node):**
 
 - `HoneyDrunk.Communications` repo created.
-- `HoneyDrunk.Communications.Abstractions`, `HoneyDrunk.Communications`, and `HoneyDrunk.Communications.Testing` packages scaffolded per D2.
+- `HoneyDrunk.Communications.Abstractions` and `HoneyDrunk.Communications` packages scaffolded per D2. A packaged `HoneyDrunk.Communications.Testing` fixture library is deferred until a downstream consumer needs it.
 - Seven contracts per D3 land on the Abstractions surface (six interfaces + `MessageIntent` record), with the D3-allowed one-round refinement on the intent surface permitted before 0.1.0.
 - Default in-memory implementations of `IPreferenceStore`, `ICadencePolicy`, `ICommunicationDecisionLog`, and `ICommunicationOrchestrator` ship in `HoneyDrunk.Communications`.
 - Contract-shape canary per D8 wired into Communications's CI.
@@ -167,18 +168,17 @@ Both halves are gating. This ADR does not flip Status → Accepted until the Com
 
 This ADR is "Done" when all of the following are true:
 
-- [ ] `HoneyDrunk.Communications.Abstractions 0.1.0` is published with the contracts in D3.
-- [ ] `HoneyDrunk.Communications 0.1.0` is published with the D6 in-memory defaults.
-- [ ] `HoneyDrunk.Communications.Testing 0.1.0` is published with the fixtures in D2.
-- [ ] Communications's CI includes the D8 contract-shape canary and it is green.
-- [ ] `HoneyDrunk.Notify.Abstractions` no longer exports `INotificationPolicy`, `PolicyEvaluationResult`, or `RejectionReason.PolicyDenied`.
-- [ ] `HoneyDrunk.Notify/Policies/AllowAllPolicy.cs` and `HoneyDrunk.Notify/Policies/CompositePolicyPipeline.cs` are deleted.
-- [ ] `NotificationGateway.EnqueueAsync` no longer runs a policy-evaluation step and its XML doc reflects the tightened contract.
-- [ ] `HoneyDrunk.Notify/Orchestration/` is renamed to `HoneyDrunk.Notify/Intake/` (non-breaking internal rename).
-- [ ] Notify ships a minor version bump with the above changes noted in the changelog.
-- [ ] `repos/HoneyDrunk.Notify/boundaries.md` is updated per D11 item 6.
-- [ ] `catalogs/contracts.json`, `catalogs/relationships.json`, `catalogs/grid-health.json`, and `catalogs/modules.json` reflect both halves of the move.
-- [ ] Scope agent flips Status → Accepted and assigns final invariant numbers.
+- [x] `HoneyDrunk.Communications.Abstractions 0.1.0` is published with the contracts in D3.
+- [x] `HoneyDrunk.Communications 0.1.0` is published with the D6 in-memory defaults.
+- [x] Communications's CI includes the D8 contract-shape canary and it is green.
+- [x] `HoneyDrunk.Notify.Abstractions` no longer exports `INotificationPolicy`, `PolicyEvaluationResult`, or `RejectionReason.PolicyDenied`.
+- [x] `HoneyDrunk.Notify/Policies/AllowAllPolicy.cs` and `HoneyDrunk.Notify/Policies/CompositePolicyPipeline.cs` are deleted.
+- [x] `NotificationGateway.EnqueueAsync` no longer runs a policy-evaluation step and its XML doc reflects the tightened contract.
+- [x] `HoneyDrunk.Notify/Orchestration/` is renamed to `HoneyDrunk.Notify/Intake/` (non-breaking internal rename).
+- [x] Notify ships a minor version bump with the above changes noted in the changelog.
+- [x] `repos/HoneyDrunk.Notify/boundaries.md` is updated per D11 item 6.
+- [x] `catalogs/contracts.json`, `catalogs/relationships.json`, `catalogs/grid-health.json`, and `catalogs/modules.json` reflect both halves of the move.
+- [x] Scope agent flips Status → Accepted and assigns final invariant numbers.
 
 ### Refactor Details — Notify (full type-by-type breakdown)
 
@@ -193,7 +193,7 @@ The audit of Notify's current surface (repo at `c:\Users\tatte\source\repos\Hone
 | `RejectionReason.PolicyDenied` | `HoneyDrunk.Notify.Abstractions/RejectionReason.cs` | Currently the only orchestration-shaped rejection in an otherwise delivery-shaped enum. Move the concept to Communications's decision log; Notify's enum keeps `ValidationFailed`, `DuplicateIdempotencyKey`, `ChannelUnavailable`, `TemplateNotFound`. |
 | `AllowAllPolicy` | `HoneyDrunk.Notify/Policies/AllowAllPolicy.cs` | Default no-op policy; becomes unnecessary once `INotificationPolicy` leaves Notify. |
 | `CompositePolicyPipeline` | `HoneyDrunk.Notify/Policies/CompositePolicyPipeline.cs` | Composite policy executor; its role is replaced by Communications's orchestrator calling preference and cadence checks in sequence. |
-| Policy evaluation step in `NotificationGateway.EnqueueAsync` | `HoneyDrunk.Notify/Orchestration/NotificationGateway.cs` lines ~69–81 | Policy evaluation happens inside Notify's intake pipeline. That step moves out; the gateway becomes purely "validate, dedupe, render, enqueue." |
+| Policy evaluation step in `NotificationGateway.EnqueueAsync` | `HoneyDrunk.Notify/Orchestration/NotificationGateway.cs` lines ~69-81 | Policy evaluation happens inside Notify's intake pipeline. That step moves out; the gateway becomes purely "validate, dedupe, render, enqueue." |
 
 **Stay in Notify (true delivery mechanics — do not move):**
 
@@ -230,12 +230,12 @@ Accepting this ADR — and landing both halves of the move (scaffold + Notify re
 
 ### New invariants (proposed for `constitution/invariants.md`)
 
-Numbering is tentative — scope agent finalizes at acceptance.
+Final invariant numbers assigned at acceptance: 40-43.
 
-- **Downstream Nodes take a runtime dependency only on `HoneyDrunk.Communications.Abstractions`.** Composition against `HoneyDrunk.Communications` and `HoneyDrunk.Communications.Testing` is a host-time (and test-time) concern.
-- **Preference enforcement, cadence rules, and suppression logic for outbound messages live in HoneyDrunk.Communications, not in HoneyDrunk.Notify.** Notify owns delivery mechanics; Communications owns decision logic. See D4's decision test.
-- **Every orchestrated send records a decision-log entry via `ICommunicationDecisionLog`.** A send without a recorded decision is a build or runtime failure, depending on the specific enforcement point chosen at scaffold time.
-- **The Communications Node CI must include a contract-shape canary for `ICommunicationOrchestrator`, `IMessageIntent` / `MessageIntent`, `IPreferenceStore`, and `ICadencePolicy`.** Shape drift on any of the four is a build failure.
+- **Invariant 40 — Downstream Nodes take a runtime dependency only on `HoneyDrunk.Communications.Abstractions`.** Composition against `HoneyDrunk.Communications` is a host-time concern; packaged testing fixtures, when introduced, are test-time only.
+- **Invariant 41 — Preference enforcement, cadence rules, and suppression logic for outbound messages live in HoneyDrunk.Communications, not in HoneyDrunk.Notify.** Notify owns delivery mechanics; Communications owns decision logic. See D4's decision test.
+- **Invariant 42 — Every orchestrated send records a decision-log entry via `ICommunicationDecisionLog`.** A send without a recorded decision is a build or runtime failure, depending on the specific enforcement point chosen at scaffold time.
+- **Invariant 43 — The Communications Node CI must include a contract-shape canary for `ICommunicationOrchestrator`, `IMessageIntent` / `MessageIntent`, `IPreferenceStore`, and `ICadencePolicy`.** Shape drift on any of the four is a build failure.
 
 ### Contract-shape canary becomes a requirement
 
