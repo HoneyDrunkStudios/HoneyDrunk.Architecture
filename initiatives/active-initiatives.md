@@ -47,7 +47,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [x] Architecture#65: ADR/PDR auto-acceptance + README index sync (packet 05)
 - [x] Architecture#66: Drift detection + close out the rollout (packet 06)
 
-> **Sync (2026-05-04):** ADR-0014 rollout implementation is merged; Architecture#61-#66 are closed. Hive Sync is active under OpenClaw cron and ready for archive/exit-criteria review.
+> **Sync (2026-05-07):** ADR-0014 rollout implementation is merged; Architecture#61-#66 remain closed. Hive Sync is running under OpenClaw cron; ready for human archive/exit-criteria review.
 
 
 ### Configuration & Secrets Rollout (ADR-0005 / ADR-0006)
@@ -69,7 +69,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [x] Wave 2: Per-Node bootstrap migrations (Auth#5, Web.Rest#4, Data#4, Notify#1, Pulse#1, Studios#2 closed)
 - [x] Wave 2: Actions direct secret removal + deploy-gate SLA check (Actions#21 closed)
 
-> **Sync (2026-05-03):** 15/15 issue packets are closed. Packet files moved to `completed/` by Hive Sync lifecycle backfill; initiative is ready for exit-criteria review/archive.
+> **Sync (2026-05-07):** 15/15 issue packets remain closed. Packet files are in `completed/`; initiative is ready for exit-criteria review/archive, with release-verification notes still tracked in `initiatives/releases.md`.
 
 ### Container Apps Rollout (ADR-0015)
 **Status:** In Progress  
@@ -85,7 +85,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [ ] Notify#4: Release workflow and Azure bring-up for `Notify.Worker` on Container Apps (open)
 - [ ] Pulse#3: Release workflow and Azure bring-up for `Pulse.Collector` on Container Apps (open)
 
-> **Sync (2026-05-03):** 2/5 issues closed (40%). Foundation walkthroughs and reusable Actions workflow are complete; Notify/Pulse service release work remains open.
+> **Sync (2026-05-07):** 2/5 issues closed (40%). Foundation walkthroughs and reusable Actions workflow are complete; Notify#3, Notify#4, and Pulse#3 remain open for service-specific release/Azure bring-up work.
 
 ### Package Scanning Rollout (ADR-0009)
 **Status:** In Progress  
@@ -104,7 +104,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [x] Notify wire up CI scan workflows (Notify#2 closed)
 - [x] Web.Rest wire up CI scan workflows (Web.Rest#5 closed 2026-04-16)
 
-> **Sync (2026-05-03):** 8/8 issues closed (100%). Packet files moved to `completed/`; rollout is ready for archive review.
+> **Sync (2026-05-07):** 8/8 issues remain closed (100%). Packet files are in `completed/`; rollout is ready for archive/exit-criteria review.
 
 ### Vault.Rotation Bring-Up
 **Status:** In Progress  
@@ -119,7 +119,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [x] Managed identity + vault RBAC automation
 - [x] Rotation function runtime + observability
 
-> **Sync (2026-05-03):** Related ADR-0005/0006 Vault.Rotation packets are closed, including scaffold and release-tag issues. Ready for archive/exit-criteria review.
+> **Sync (2026-05-07):** Related ADR-0005/0006 Vault.Rotation packets remain closed, including scaffold and release-tag issues. Ready for archive/exit-criteria review.
 
 ### Grid v0.4 Stabilization
 **Status:** In Progress  
@@ -181,7 +181,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [x] Lore#5: OpenClaw setup + Lore sourcing skill (closed)
 - [x] Architecture#9: Catalog registration for HoneyDrunk.Lore (closed)
 
-> **Sync (2026-05-04):** 6/6 issues closed (100%). Lore bring-up packets are closed; ready for archive/exit-criteria review.
+> **Sync (2026-05-07):** 6/6 issues remain closed (100%). Lore bring-up packets are closed and in the completed archive; ready for archive/exit-criteria review.
 
 ### Agent Kit
 **Status:** On Deck  
