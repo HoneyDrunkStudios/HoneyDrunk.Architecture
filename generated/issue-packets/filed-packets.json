@@ -96,5 +96,9 @@
   "generated/issue-packets/completed/standalone/2026-04-26-actions-file-packets-hardening.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/57",
   "generated/issue-packets/completed/standalone/2026-04-28-actions-hive-field-mirror-app-auth.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/69",
   "generated/issue-packets/completed/standalone/2026-04-28-actions-hive-field-mirror-cache-and-rest.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/70",
-  "generated/issue-packets/completed/standalone/2026-05-04-communications-consolidate-communications-tenant-predicates.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications/issues/9"
+  "generated/issue-packets/completed/standalone/2026-05-04-communications-consolidate-communications-tenant-predicates.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications/issues/9",
+  "generated/issue-packets/active/adr-0017-capabilities-standup/01-architecture-capabilities-catalog-registration.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/87",
+  "generated/issue-packets/active/adr-0017-capabilities-standup/02-architecture-capabilities-invariants.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/88",
+  "generated/issue-packets/active/adr-0017-capabilities-standup/03-architecture-create-capabilities-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/89",
+  "generated/issue-packets/active/adr-0017-capabilities-standup/04-capabilities-node-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Capabilities/issues/1"
 }
