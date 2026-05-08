@@ -4,9 +4,9 @@ type: repo-feature
 tier: 2
 target_repo: HoneyDrunkStudios/HoneyDrunk.AI
 labels: ["feature", "tier-2", "ai", "scaffold", "adr-0016"]
-dependencies: ["packet:01", "packet:02"]
-adrs: ["ADR-0016", "ADR-0010", "ADR-0005"]
-wave: 2
+dependencies: ["packet:01", "packet:02", "packet:02b"]
+adrs: ["ADR-0016", "ADR-0010", "ADR-0009", "ADR-0005"]
+wave: 3
 initiative: adr-0016-honeydrunk-ai-standup
 node: honeydrunk-ai
 ---
@@ -14,15 +14,17 @@ node: honeydrunk-ai
 # Feature: Stand up the HoneyDrunk.AI repo — solution, packages, contracts, CI, InMemory provider
 
 ## Summary
-Bring the empty `HoneyDrunk.AI` repo from zero to first-shippable state per ADR-0016. Land the solution layout, the six package families (Abstractions + runtime + four provider slots), the seven D3 contracts inside `HoneyDrunk.AI.Abstractions`, default routing/cost/policy implementations in the `HoneyDrunk.AI` runtime, the deterministic InMemory provider, the standard CI pipeline (PR core + release + nightly), and the contract-shape canary scoped to `HoneyDrunk.AI.Abstractions` per ADR-0016 D8 / invariant 41.
+Bring the empty `HoneyDrunk.AI` repo from zero to first-shippable state per ADR-0016. Land the solution layout, the six package families (Abstractions + runtime + four provider slots), the seven D3 contracts inside `HoneyDrunk.AI.Abstractions`, default routing/cost/policy implementations in the `HoneyDrunk.AI` runtime, the deterministic InMemory provider, the standard CI pipeline (PR core + release + nightly), and the contract-shape canary scoped to `HoneyDrunk.AI.Abstractions` per ADR-0016 D8 / invariant 46.
 
 This is the unblocker for the six AI-sector Nodes currently waiting on AI (Capabilities, Operator, Agents, Memory, Knowledge, Evals). After this packet merges and a `0.1.0` tag lands, those Nodes can compile against `HoneyDrunk.AI.Abstractions` and start their own work in parallel.
+
+This packet **also supersedes** the parked ADR-0010 packet at `generated/issue-packets/active/adr-0010-observe-ai-routing-phase-1/04-ai-add-routing-contracts.md` — that packet's three contracts (`IModelRouter`, `IRoutingPolicy`, `ModelCapabilityDeclaration`) are authored here as part of the seven-contract D3 surface. The ADR-0010 packet 04 file is renamed `*.superseded.md` and never filed (see dispatch-plan §Supersedes).
 
 ## Target Repo
 `HoneyDrunkStudios/HoneyDrunk.AI`
 
 ## Motivation
-ADR-0016 establishes *what* HoneyDrunk.AI is and what contracts it exposes. The repo carries a working tree on disk but is empty — no `.slnx`, no projects, no CI, no contracts. Six AI-sector Nodes are blocked on this single repo coming online. Standing it up is the highest-leverage unblock available right now.
+ADR-0016 establishes *what* HoneyDrunk.AI is and what contracts it exposes. The `HoneyDrunkStudios/HoneyDrunk.AI` GitHub repo exists (created during ADR-0016 drafting; carries `.gitignore`, `LICENSE`, `README.md`) but is otherwise empty — no `.slnx`, no projects, no CI, no contracts. The local working tree at `c:/.../HoneyDrunkStudios/HoneyDrunk.AI` does not exist yet — packet 02b cloned it. Six AI-sector Nodes are blocked on this single repo coming online. Standing it up is the highest-leverage unblock available right now.
 
 This packet is intentionally larger than typical bring-up packets because:
 
@@ -316,7 +318,7 @@ jobs:
       project-path: src/HoneyDrunk.AI.Abstractions/HoneyDrunk.AI.Abstractions.csproj
 ```
 
-The path filter ensures the canary only runs when Abstractions changes — keeps PR feedback fast for runtime/provider-only changes. The whole-assembly diff produced by `job-api-compatibility.yml` is sufficient to enforce D8: per D9 invariant 39, Abstractions is the only thing downstream Nodes compile against, so any shape drift in any public type in Abstractions counts.
+The path filter ensures the canary only runs when Abstractions changes — keeps PR feedback fast for runtime/provider-only changes. The whole-assembly diff produced by `job-api-compatibility.yml` is sufficient to enforce D8: per D9 invariant 44, Abstractions is the only thing downstream Nodes compile against, so any shape drift in any public type in Abstractions counts.
 
 ```yaml
 # .github/workflows/release.yml
@@ -351,7 +353,7 @@ This pulls in the StyleCop ruleset, `.editorconfig`, and analyzer suite that eve
 
 ### Documentation
 
-- **Repo `README.md`** — purpose statement, package matrix, "How to consume from a downstream Node" snippet showing `AddHoneyDrunkAI()` + `AddModelProvider<InMemoryModelProvider>()`, link to ADR-0016.
+- **Repo `README.md`** — purpose statement, package matrix, link to ADR-0016, plus a dedicated `## For downstream consumers — canary projects` section showing the minimal `services.AddHoneyDrunkAI().AddModelProvider<InMemoryModelProvider>()` wiring (with a sample `ScriptedResponses` dictionary). This snippet is copy-pasteable into a downstream Node's `.Canary` project and is what the six downstream standup ADRs will model on. Also include a "How to consume from a downstream production host" snippet that registers a real provider plus `IConfigProvider`.
 - **Repo `CHANGELOG.md`** — `## [0.1.0] - 2026-MM-DD` entry covering the entire scaffold landing.
 - **Per-package `README.md`** — purpose, public API surface summary, install command. Required by invariant 12 for new packages.
 - **Per-package `CHANGELOG.md`** — `## [0.1.0]` entry for each package introduced in this packet.
@@ -443,12 +445,19 @@ Project references as appropriate to each `.Tests` project.
 - [ ] Test suite runs and passes — minimum coverage: `DefaultModelRouter` happy-path test with two providers + a cost-first policy, `DefaultCostLedger` accumulation test, `InMemoryChatClient` scripted-response test + default-echo test, `InMemoryEmbeddingGenerator` determinism test.
 - [ ] All projects in the solution carry the same `Version` (0.1.0), excluding test projects (invariant 27).
 - [ ] Manual confirmation that pushing tag `v0.1.0` triggers `release.yml` and produces NuGet packages for the six `src/*` projects (do not actually push the tag — verify the workflow exists and a tag-push trigger is configured).
+- [ ] **No `Microsoft.Extensions.AI` reference anywhere.** `grep -rn "Microsoft.Extensions.AI" src/HoneyDrunk.AI.Abstractions/ src/HoneyDrunk.AI/` returns zero matches. (D6 commits to shape compatibility, not type-identity coupling.)
+- [ ] **No `.github/dependabot.yml` file exists.** Per ADR-0009, dependency-scanning lives in the nightly workflows; no Dependabot config file is committed.
+- [ ] **`ICostLedger` is tenant-agnostic.** `InferenceCost` and `CostSummary` records do not contain `TenantId` or `string Tenant` fields. `ICostLedger.GetSummaryAsync` takes `string scope` (not a typed tenant identifier). Per ADR-0026, per-tenant billing flows through `IBillingEventEmitter` at consumer-Node integration, not from inside AI.
+- [ ] **Repo `README.md` includes a `## For downstream consumers — canary projects` section** showing the minimal `services.AddHoneyDrunkAI().AddModelProvider<InMemoryModelProvider>()` snippet against a `ScriptedResponses` dictionary, copy-pasteable into a downstream Node's `.Canary` project. This is load-bearing for the six downstream standups to model their canary projects on.
 
 ## Human Prerequisites
+- [ ] Packet 02b complete — `HoneyDrunk.AI` repo confirmed on GitHub with org-default branch protection and labels seeded, and the local working tree cloned at `c:/.../HoneyDrunkStudios/HoneyDrunk.AI`.
 - [ ] Confirm OIDC federated credential exists for the `HoneyDrunk.AI` repo's release workflow against the Grid's NuGet publishing identity. Cross-link: [`infrastructure/oidc-federated-credentials.md`](../../../../infrastructure/oidc-federated-credentials.md). The Grid has a standard NuGet publishing identity used by every Node — confirm `repo:HoneyDrunkStudios/HoneyDrunk.AI:ref:refs/tags/v*` is in its federated credential list.
 - [ ] After this packet's PR merges, push tag `v0.1.0` from `main` to trigger the first NuGet publish. Tags are human-pushed per invariant 27.
-- [ ] Repo settings: branch protection on `main` requires `pr-core / core` and `api-compatibility / abstractions-shape` checks, no force-pushes, signed commits not required (matches other Grid repos).
+- [ ] **Branch protection sequencing.** Set branch protection on `main` requiring only `pr-core / core` for the initial scaffolding PR (the `api-compatibility / abstractions-shape` check reports `status: skipped` on the first PR — see acceptance criteria). After the throwaway breaking-change PR confirms the canary fires post-merge, add `api-compatibility / abstractions-shape` to required checks in a follow-up branch-protection update. No force-pushes, signed commits not required (matches other Grid repos).
 - [ ] No Azure resource provisioning required for this packet — HoneyDrunk.AI is a library Node, not a deployable. (When a future packet stands up the cost-rate App Config keys, that packet will carry the App Config provisioning Human Prereq, not this one.)
+- [ ] After this packet's PR merges and `v0.1.0` ships, file a small follow-up to add `HoneyDrunk.AI` to the grid-health aggregator's watched-repos list in `HoneyDrunk.Actions` — only if the aggregator does not auto-discover from `catalogs/nodes.json`. Verify which behavior is in place at the time this prereq is being checked. (If auto-discovery is wired, packet 01's `grid-health.json` edit is sufficient and this prereq is satisfied automatically.)
+- [ ] After this packet's PR merges, file a SonarCloud onboarding follow-up packet for `HoneyDrunk.AI` modeled on `generated/issue-packets/active/adr-0011-code-review-pipeline/06-kernel-sonarcloud-onboarding.md` (or whichever ADR-0011 onboarding packet is the closest match in shape).
 
 ## Referenced Invariants
 
@@ -480,11 +489,11 @@ Project references as appropriate to each `.Tests` project.
 
 > **Invariant 28:** Application code must never hardcode a model name or provider. All model selection goes through `IModelRouter` in HoneyDrunk.AI. Routing policies are stored in App Configuration (ADR-0005) and are operator-configurable without a redeploy. — `DefaultModelRouter` and `DefaultCostLedger` both read from App Config via `IConfigProvider`. No `if (modelId == "gpt-4") ...` branches anywhere.
 
-> **Invariant 39 (this initiative, packet 02):** Downstream AI-sector Nodes take a runtime dependency only on `HoneyDrunk.AI.Abstractions`. Composition against `HoneyDrunk.AI` and any `HoneyDrunk.AI.Providers.*` package is a host-time concern resolved at application startup from App Configuration. — Reinforced in this scaffold by giving `Abstractions` zero HoneyDrunk dependencies so consumers don't transit unintended pins.
+> **Invariant 44 (this initiative, packet 02):** Downstream AI-sector Nodes take a runtime dependency only on `HoneyDrunk.AI.Abstractions`. Composition against `HoneyDrunk.AI` and any `HoneyDrunk.AI.Providers.*` package is a host-time concern resolved at application startup from App Configuration. — Reinforced in this scaffold by giving `Abstractions` zero HoneyDrunk dependencies so consumers don't transit unintended pins.
 
-> **Invariant 40 (this initiative, packet 02):** Token cost rates, routing policies, and capability declarations are sourced from Azure App Configuration via Vault's `IConfigProvider`. Hardcoded rates, policies, or capability declarations in application code are forbidden. — `DefaultCostLedger` reads token prices from `IConfigProvider`; `PolicyLoader` reads `policy:active` and policy-specific config keys.
+> **Invariant 45 (this initiative, packet 02):** Token cost rates, routing policies, and capability declarations are sourced from Azure App Configuration via Vault's `IConfigProvider`. Hardcoded rates, policies, or capability declarations in application code are forbidden. — `DefaultCostLedger` reads token prices from `IConfigProvider`; `PolicyLoader` reads `policy:active` and policy-specific config keys.
 
-> **Invariant 41 (this initiative, packet 02):** The HoneyDrunk.AI Node CI must include a contract-shape canary that fails the build on shape drift to `IChatClient`, `IEmbeddingGenerator`, `IModelProvider`, or `IModelRouter` without a corresponding version bump. — `api-compatibility.yml` calls `HoneyDrunk.Actions/job-api-compatibility.yml` scoped to `HoneyDrunk.AI.Abstractions`. The whole-assembly diff covers all four hot-path contracts plus `IRoutingPolicy`, `ModelCapabilityDeclaration`, `ICostLedger`.
+> **Invariant 46 (this initiative, packet 02):** The HoneyDrunk.AI Node CI must include a contract-shape canary that fails the build on shape drift to `IChatClient`, `IEmbeddingGenerator`, `IModelProvider`, or `IModelRouter` without a corresponding version bump. — `api-compatibility.yml` calls `HoneyDrunk.Actions/job-api-compatibility.yml` scoped to `HoneyDrunk.AI.Abstractions`. The whole-assembly diff covers all four hot-path contracts plus `IRoutingPolicy`, `ModelCapabilityDeclaration`, `ICostLedger`.
 
 ## Referenced ADR Decisions
 
@@ -510,7 +519,8 @@ Project references as appropriate to each `.Tests` project.
 
 ## Dependencies
 - `packet:01` — catalog registration must land first so the Architecture catalogs match what this packet ships. Filing order matters for the `addBlockedBy` graph on The Hive.
-- `packet:02` — invariants 39, 40, 41 must exist in `constitution/invariants.md` before this packet's acceptance criteria reference them by number.
+- `packet:02` — invariants 44, 45, 46 must exist in `constitution/invariants.md` before this packet's acceptance criteria reference them by number. Packet 02 also drops invariant 28's `(Proposed)` qualifier.
+- `packet:02b` — the `HoneyDrunk.AI` GitHub repo must have its standard org settings (branch protection, labels, default branch) applied and its local working tree cloned at `c:/.../HoneyDrunkStudios/HoneyDrunk.AI` before the scaffolding agent can author files. The repo itself already exists on GitHub; packet 02b is the human-only verification + clone chore.
 
 ## Labels
 `feature`, `tier-2`, `ai`, `scaffold`, `adr-0016`
@@ -540,14 +550,16 @@ Project references as appropriate to each `.Tests` project.
 - **Invariant 26:** Packets for .NET code work must include `## NuGet Dependencies`. `HoneyDrunk.Standards` must be on every new .NET project. — Confirmed in the NuGet Dependencies section above.
 - **Invariant 27:** All projects in a solution share one version. — Every `src/*.csproj` ships at `0.1.0`. Test projects do not bump.
 - **Invariant 28:** No hardcoded model name or provider. — `DefaultModelRouter`, `DefaultCostLedger`, and `PolicyLoader` all read from App Config. The InMemory provider's two synthetic models are declared via `ModelCapabilityDeclaration` data, not branched on by string in any consumer.
-- **Invariant 39:** Downstream AI-sector Nodes take a runtime dependency only on `HoneyDrunk.AI.Abstractions`. — Reinforced by keeping Abstractions HoneyDrunk-dependency-free.
-- **Invariant 40:** Token cost rates, routing policies, and capability declarations sourced from App Configuration via `IConfigProvider`. — `DefaultCostLedger` and `PolicyLoader` both read from `IConfigProvider`. No `decimal RatePerKToken = 0.03m` literals anywhere.
-- **Invariant 41:** AI Node CI must include the contract-shape canary on the four hot-path contracts. — `api-compatibility.yml` covers this by scoping to `HoneyDrunk.AI.Abstractions`.
+- **Invariant 44:** Downstream AI-sector Nodes take a runtime dependency only on `HoneyDrunk.AI.Abstractions`. — Reinforced by keeping Abstractions HoneyDrunk-dependency-free.
+- **Invariant 45:** Token cost rates, routing policies, and capability declarations sourced from App Configuration via `IConfigProvider`. — `DefaultCostLedger` and `PolicyLoader` both read from `IConfigProvider`. No `decimal RatePerKToken = 0.03m` literals anywhere.
+- **Invariant 46:** AI Node CI must include the contract-shape canary on the four hot-path contracts. — `api-compatibility.yml` covers this by scoping to `HoneyDrunk.AI.Abstractions`.
 - **Canary on the scaffolding PR is expected to report `status: skipped`, not fail.** The shared `HoneyDrunk.Actions/.github/actions/api/check-compatibility/action.yml` emits `::warning::` and exits 0 with `status: skipped` when `git worktree add` against the baseline ref fails — which it always does on a first PR against an empty repo. Do not treat the skip as a misconfiguration and do not chase it. The scaffolding PR's merge establishes the `main` baseline; verification of the canary actually firing happens **post-merge** via a throwaway breaking-change PR that is reverted after observation.
 - **Strict Abstractions stance is deliberate.** `HoneyDrunk.AI.Abstractions` ships with zero `HoneyDrunk.*` references. This is the user's explicit scoping resolution — see ADR-0016 D2 line 42 (amended by packet 01 to `Microsoft.Extensions.*` only) and `repos/HoneyDrunk.AI/invariants.md:5`. Any GridContext/CorrelationId propagation belongs in the `HoneyDrunk.AI` runtime package (specifically `InferenceTelemetry`), not in Abstractions. `InferenceCost.OperationCorrelationId` is a `string`; `ICostLedger.GetSummaryAsync(string scope, ...)` takes a `string`. Do not import `HoneyDrunk.Kernel.Abstractions` in any `HoneyDrunk.AI.Abstractions` source file.
 - **D3 is canonical, not the "If Accepted" checklist.** Author exactly the seven D3 contracts. Do **not** author `IInferenceResult`. If you find a reference to `IInferenceResult` anywhere in scope (e.g. an old example in the AI sector architecture doc), that is drift to be cleaned up by packet 01 or as a follow-up — do not invent the type just because the ADR's checklist mentions it.
 - **Records drop `I`; interfaces keep it.** `ModelCapabilityDeclaration` is a record (no `I`). The other six contracts are interfaces (with `I`). Supporting record types in the same files (`RoutedModel`, `ModelCandidate`, `RoutingDecision`, `InferenceCost`, `CostSummary`, `ChatMessage`, `ChatCompletion`, `Embedding`, `EmbeddingOptions`, `ChatOptions`) all drop the `I`.
 - **Shape compatibility with `Microsoft.Extensions.AI` is structural, not type-identity.** Match the parameter shapes and member sets where they are stable. Do **not** reference any `Microsoft.Extensions.AI.*` package. The MEAI interop adapter is deferred to Q3 2026 per D6.
+- **Per ADR-0009, no `.github/dependabot.yml` is created.** Dependency-scanning is delegated to `nightly-deps.yml` and `nightly-security.yml` calling `HoneyDrunk.Actions` reusable workflows. GitHub Dependabot security alerts remain enabled at repo settings (org default — packet 02b confirms). No grouped or per-package `dependabot.yml` configuration file is committed to this repo.
+- **`ICostLedger` is internal cost accounting only — do NOT add `TenantId` or `string Tenant` fields to `InferenceCost` / `CostSummary` in this packet.** Per ADR-0026 (Accepted 2026-05-02), tenant-scoped billing events emit through `IBillingEventEmitter` at the consumer-Node integration layer, not from inside AI. `ICostLedger.GetSummaryAsync(string scope, ...)` keeps `string` for scope. Per-tenant AI cost rollups are a follow-up under whichever Node first commercializes inference (see PDR-0002 / ADR-0026 D10), not in scope here.
 
 **Key Files:**
 - `HoneyDrunk.AI.slnx`, `Directory.Build.props`

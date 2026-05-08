@@ -119,13 +119,15 @@ Accepting this ADR — and landing the follow-up scaffold packet that produces a
 - **HoneyDrunk.Knowledge** — same, for retrieval embedding.
 - **HoneyDrunk.Evals** — can target `IModelProvider` and the `InMemory` provider as its deterministic fixture.
 
-### New invariants (proposed for `constitution/invariants.md`)
+### New invariants (assigned in `constitution/invariants.md` at acceptance)
 
-These extend the AI-related invariants already proposed in ADR-0010 (28 on hardcoded model names). Numbering is tentative — scope agent finalizes at acceptance.
+These extend the AI-related invariants already proposed in ADR-0010 (28 on hardcoded model names). Final numbers, assigned by the scope agent — 39 (ADR-0026 multi-tenant) and 40–43 (ADR-0019 Communications) were taken before this initiative scoped, so the next free slots are 44/45/46:
 
-- **Downstream AI-sector Nodes take a runtime dependency only on `HoneyDrunk.AI.Abstractions`.** Composition against `HoneyDrunk.AI` and any provider package is a host-time concern. See ADR-0016 D9.
-- **Token cost rates, routing policies, and capability declarations are sourced from Azure App Configuration via Vault's `IConfigProvider`.** Hardcoded rates or policies in application code are forbidden. See ADR-0016 D5.
-- **The AI Node CI must include a contract-shape canary for `IChatClient`, `IEmbeddingGenerator`, `IModelProvider`, and `IModelRouter`.** Shape drift on any of the four is a build failure, not a downstream discovery. See ADR-0016 D8.
+- **Invariant 44 — Downstream AI-sector Nodes take a runtime dependency only on `HoneyDrunk.AI.Abstractions`.** Composition against `HoneyDrunk.AI` and any provider package is a host-time concern. See ADR-0016 D9.
+- **Invariant 45 — Token cost rates, routing policies, and capability declarations are sourced from Azure App Configuration via Vault's `IConfigProvider`.** Hardcoded rates or policies in application code are forbidden. See ADR-0016 D5.
+- **Invariant 46 — The AI Node CI must include a contract-shape canary for `IChatClient`, `IEmbeddingGenerator`, `IModelProvider`, and `IModelRouter`.** Shape drift on any of the four is a build failure, not a downstream discovery. See ADR-0016 D8.
+
+Acceptance also drops invariant 28's `(Proposed)` qualifier (ADR-0010 is now Accepted; the AI scaffold makes invariant 28 enforceable). This was originally a paired Architecture edit in ADR-0010 packet 04, which is superseded by the ADR-0016 standup initiative.
 
 ### Contract-shape canary becomes a requirement
 
