@@ -3,14 +3,14 @@
 **Status:** Proposed
 **Date:** 2026-05-05
 **Deciders:** HoneyDrunk Studios
-**Sector:** Apps (consumer) · separate product line from the Grid's commercial direction
+**Sector:** Market
 **Codename:** Wayside (real product name TBD — previous codename was "Lantern Line")
 
 ---
 
 ## Context
 
-The Grid's commercial direction is converging on B2B-shaped products: HoneyDrunk Notify (PDR-0002) sells multichannel orchestration to indie .NET devs. That is the right wedge for the Grid's first revenue-bearing surface. It is also a product line whose buyer is a developer.
+Wayside is a separate consumer product line from the Grid's current commercial direction. The Grid's commercial direction is converging on B2B-shaped products: HoneyDrunk Notify (PDR-0002) sells multichannel orchestration to indie .NET devs. That is the right wedge for the Grid's first revenue-bearing surface. It is also a product line whose buyer is a developer.
 
 The studio's brief is broader than that. The user wants to build apps with soul for regular humans — not dev tooling, not B2B SaaS. The 2026-05-05 brainstorm produced three locked codenames (Lately, Wayside, Hearth). This PDR addresses **Wayside**: a walking app that turns everyday foot travel into a personal mythology of the city, with a public layer of GPS-pinned notes left by strangers.
 
@@ -609,7 +609,7 @@ The kill clock starts at v1 public launch.
 
 ### New Node
 
-**`HoneyDrunk.Wayside`** — a new Node in a (proposed new) **Apps** sector, distinct from Ops, Core, AI, and Meta. The Apps sector is the Grid-internal home for consumer-facing products that are not B2B (Notify Cloud is B2B and lives in Ops; Wayside is consumer and lives in Apps).
+**`HoneyDrunk.Wayside`** — a proposed consumer Node in the canonical **Market** sector, distinct from Ops, Core, AI, and Meta. This PDR uses **Apps** only as a working portfolio label; a future constitution amendment may formalize that label if the studio decides Market is too broad.
 
 The standup ADR (a follow-up artifact) defines:
 - Package families: `HoneyDrunk.Wayside.Abstractions`, `HoneyDrunk.Wayside`, `HoneyDrunk.Wayside.Web` (the API), `HoneyDrunk.Wayside.Moderation` (the pipeline), `HoneyDrunk.Wayside.Print.Lulu` (the POD adapter).
@@ -738,11 +738,11 @@ The marketing budget at v1 is implicit (solo-dev time + AI agent time) plus opti
 - **The Grid acquires a second consumer-facing product line.** Notify Cloud is B2B; Wayside is B2C. The studio is positioned as a portfolio of products, not a single-product studio.
 - **The Grid's internal Notify and Communications gain a second non-trivial production load** beyond Notify Cloud.
 - **The studio's revenue diversifies** — subscription (Lantern+), one-time annual (Atlas), and B2B (Notify Cloud) — reducing concentration risk.
-- **The Apps sector is established** as the Grid's home for consumer products. Future consumer apps (Hearth, Lately, future) live there.
+- **The consumer-app portfolio is established** under the canonical Market sector. Future consumer apps (Hearth, Lately, future) can inherit the pattern.
 - **The studio's public narrative evolves** from "B2B dev tool company" to "studio with a consumer line and a B2B line." This is a meaningful brand shift.
 
 If Wayside is killed (§O):
-- **The Apps sector still exists** for Hearth and any other consumer products.
+- **The consumer-app portfolio still exists** for Hearth and any other consumer products.
 - **The moderation pipeline knowledge is reusable** for any future UGC-bearing app.
 - **The Atlas POD pipeline is reusable** — Hearth's Yearly Book ($34 hardcover) uses the same plumbing.
 - **A retrospective PDR is written** documenting what the wedge missed.
@@ -841,7 +841,7 @@ Per §O, decide: continue, pivot (e.g., make public layer Lantern+-only), or kil
 | Mapbox vs. MapLibre for v1 | Architecture | Default proposed: Mapbox for v1, MapLibre as the migration path. |
 | POD provider final choice | Operations | Default proposed: Lulu Direct API for v1.5; Mixam evaluated for premium Atlas tier. |
 | Subscription billing — App Store IAP vs. Stripe via web | Architecture / Operations | App Store IAP is required for in-app subscriptions (Apple's rule); Stripe via a web-flow is permitted for purchases initiated outside the app. Likely answer: IAP for primary, Stripe for Atlas (which is a physical product, exempt from IAP). |
-| Whether to build the Apps sector formally now or wait | Architecture | Default proposed: formalize Apps sector when the standup ADR is opened, not now. |
+| Whether to formalize Apps as a sector/sub-sector or keep consumer apps in Market | Architecture | Default proposed: decide when the standup ADR is opened, not in this PDR. |
 | How aggressive the moderation classifier should be (false positive tolerance) | Product / Trust & Safety | Default proposed: erring on conservative — false positives surface "please revise" UX, false negatives go to manual review. Tuning is a launch-time process. |
 | Manual-review tool surface (HoneyHub view vs. standalone admin app) | Architecture | Default proposed: HoneyHub view for v1 (HoneyHub is the studio's internal control plane; surfacing the moderation queue there is consistent). Standalone admin app is a v2 concern. |
 | Whether anonymous notes carry any device-side signing for verifying authenticity (or are purely server-trusted) | Architecture | Default proposed: server-trusted with rate-limited per-pseudonym. Cryptographic signing is overkill for v1. |
@@ -857,8 +857,8 @@ Per §O, decide: continue, pivot (e.g., make public layer Lantern+-only), or kil
 
 | Artifact | Type | Purpose |
 |---|---|---|
-| `HoneyDrunk.Wayside` Node standup ADR | ADR | Stands up the new Node per the standup-ADR convention. Names package families, downstream coupling rule, contract-shape canary, dependency surface. Establishes the Apps sector. |
-| Apps sector definition | Constitution amendment | Adds the Apps sector to `constitution/sectors.md` as the home for consumer-facing products. |
+| `HoneyDrunk.Wayside` Node standup ADR | ADR | Stands up the new Node per the standup-ADR convention. Names package families, downstream coupling rule, contract-shape canary, dependency surface. Uses Market unless a taxonomy ADR formalizes Apps first. |
+| Consumer-app taxonomy | Constitution amendment | Decides whether consumer-facing products stay in Market or move to a dedicated Apps sector/sub-sector. |
 | Mochi persona and prompt design doc | Design doc | Locks the literary persona, the prompt shape, the output filter, and the filler-line catalog. The most critical product surface; deserves its own document. |
 | Public-layer moderation pipeline ADR | ADR | Architects the six-layer moderation stack (PII filter, content classifier, vision moderation, echo signal, 30-day decay, report flow). Defines the manual-review surface and the abuse-detection thresholds. |
 | Watercolor tile pipeline design doc | Design doc | The illustrator-facing tooling (tile rendering, palette specs, style versioning) and the runtime tile-serving plumbing. |
@@ -883,7 +883,7 @@ Concrete decisions the user needs to settle before any code work on Wayside begi
 4. **Mochi species and persona profile.** Fox / cat / tanuki, and the literary register (Murakami / Calvino / Ogawa / blend). The persona profile is the longest-lead-time creative work in the build.
 5. **Illustrator commission.** Wayside's watercolor identity requires a real illustrator. Identifying and contracting one is the longest-lead-time engineering-adjacent dependency.
 6. **MVP scope confirmation.** Confirm the dual-thesis v1 (private + public + Mochi) is the scope. Fallback to private-only-v1 is the documented contingency, not the plan.
-7. **Apps sector formalization.** When the build packet opens, the Apps sector is added to `constitution/sectors.md` as part of the Node standup ADR.
+7. **Consumer-app taxonomy formalization.** When the build packet opens, Architecture decides whether Wayside remains in Market or whether an Apps sector/sub-sector is added to `constitution/sectors.md` as part of the Node standup ADR.
 8. **Privacy posture sign-off.** The "what data leaves the device" matrix in §F is committed before any production launch.
 9. **Public-layer moderation review.** The six-layer moderation strategy (§C) is reviewed and signed off before any non-internal user can publish a note.
 10. **Kill-criteria acknowledgment.** The 12-month thresholds (500 Lantern+ subscribers, 2,000 Atlases, moderation cost vs. revenue) are accepted as the kill bar.

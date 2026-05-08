@@ -3,7 +3,7 @@
 **Status:** Proposed
 **Date:** 2026-05-05
 **Deciders:** HoneyDrunk Studios
-**Sector:** Apps (new) · AI · Ops
+**Sector:** Market / AI / Ops
 **Codename:** Hearth (final product name TBD; previous codename was *Yuki*)
 **Framing:** Personal growth / self-improvement town. Journaling is one input, not the whole product.
 
@@ -97,7 +97,7 @@ Hearth is the consumer wedge.
 
 Hearth is committed as a multi-platform (iOS first, Android second) consumer app, built as a new product surface inside the HoneyDrunk Studios brand. It joins Notify Cloud (developer wedge, per PDR-0002) as a parallel commercial product, not a successor — they share infrastructure (Auth, Vault, Notify, Communications, Pulse) but target different audiences, run on different release cadences, and live under separate sub-brands.
 
-Hearth introduces a new sector to the Grid: **Apps**. The Apps sector is the home for consumer-facing product surfaces (Hearth, future game/app candidates). It is distinct from Ops (Notify, Communications, Pulse — operational infrastructure), Core (Kernel, Transport, Data, Auth — runtime foundations), AI (HoneyDrunk.AI and the AI-sector Nodes), and Meta (Studios, HoneyHub).
+Hearth is proposed as a consumer product in the canonical **Market** sector. This PDR uses **Apps** as a working portfolio label for consumer-facing product surfaces (Hearth, future game/app candidates), but does not amend the sector taxonomy itself. A follow-up constitution amendment can decide whether Apps becomes a dedicated sector/sub-sector or remains a Market portfolio.
 
 ### B. Hearth is a personal-growth town, not a pure journaling app
 
@@ -509,7 +509,7 @@ A soft review trigger (not automatic kill):
 
 ### New sector — Apps
 
-Hearth introduces the **Apps** sector to the Grid. The Apps sector is the home for consumer-facing product surfaces. It is distinct from:
+Hearth is part of the canonical **Market** sector and may later anchor an **Apps** portfolio/sub-sector for consumer-facing product surfaces. That future taxonomy should remain distinct from:
 
 - **Core** (Kernel, Transport, Data, Auth) — runtime foundations.
 - **Ops** (Notify, Communications, Pulse, Vault, Web.Rest, Studios, Notify.Cloud) — operational and developer-tools infrastructure.
@@ -517,18 +517,18 @@ Hearth introduces the **Apps** sector to the Grid. The Apps sector is the home f
 - **Meta** (HoneyHub) — internal control plane.
 - **Apps** (Hearth — and any future consumer apps) — consumer product surfaces.
 
-The Apps sector follows the same conventions as the rest of the Grid: per-Node repo, semantic versioning, CHANGELOG, README, canary tests, GitHub Actions CI/CD.
+Consumer app Nodes follow the same conventions as the rest of the Grid: per-Node repo, semantic versioning, CHANGELOG, README, canary tests, GitHub Actions CI/CD.
 
 ### New repos and Nodes
 
 | Node | Sector | Purpose |
 |---|---|---|
-| **HoneyDrunk.Hearth** | Apps | The Hearth iOS app (and later Android). Consumer product surface, not a library Node. |
-| **HoneyDrunk.Hearth.Backend** | Apps | Hearth's server-side runtime. Tomoe generation orchestration, friend graph, town sync, account management, Yearly Artifact pipeline. |
-| **HoneyDrunk.Hearth.ArtPipeline** | Apps (or Studios sub-tool) | Watercolor town render pipeline — produces in-app town images and Yearly Artifact covers. Likely AI-assisted procedural generation; pipeline architecture deferred to a follow-up ADR. |
-| **HoneyDrunk.Hearth.Authoring** | Apps (internal-only) | NPC arc authoring tool. Internal web app. Not customer-facing. |
+| **HoneyDrunk.Hearth** | Market | The Hearth iOS app (and later Android). Consumer product surface, not a library Node. |
+| **HoneyDrunk.Hearth.Backend** | Market | Hearth's server-side runtime. Tomoe generation orchestration, friend graph, town sync, account management, Yearly Artifact pipeline. |
+| **HoneyDrunk.Hearth.ArtPipeline** | Market (or Studios sub-tool) | Watercolor town render pipeline — produces in-app town images and Yearly Artifact covers. Likely AI-assisted procedural generation; pipeline architecture deferred to a follow-up ADR. |
+| **HoneyDrunk.Hearth.Authoring** | Market (internal-only) | NPC arc authoring tool. Internal web app. Not customer-facing. |
 
-The Apps sector is permitted to build product-specific Nodes that do not follow the Abstractions/Runtime split that Core and Ops Nodes follow. Hearth.Backend is a runtime application, not a library; it has its own composition root and is not consumed by other Grid Nodes.
+Consumer app Nodes are permitted to build product-specific Nodes that do not follow the Abstractions/Runtime split that Core and Ops Nodes follow. Hearth.Backend is a runtime application, not a library; it has its own composition root and is not consumed by other Grid Nodes.
 
 ### Dependencies on existing Grid Nodes
 
@@ -601,7 +601,7 @@ The watercolor town render is the highest-art-pipeline-risk surface. Three optio
 
 **Selected for v1: Option 1 (pre-rendered with conditional layers), with hand-painted base assets and procedural placement of user-specific elements.** The aesthetic is hand-painted; the procedural composition is bounded. Option 3 (AI-generated) is a v2 exploration — specifically for the Yearly Artifact cover, where a per-user unique illustration justifies the per-user generation cost.
 
-This decision is load-bearing on the Apps sector's identity. Hearth's art is hand-painted. Future Apps-sector products inherit this commitment unless they explicitly justify otherwise.
+This decision is load-bearing on the consumer-app portfolio's identity. Hearth's art is hand-painted. Future Apps-sector products inherit this commitment unless they explicitly justify otherwise.
 
 #### Tomoe LLM
 
@@ -723,7 +723,7 @@ The Yearly Artifact ($34) is **not subject to Apple's cut** — it is a physical
 
 ### Short-term (next 9–12 months)
 
-- **A new Apps sector** is added to the Grid. `constitution/sectors.md` and `catalogs/nodes.json` updated.
+- **Consumer-app taxonomy** is resolved. `constitution/sectors.md` and `catalogs/nodes.json` are updated only if Architecture accepts a dedicated Apps label.
 - **New repos** (`HoneyDrunk.Hearth`, `HoneyDrunk.Hearth.Backend`, `HoneyDrunk.Hearth.ArtPipeline`, `HoneyDrunk.Hearth.Authoring`) are scaffolded. Each gets its own standup ADR per the standup-ADR convention.
 - **Hearth.Backend ships on Azure Container Apps** under ADR-0015's pattern, with its own Vault, App Configuration, and telemetry stream.
 - **HoneyDrunk.AI / IModelRouter** ships its first high-volume external-content workload (Tomoe). The routing-policy surface gets real production pressure.
@@ -735,7 +735,7 @@ The Yearly Artifact ($34) is **not subject to Apple's cut** — it is a physical
 
 If Hearth clears the kill criteria:
 
-- **The Apps sector is established** as a live, revenue-bearing surface. Future consumer products (Lately, Wayside, a HoneyPlay narrative game) inherit Hearth's patterns: privacy-first, on-device-first, hand-authored-where-it-matters.
+- **The consumer-app portfolio is established** as a live, revenue-bearing surface. Future consumer products (Lately, Wayside, a HoneyPlay narrative game) inherit Hearth's patterns: privacy-first, on-device-first, hand-authored-where-it-matters.
 - **The studio runs two commercial products** (Notify Cloud + Hearth) on different audiences, different cadences, different revenue shapes. Diversified single-studio risk.
 - **Hearth's success funds the AI sector** at consumer scale — the AI sector's nine planned Nodes have a real consumer to pull them forward.
 - **The Yearly Artifact economy** matures. The studio sells thousands of hardcovers a year; this is a small but real revenue line and a major brand artifact.
@@ -748,7 +748,7 @@ If Hearth does not clear the kill criteria:
 - **Founding Townsfolk** receive a refund pro-rated against an "expected lifetime" framework documented in the ToS.
 - **A retrospective PDR** is written documenting what failed (the no-streaks thesis, Tomoe trust, art pipeline, conversion economics).
 - **Hearth.Backend, the iOS app, and authoring tools** are archived; the on-device sentiment classifier and the Tomoe prompt structure are kept as research assets.
-- **The Apps sector remains** but is dormant until the next consumer product pursues it.
+- **The consumer-app portfolio remains** but is dormant until the next consumer product pursues it.
 
 Either outcome generates more learning than not building Hearth.
 
@@ -760,7 +760,7 @@ Either outcome generates more learning than not building Hearth.
 
 - This PDR moves to **Accepted**.
 - Standup ADRs for `HoneyDrunk.Hearth`, `HoneyDrunk.Hearth.Backend`, `HoneyDrunk.Hearth.ArtPipeline`, `HoneyDrunk.Hearth.Authoring`.
-- Apps sector added to `constitution/sectors.md`.
+- Consumer-app taxonomy resolved in `constitution/sectors.md` if needed.
 - The Tomoe persona and system prompt v0 are drafted (writing exercise, not engineering).
 - The watercolor art direction (color palette, brush style, building shapes, three reference scenes) is locked.
 - Print-on-demand provider side-by-side test scheduled (Lulu, Blurb, Printify Pro — order sample 3-up books).
@@ -865,7 +865,7 @@ If targets are met, Hearth becomes a sustained product line. If targets are miss
 | `HoneyDrunk.Hearth` (iOS app) standup ADR | ADR | Stands up the iOS app repo. Tech stack (SwiftUI, Core ML), local storage shape, sync protocol, on-device ML pipeline. |
 | `HoneyDrunk.Hearth.ArtPipeline` standup ADR | ADR | Stands up the watercolor render pipeline. Asset format, conditional layer composition, Yearly Artifact cover generation pipeline. |
 | `HoneyDrunk.Hearth.Authoring` standup ADR | ADR | Internal NPC arc authoring tool. Web app stack, theme taxonomy schema, content-versioning approach. |
-| Apps sector definition addition to `constitution/sectors.md` | Constitution amendment | Adds the Apps sector and the boundary rules between Apps and Ops/Core/AI. |
+| Consumer-app taxonomy addition to `constitution/sectors.md` | Constitution amendment | Decides whether Apps becomes a dedicated sector/sub-sector and defines boundary rules between consumer apps and Ops/Core/AI. |
 | Tomoe generation pipeline ADR | ADR | Two-pass generation, system prompt versioning, tone-evaluator pass, safety-routing path for crisis indicators, retention policy for journal-text-in-context. |
 | Sentiment-responsive environment engine design doc | Design doc | The mapping table from sentiment vector to environment cues. Smoothing function. Edge cases. |
 | NPC arc authoring conventions design doc | Design doc | Theme taxonomy, chapter shape, branching rules, voice guidelines, dialogue review process. |

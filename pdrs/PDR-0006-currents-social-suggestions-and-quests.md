@@ -3,7 +3,7 @@
 **Status:** Proposed
 **Date:** 2026-05-06
 **Deciders:** HoneyDrunk Studios
-**Sector:** Apps (consumer) · AI · Social
+**Sector:** Market / AI / Social
 **Codename:** Currents (final product name TBD)
 
 ---
@@ -46,7 +46,7 @@ The word "quest" is dangerous. If Currents becomes XP, badges, streaks, or fake 
 
 ### 5. The product must be smaller than Hearth
 
-Currents should not require a complex art pipeline, location tracking, marketplace liquidity, or high-risk UGC moderation at v1. It should be ship-able as a lean mobile/web app with profiles, suggestions, small groups, and shareable prompts.
+Currents should not require a complex art pipeline, location tracking, marketplace liquidity, or high-risk UGC moderation at v1. It should be shippable as a lean mobile/web app with profiles, suggestions, small groups, and shareable prompts.
 
 ---
 
@@ -237,9 +237,9 @@ The user should never feel tricked into thinking a model recommendation came fro
 
 | Node | Sector | Purpose |
 |---|---|---|
-| **HoneyDrunk.Currents** | Apps | Consumer app surface for active currents, suggestions, prompts, and social circles. |
-| **HoneyDrunk.Currents.Backend** | Apps | API/runtime for accounts, currents, circles, suggestions, prompts, and notifications. |
-| **HoneyDrunk.Currents.Recs** | Apps / AI | Recommendation and prompt-generation service. May start inside Backend and split later. |
+| **HoneyDrunk.Currents** | Market | Consumer app surface for active currents, suggestions, prompts, and social circles. |
+| **HoneyDrunk.Currents.Backend** | Market | API/runtime for accounts, currents, circles, suggestions, prompts, and notifications. |
+| **HoneyDrunk.Currents.Recs** | Market / AI | Recommendation and prompt-generation service. May start inside Backend and split later. |
 
 ### Dependencies on existing Grid Nodes
 
