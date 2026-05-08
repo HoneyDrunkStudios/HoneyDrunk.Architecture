@@ -190,6 +190,38 @@ with:
 
 > `| `HoneyDrunk.AI.Providers.InMemory` | Provider | Deterministic test double for Evals and CI |`
 
+### `repos/HoneyDrunk.AI/boundaries.md` — line 7 (provider list drift)
+
+Current text on line 7 (under `## What AI Owns`):
+
+> `- Provider adapters (OpenAI, Anthropic, Azure OpenAI, local models)`
+
+Replace with:
+
+> `- Provider adapters (OpenAI, Anthropic, Azure OpenAI, InMemory test double)`
+
+The same "Providers.Local → Providers.InMemory" rationale that applies elsewhere applies here. The "local models" framing is retired from D2.
+
+### `repos/HoneyDrunk.AI/invariants.md` — cross-references and packaging clarification
+
+Two surface edits to keep this file aligned with the constitutional invariants packet 02 lands and with ADR-0016 D2/D7.
+
+**(a) Cross-reference the new constitutional invariants (44/45/46).** This file is repo-scoped (lives under `repos/HoneyDrunk.AI/`) and supplements `constitution/invariants.md`. Add a one-line note immediately after the existing list of seven repo-scoped invariants pointing readers at the constitutional invariants that govern AI behavior:
+
+> `_Constitutional invariants 28, 44, 45, 46 (in `constitution/invariants.md`) also apply — hardcoded model names forbidden (28); downstream-only Abstractions coupling (44); App-Config-sourced rates and policies (45); contract-shape canary in CI (46)._`
+
+**(b) Tighten invariant 6 to localize GridContext propagation in the runtime package.** Current invariant 6:
+
+> `6. **GridContext is propagated on every inference call.**`
+> `   CorrelationId and CausationId flow through to provider requests for end-to-end tracing.`
+
+Replace with:
+
+> `6. **GridContext is propagated on every inference call — by the AI runtime package, not by Abstractions.**`
+> `   CorrelationId and CausationId flow through to provider requests for end-to-end tracing. Implementation lives in HoneyDrunk.AI runtime (specifically InferenceTelemetry); HoneyDrunk.AI.Abstractions stays HoneyDrunk-dependency-free per invariant 1.`
+
+This makes the dependency-clean Abstractions stance explicit at the repo-scoped level.
+
 ### `repos/HoneyDrunk.AI/active-work.md` — lines 22–26
 
 The existing list reads:
@@ -214,7 +246,33 @@ Replace the trailing `Local` line so the list reads:
 
 ### Stale `Providers.Local` sweep
 
-Before opening the PR, grep `catalogs/` and `repos/HoneyDrunk.AI/` for any remaining `Providers.Local` or `local/ONNX` strings the explicit fix list above missed. None should remain after this packet. The grep is a hard check, not a best-effort.
+Before opening the PR, grep `catalogs/` and `repos/HoneyDrunk.AI/` for any remaining `Providers.Local` or `local/ONNX` or `local models` strings the explicit fix list above missed. None should remain after this packet. The grep is a hard check, not a best-effort.
+
+### `relationships.json` honeydrunk-ai dependency direction — verify, don't edit
+
+`catalogs/relationships.json` line 185 currently reads `"consumes": ["honeydrunk-kernel", "honeydrunk-vault"]` for `honeydrunk-ai`. Per ADR-0016 D7, this is correct as-is — `honeydrunk-pulse` must NOT appear in the `consumes` array. As an acceptance check (verify-don't-edit):
+
+- Open `catalogs/relationships.json`, find the `honeydrunk-ai` block (around line 184).
+- Confirm `consumes` is exactly `["honeydrunk-kernel", "honeydrunk-vault"]` — no `honeydrunk-pulse`.
+- If `honeydrunk-pulse` is present, remove it. Otherwise no edit is needed; this is a confirmation only.
+
+The integration-points doc at `repos/HoneyDrunk.AI/integration-points.md` already states the Pulse row as "no runtime dependency" — also verify-don't-edit; if drift is present, fix it in the same PR.
+
+### `adrs/ADR-0016-stand-up-honeydrunk-ai-node.md` — `If Accepted` checklist correction (line 12)
+
+The checklist on line 12 of the ADR currently reads:
+
+> `- [ ] Add entries to \`catalogs/contracts.json\` for the seven exposed contracts: \`IChatClient\`, \`IEmbeddingGenerator\`, \`IInferenceResult\`, \`IModelProvider\`, \`IModelRouter\`, \`IRoutingPolicy\`, \`ModelCapabilityDeclaration\``
+
+Replace `IInferenceResult` with `ICostLedger` so the checklist matches the canonical D3 surface this packet lands:
+
+> `- [ ] Add entries to \`catalogs/contracts.json\` for the seven exposed contracts: \`IChatClient\`, \`IEmbeddingGenerator\`, \`IModelProvider\`, \`IModelRouter\`, \`IRoutingPolicy\`, \`ModelCapabilityDeclaration\`, \`ICostLedger\``
+
+Same correction may also be needed on line 15 of the ADR (the canary obligation lists `IChatClient`, `IEmbeddingGenerator`, `IInferenceResult`, `IModelProvider`). Per D8, the four hot-path contracts are `IChatClient`, `IEmbeddingGenerator`, `IModelProvider`, `IModelRouter` — replace `IInferenceResult` with `IModelRouter` on line 15:
+
+> `- [ ] Wire the contract-shape canary into Actions (freezes \`IChatClient\`, \`IEmbeddingGenerator\`, \`IModelProvider\`, \`IModelRouter\` shapes)`
+
+Document both line corrections in the PR body alongside the D2 line 42 amendment.
 
 ### `adrs/ADR-0016-stand-up-honeydrunk-ai-node.md` — D2 line 42 amendment
 
@@ -235,13 +293,16 @@ Append to the Unreleased section a line: `Architecture: Register ADR-0016 standu
 
 ## Affected Files
 - `catalogs/contracts.json`
-- `catalogs/relationships.json`
+- `catalogs/relationships.json` (verify `consumes` does not include `honeydrunk-pulse`; edit `exposes.contracts` and `exposes.packages`)
 - `catalogs/grid-health.json`
 - `catalogs/nodes.json`
 - `constitution/ai-sector-architecture.md`
 - `repos/HoneyDrunk.AI/overview.md`
 - `repos/HoneyDrunk.AI/active-work.md`
-- `adrs/ADR-0016-stand-up-honeydrunk-ai-node.md` (D2 line 42 amendment only)
+- `repos/HoneyDrunk.AI/boundaries.md` (line 7 — drop "local models" → "InMemory test double")
+- `repos/HoneyDrunk.AI/invariants.md` (cross-reference invariants 28/44/45/46; tighten invariant 6)
+- `repos/HoneyDrunk.AI/integration-points.md` (verify-don't-edit; ensure Pulse row says "no runtime dependency")
+- `adrs/ADR-0016-stand-up-honeydrunk-ai-node.md` (D2 line 42 amendment + line 12 / line 15 checklist contract-name fixes)
 - `CHANGELOG.md`
 
 ## NuGet Dependencies
@@ -265,14 +326,20 @@ None. Architecture is a knowledge repo — no .NET projects.
 - [ ] `constitution/ai-sector-architecture.md` line ~114 split into "Depends on" (no Pulse) and "Emits to (no runtime dependency): Pulse" lines.
 - [ ] `repos/HoneyDrunk.AI/overview.md` line 21 reads the new `Providers.InMemory` row instead of `Providers.Local`.
 - [ ] `repos/HoneyDrunk.AI/active-work.md` lines 22–26 list `InMemory` (deterministic test double for Evals and CI) as the fourth provider slot — no `Local` (ONNX — deferred) bullet.
-- [ ] `grep -nr "Providers.Local\|local/ONNX" catalogs/ repos/HoneyDrunk.AI/` returns no matches after edits.
+- [ ] `repos/HoneyDrunk.AI/boundaries.md` line 7 reads `Provider adapters (OpenAI, Anthropic, Azure OpenAI, InMemory test double)` — no `local models`.
+- [ ] `repos/HoneyDrunk.AI/invariants.md` carries a one-line cross-reference to constitutional invariants 28/44/45/46 and invariant 6 reads as the runtime-localized GridContext propagation rule.
+- [ ] `grep -nr "Providers.Local\|local/ONNX\|local models" catalogs/ repos/HoneyDrunk.AI/` returns no matches after edits.
+- [ ] `catalogs/relationships.json` `honeydrunk-ai.consumes` is `["honeydrunk-kernel", "honeydrunk-vault"]` exactly — no `honeydrunk-pulse`. (Verify; edit only if drift is present.)
+- [ ] `repos/HoneyDrunk.AI/integration-points.md` Pulse row reads "no runtime dependency". (Verify; edit only if drift is present.)
 - [ ] `adrs/ADR-0016-stand-up-honeydrunk-ai-node.md` D2 line 42 amended from `Zero runtime dependencies beyond \`HoneyDrunk.Kernel\` abstractions.` to `Zero runtime dependencies beyond \`Microsoft.Extensions.*\` abstractions.`
-- [ ] `CHANGELOG.md` Unreleased section updated with all five drift reconciliations called out.
-- [ ] PR body explicitly notes the three "ADR drift reconciled" items: (1) D3-canonical resolution of the `IInferenceResult` vs `ICostLedger` checklist mismatch, (2) `Providers.Local` → `Providers.InMemory` rename completing D2's first-wave provider list, (3) D2 line 42 amendment from `HoneyDrunk.Kernel`-allowed to `Microsoft.Extensions.*`-only Abstractions stance.
+- [ ] `adrs/ADR-0016-stand-up-honeydrunk-ai-node.md` line 12 `If Accepted` checklist item updated: `IInferenceResult` → `ICostLedger` so the seven contracts match D3.
+- [ ] `adrs/ADR-0016-stand-up-honeydrunk-ai-node.md` line 15 `If Accepted` canary item updated: `IInferenceResult` → `IModelRouter` so the four frozen contracts match D8.
+- [ ] `CHANGELOG.md` Unreleased section updated with all drift reconciliations called out.
+- [ ] PR body explicitly notes the four "ADR drift reconciled" items: (1) D3-canonical resolution of the `IInferenceResult` vs `ICostLedger` checklist mismatch (line 12 + line 15), (2) `Providers.Local` → `Providers.InMemory` rename completing D2's first-wave provider list, (3) D2 line 42 amendment from `HoneyDrunk.Kernel`-allowed to `Microsoft.Extensions.*`-only Abstractions stance, (4) `repos/HoneyDrunk.AI/{boundaries.md, invariants.md}` aligned to D2 (provider-list) and D7 (runtime-vs-Abstractions GridContext propagation).
 
 ## Human Prerequisites
-- [ ] Reconcile the `IInferenceResult` mention in ADR-0016's "If Accepted" checklist (line 12 of `adrs/ADR-0016-stand-up-honeydrunk-ai-node.md`). The cleanest path is to update the checklist to match D3 (`ICostLedger` instead of `IInferenceResult`) when flipping ADR-0016 to Accepted. Either resolve in this packet's PR or hold as a separate one-line edit.
 - [ ] Confirm the D2 line 42 amendment in this packet (Kernel-abstractions → `Microsoft.Extensions.*` only) is the intended stance before merge — this is the user's explicit scoping resolution but it is also the kind of decision that benefits from a final eye before it lands in the canonical ADR.
+- [ ] Confirm the line 12 / line 15 `IInferenceResult` corrections in the ADR's `If Accepted` checklist match the user's understanding of D3 (the seven exposed contracts) and D8 (the four frozen-shape contracts) — both edits are mechanical drift fixes, but ADR Consequences edits warrant a quick eye.
 
 ## Referenced Invariants
 
@@ -321,13 +388,16 @@ None. This packet is the foundation of the initiative — it can land before the
 
 **Key Files:**
 - `catalogs/contracts.json` — replace the `honeydrunk-ai` block's interfaces array; drop `local` from `IModelProvider` description
-- `catalogs/relationships.json` — swap `IInferenceResult` for `ICostLedger` in `exposes.contracts`; swap `Providers.Local` for `Providers.InMemory` in `exposes.packages` (line 191)
+- `catalogs/relationships.json` — verify `consumes` does not include `honeydrunk-pulse`; swap `IInferenceResult` for `ICostLedger` in `exposes.contracts`; swap `Providers.Local` for `Providers.InMemory` in `exposes.packages` (line 191)
 - `catalogs/grid-health.json` — replace the `honeydrunk-ai` block
 - `catalogs/nodes.json` — edit line 603 (`grid_relationship` field), line 596 (`value_props` adapters string), line 586 (`tags` — add `inmemory`, drop any `local`/`onnx` tokens)
 - `constitution/ai-sector-architecture.md` — edit Provider Slot Pattern block (line 111 row replacement) and dependency phrasing line ~114
 - `repos/HoneyDrunk.AI/overview.md` — edit line 21 provider table row
 - `repos/HoneyDrunk.AI/active-work.md` — edit lines 22–26 provider list bullets
-- `adrs/ADR-0016-stand-up-honeydrunk-ai-node.md` — amend D2 line 42 (`HoneyDrunk.Kernel` abstractions → `Microsoft.Extensions.*` abstractions)
+- `repos/HoneyDrunk.AI/boundaries.md` — edit line 7 (drop "local models" → "InMemory test double")
+- `repos/HoneyDrunk.AI/invariants.md` — add cross-reference to constitutional invariants 28/44/45/46; tighten invariant 6 to localize GridContext propagation in runtime
+- `repos/HoneyDrunk.AI/integration-points.md` — verify Pulse row reads "no runtime dependency"
+- `adrs/ADR-0016-stand-up-honeydrunk-ai-node.md` — amend D2 line 42 (`HoneyDrunk.Kernel` abstractions → `Microsoft.Extensions.*` abstractions); fix line 12 `If Accepted` contracts list (`IInferenceResult` → `ICostLedger`); fix line 15 `If Accepted` canary contracts list (`IInferenceResult` → `IModelRouter`)
 - `CHANGELOG.md` — Unreleased entry
 
 **Contracts:**

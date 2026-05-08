@@ -3,7 +3,7 @@
 **Status:** Proposed
 **Date:** 2026-05-05
 **Deciders:** HoneyDrunk Studios
-**Sector:** Apps (new product line) · Core / Ops (Grid reuse)
+**Sector:** Market / Core / Ops
 **Codename:** **Lately** — final consumer product name is TBD. The codename is used throughout this PDR; do not interpret "Lately" as the launch brand.
 
 ---
@@ -347,7 +347,7 @@ Lately reuses substantially more of the Grid than Notify Cloud does, because Lat
 
 **Sector decision:**
 
-Lately introduces the Grid's first **Apps** sector — a sector for consumer-facing products built on Grid infrastructure. The Apps sector is intentionally separate from Core (foundation), Ops (delivery / observability), Meta (HoneyHub / Studios), and AI (the AI sector). Notify Cloud lives in Ops (it is an extension of the Notify delivery engine); Lately is its own consumer-product domain. Future consumer products live in Apps.
+Lately is a proposed consumer product in the canonical **Market** sector. This PDR uses **Apps** only as a working portfolio label for consumer surfaces pending a future constitution amendment; it does not itself add a new canonical sector. Notify Cloud lives in Ops (it is an extension of the Notify delivery engine); Lately is its own consumer-product domain.
 
 **Push channel pull-forward:**
 
@@ -579,7 +579,7 @@ The brand exercise that produces the final product name is a separate engagement
 
 **New repo: `HoneyDrunk.Lately`** (codename — final repo name aligns with final product name).
 
-This is a new Node in a new **Apps** sector — the Grid's first sector dedicated to consumer-facing products. The Apps sector exists to:
+This is a proposed consumer Node in the canonical **Market** sector. A future ADR may formalize **Apps** as a sub-sector or replacement taxonomy; until then, the consumer-app portfolio exists within Market and is expected to:
 - Distinguish consumer products from internal Core / Ops / Meta concerns.
 - Give consumer products their own boundary and naming conventions (no Grid metaphors leak into consumer surfaces).
 - Enable future consumer products (Lately is the first, not necessarily the last) to inherit the same boundaries.
@@ -624,7 +624,7 @@ Lately does **not** consume HoneyHub. Lately does **not** consume any AI-sector 
 
 - **Notify Cloud's roadmap (PDR-0002).** Notify Cloud's v1 cuts (no push) are revisited only because Lately needs push. Notify Cloud's launch sequence is unchanged.
 - **HoneyHub.** This PDR does not change HoneyHub's direction.
-- **The Grid's manifesto, sector model, or invariants.** The new Apps sector is additive.
+- **The Grid's manifesto, sector model, or invariants.** Any Apps taxonomy change is deferred to a constitution amendment.
 - **Notify Cloud's pricing or feature list.** Notify Cloud and Lately share infrastructure but not roadmap.
 - **The Grid's open-core stance.** Lately's mobile client is closed; the Lately engine may be partially open at the Node level if it makes sense (unlikely — there is no community value in open-sourcing a connection-app domain). The Grid's open-core principle does not require every Node to be open.
 
@@ -689,7 +689,7 @@ The brand engagement is a **decision the user must make before MVP design work b
 - **PDR-0001 and PDR-0002.** Both stand. Lately is independent.
 - **Notify Cloud's launch sequence.** Lately depends on Notify, not on Notify Cloud's commercial launch.
 - **HoneyHub's internal direction.** Unchanged by this PDR.
-- **The Grid's manifesto, invariants, sector model (with one addition: new Apps sector).**
+- **The Grid's manifesto, invariants, and canonical sector model.**
 - **The solo-dev operating model.** Lately is solo-shipped with AI agents. No hires, no investor narrative.
 - **Open-core repo posture.** Lately's mobile and engine code are closed by default; this is consistent with the existing public-by-default-with-revenue-exception rule.
 
@@ -743,7 +743,7 @@ The brand engagement is a **decision the user must make before MVP design work b
 
 - **Notify push channel ships** as a Lately prerequisite. APNS + FCM provider integrations in Notify. Communications updated for push-quiet-hours and push-frequency preferences.
 - **New `HoneyDrunk.Lately` Node** stands up with its own scaffold ADR (per the standup-ADR convention).
-- **New Apps sector** is added to `constitution/sectors.md`, `catalogs/nodes.json`, `catalogs/relationships.json`.
+- **Consumer-app taxonomy** is resolved through a follow-up constitution amendment before implementation work begins.
 - **New `HoneyDrunk.Lately.Mobile` repo** stands up with React Native + Expo. iOS + Android targets.
 - **Brand engagement** is commissioned: final product name, visual register, marketing copy direction. Decision before MVP design.
 - **Item canonical ID adapters** are scaffolded against TMDB, Open Library / Hardcover, MusicBrainz / Spotify.
@@ -761,7 +761,7 @@ The brand engagement is a **decision the user must make before MVP design work b
 
 If Lately clears the 90-day bar:
 
-- **The Apps sector is validated** as a viable product line. Future consumer products inherit the pattern.
+- **The consumer-app portfolio is validated** as a viable product line. Future consumer products inherit the pattern.
 - **The retention thesis** (synchronous nightly windows, recency-first profiles, fingerprint-as-warm-context) is validated at scale and becomes a defensible product-design pattern within the studio.
 - **Lately becomes the consumer-facing front of the Grid**, in the same way Notify Cloud is the dev-facing front. The studio is bi-modal.
 - **Cross-product learning** — Notify Cloud's multi-tenant patterns and Lately's consumer-mobile patterns inform future products.
@@ -770,8 +770,8 @@ If Lately does not clear the 90-day bar:
 
 - **Lately is killed.** The mobile client repo is archived. The Lately Node is preserved (to learn from the post-mortem) but no longer accepts new users.
 - **A retrospective PDR** documents what the wedge missed.
-- **The Apps sector remains** as a category for future consumer products — the sector itself is not invalidated by one product's failure.
-- **The Grid's investment in Lately-specific infrastructure** (Notify push, Apps sector, item canonical ID adapters) is preserved and reusable.
+- **The consumer-app portfolio remains** as a category for future products — the portfolio itself is not invalidated by one product's failure.
+- **The Grid's investment in Lately-specific infrastructure** (Notify push, consumer-app patterns, item canonical ID adapters) is preserved and reusable.
 
 Either outcome generates more learning than not shipping.
 
@@ -791,7 +791,7 @@ Either outcome generates more learning than not shipping.
 - **Notify push channel ships** — APNS + FCM provider integrations, push-quiet-hours preference in Communications, push-frequency preference, push delivery telemetry in Pulse.
 - **`HoneyDrunk.Lately` Node scaffold** — standup ADR, Abstractions package, runtime composition, REST surface, item canonical ID adapter scaffolds.
 - **`HoneyDrunk.Lately.Mobile` repo** scaffold — React Native + Expo, iOS + Android targets. Auth flow against the Grid's Auth Node.
-- **Apps sector** added to constitution, catalogs, sector map.
+- **Consumer-app taxonomy** resolved in constitution/catalog updates, if Architecture accepts a dedicated Apps label.
 - **Brand engagement complete** — final product name, visual register, marketing copy direction.
 
 **Exit criteria:** Notify push delivers a real APNS / FCM message in production. Lately mobile client can sign in via phone and load a placeholder profile screen. Final product name selected.
@@ -872,7 +872,7 @@ Either outcome generates more learning than not shipping.
 |---|---|---|
 | `HoneyDrunk.Lately` standup ADR | ADR | Stands up the new Node per the standup-ADR convention. Names package families, downstream coupling rule, contract-shape canary, dependency surface. |
 | `HoneyDrunk.Lately.Mobile` standup ADR | ADR | Stands up the mobile client repo. React Native + Expo decision, iOS + Android targets, build pipeline, OTA update posture, App Store / Play Console accounts. |
-| Apps sector definition ADR | ADR | Adds the Apps sector to `constitution/sectors.md`. Defines Apps-sector-specific boundaries (consumer products do not expose Grid metaphors; Apps Nodes consume Core / Ops Nodes; Apps Nodes own consumer brand surfaces). |
+| Consumer-app taxonomy ADR | ADR | Decides whether consumer apps stay in Market or get a dedicated Apps sector/sub-sector. Defines boundaries (consumer products do not expose Grid metaphors; consumer Nodes consume Core / Ops Nodes; app Nodes own consumer brand surfaces). |
 | Notify push channel ADR | ADR | Adds APNS + FCM provider integrations to Notify. Pull-forward from the v1.5 deferral in PDR-0002. Defines push-quiet-hours and push-frequency preferences in Communications. |
 | Item canonical ID adapter ADR | ADR | Provider-slot pattern for item resolution: TMDB, Open Library, Hardcover, MusicBrainz, Spotify. Defines `IItemResolver` contract and adapter shape. |
 | Lately T&S architecture ADR | ADR | Defines the moderation queue, AI-triage flow, human-review SLA, auto-action triggers, photo moderation pipeline, and reports-per-DAU thresholds. |
@@ -903,7 +903,7 @@ Once these decisions settle, the next concrete artifacts are:
 
 - The `HoneyDrunk.Lately` Node standup ADR
 - The `HoneyDrunk.Lately.Mobile` repo standup ADR
-- The Apps sector definition ADR
+- The consumer-app taxonomy ADR
 - The Notify push channel ADR
 
 Delegation: ADRs to the `adr-composer` agent. Repo work and scaffold packets to the `scope-agent`. Brand engagement is human-led, not agent-led.

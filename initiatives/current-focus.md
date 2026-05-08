@@ -2,41 +2,43 @@
 
 What the team (human + agents) should prioritize right now.
 
-**Last Updated:** 2026-05-05
+**Last Updated:** 2026-05-07
 
 ## Primary Focus
-
-### Configuration & Secrets Rollout (ADR-0005 / ADR-0006)
-
-Execute the two-wave rollout that standardizes secret and configuration management across the Grid.
-
-- **Wave 1 (nearly complete):** Vault env-driven wiring ✓, App Configuration extension ✓, event-driven cache invalidation ✓, Vault.Rotation repo creation ✓, portal walkthroughs ✓, catalog registration ✓ — only OIDC deploy workflow (Actions#20) remains
-- **Wave 2 (blocked on Wave 1 exit criteria):** Per-Node bootstrap migrations (Auth, Web.Rest, Data, Notify, Pulse, Studios) + Actions secret cleanup and deploy-gate SLA check
-- **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
-- **Blocker resolved:** Architecture#8 (Create Vault.Rotation repo) closed 2026-04-11. Vault.Rotation scaffold is now unblocked. Vault.Rotation bring-up work (repo stubs, managed identity, rotation function) can proceed.
-- **Remaining Wave 1 blocker:** Actions#20 (OIDC federated-credential workflow) — still open. This is the last gate before Wave 2.
-
-**See:** `generated/issue-packets/active/adr-0005-0006-rollout/dispatch-plan.md`
 
 ### Deploy Notify and Pulse
 
 Provision Azure infrastructure and get both services running in the development environment.
 
-- **Notify:** Azure Function App (`func-hd-notify-dev`) — queue-triggered email/SMS dispatch; v0.2.0 deploy workflow completed 2026-05-05.
-- **Notify.Worker:** Azure Container App (`ca-hd-notify-worker-dev`) — background worker on `cae-hd-dev` / `acrhdshareddev`
-- **Pulse:** Azure Container App (`ca-hd-pulse-dev`) — OTLP collector for observability, on `cae-hd-dev` / `acrhdshareddev`
+- **Notify.Functions:** `Notify#3` remains open for release workflow and Azure bring-up, despite the v0.2.0 release notes showing the Functions deploy workflow path has progressed.
+- **Notify.Worker:** `Notify#4` remains open for the Azure Container App (`ca-hd-notify-worker-dev`) on `cae-hd-dev` / `acrhdshareddev`.
+- **Pulse:** `Pulse#3` remains open for the `Pulse.Collector` Azure Container App (`ca-hd-pulse-dev`) on `cae-hd-dev` / `acrhdshareddev`.
 
-**Why now:** Notify Functions has a successful deploy workflow after the ADR-0019 boundary release. Remaining focus is Pulse deployment, Notify worker/container-app path, and live-provider hardening.
+**Why now:** ADR-0015 is still 2/5 closed. The Architecture walkthroughs and shared Actions deploy workflow are done; the remaining work is service-specific Azure/release execution.
 
-**See:** `infrastructure/azure-provisioning-guide.md` for step-by-step instructions.
+**See:** `infrastructure/azure-provisioning-guide.md` and `generated/issue-packets/active/adr-0015-container-apps-rollout/dispatch-plan.md`.
+
+### HoneyDrunk.AI Stand-Up
+
+Finish the initial HoneyDrunk.AI stand-up lane so ADR-0010's parked AI routing work can be unblocked deliberately.
+
+- `Architecture#72`: catalog registration packet open
+- `Architecture#73`: invariant packet open
+- `HoneyDrunk.AI#2`: solution/packages/contracts/CI/InMemory provider packet open
+
+**Why now:** ADR-0010 packet 04 is parked behind HoneyDrunk.AI stand-up. Keep this as an explicit focus item rather than slipping routing contracts into the empty repo without the ADR-0016 scaffold decisions.
 
 ## On Deck
 
-### HoneyDrunk.Lore Bring-Up
+### Archive / Exit-Criteria Review
 
-Stand up Lore as a flat-file LLM-compiled wiki. 6 issues scoped and closed on The Hive under initiative `honeydrunk-lore-bringup`. Perform archive/exit-criteria review before promoting next Lore work.
+Several rollouts have all packet issues closed and should be reviewed for archival instead of staying in active focus:
 
-**See:** [active-initiatives.md](active-initiatives.md) → HoneyDrunk.Lore Bring-Up
+- Configuration & Secrets Rollout (ADR-0005 / ADR-0006): 15/15 packet issues closed; release verification notes remain in `initiatives/releases.md`.
+- Hive Sync Rollout (ADR-0014): 6/6 issues closed; OpenClaw cron runtime is active.
+- Package Scanning Rollout (ADR-0009): 8/8 issues closed.
+- HoneyDrunk.Lore Bring-Up: 6/6 issues closed.
+- Vault.Rotation Bring-Up: scaffold/release issues closed; verify operational exit criteria before archive.
 
 ### Agent Kit
 
@@ -44,7 +46,7 @@ Stand up the Agent Kit Node — agent execution runtime, tool abstraction, and m
 
 ### Grid v0.4 Alignment (Notify + Pulse)
 
-Align Notify and Pulse with Kernel 0.4.0 patterns (same alignment the Core Nodes completed). Tracked in `active-initiatives.md`.
+Align Notify and Pulse with Kernel 0.4.0 patterns where still needed. Notify has moved through the ADR-0019/v0.2.0 boundary release; Pulse production deployment and dashboard work remain.
 
 ### Canary Test Coverage
 

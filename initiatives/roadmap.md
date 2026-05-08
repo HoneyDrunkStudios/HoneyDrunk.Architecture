@@ -2,7 +2,7 @@
 
 High-level roadmap for the HoneyDrunk Grid.
 
-**Last Updated:** 2026-05-05
+**Last Updated:** 2026-05-07
 
 ## Q1 2026 (Jan–Mar)
 
@@ -25,7 +25,7 @@ High-level roadmap for the HoneyDrunk Grid.
 - [ ] Pulse — Production hardening, Grafana dashboard templates, finalize 0.1.0 release
 - [x] Notify — v0.2.0 ADR-0019 intake-boundary release and Azure Functions deploy workflow complete
 - [x] HoneyDrunk.Communications — v0.1.0 contracts/runtime release with welcome-flow boundary slice
-- [ ] HoneyDrunk.AI — Model/provider abstraction, OpenAI + Anthropic providers, Pulse telemetry
+- [ ] HoneyDrunk.AI — Model/provider abstraction stand-up underway *(ADR-0016 packets open: Architecture#72, Architecture#73, AI#2)*
 - [ ] **ADR-0010 Phase 1 (Observation Layer & AI Routing contracts)** *(0/3 issues closed; scoped 2026-04-18 — Observe side ready to file, AI routing deferred pending HoneyDrunk.AI standup ADR)*
 - [ ] HoneyDrunk.Capabilities — Tool registry, discovery, permissioning, initial tool descriptors
 - [ ] HoneyDrunk.Agents — Agent runtime, lifecycle, execution context, tool/memory interfaces

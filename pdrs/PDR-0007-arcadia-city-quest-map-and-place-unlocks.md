@@ -3,7 +3,7 @@
 **Status:** Proposed
 **Date:** 2026-05-07
 **Deciders:** HoneyDrunk Studios
-**Sector:** Apps (consumer) · Location · AI · Play
+**Sector:** Market / Location / AI / Play
 **Codename:** Arcadia (final product name TBD)
 
 ---

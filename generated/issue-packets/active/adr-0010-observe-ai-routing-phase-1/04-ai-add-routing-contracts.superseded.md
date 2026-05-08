@@ -9,12 +9,16 @@ adrs: ["ADR-0010", "ADR-0005"]
 wave: 2
 initiative: adr-0010-observe-ai-routing-phase-1
 node: honeydrunk-ai
-status: deferred-pending-ai-standup
+status: superseded-by-adr-0016
 ---
 
 # Feature: Add `IModelRouter`, `IRoutingPolicy`, `ModelCapabilityDeclaration` to `HoneyDrunk.AI.Abstractions`
 
-> **STATUS — deferred (2026-04-18):** This packet is parked. The HoneyDrunk.AI GitHub repo exists but is empty. Scaffolding choices for a foundational Node — solution layout, Microsoft.Extensions.AI alignment, package family split, inference-vs-routing contract boundaries, Pulse/Vault integration, first provider — are architectural decisions that deserve their own ADR. Bundling that scaffold into a routing-contracts packet would embed those decisions silently. **Do not file this packet until a HoneyDrunk.AI standup ADR (provisional `ADR-0014-honeydrunk-ai-standup`) is accepted and its scaffolding initiative has shipped `HoneyDrunk.AI.Abstractions` as a minimum-viable Abstractions package.** Once that foundation exists, the packet body below becomes fileable as a strict contracts-addition PR.
+> **STATUS — superseded (2026-05-05):** This packet is **superseded by the ADR-0016 standup initiative** at `generated/issue-packets/active/adr-0016-honeydrunk-ai-standup/`. The three contracts originally scoped here (`IModelRouter`, `IRoutingPolicy`, `ModelCapabilityDeclaration`) are authored as part of the seven-contract D3 surface in **packet 03** of that initiative. The cross-repo invariant-28 qualifier-removal originally scoped here is rolled into **packet 02** of that initiative.
+>
+> The `.superseded.md` suffix prevents `file-packets.yml` from picking this packet up. Kept on disk for historical traceability rather than deleted outright.
+>
+> **Original deferral note (2026-04-18, pre-supersession, retained for context):** This packet was parked. The HoneyDrunk.AI GitHub repo exists but is empty. Scaffolding choices for a foundational Node — solution layout, Microsoft.Extensions.AI alignment, package family split, inference-vs-routing contract boundaries, Pulse/Vault integration, first provider — are architectural decisions that deserve their own ADR. Bundling that scaffold into a routing-contracts packet would embed those decisions silently. The deferral was correct; ADR-0016 is the standup ADR that resolves it, and its scaffolding initiative absorbs this packet's scope.
 
 ## Summary
 Add the three AI routing contracts defined in ADR-0010 Phase 1 to `HoneyDrunk.AI.Abstractions`. These contracts make application-code-level model hardcoding architecturally impossible (invariant 28) by providing a single entry point (`IModelRouter`) for model selection, a pluggable policy shape (`IRoutingPolicy`), and a machine-readable capability declaration (`ModelCapabilityDeclaration`) that policies reason over.
