@@ -1,10 +1,34 @@
 # PDR-0007: Arcadia — City Quest Map and Place Unlocks
 
-**Status:** Proposed
+**Status:** Superseded by PDR-0004 (amended 2026-05-09)
 **Date:** 2026-05-07
+**Superseded:** 2026-05-09
 **Deciders:** HoneyDrunk Studios
 **Sector:** Market / Location / AI / Play
 **Codename:** Arcadia (final product name TBD)
+
+---
+
+## Supersession Note (2026-05-09)
+
+Arcadia as a standalone consumer product direction is killed. The substantive ideas in this PDR — the question-mark unlock mechanic, the curated launch-district POI model, the safe quest-template set, and the emotional (not addictive) collectibles — are absorbed into Wayside as a v1.5 mode named **"Curiosities"**. See PDR-0004 §P (added in the 2026-05-09 amendment).
+
+The strategic rationale for absorbing rather than building:
+
+- Wayside already owns the walking customer, the watercolor map, the launch-city geography, and Mochi's voice. A second walking app competing with Wayside for the same buyer is a portfolio mistake.
+- Question-mark unlocks are most valuable to users who already have Wayside on their phone — i.e., a retention asset, not an acquisition wedge.
+- Wayside's Mochi persona narrates the unlock cards. Curiosities does **not** introduce a separate game-y narrator.
+- Curiosities is **curated-only** at v1.5, distinct from Wayside's UGC public marginalia layer. The two layers are visually and interactively separated.
+- Sequencing: Curiosities ships at v1.5 (9–12 months post-public-launch), not v1. Wayside's existing v1 dual-thesis scope (private layer + public marginalia + Mochi) is unchanged.
+- A new kill criterion in PDR-0004 §O.4 (<15% of weekly active users open the Curiosities tab in month 1 of v1.5) bounds the experiment.
+
+What does **not** change as a result of this supersession:
+
+- Hearth (PDR-0005) remains the recorded first consumer-facing app on the Grid.
+- Notify Cloud (PDR-0002) remains the studio's first commercial milestone.
+- Wayside v1 scope is unchanged.
+
+The substantive content of this PDR is preserved below as historical record. Treat anything below this line as the original Arcadia direction at the time of writing; it is no longer the studio's intended path. Refer to PDR-0004 §P for the live decision.
 
 ---
 

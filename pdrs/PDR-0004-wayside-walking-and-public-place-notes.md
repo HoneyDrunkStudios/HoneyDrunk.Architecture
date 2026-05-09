@@ -2,6 +2,7 @@
 
 **Status:** Proposed
 **Date:** 2026-05-05
+**Amended:** 2026-05-09 — supersedes PDR-0007 (Arcadia); absorbs the question-mark unlock mechanic into Wayside as a v1.5 "Curiosities" mode (see §P).
 **Deciders:** HoneyDrunk Studios
 **Sector:** Market
 **Codename:** Wayside (real product name TBD — previous codename was "Lantern Line")
@@ -482,7 +483,127 @@ A **soft kill**:
 
 3. **Mochi failure-mode rate above tolerance.** If Mochi's off-character / break-character / creepy-output rate (measured via user reports + automated review) exceeds 1% of walk chapters in any 30-day window post-launch, Mochi is paused (replaced with a deterministic placeholder) until the persona stack is fixed. This is not a product kill but is a public-face hit that may compound.
 
-The kill clock starts at v1 public launch.
+4. **Curiosities adoption below floor.** If <15% of weekly active users open the Curiosities tab in month 1 of v1.5, cut Curiosities and revert Wayside to private-marginalia + public-notes-only. The mode is additive, not load-bearing; if the question-mark loop does not pull the existing Wayside audience, it does not earn its content cost.
+
+The kill clock starts at v1 public launch. The Curiosities-specific clock (§O.4) starts at the v1.5 Curiosities ship.
+
+### P. Curiosities mode — v1.5 absorption of the parked Arcadia direction
+
+The previously-recorded Arcadia direction (a standalone city quest map with question-mark unlocks) is killed as a separate product and absorbed into Wayside as a **v1.5 mode named "Curiosities."** Wayside v1 ships per §H unchanged — Curiosities does not enter the v1 build. Curiosities targets the **9–12 month mark post-public-launch**, alongside or just after the first Atlas season. The strategic logic: Wayside already owns the walking customer, the watercolor map, the launch-city geography, and Mochi's voice. A second walking app competing with Wayside for the same buyer is a portfolio mistake. A second walking *mode* that pulls returning users back into the city is a retention asset.
+
+Emotional thesis line: *"Walking through your city as your own quiet myth, with question marks at the corners."*
+
+Customer-facing language is **"Curiosities."** Internal docs may use "quests" for the templates; the customer never sees the word "quest," "level," "XP," or "mission."
+
+#### P.1 Core loop
+
+The Curiosities mode is a tab inside Wayside, not a separate app:
+
+1. The user opens the stylized Wayside map (same watercolor base tiles as the private layer).
+2. Nearby unknown points appear as **question marks** on the map, separate visual layer from public place-notes.
+3. The user physically approaches a question-mark point.
+4. The point **unlocks** into a named place card.
+5. The card gives short context, one optional micro-action (a Curiosities prompt template — see §P.4), and a collectible entry.
+6. The user's city atlas fills in over time as a Curiosities collection book inside the existing atlas surface.
+
+The product promise of Curiosities is not "best places nearby." It is **go outside, follow curiosity, uncover your city** — the same emotional shape as Wayside's private layer, with mystery as the pull.
+
+#### P.2 Launch geography
+
+Curiosities ships in **one dense launch district inside Wayside's launch city** at v1.5. It does not launch globally and does not launch across all of the launch city.
+
+A credible v1.5 Curiosities footprint:
+
+- **50–100 curated points of interest** within one walkable district.
+- **5–10 themed collections** (architectural motifs, public art, local legend, historical era, etc.).
+- **20–30 micro-quest templates** drawn from the prompt set in §P.4.
+- **No UGC for Curiosities at launch.** This is the load-bearing distinction from Wayside's public marginalia layer (which is UGC by design, gated by the §C six-layer moderation stack). Curiosities POIs are **curated-only** at v1.5. User-suggested places may be considered post-v1.5 but are not part of the launch.
+- **No business listings** beyond places selected as Curiosities content. Curiosities is not a local-discovery utility.
+- **No routing into private property, sensitive facilities, or unsafe locations.** Same exclusion rules as Wayside's place-rendering invariants.
+
+The first release of Curiosities should feel handcrafted in one district rather than thin everywhere. Geographic expansion of Curiosities follows Wayside's own city expansion (§N) — each new Wayside city eventually gets a Curiosities district, but not on day one of that city.
+
+#### P.3 Content model
+
+Curiosities does not hand-write everything from scratch. The pipeline:
+
+- **Open/public data sources** — landmarks, public art registries, historical markers, Wikipedia/Wikidata, OpenStreetMap, parks, public buildings, library/archive material where licensing allows.
+- **AI-assisted summarization** — short plain-language place cards, curiosity hooks, and suggested micro-actions generated against the curated data.
+- **Human approval** — every published v1.5 Curiosities POI is reviewed by HoneyDrunk before it appears. Curated-only at launch means the review burden is bounded by the 50–100 POI footprint.
+- **Reusable templates** — quest types are generated from the §P.4 prompt set rather than bespoke design per location.
+- **Mochi narrates the unlock cards in Wayside's voice.** Curiosities does **not** introduce a separate game-y narrator. The unlock-card prose obeys the same persona constraints as §D (no input box, no questions, no advice, no parasocial register, no proper-noun knowledge outside the place itself). The literary tone of a Curiosities unlock is indistinguishable from a Wayside walk chapter.
+
+The content bar is: good enough to make a walk feel intentional, not academic enough to become a museum app.
+
+#### P.4 Quest templates as lightweight prompts
+
+Curiosities uses Wayside-toned templates, not RPG systems. The v1.5 prompt set:
+
+- **Look Closely** — find a detail on a building, mural, plaque, statue, or storefront.
+- **Then / Now** — read a short historical note and compare it to what is there now.
+- **Sound of the Corner** — pause for 30 seconds and note one sound.
+- **Color Hunt** — find a dominant color or visual motif nearby.
+- **Public Art Scan** — unlock a mural, sculpture, or public artwork and collect its style tag.
+- **Tiny Detour** — walk one block off the obvious route to unlock a nearby curiosity.
+- **Postcard Moment** — take or save a private photo for the user's atlas.
+
+Explicitly cut from Curiosities (these are not deferrals — these are out of scope for the mode entirely):
+
+- XP, levels, streaks, leaderboards.
+- Competitive territory control.
+- User-created public quests.
+- AR overlays.
+- Sponsored quests.
+- Nighttime or isolated-location prompts.
+- Anything that asks users to enter private property, disturb people, or interact with strangers.
+
+The prompt set is intentionally small. New templates are added only after the existing set proves out post-launch.
+
+#### P.5 Collectibles are emotional, not addictive
+
+Curiosities' collection layer should feel like filling a field guide, not grinding a battle pass. The collectible types:
+
+- Place stamps.
+- District cards.
+- Architectural motifs.
+- Local legend fragments.
+- Public art styles.
+- Historical era tags.
+- Contextual memory tags ("first rain walk," "golden hour find," etc.).
+
+No scarcity manipulation. No daily pressure. No streak loss. No expiring collectibles. Collection rewards attention, not compulsion. The collection book lives inside the Wayside atlas surface — Curiosities entries appear alongside private walk chapters and (for the year-end Atlas) optionally render as a chapter of the printed book.
+
+#### P.6 Sequencing — v1.5, not v1
+
+Curiosities is **not in Wayside v1**. Wayside v1 ships per the existing §H phasing: private layer + public marginalia + Mochi v1, dual-thesis, launch city, no Curiosities. The Curiosities mode is a v1.5 addition, targeted for the **9–12 month mark post-public-launch**, alongside or just after the first Atlas season.
+
+Reasoning for v1.5 placement (not v1):
+
+- v1's risk surface is already dual-thesis. Adding curated POI content production to v1 widens the surface unsafely.
+- Curiosities benefits from a populated launch city. Question marks inside a city where Mochi has already drawn the user back several times have more pull than question marks in a brand-new product.
+- The Atlas pulls users into year-end attention. Curiosities sustains attention into year-2 by giving the user something new to do in the city they already walk in.
+- The curated content model is reusable for multiple districts, which means the v1.5 build cost amortizes as Wayside expands cities (§N).
+
+#### P.7 What changes elsewhere in Wayside
+
+Curiosities does not displace any existing Wayside surface:
+
+- **Private walks, walk chapters, Mochi, watercolor maps** — unchanged.
+- **Public marginalia (place-notes with 30-day decay)** — unchanged. Curiosities is **a separate map layer** from public notes; users see question marks and notes as visually distinct surfaces, not merged into one feed. This protects the public layer's emotional shape ("strangers' attention at this bench") from being muddled with curated content.
+- **Atlas** — Curiosities entries optionally render in the year-end Atlas as a "Curiosities of the year" chapter. This is a v1.5 enhancement, not a v1 promise.
+- **Lantern+** — Curiosities is **free at launch**, not gated behind Lantern+. Premium Curiosities styling (decorative collection-book skins, multi-district unlocks beyond the launch district) is a candidate Lantern+ feature post-v1.5; v1.5 itself ships Curiosities free for all users so the loop is broadly tested.
+- **Moderation pipeline (§C)** — unchanged. Curiosities POIs are curated-only and do not flow through the public-layer moderation stack at v1.5. If user-suggested Curiosities are added post-v1.5, they ride the existing moderation pipeline.
+- **Notify / Communications** — Curiosities introduces no new notification types at v1.5. Push notifications for "a question mark appeared near you" are explicitly **not** in scope; the mode is pull-by-curiosity, not push-by-nudge.
+
+#### P.8 Why this absorption beats a standalone Arcadia
+
+Recorded for the supersession of PDR-0007:
+
+- **One walking customer, not two.** A standalone Arcadia and a separate Wayside compete for the same buyer's pocket and attention. Folding the question-mark loop into Wayside avoids that.
+- **One launch city, one tile pipeline, one moderation philosophy.** Arcadia would have re-paid every cost Wayside already pays.
+- **One Mochi, not a separate game-y narrator.** The voice is Wayside's strongest asset; reusing it lets Curiosities inherit literary credibility for free.
+- **Retention, not acquisition.** Curiosities' question marks are most valuable to users who already have Wayside on their phone. As a standalone, the question-mark loop has to do the cold-start work of acquisition; as a Wayside mode, it does the cheaper work of retention.
+- **Curated-only is honest about solo-dev capacity.** Arcadia's standalone scope implied content scale; absorbed-as-a-mode at one district at v1.5 is the actually-shippable shape.
 
 ---
 
@@ -602,6 +723,9 @@ The kill clock starts at v1 public launch.
 | Native iOS/Kotlin vs. cross-platform framework | **Native** | The aesthetic and gesture standards Wayside needs are easier to hit on native. The cost (two codebases) is justified by the visual identity actually landing. |
 | Build Wayside next vs. build Hearth next | **Hearth next (per the 2026-05-05 brainstorm scout)** | Hearth has no two-sided marketplace problem. Wayside's public layer does. This PDR records direction, not next-build priority. |
 | Customer-facing brand: HoneyDrunk vs. separate | **Separate brand (TBD name)** | Wayside is consumer; HoneyDrunk Studios is studio. Hearth would also have its own brand. The studio is the parent; the products stand independently. |
+| Standalone city-quest app (parked Arcadia) vs. mode inside Wayside | **Mode inside Wayside (Curiosities, v1.5)** | One walking customer, one launch city, one Mochi voice, one moderation philosophy. A standalone Arcadia would have re-paid every cost Wayside already pays. Question marks are a retention asset for an existing Wayside audience, not an acquisition wedge for a new one. See §P.8. |
+| Curiosities at v1 vs. v1.5 | **v1.5** | v1's risk surface is already dual-thesis. Adding curated POI content production to v1 widens the surface unsafely. v1.5 also gives Curiosities a populated launch city to land into rather than an empty product. |
+| Curiosities content: UGC vs. curated-only | **Curated-only at v1.5** | Wayside already pays the UGC moderation cost on the public marginalia layer. Layering UGC onto Curiosities at v1.5 doubles the moderation surface for a feature whose floor is unproven. User-suggested POIs are a post-v1.5 question. |
 
 ---
 
@@ -634,6 +758,16 @@ The standup ADR (a follow-up artifact) defines:
 - **Notify Cloud's roadmap.** Wayside being recorded as direction does not change Notify Cloud's launch sequencing.
 - **Hearth's first-build status** (per the 2026-05-05 brainstorm). Wayside is recorded; Hearth is built first.
 - **The HoneyDrunk Studios B2B brand surface.** Wayside has its own consumer brand; the studio brand is the parent.
+
+### Curiosities mode — additional surface area at v1.5
+
+Curiosities (§P) is a v1.5 addition inside the existing `HoneyDrunk.Wayside` Node. It does not introduce a new Node or a new Sector. The architectural deltas at v1.5:
+
+- **Curated POI store.** A new content surface for the launch-district POIs, their copy, their template bindings, and their collectible metadata. Curated entries are versioned and human-approved before publish; this is a different content lifecycle than the public-layer note (which is user-published with pre-publish moderation and 30-day decay). The store may live in the same database as the spatial index but uses a different write path.
+- **Question-mark map layer.** A separate render layer on top of the watercolor base, distinct from the public-notes layer. Visually and interactively separated per §P.7. No change to the watercolor tile pipeline itself.
+- **Collection book surface.** A new view inside the existing atlas surface. No new Node; no new Grid contract.
+- **Mochi prose binding.** Curiosities unlock cards run through Mochi's existing on-device persona (§D) with a Curiosities-specific prompt addendum. No new on-device model; no new cloud surface.
+- **No new Notify event types at v1.5.** "A question mark appeared near you" pushes are explicitly out of scope; Curiosities is pull-by-curiosity, not push-by-nudge.
 
 ---
 
@@ -674,10 +808,12 @@ The marketing budget at v1 is implicit (solo-dev time + AI agent time) plus opti
 ## What Does NOT Change
 
 - **The studio's manifesto.** Wayside is consistent with build-in-public ("the architecture is public, the customer-facing language is human") and Open Core ("the consumer apps are not OSS — they're the studio's commercial line").
-- **PDR-0001 and PDR-0002.** Wayside is in a different product line. Notify Cloud's launch is unaffected.
-- **Hearth's first-build status** (per the 2026-05-05 brainstorm).
+- **PDR-0001 and PDR-0002.** Wayside is in a different product line. Notify Cloud's launch is unaffected. Notify Cloud remains the studio's first commercial milestone.
+- **PDR-0005's first-consumer-build commitment.** Hearth remains the recorded first consumer-facing app on the Grid. Absorbing Curiosities into Wayside does not promote Wayside ahead of Hearth in the build queue. Hearth ships first; Wayside v1 ships second; Wayside Curiosities (v1.5) ships third.
 - **Architecture invariants 1–36.**
 - **The Grid's internal direction.** Wayside reuses Auth, Vault, Notify, Communications, Pulse, Web.Rest as an internal consumer.
+- **Wayside v1 scope.** The §H phasing is unchanged by the Curiosities amendment. Curiosities is additive at v1.5; nothing in v1 shifts to make room for it.
+- **The public marginalia layer.** Curiosities lives on a separate map layer with separate visual treatment and a separate (curated, not UGC) content model. The public-notes layer's anonymous-by-default, 30-day-decay, six-layer moderation posture (§C) is unchanged.
 
 ---
 
@@ -700,6 +836,10 @@ The marketing budget at v1 is implicit (solo-dev time + AI agent time) plus opti
 | **Mochi's persona becomes parasocial in a harmful way** | Low-Medium | Users form unhealthy attachments to Mochi. The literary register (§D) is the mitigation, but parasocial attachment to AI characters is a real and increasing risk profile. |
 | **The dual thesis is wrong** | Medium | The two layers do not reinforce each other in practice. Users use one or the other but not both. The product's premise is half-realized. |
 | **Brand decision is delayed too long** | Low | "Wayside" remains the placeholder for too long; marketing momentum is lost during the rebrand. |
+| **Curiosities content production overruns v1.5 capacity** | Medium | The 50–100 curated POI footprint is "small" only relative to a global map. For a solo dev plus AI agents shipping during v1.5, the curation, copy review, safety check, and template wiring per POI is real work. If the v1.5 ship slips because Curiosities content is incomplete, Wayside's broader v1.5 (Atlas, Memory Book, voice notes) slips with it. |
+| **Curiosities dilutes the public marginalia layer's emotional shape** | Medium | If users perceive question marks and stranger-notes as the same thing, the "strangers' attention at this bench" magic flattens into "the app is telling me to do things here." The §P.7 visual-separation rule is the architectural guard, but a UX failure here is real. |
+| **Curiosities adoption is below the §O.4 floor** | Medium | <15% of weekly active users open the Curiosities tab in month 1 of v1.5. The mode is cut and reverted per §O.4. Cost: the v1.5 build effort is mostly sunk, though the curated content and templates are partially salvageable for a future re-attempt or for Wayside's editorial-tone work. |
+| **Curiosities pulls Mochi's voice off-shape** | Medium | Curiosities unlock cards must obey Mochi's persona constraints (§D). If the prose drifts toward game-narrator or tour-guide voice to fit the mechanic, the broader Wayside literary register erodes. |
 
 ---
 
@@ -722,6 +862,10 @@ The marketing budget at v1 is implicit (solo-dev time + AI agent time) plus opti
 | Parasocial Mochi attachment | Mochi's literary register (§D) is the architectural mitigation. The "no input box" rule is structural — users cannot have a one-on-one relationship with Mochi because they cannot speak to her. This is not retroactive; it's by design. |
 | Dual thesis is wrong | The fallback is private-only v1.5 (deprecate the public layer). The 30-day decay means a deprecated public layer cleans itself up within 30 days with no orphan content. |
 | Brand delay | The build-decision packet (the next packet for Wayside, post-this-PDR) settles the brand name as a hard prerequisite to any user-facing work. |
+| Curiosities content overrun | Strict 50–100 POI cap at v1.5 launch, one district only. Templates over bespoke. AI-assisted summarization with human approval. The Curiosities content build runs in parallel with the Atlas season, not in series — if it slips, it slips Curiosities, not Atlas. |
+| Curiosities dilutes public marginalia | Visually distinct map layers (§P.7). Different unlock interaction (approach-then-tap for Curiosities; pin-tap-then-read for notes). Different copy tone (Curiosities cards are observational about the place; notes are first-person from a stranger). User testing during v1.5 prototype validates the separation reads cleanly. |
+| Curiosities adoption below floor | The §O.4 kill criterion is bounded and time-limited. Reverting is a clean cut: question-mark layer disabled, curated content archived, no orphan UGC to clean up. The fallback Wayside (private + public marginalia) is the v1 product, which is already proven by the time v1.5 ships. |
+| Curiosities pulls Mochi's voice off-shape | Curiosities unlock cards run through the same persona prompt and output filter as walk chapters (§D). The implementation ADR for Curiosities content explicitly forbids game-narrator and tour-guide register patterns. If Mochi's failure-mode rate (§O.3) climbs after Curiosities ships, Curiosities prose is the first surface to audit. |
 
 ---
 
@@ -815,8 +959,19 @@ This rollout is **not** scheduled. It begins when the user opens a "build Waysid
 - First Atlas orders ship in January of year-2.
 - Android client builds in parallel; ships at the 9–12 month mark.
 - Multi-city evaluation begins (next launch city candidate).
+- **Curiosities content production begins in parallel** for the launch district: 50–100 curated POIs, 5–10 themed collections, 20–30 micro-quest templates wired to the §P.4 prompt set. Human-approval queue active. Curiosities does not ship to users in this phase.
 
-**Exit criteria:** ≥2,000 Atlases sold in the first season. Android client at parity with iOS. Second-city launch decision packet opened.
+**Exit criteria:** ≥2,000 Atlases sold in the first season. Android client at parity with iOS. Second-city launch decision packet opened. Curiosities content footprint complete and human-approved.
+
+### Phase 6.5: Curiosities v1.5 ship (months 9–12)
+
+- Question-mark map layer enabled in production.
+- Curated POI content released for the launch district.
+- Mochi prose addendum live; unlock-card prose passes red-team review against the Mochi persona constraints (§D).
+- Collection book surface available inside the atlas.
+- Curiosities is free at launch (per §P.7).
+
+**Exit criteria:** Curiosities tab reachable from the main map. ≥15% weekly-active-user open rate by the end of month 1 of v1.5 (the §O.4 floor). No Sev-1 moderation incidents (curated-only at launch limits this risk to editorial errors). Mochi failure-mode rate stays under §O.3.
 
 ### Phase 7: Kill-clock review (month 12)
 
@@ -824,8 +979,9 @@ This rollout is **not** scheduled. It begins when the user opens a "build Waysid
 - Atlas sales vs. target (2,000).
 - Moderation cost vs. Lantern+ revenue.
 - Mochi failure-mode rate.
+- Curiosities adoption rate (§O.4 floor) — if v1.5 has shipped by this point.
 
-Per §O, decide: continue, pivot (e.g., make public layer Lantern+-only), or kill.
+Per §O, decide: continue, pivot (e.g., make public layer Lantern+-only, or cut Curiosities and revert to private + public-notes-only Wayside), or kill.
 
 ---
 
@@ -850,6 +1006,11 @@ Per §O, decide: continue, pivot (e.g., make public layer Lantern+-only), or kil
 | What happens if a user moves cities mid-year (Atlas spans cities) | Product | Open. Default proposed: Atlas spans all cities the user walked in; map rendering switches per chapter. |
 | Compliance posture for the public layer in the EU (GDPR), California (CCPA), Japan (APPI) | Legal | Open. The launch-city choice intersects this. Tokyo launch means APPI is the primary regime; EU expansion requires GDPR review. |
 | iOS App Review pre-submission consultation | Operations | Open whether worth pursuing; novel product shape may warrant. |
+| Curiosities launch district inside the launch city | Product | The launch *city* decision (Tokyo Yamanote inner is the proposed default) is a v1 question. The launch *district for Curiosities* is a separate v1.5 decision — a single walkable neighborhood inside the launch city where the 50–100 curated POIs are seeded. Default proposed: pick the densest aesthetic-and-history district inside the launch city when the v1.5 packet opens. |
+| Curiosities unlock verification — GPS radius vs. plaque/QR vs. photo proof vs. manual unlock | Architecture | Default proposed: GPS radius for v1.5 (consistent with Wayside's existing location stack). Plaque/QR and photo-proof are post-v1.5 enhancements if the simple radius unlock proves too easy or too easy-to-spoof. |
+| Whether a user can suggest a Curiosities POI (gated curation) | Product | Default proposed: not in v1.5. Curated-only at launch; user-suggested POIs are post-v1.5 if and only if the moderation pipeline (§C) can credibly extend to physical-place curation, which is a different risk surface than text/photo notes. |
+| Whether Curiosities collectibles render in the year-end Atlas | Product | Default proposed: yes, as an optional "Curiosities of the year" chapter at v1.5+; the user opts in to including it. |
+| Whether Curiosities is free or a Lantern+ feature | Product / Pricing | Default proposed: free at v1.5 launch (per §P.7), to maximize the test of the loop. Lantern+ gating of premium Curiosities styling and multi-district unlocks is a v2 candidate after the §O.4 floor is cleared. |
 
 ---
 
@@ -870,6 +1031,10 @@ Per §O, decide: continue, pivot (e.g., make public layer Lantern+-only), or kil
 | Wayside privacy posture and disclosure document | Design doc | The honest posture on what data leaves the device, when, and why. The basis for App Store privacy disclosures, the marketing site privacy page, and the in-app first-run disclosure flow. |
 | Cold-start seed-content playbook | Design doc | The launch-city seed strategy: how Mochi-authored tutorial notes are generated, how the seed creators are recruited and credited, how the time-bounded paused-decay rule is implemented. |
 | Wayside retrospective PDR (conditional) | PDR | If Wayside is killed at the 12-month bar, the retrospective documents what the wedge missed. |
+| Curiosities content safety policy | Design doc | Rules for allowed/disallowed Curiosities POIs and quest prompts. Mirrors the public-layer moderation policy but applied to curated, pre-publication content. Covers the §P.4 cut list (no nighttime prompts, no private property, no stranger interaction) operationally. |
+| Curiosities content pipeline design doc | Design doc | The ingestion-and-enrichment flow for the launch district: open data sources (OpenStreetMap, Wikidata, Wikipedia, public art registries, historical markers), AI-assisted summarization, the human-approval surface, the template binding. |
+| Curiosities map-layer ADR | ADR | Defines the question-mark layer's rendering on top of the existing watercolor base, the visual separation from the public-notes layer (§P.7), the unlock-interaction state machine, and the collectible-book surface inside the atlas. |
+| Curiosities unlock-card prose prompt addendum | Design doc | An addendum to the Mochi persona doc covering the unlock-card prose pattern. Reinforces the persona constraints (§D) and forbids game-narrator/tour-guide register patterns. |
 
 ---
 
