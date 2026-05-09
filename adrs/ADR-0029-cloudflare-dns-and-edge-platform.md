@@ -60,18 +60,18 @@ All DNS records for Grid-owned domains are managed in Cloudflare. The authoritat
 - **Free tier covers the Grid's full DNS footprint** at current and foreseeable scale. There is no per-zone, per-record, or per-query cost for the basic DNS service. The first time a paid feature is genuinely needed (e.g., Cloudflare for SaaS for Notify Cloud customer custom domains, deferred to a follow-up ADR), the cost is justified by a concrete consumer.
 - **Uniform proxy/CDN seam.** Cloudflare's authoritative DNS and its proxy/CDN/DDoS layer are the same control plane. Toggling "proxied" on or off per record is a single click in the portal — there is no separate CDN integration step.
 - **Container Apps custom-domain compatibility.** Azure Container Apps validates custom domains via a TXT record (`asuid.{subdomain}`) plus a CNAME or A record pointing at the Container App's ingress. Cloudflare DNS supports both record types natively, including the TXT-validated, CNAME-pointed pattern. The proxied vs. DNS-only choice is per-record (D3 names the default).
-- **Vercel custom-domain compatibility.** Vercel validates custom domains via either CNAME or apex A/ALIAS records; Cloudflare supports both.
+- **Vercel custom-domain compatibility.** Vercel validates custom domains via CNAME records for subdomains and via A/AAAA records (or CNAME at the apex through Cloudflare's CNAME flattening) at the root. Cloudflare supports all of these — including apex CNAMEs natively, rather than via a separate ALIAS record type.
 
 **Management mode — portal-managed at v1, IaC deferred.**
 
 DNS records are managed through the Cloudflare dashboard, not Terraform / Pulumi / OpenTofu. Rationale:
 
-- Aligns with the user's strong preference for portal-over-CLI workflows (memory: feedback_portal_over_cli) — the same logic that applies to Azure applies to Cloudflare.
+- Aligns with the repo's documented portal-first convention for infrastructure workflows ([`infrastructure/README.md`](../infrastructure/README.md)) — the same logic that applies to Azure applies to Cloudflare.
 - Solo-dev scale: the DNS footprint is small enough that drift is observable by inspection in the Cloudflare dashboard. The cost of standing up Terraform state, drift detection, and a CI workflow for DNS exceeds the maintenance cost of clicking-through changes for the foreseeable Grid size.
 - Cloudflare's portal change history is sufficient for solo-dev audit purposes.
 - The decision is reversible. If a future ADR-driven concern (preview environments per pull request, mass migrations, multi-account governance) makes IaC concretely worth the operational cost, that is a separate ADR. Until then: portal.
 
-A Cloudflare API token may be created in advance and stored in `kv-hd-shared-{env}` (or per-Node when first consumed) per ADR-0005's secret-naming convention (`Cloudflare--ApiToken`), so that **automation can use it** when it lands — but no automation lands at this ADR. Manual DNS changes through the portal are the supported path at v1.
+When future automation needs a Cloudflare API token, it is stored in the consuming Node's per-Node vault per ADR-0005's secret-naming convention (`Cloudflare--ApiToken`). This ADR does not create or assume a shared vault — ADR-0005 explicitly forbids one until a real cross-Node secret appears, and that gating decision belongs to a follow-up ADR, not this one. No automation lands at this ADR. Manual DNS changes through the portal are the supported path at v1.
 
 ### D3. Cloudflare is the Grid's edge platform of choice — feature decisions deferred
 
@@ -107,7 +107,7 @@ No tokens are provisioned by this ADR. The naming convention is recorded so the 
 
 ### D6. Tag / record-comment scheme is lean
 
-Per the lean Azure tag-scheme memory, Cloudflare DNS record comments (where used) follow the same minimal posture: record purpose only, not initiative names or owners. Cloudflare does not have first-class tags on records the way Azure resources do, but the comment field exists and gets used the same way: `purpose=studios-apex`, `purpose=notify-cloud-api`, etc. No `initiative` or `created-by-agent` noise.
+Per the Grid's lean Azure tag scheme (env always, node for per-Node, purpose=platform-shared for shared, never `initiative`), Cloudflare DNS record comments (where used) follow the same minimal posture: record purpose only, not initiative names or owners. Cloudflare does not have first-class tags on records the way Azure resources do, but the comment field exists and gets used the same way: `purpose=studios-apex`, `purpose=notify-cloud-api`, etc. No `initiative` or `created-by-agent` noise.
 
 ## Consequences
 
@@ -186,7 +186,7 @@ Rejected. The user's explicit framing is "broad in framing, conservative in scop
 
 ### Manage DNS as IaC (Terraform / OpenTofu / Pulumi) from day one
 
-Rejected at v1. The user's strong portal-over-CLI preference (memory) applies to Cloudflare for the same reason it applies to Azure: at solo-dev scale with a small footprint, the operational cost of standing up IaC state, drift detection, and a CI lane for DNS exceeds the maintenance cost of clicking through portal changes. Cloudflare's change log is sufficient audit at this scale. Revisit if the Grid's DNS footprint or the team shape changes — but not as part of this ADR.
+Rejected at v1. The repo's portal-first convention for infrastructure workflows ([`infrastructure/README.md`](../infrastructure/README.md)) applies to Cloudflare for the same reason it applies to Azure: at solo-dev scale with a small footprint, the operational cost of standing up IaC state, drift detection, and a CI lane for DNS exceeds the maintenance cost of clicking through portal changes. Cloudflare's change log is sufficient audit at this scale. Revisit if the Grid's DNS footprint or the team shape changes — but not as part of this ADR.
 
 ### Migrate the Studios website to Cloudflare Pages as part of this ADR
 
