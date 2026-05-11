@@ -2,10 +2,10 @@
 
 Tracked automatically by the hive-sync agent. Items listed here are
 inconsistencies between Accepted decisions and the rest of the Architecture
-repo. The agent surfaces these — it does not fix them. Resolution is the
+repo. The agent surfaces these - it does not fix them. Resolution is the
 scope/adr-composer/human's responsibility.
 
-Last synced: 2026-05-07
+Last synced: 2026-05-11
 
 ## Invariants Named in ADRs but Missing from `invariants.md`
 
