@@ -6,22 +6,16 @@ not set or modify Hive fields - that is the responsibility of the mirror
 workflow (for auto-wired issues) or the file-issues agent (for packets).
 This file is read-only with respect to The Hive board.
 
-Last synced: 2026-05-11
+Last synced: 2026-05-16
 
 ## Open
 
 | Issue | Repo | Category | Labels | Opened |
 |-------|------|----------|--------|--------|
 | [#50 Follow-up: add Container Apps deploy smoke test](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/50) | HoneyDrunk.Actions | other | ci, tier-2, adr-0015 | 2026-04-25 |
-| [#33 Feature: Accept ADR-0010 - register HoneyDrunk.Observe, wire AI routing contracts into catalogs, finalize invariants](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/33) | HoneyDrunk.Architecture | other | feature, tier-2, wave-1, docs, meta, catalog, adr-0010, initiative-adr-0010-observe-ai-routing-phase-1 | 2026-04-19 |
+| [#33 Feature: Accept ADR-0010 — register HoneyDrunk.Observe, wire AI routing contracts into catalogs, finalize invariants](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/33) | HoneyDrunk.Architecture | other | feature, tier-2, wave-1, docs, meta, catalog, adr-0010, initiative-adr-0010-observe-ai-routing-phase-1 | 2026-04-19 |
 | [#34 Chore: Create `HoneyDrunk.Observe` GitHub repo (human-only)](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/34) | HoneyDrunk.Architecture | other | chore, tier-1, wave-1, new-node, human-only, meta, adr-0010, initiative-adr-0010-observe-ai-routing-phase-1 | 2026-04-19 |
 | [#94 Chore: Verify `HoneyDrunk.AI` GitHub repo settings + clone locally (human-only)](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/94) | HoneyDrunk.Architecture | other | chore, tier-1, wave-2, human-only, meta, ai, adr-0016, initiative-adr-0016-honeydrunk-ai-standup | 2026-05-08 |
-| [#98 Chore: Add transfer-in-flight notes to GoDaddy + Cloudflare vendor-inventory rows](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/98) | HoneyDrunk.Architecture | other | chore, tier-1, docs, infrastructure, adr-0029, initiative-adr-0029-cloudflare-dns-rollout | 2026-05-09 |
-| [#99 Feature: Author `infrastructure/cloudflare-account-provisioning.md` walkthrough](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/99) | HoneyDrunk.Architecture | other | feature, tier-2, docs, infrastructure, adr-0029, initiative-adr-0029-cloudflare-dns-rollout | 2026-05-09 |
-| [#100 Feature: Author `infrastructure/cloudflare-domain-transfer.md` walkthrough](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/100) | HoneyDrunk.Architecture | other | feature, tier-2, docs, infrastructure, adr-0029, initiative-adr-0029-cloudflare-dns-rollout | 2026-05-09 |
-| [#101 Feature: Migrate `honeydrunkstudios.com` from GoDaddy to Cloudflare](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/101) | HoneyDrunk.Architecture | other | feature, tier-2, human-only, infrastructure, adr-0029, initiative-adr-0029-cloudflare-dns-rollout | 2026-05-09 |
-| [#102 Feature: Migrate `tatteddev.com` from GoDaddy to Cloudflare](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/102) | HoneyDrunk.Architecture | other | feature, tier-2, human-only, infrastructure, adr-0029, initiative-adr-0029-cloudflare-dns-rollout | 2026-05-09 |
-| [#103 Feature: Migrate `honeyhub.app` from GoDaddy to Cloudflare](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/103) | HoneyDrunk.Architecture | other | feature, tier-2, human-only, infrastructure, adr-0029, initiative-adr-0029-cloudflare-dns-rollout | 2026-05-09 |
 
 ## Recently Closed (last 30 days)
 
