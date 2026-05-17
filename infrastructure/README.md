@@ -4,7 +4,7 @@ Operational docs for Grid platform infrastructure — Azure runtime (ADR-0005,
 ADR-0006, ADR-0015) and GitHub control-plane auth (ADR-0008, ADR-0012).
 Walkthroughs are **portal-first**; CLI is optional appendix material only.
 
-Organized into three folders:
+Organized into four folders:
 
 - **[`walkthroughs/`](walkthroughs/)** — step-by-step provisioning runbooks
 - **[`conventions/`](conventions/)** — naming/identity/release rules and standards
