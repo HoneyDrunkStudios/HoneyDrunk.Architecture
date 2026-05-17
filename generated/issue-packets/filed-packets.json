@@ -99,5 +99,6 @@
   "generated/issue-packets/active/adr-0029-cloudflare-dns-rollout/03-architecture-cloudflare-domain-transfer-walkthrough.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/100",
   "generated/issue-packets/active/adr-0029-cloudflare-dns-rollout/04-architecture-migrate-honeydrunkstudios-com.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/101",
   "generated/issue-packets/active/adr-0029-cloudflare-dns-rollout/05a-architecture-migrate-tatteddev-com.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/102",
-  "generated/issue-packets/active/adr-0029-cloudflare-dns-rollout/05b-architecture-migrate-honeyhub-app.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/103"
+  "generated/issue-packets/active/adr-0029-cloudflare-dns-rollout/05b-architecture-migrate-honeyhub-app.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/103",
+  "generated/issue-packets/active/adr-0010-observe-ai-routing-phase-1/03-observe-abstractions-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Observe/issues/2"
 }
