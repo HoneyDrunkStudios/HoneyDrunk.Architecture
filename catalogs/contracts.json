@@ -109,6 +109,17 @@
       ]
     },
     {
+      "node": "honeydrunk-audit",
+      "node_name": "HoneyDrunk.Audit",
+      "package": "HoneyDrunk.Audit.Abstractions",
+      "status": "seed",
+      "interfaces": [
+        { "name": "IAuditLog", "kind": "interface", "description": "Append-only write of an AuditEntry. No update method. No delete method. Append-only is enforced at the interface surface, not only at storage (ADR-0030 D4). Relocated and generalized Grid-wide from HoneyDrunk.Operator.Abstractions per ADR-0030 D5." },
+        { "name": "IAuditQuery", "kind": "interface", "description": "Time-ordered and filtered read/forensic retrieval over the durable audit record. Net-new contract introduced by ADR-0030 D3; has no Operator precedent. Satisfies ADR-0018 D9's 'work off the read surface, not by mutating entries' commitment." },
+        { "name": "AuditEntry", "kind": "type", "description": "Record. Canonical append-only audit record — actor, action, context, outcome, correlation id, tenant. Generalized Grid-wide from the Operator-scoped shape. Drops the I prefix per the Grid-wide naming rule (records drop I, interfaces keep it). Relocated from HoneyDrunk.Operator.Abstractions per ADR-0030 D5." }
+      ]
+    },
+    {
       "node": "pulse",
       "node_name": "HoneyDrunk.Pulse",
       "package": "HoneyDrunk.Pulse.Contracts",
@@ -245,7 +256,7 @@
         { "name": "IApprovalGate", "kind": "interface", "description": "Require human approval before an agent action proceeds." },
         { "name": "ICircuitBreaker", "kind": "interface", "description": "Halt agent or workflow execution when safety thresholds are breached." },
         { "name": "ICostController", "kind": "interface", "description": "Enforce per-agent and per-tenant inference cost limits." },
-        { "name": "IAuditLog", "kind": "interface", "description": "Immutable record of agent actions, decisions, and approvals." }
+        { "name": "IAuditLog", "kind": "interface", "description": "RELOCATED to honeydrunk-audit (HoneyDrunk.Audit.Abstractions) and generalized Grid-wide per ADR-0030 D5. Operator no longer owns this contract — it is reclassified from owner to consumer/emitter and emits AuditEntry against the IAuditLog it now consumes from HoneyDrunk.Audit.Abstractions. See ADR-0030 and ADR-0018's additive amendment note." }
       ]
     },
     {

@@ -222,5 +222,21 @@
     "type": "runtime",
     "version": "0.1.0",
     "description": "Communication orchestration runtime — welcome flow, preference/cadence checks, decision logging, and Notify delegation"
+  },
+  {
+    "id": "audit-abstractions",
+    "nodeId": "honeydrunk-audit",
+    "name": "HoneyDrunk.Audit.Abstractions",
+    "type": "abstractions",
+    "version": "0.0.0",
+    "description": "Zero-HoneyDrunk-dependency contracts for the Grid-wide durable audit record — IAuditLog, IAuditQuery, AuditEntry"
+  },
+  {
+    "id": "audit-data",
+    "nodeId": "honeydrunk-audit",
+    "name": "HoneyDrunk.Audit.Data",
+    "type": "runtime",
+    "version": "0.0.0",
+    "description": "Data-backed append-only IAuditLog writer and IAuditQuery reader over HoneyDrunk.Data's IRepository/IUnitOfWork; audit-class retention wiring; DI composition"
   }
 ]

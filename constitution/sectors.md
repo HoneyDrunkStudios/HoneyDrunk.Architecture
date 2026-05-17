@@ -16,6 +16,7 @@ Foundational primitives for everything else — kernel abstractions, data conven
 | **Auth** | Live | JWT validation, policy-based authorization, Vault-backed keys |
 | **Web.Rest** | Live | Response envelopes, correlation, exception mapping |
 | **Data** | Live | Repository pattern, unit of work, tenant-aware data, transactional outbox |
+| **Audit** | Seed | Grid-wide durable, attributable security and action record — append-only by interface, audit-class retention, forensic read surface |
 
 ## Ops
 
