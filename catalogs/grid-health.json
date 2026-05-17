@@ -116,7 +116,7 @@
       "notes": "v0.1.0 packages released. Contracts and welcome-flow runtime are stood up: intents, recipient resolution, preference store, cadence policy, decision log, and Notify delegation. Durable stores/testing package remain deferred. CORRECTION 2026-05-16: canary_status was reported 'passing' in error — no contract-shape canary is actually wired (Communications uses shared pr-core.yml, which has no api-compatibility job). See Communications#12."
     },
     {
-      "id": "pulse",
+      "id": "honeydrunk-pulse",
       "name": "HoneyDrunk.Pulse",
       "sector": "Ops",
       "signal": "Seed",
@@ -277,6 +277,6 @@
     "canary_passing": 8,
     "canary_none": 15,
     "canary_failing": 0,
-    "blocked_nodes": ["honeydrunk-vault-rotation", "honeydrunk-notify", "honeydrunk-communications", "pulse", "honeydrunk-lore", "honeydrunk-actions", "honeydrunk-agents", "honeydrunk-ai", "honeydrunk-memory", "honeydrunk-knowledge", "honeydrunk-evals", "honeydrunk-capabilities", "honeydrunk-flow", "honeydrunk-operator", "honeydrunk-sim", "honeydrunk-audit"]
+    "blocked_nodes": ["honeydrunk-vault-rotation", "honeydrunk-notify", "honeydrunk-communications", "honeydrunk-pulse", "honeydrunk-lore", "honeydrunk-actions", "honeydrunk-agents", "honeydrunk-ai", "honeydrunk-memory", "honeydrunk-knowledge", "honeydrunk-evals", "honeydrunk-capabilities", "honeydrunk-flow", "honeydrunk-operator", "honeydrunk-sim", "honeydrunk-audit"]
   }
 }

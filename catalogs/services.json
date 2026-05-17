@@ -1,7 +1,7 @@
 [
   {
     "id": "pulse-collector",
-    "nodeId": "pulse",
+    "nodeId": "honeydrunk-pulse",
     "name": "Pulse.Collector",
     "type": "service",
     "description": "Deployable OTLP receiver that ingests traces, logs, and metrics and fans out to configured sinks",

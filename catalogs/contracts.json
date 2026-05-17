@@ -120,7 +120,7 @@
       ]
     },
     {
-      "node": "pulse",
+      "node": "honeydrunk-pulse",
       "node_name": "HoneyDrunk.Pulse",
       "package": "HoneyDrunk.Pulse.Contracts",
       "status": "seed",
