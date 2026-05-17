@@ -114,5 +114,16 @@
   "generated/issue-packets/active/adr-0032-pr-validation-policy/09-data-coverage-backfill-to-70.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Data/issues/20",
   "generated/issue-packets/active/adr-0032-pr-validation-policy/10-pulse-coverage-backfill-to-70.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/14",
   "generated/issue-packets/active/adr-0032-pr-validation-policy/11-notify-coverage-backfill-to-70.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/12",
-  "generated/issue-packets/active/adr-0032-pr-validation-policy/12-communications-coverage-backfill-to-70.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications/issues/13"
+  "generated/issue-packets/active/adr-0032-pr-validation-policy/12-communications-coverage-backfill-to-70.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications/issues/13",
+  "generated/issue-packets/active/kernel-adoption-alignment/01-kernel-context-bootstrap-and-well-known-node-ids.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Kernel/issues/29",
+  "generated/issue-packets/active/kernel-adoption-alignment/02-transport-drop-kernel-runtime-dependency.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Transport/issues/27",
+  "generated/issue-packets/active/kernel-adoption-alignment/03-vault-align-kernel-version.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Vault/issues/31",
+  "generated/issue-packets/active/kernel-adoption-alignment/04-auth-align-kernel-version.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Auth/issues/20",
+  "generated/issue-packets/active/kernel-adoption-alignment/05-web-rest-require-kernel-request-context.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Web.Rest/issues/17",
+  "generated/issue-packets/active/kernel-adoption-alignment/06-data-require-context-for-outbox-enrichment.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Data/issues/21",
+  "generated/issue-packets/active/kernel-adoption-alignment/07-vault-rotation-establish-timer-operation-context.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Vault.Rotation/issues/7",
+  "generated/issue-packets/active/kernel-adoption-alignment/08-notify-align-identity-and-queue-secret-boundary.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/13",
+  "generated/issue-packets/active/kernel-adoption-alignment/09-pulse-align-kernel-identity-and-version.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/15",
+  "generated/issue-packets/active/kernel-adoption-alignment/10-communications-drop-kernel-runtime-dependency.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications/issues/14",
+  "generated/issue-packets/active/kernel-adoption-alignment/11-architecture-reconcile-kernel-adoption-catalogs.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/111"
 }
