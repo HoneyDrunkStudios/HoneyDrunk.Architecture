@@ -6,6 +6,17 @@
 **Deciders:** HoneyDrunk Studios
 **Sector:** Ops
 
+## Post-Acceptance Correction (2026-05-16)
+
+A cleanup audit of the ADR-0013 → ADR-0019 transition found that two acceptance items were checked in error:
+
+- The follow-up "Wire the contract-shape canary into Actions" item, and
+- The "Done When" item "Communications's CI includes the D8 contract-shape canary and it is green."
+
+In reality **no contract-shape canary was ever wired**. Communications's `pr-core.yml` calls the shared `HoneyDrunk.Actions/pr-core.yml` workflow, which has no API-compatibility job; the canary lives in the shared `pr-sdk.yml` path, which Communications does not use. `catalogs/grid-health.json` had also reported `canary_status: "passing"` for Communications in error; it has been corrected to `"none"` with an active blocker.
+
+This does **not** un-accept the ADR — the Communications Node is genuinely stood up (all seven D3 contracts, in-memory defaults, Notify refactor all landed and verified on disk). The missing canary (D8 / Invariant 43) is a tracked follow-up gap, not a reason to reopen the stand-up decision. Remediation is tracked by **HoneyDrunkStudios/HoneyDrunk.Communications#12**; the two boxes above will be re-checked when that issue lands and the canary is green.
+
 ## If Accepted — Required Follow-Up Work in Architecture Repo
 
 Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
@@ -15,7 +26,7 @@ Accepting this ADR creates catalog and cross-repo obligations that must be compl
 - [x] Create `repos/HoneyDrunk.Communications/` context folder in the Architecture repo (`overview.md`, `boundaries.md`, `invariants.md`, `active-work.md`, `integration-points.md`) — matching the template used by `repos/HoneyDrunk.Agents/`
 - [x] Reconcile `catalogs/contracts.json`: confirm the cataloged contracts (`ICommunicationOrchestrator`, `IMessageIntent`, `IRecipientResolver`, `IPreferenceStore`, `ICadencePolicy`) against the final contract shape, and add any additional records introduced by this stand-up (`MessageIntent` if promoted to a value type — see D3) plus the `ICommunicationDecisionLog` surface added in D3
 - [x] Update `catalogs/grid-health.json` Communications entry to reflect the stood-up contract surface and scaffold expectations
-- [x] Wire the contract-shape canary into Actions for the frozen contracts named in D8
+- [ ] Wire the contract-shape canary into Actions for the frozen contracts named in D8 — **corrected 2026-05-16: marked done in error, not actually wired. See Post-Acceptance Correction below.**
 - [x] **Notify refactor packet** — migrate `INotificationPolicy` conceptually into `IPreferenceStore` + `ICadencePolicy`, remove `INotificationPolicy` / `PolicyEvaluationResult` / `RejectionReason.PolicyDenied` from `HoneyDrunk.Notify.Abstractions`, delete `AllowAllPolicy` and `CompositePolicyPipeline`, remove the policy-evaluation step from `NotificationGateway.EnqueueAsync`, rename Notify's `Orchestration/` folder to `Intake/`, and update Notify's `boundaries.md`. This is part of acceptance, not a follow-up — see D11 and Consequences.
 - [x] Scope agent assigns final invariant numbers when flipping Status → Accepted
 
@@ -170,7 +181,7 @@ This ADR is "Done" when all of the following are true:
 
 - [x] `HoneyDrunk.Communications.Abstractions 0.1.0` is published with the contracts in D3.
 - [x] `HoneyDrunk.Communications 0.1.0` is published with the D6 in-memory defaults.
-- [x] Communications's CI includes the D8 contract-shape canary and it is green.
+- [ ] Communications's CI includes the D8 contract-shape canary and it is green. — **corrected 2026-05-16: marked done in error, not actually wired. See Post-Acceptance Correction below.**
 - [x] `HoneyDrunk.Notify.Abstractions` no longer exports `INotificationPolicy`, `PolicyEvaluationResult`, or `RejectionReason.PolicyDenied`.
 - [x] `HoneyDrunk.Notify/Policies/AllowAllPolicy.cs` and `HoneyDrunk.Notify/Policies/CompositePolicyPipeline.cs` are deleted.
 - [x] `NotificationGateway.EnqueueAsync` no longer runs a policy-evaluation step and its XML doc reflects the tightened contract.

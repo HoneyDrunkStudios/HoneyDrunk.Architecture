@@ -76,7 +76,7 @@ The clone should land at `c:/Users/tatte/source/repos/HoneyDrunkStudios/HoneyDru
 
 ### Step 4 — Confirm OIDC federated credential
 
-Cross-link: [`infrastructure/oidc-federated-credentials.md`](../../../infrastructure/oidc-federated-credentials.md).
+Cross-link: [`infrastructure/walkthroughs/oidc-federated-credentials.md`](../../../infrastructure/walkthroughs/oidc-federated-credentials.md).
 
 Confirm the Grid's NuGet publishing identity has `repo:HoneyDrunkStudios/HoneyDrunk.AI:ref:refs/tags/v*` in its federated credential subject list. If not, add it via the Azure portal (Microsoft Entra → App registrations → the NuGet publishing identity → Certificates & secrets → Federated credentials). Without this, `release.yml` will fail to obtain a token at first tag-push.
 

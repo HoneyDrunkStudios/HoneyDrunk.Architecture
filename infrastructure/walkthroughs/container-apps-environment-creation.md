@@ -130,8 +130,8 @@ The fallbacks exist because the portal does not currently expose a standalone Cr
 
 ## Cross references
 
-- [ADR-0015: Container Hosting Platform](../adrs/ADR-0015-container-hosting-platform.md)
+- [ADR-0015: Container Hosting Platform](../../adrs/ADR-0015-container-hosting-platform.md)
 - [Container Registry creation](container-registry-creation.md)
 - [Container App creation](container-app-creation.md)
 - [Log Analytics workspace and alerts](log-analytics-workspace-and-alerts.md)
-- [Grid Invariants](../constitution/invariants.md) — 22, 35.
+- [Grid Invariants](../../constitution/invariants.md) — 22, 35.

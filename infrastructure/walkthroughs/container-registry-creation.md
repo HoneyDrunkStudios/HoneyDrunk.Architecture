@@ -61,9 +61,9 @@ Create the shared Azure Container Registry `acrhdshared{env}` (Basic SKU) in the
 
 ## Cross references
 
-- [ADR-0015: Container Hosting Platform](../adrs/ADR-0015-container-hosting-platform.md)
+- [ADR-0015: Container Hosting Platform](../../adrs/ADR-0015-container-hosting-platform.md)
 - [Container Apps Environment creation](container-apps-environment-creation.md)
 - [Container App creation](container-app-creation.md)
 - [OIDC federated credentials](oidc-federated-credentials.md)
 - [Log Analytics workspace and alerts](log-analytics-workspace-and-alerts.md)
-- [Grid Invariants](../constitution/invariants.md) — 22, 35.
+- [Grid Invariants](../../constitution/invariants.md) — 22, 35.

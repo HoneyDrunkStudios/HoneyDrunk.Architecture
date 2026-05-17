@@ -1,30 +1,57 @@
-# Infrastructure Walkthroughs (Portal-First)
+# Infrastructure
 
-These walkthroughs are the operational runbooks for Grid platform provisioning — Azure for runtime infrastructure (ADR-0005, ADR-0006, ADR-0015) and GitHub for control-plane authentication (ADR-0008, ADR-0012). They are written **portal-first**; CLI is optional appendix material only.
+Operational docs for Grid platform infrastructure — Azure runtime (ADR-0005,
+ADR-0006, ADR-0015) and GitHub control-plane auth (ADR-0008, ADR-0012).
+Walkthroughs are **portal-first**; CLI is optional appendix material only.
 
-## Walkthrough Index
+Organized into four folders:
 
-Listed in provisioning order — platform-shared resources first, per-Node resources second.
+- **[`walkthroughs/`](walkthroughs/)** — step-by-step provisioning runbooks
+- **[`conventions/`](conventions/)** — naming/identity/release rules and standards
+- **[`reference/`](reference/)** — living inventories and maps (what exists, where)
+- **[`openclaw/`](openclaw/)** — OpenClaw gateway provisioning
+
+---
+
+## Walkthroughs
+
+Listed in provisioning order — platform-shared first, per-Node second.
 
 **GitHub platform (provision once for the org):**
 
-- [HoneyDrunk Hive GitHub App](github-app-hive-walkthrough.md) — Provision the dedicated GitHub App that mints scoped installation tokens for the file-packets reusable workflow. Replaces the developer's PAT for control-plane work.
+- [HoneyDrunk Hive GitHub App](walkthroughs/github-app-hive-walkthrough.md) — Dedicated GitHub App that mints scoped installation tokens for the file-packets reusable workflow. Replaces the developer's PAT for control-plane work.
 
 **Azure platform-shared (provision once per environment):**
 
-- [Container Registry creation](container-registry-creation.md) — Create the shared `acrhdshared{env}` (Basic SKU) in `rg-hd-platform-{env}` with admin disabled and diagnostics routed to shared Log Analytics.
-- [Container Apps Environment creation](container-apps-environment-creation.md) — Create the shared `cae-hd-{env}` Consumption-only environment in `rg-hd-platform-{env}` with logs routed to shared Log Analytics.
-- [App Configuration provisioning](app-configuration-provisioning.md) — Provision shared `appcs-hd-shared-{env}` with label partitioning, KV references, and RBAC.
-- [Log Analytics workspace and alerts](log-analytics-workspace-and-alerts.md) — Provision `log-hd-shared-{env}` and configure SLA/security alerting.
-- [OIDC federated credentials](oidc-federated-credentials.md) — Create GitHub Actions federated credentials per `{repo, environment}` with no client secret.
+- [Azure Provisioning Guide](walkthroughs/azure-provisioning-guide.md) — End-to-end runbook tying the walkthroughs below together for a new service.
+- [Container Registry creation](walkthroughs/container-registry-creation.md) — Shared `acrhdshared{env}` (Basic SKU) in `rg-hd-platform-{env}`, admin disabled, diagnostics to shared Log Analytics.
+- [Container Apps Environment creation](walkthroughs/container-apps-environment-creation.md) — Shared `cae-hd-{env}` Consumption-only environment in `rg-hd-platform-{env}`.
+- [App Configuration provisioning](walkthroughs/app-configuration-provisioning.md) — Shared `appcs-hd-shared-{env}` with label partitioning, KV references, RBAC.
+- [Log Analytics workspace and alerts](walkthroughs/log-analytics-workspace-and-alerts.md) — `log-hd-shared-{env}` plus SLA/security alerting.
+- [OIDC federated credentials](walkthroughs/oidc-federated-credentials.md) — GitHub Actions federated credentials per `{repo, environment}`, no client secret.
 
 **Azure per-Node:**
 
-- [Key Vault creation](key-vault-creation.md) — Create `kv-hd-{service}-{env}` with RBAC-only auth, naming checks, and diagnostics routing.
-- [Key Vault RBAC assignments](key-vault-rbac-assignments.md) — Assign least-privilege RBAC for runtime MI, CI OIDC identity, and Vault.Rotation MI.
-- [Event Grid subscriptions on Key Vault](event-grid-subscriptions-on-keyvault.md) — Subscribe vault events for `SecretNewVersionCreated` cache-invalidation paths.
-- [Function App creation](function-app-creation.md) — Create `func-hd-{service}-{env}` (Linux Consumption, .NET 10 isolated) with system-assigned MI and Grid bootstrap app settings.
-- [Container App creation](container-app-creation.md) — Create `ca-hd-{service}-{env}` bound to the shared environment, pulling from the shared registry, with system-assigned MI and Grid bootstrap env vars.
+- [Key Vault creation](walkthroughs/key-vault-creation.md) — `kv-hd-{service}-{env}`, RBAC-only auth, naming checks, diagnostics.
+- [Key Vault RBAC assignments](walkthroughs/key-vault-rbac-assignments.md) — Least-privilege RBAC for runtime MI, CI OIDC identity, Vault.Rotation MI.
+- [Event Grid subscriptions on Key Vault](walkthroughs/event-grid-subscriptions-on-keyvault.md) — Vault events for `SecretNewVersionCreated` cache-invalidation paths.
+- [Function App creation](walkthroughs/function-app-creation.md) — `func-hd-{service}-{env}` (Linux Consumption, .NET 10 isolated), system-assigned MI, Grid bootstrap app settings.
+- [Container App creation](walkthroughs/container-app-creation.md) — `ca-hd-{service}-{env}` on the shared environment, pulling from the shared registry, system-assigned MI, Grid bootstrap env vars.
+
+## Conventions
+
+- [Azure Naming Conventions](conventions/azure-naming-conventions.md) — canonical resource naming rules and per-type constraints.
+- [Azure Identity & Secrets](conventions/azure-identity-and-secrets.md) — OIDC, Key Vault strategy, secret naming, per-service secret lists.
+- [Tag & Release Conventions](conventions/tag-and-release-conventions.md) — how git tags map to releases; NuGet `v*` lockstep vs. per-component deploy tags.
+
+## Reference
+
+- [Azure Resource Inventory](reference/azure-resource-inventory.md) — every Azure resource provisioned or planned, per environment, with status.
+- [Deployment Map](reference/deployment-map.md) — services, their resources, and secret wiring at a glance.
+- [Vendor Inventory](reference/vendor-inventory.md) — external vendors/accounts in use.
+- [Tech Stack](reference/tech-stack.md) — languages, frameworks, and platform choices.
+
+---
 
 ## References
 

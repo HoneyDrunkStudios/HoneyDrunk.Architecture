@@ -34,7 +34,7 @@ Both pieces are pure docs/JSON edits in the same repo, so a human developer woul
 ### Proposed Implementation
 Add new documents under `HoneyDrunk.Architecture/infrastructure/`:
 
-1. **`infrastructure/key-vault-creation.md`** — Portal walkthrough for creating `kv-hd-{service}-{env}`:
+1. **`infrastructure/walkthroughs/key-vault-creation.md`** — Portal walkthrough for creating `kv-hd-{service}-{env}`:
    - Resource group selection (`rg-hd-{service}-{env}`)
    - Name validation (24-char limit, 13-char service budget)
    - **RBAC authorization enabled, access policies disabled** (screenshot the toggle)
@@ -42,20 +42,20 @@ Add new documents under `HoneyDrunk.Architecture/infrastructure/`:
    - Networking defaults (public endpoint + firewall for now; note Private Link as future)
    - Diagnostic settings → route to `log-hd-shared-{env}` (invariant 22)
 
-2. **`infrastructure/key-vault-rbac-assignments.md`** — Portal walkthrough for assigning:
+2. **`infrastructure/walkthroughs/key-vault-rbac-assignments.md`** — Portal walkthrough for assigning:
    - `Key Vault Secrets User` to the Node's system-assigned Managed Identity (scoped to that vault only)
    - `Key Vault Secrets Officer` to the GitHub Actions OIDC federated identity (scoped to that vault only)
    - `Key Vault Secrets Officer` to `HoneyDrunk.Vault.Rotation`'s MI on every vault it rotates into
    - Verification steps: "Access control (IAM) → Check access" for each principal
 
-3. **`infrastructure/oidc-federated-credentials.md`** — Portal walkthrough for creating OIDC federated credentials for GitHub Actions:
+3. **`infrastructure/walkthroughs/oidc-federated-credentials.md`** — Portal walkthrough for creating OIDC federated credentials for GitHub Actions:
    - App registration → Federated credentials → Add credential → GitHub Actions preset
    - `{repo, environment}` pair per credential — one per Node per environment
    - Subject format: `repo:HoneyDrunkStudios/{RepoName}:environment:{env}`
    - No client secret issued — critical
    - How to wire the resulting client ID / tenant ID into the repo's GitHub environment secrets (these are non-secret identifiers)
 
-4. **`infrastructure/app-configuration-provisioning.md`** — Portal walkthrough for provisioning `appcs-hd-shared-{env}`:
+4. **`infrastructure/walkthroughs/app-configuration-provisioning.md`** — Portal walkthrough for provisioning `appcs-hd-shared-{env}`:
    - One shared instance per environment, not per Node
    - Enable Managed Identity auth
    - Create per-Node labels matching `HONEYDRUNK_NODE_ID`
@@ -64,14 +64,14 @@ Add new documents under `HoneyDrunk.Architecture/infrastructure/`:
    - Diagnostic settings → Log Analytics
    - RBAC: `App Configuration Data Reader` to each Node MI, `App Configuration Data Owner` to CI OIDC identities
 
-5. **`infrastructure/event-grid-subscriptions-on-keyvault.md`** — Portal walkthrough for subscribing to `Microsoft.KeyVault.SecretNewVersionCreated`:
+5. **`infrastructure/walkthroughs/event-grid-subscriptions-on-keyvault.md`** — Portal walkthrough for subscribing to `Microsoft.KeyVault.SecretNewVersionCreated`:
    - On each `kv-hd-{service}-{env}` vault: Events → Add Event Subscription
    - Filter to `Microsoft.KeyVault.SecretNewVersionCreated` only
    - Endpoint: the consuming Node's webhook URL (internal, MI-auth or webhook secret per ADR-0006 Tier 3)
    - Dead-lettering config
    - Validation handshake verification
 
-6. **`infrastructure/log-analytics-workspace-and-alerts.md`** — Portal walkthrough for:
+6. **`infrastructure/walkthroughs/log-analytics-workspace-and-alerts.md`** — Portal walkthrough for:
    - Creating `log-hd-shared-{env}` Log Analytics workspace
    - Wiring KV diagnostic settings to it (cross-link to walkthrough 1)
    - Creating alert rules:
@@ -214,12 +214,12 @@ None — pure docs and catalog edits. Unblocks every per-Node migration packet a
 - Don't invent relationship edges beyond what ADR-0006 supports
 
 **Key Files:**
-- `infrastructure/key-vault-creation.md` (new)
-- `infrastructure/key-vault-rbac-assignments.md` (new)
-- `infrastructure/oidc-federated-credentials.md` (new)
-- `infrastructure/app-configuration-provisioning.md` (new)
-- `infrastructure/event-grid-subscriptions-on-keyvault.md` (new)
-- `infrastructure/log-analytics-workspace-and-alerts.md` (new)
+- `infrastructure/walkthroughs/key-vault-creation.md` (new)
+- `infrastructure/walkthroughs/key-vault-rbac-assignments.md` (new)
+- `infrastructure/walkthroughs/oidc-federated-credentials.md` (new)
+- `infrastructure/walkthroughs/app-configuration-provisioning.md` (new)
+- `infrastructure/walkthroughs/event-grid-subscriptions-on-keyvault.md` (new)
+- `infrastructure/walkthroughs/log-analytics-workspace-and-alerts.md` (new)
 - `infrastructure/README.md` (new or updated)
 - `catalogs/nodes.json`
 - `catalogs/relationships.json`

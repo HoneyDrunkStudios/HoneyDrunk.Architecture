@@ -23,7 +23,8 @@ You received a task from Claude Code via a GitHub Issue or handoff prompt. Follo
 3. Read `repos/{target-repo}/invariants.md` for repo-specific rules
 4. Read `constitution/invariants.md` for Grid-wide rules
 5. Implement within the target repo, not in this repo
-6. Open a PR with your implementation
+6. Commit using Conventional Commit format (see **Commit Format** below)
+7. Open a PR with your implementation
 
 ## If You Are Copilot (assisting in IDE)
 
@@ -62,11 +63,40 @@ Custom agents are defined in `.github/agents/`. Each agent has a specific purpos
 | `site-sync` | Sync website with architecture changes |
 | `netrunner` | Navigate the Grid and surface what's next |
 
+## Commit Format
+
+All commits — in this repo and in any target repo you execute against — **must** follow [Conventional Commits](https://www.conventionalcommits.org/) 1.0.0:
+
+```
+<type>(<optional scope>): <description>
+
+<optional body>
+
+<optional footer>
+```
+
+- **type** is required and must be one of: `feat`, `fix`, `chore`, `docs`, `refactor`, `test`, `build`, `ci`, `perf`, `style`, `revert`
+- **scope** is optional; use the affected node or area (e.g. `feat(notify):`, `docs(adr):`)
+- **description** is lowercase, imperative mood, no trailing period, ≤ 72 chars on the subject line
+- Breaking changes: append `!` after the type/scope (e.g. `feat(auth)!:`) **and** add a `BREAKING CHANGE:` footer explaining the impact
+- Reference issues in the footer: `Refs: #123` or `Closes: #123`
+
+Examples:
+
+```
+feat(communications): add cadence preference resolver
+fix(vault): handle null rotation window on first provision
+docs(adr): accept ADR-0030 audit substrate
+chore: bump nightly-deps group
+```
+
+Squash-merge PR titles must also be a valid Conventional Commit — the title becomes the commit on the default branch.
+
 ## Conventions
 
 - Markdown with structured frontmatter, JSON catalogs
 - No application code in this repo
-- Conventional commits: `feat:`, `fix:`, `chore:`, `docs:`
+- Commits follow Conventional Commits — see **Commit Format** above
 - Issue packet naming: `{YYYY-MM-DD}-{repo}-{description}.md`
 - ADR format follows `adrs/ADR-0001-node-vs-service.md`
 - PDR format follows `pdrs/PDR-0001-honeyhub-platform-observation-and-ai-routing.md`

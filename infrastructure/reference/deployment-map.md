@@ -5,10 +5,10 @@ Where everything in the Grid lives, how it gets there, and what secrets it needs
 **Last Updated:** 2026-03-28
 
 **Related docs:**
-- [Azure Naming Conventions](azure-naming-conventions.md) — resource naming rules
+- [Azure Naming Conventions](../conventions/azure-naming-conventions.md) — resource naming rules
 - [Azure Resource Inventory](azure-resource-inventory.md) — what's provisioned per environment
-- [Azure Identity & Secrets](azure-identity-and-secrets.md) — OIDC, Key Vault strategy, secret naming
-- [Azure Provisioning Guide](azure-provisioning-guide.md) — step-by-step runbook for new services
+- [Azure Identity & Secrets](../conventions/azure-identity-and-secrets.md) — OIDC, Key Vault strategy, secret naming
+- [Azure Provisioning Guide](../walkthroughs/azure-provisioning-guide.md) — step-by-step runbook for new services
 
 ---
 

@@ -135,8 +135,8 @@ The runbook is the operational complement to invariant 40 — it describes how a
 - **Trivial scope.** This is a small doc packet — three to four printed pages. Do not pad it.
 
 **Key Files:**
-- `infrastructure/oidc-federated-credentials.md` — style and tone reference (existing portal walkthrough).
-- `infrastructure/key-vault-creation.md` — section structure reference.
+- `infrastructure/walkthroughs/oidc-federated-credentials.md` — style and tone reference (existing portal walkthrough).
+- `infrastructure/walkthroughs/key-vault-creation.md` — section structure reference.
 - `infrastructure/README.md` — index format.
 
 **Contracts:** No code or schema contracts changed.

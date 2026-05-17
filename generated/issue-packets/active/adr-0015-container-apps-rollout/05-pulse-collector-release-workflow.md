@@ -39,7 +39,8 @@ with:
   resource-group: rg-hd-pulse-${{ vars.HD_ENV }}
   keyvault-name: kv-hd-pulse-${{ vars.HD_ENV }}
   keyvault-secrets: |
-    PulseIngestSigningKey
+    PostHog--ApiKey
+    Sentry--Dsn
   # gRPC health probe is HTTP-based on /health; Pulse.Collector exposes both gRPC and a REST health endpoint.
   health-check-url: /health
   traffic-shift-mode: full
@@ -100,7 +101,7 @@ No new packages unless `/health` endpoint requires nothing beyond `WebApplicatio
 - [ ] Pushing a `collector-v0.1.0` tag on `main` triggers `release-collector.yml`, builds and pushes the image, creates a new revision at 0% traffic, health-probes, and shifts traffic to 100%.
 - [ ] `/health` returns 200 on the deployed revision's direct FQDN.
 - [ ] A gRPC client can call an RPC method against the Container App's ingress hostname over HTTPS (HTTP/2).
-- [ ] `PulseIngestSigningKey` resolves at runtime via Managed Identity — verified by a signed telemetry sample being accepted.
+- [ ] `PostHog--ApiKey` and `Sentry--Dsn` resolve at runtime via Managed Identity — verified by the collector's startup secret validation logging success (or, with real values, telemetry reaching PostHog/Sentry).
 - [ ] Scale behavior: send 0 RPCs for configured cooldown → Container App scales to 0 replicas. Sending RPCs causes cold start and scale up.
 - [ ] Rollback: shift traffic back to previous revision; gRPC calls cut over within seconds.
 - [ ] No client secrets in the workflow — OIDC only.
@@ -108,8 +109,8 @@ No new packages unless `/health` endpoint requires nothing beyond `WebApplicatio
 
 ## Human Prerequisites
 - [ ] `acrhdshareddev` and `cae-hd-dev` provisioned per packet 01 walkthroughs.
-- [ ] `rg-hd-pulse-dev` and `kv-hd-pulse-dev` provisioned per [`infrastructure/key-vault-creation.md`](../../../../infrastructure/key-vault-creation.md). Seed `PulseIngestSigningKey` in the vault.
-- [ ] `ca-hd-pulse-dev` Container App provisioned via portal per [`infrastructure/container-app-creation.md`](../../../../infrastructure/container-app-creation.md):
+- [ ] `rg-hd-pulse-dev` and `kv-hd-pulse-dev` provisioned per [`infrastructure/walkthroughs/key-vault-creation.md`](../../../../infrastructure/walkthroughs/key-vault-creation.md). Seed `PostHog--ApiKey` and `Sentry--Dsn` in the vault (placeholders acceptable in dev — `Pulse.Collector` only fail-fasts on missing secrets outside Development; in Development it logs a warning). These are the secrets `SecretValidationExtensions` actually validates when the PostHog/Sentry sinks are enabled (both default on).
+- [ ] `ca-hd-pulse-dev` Container App provisioned via portal per [`infrastructure/walkthroughs/container-app-creation.md`](../../../../infrastructure/walkthroughs/container-app-creation.md):
   - Resource group: `rg-hd-pulse-dev`
   - Environment: `cae-hd-dev`
   - System-assigned MI
@@ -142,7 +143,7 @@ No new packages unless `/health` endpoint requires nothing beyond `WebApplicatio
 
 **ADR-0015 (Container Hosting Platform):** Container Apps selected specifically for first-class gRPC support; Multiple revision mode; shared CAE and ACR; system-assigned MI; OIDC for CI.
 
-**ADR-0005 (Configuration and Secrets Strategy):** Env-var bootstrap, per-Node vault, `{Provider}--{Key}` secret naming (here: flat `PulseIngestSigningKey` — Node-internal, not provider-grouped).
+**ADR-0005 (Configuration and Secrets Strategy):** Env-var bootstrap, per-Node vault, `{Provider}--{Key}` secret naming (`PostHog--ApiKey`, `Sentry--Dsn` — downstream sink credentials the collector fans telemetry out to).
 
 **ADR-0012 (Grid CI/CD Control Plane):** Deploy logic in `HoneyDrunk.Actions`. This packet consumes `job-deploy-container-app.yml` from packet 02.
 
@@ -168,8 +169,8 @@ No new packages unless `/health` endpoint requires nothing beyond `WebApplicatio
 **Dependencies:** Packets 01 and 02 merged. Human-provisioned Container App with HTTP/2 ingress in place before the first tag push.
 
 **Constraints:**
-- **Invariant 8:** Secret values never appear in logs, traces, exceptions, or telemetry. Only secret names/identifiers may be traced. `VaultTelemetry` enforces this. Do not log `PulseIngestSigningKey` anywhere under any circumstances.
-- **Invariant 9:** Vault is the only source of secrets. Signing key resolves through `ISecretStore` at verification time.
+- **Invariant 8:** Secret values never appear in logs, traces, exceptions, or telemetry. Only secret names/identifiers may be traced. `VaultTelemetry` enforces this. Do not log `PostHog--ApiKey` or `Sentry--Dsn` values anywhere under any circumstances.
+- **Invariant 9:** Vault is the only source of secrets. Sink credentials resolve through `ISecretStore` at startup validation / sink initialization.
 - **Invariant 17:** Vault is `kv-hd-pulse-{env}`.
 - **Invariant 34 (proposed):** Container App name `ca-hd-pulse-{env}`. Node-level name since Collector is currently the only containerized Pulse deployable.
 - **Invariant 35 (proposed):** Reuse `cae-hd-{env}` and `acrhdshared{env}` — do not create Pulse-specific ones.

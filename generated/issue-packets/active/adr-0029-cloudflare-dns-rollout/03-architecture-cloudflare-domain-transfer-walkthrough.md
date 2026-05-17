@@ -223,8 +223,8 @@ None. P2 and P3 are foundation walkthroughs; either can land first. The dispatch
 - `CHANGELOG.md`
 
 **Reference Walkthroughs (style/structure to mirror):**
-- `infrastructure/key-vault-creation.md`
-- `infrastructure/oidc-federated-credentials.md`
-- `infrastructure/container-app-creation.md`
+- `infrastructure/walkthroughs/key-vault-creation.md`
+- `infrastructure/walkthroughs/oidc-federated-credentials.md`
+- `infrastructure/walkthroughs/container-app-creation.md`
 
 **Contracts:** None changed. Doc-only packet.

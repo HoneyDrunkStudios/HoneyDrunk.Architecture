@@ -14,7 +14,7 @@ node: honeydrunk-architecture
 # Chore: Add transfer-in-flight notes to GoDaddy + Cloudflare vendor-inventory rows
 
 ## Summary
-Add a small transitional edit to `infrastructure/vendor-inventory.md`: annotate the GoDaddy and Cloudflare rows so the catalog truthfully reflects "registrar transfer in flight per ADR-0029." Per-domain row-state flips happen inside each migration packet (P4, P5a, P5b). The closing edit at the end of Wave 3 (last P5 packet's PR) removes the GoDaddy row entirely once the last domain drains.
+Add a small transitional edit to `infrastructure/reference/vendor-inventory.md`: annotate the GoDaddy and Cloudflare rows so the catalog truthfully reflects "registrar transfer in flight per ADR-0029." Per-domain row-state flips happen inside each migration packet (P4, P5a, P5b). The closing edit at the end of Wave 3 (last P5 packet's PR) removes the GoDaddy row entirely once the last domain drains.
 
 ## Target Repo
 `HoneyDrunkStudios/HoneyDrunk.Architecture`
@@ -32,7 +32,7 @@ This packet (P1) is the entry-state — a transitional note. The downstream pack
 
 ## Proposed Implementation
 
-### Edits to `infrastructure/vendor-inventory.md`
+### Edits to `infrastructure/reference/vendor-inventory.md`
 
 1. **`Last Updated` header** — bump to today's date.
 
@@ -61,7 +61,7 @@ Append an entry to the existing in-progress `## [Unreleased]` section under `###
 - "Vendor inventory: GoDaddy and Cloudflare rows annotated as transfer-in-flight per ADR-0029. Per-domain row-state edits land on the migration packets (P4, P5a, P5b)."
 
 ## Affected Files
-- `infrastructure/vendor-inventory.md`
+- `infrastructure/reference/vendor-inventory.md`
 - `CHANGELOG.md`
 
 ## Boundary Check
@@ -70,7 +70,7 @@ Append an entry to the existing in-progress `## [Unreleased]` section under `###
 - [x] No invariant text changes. ADR-0029 explicitly proposes no new invariants.
 
 ## Acceptance Criteria
-- [ ] `infrastructure/vendor-inventory.md` `Last Updated` header bumped to today's date.
+- [ ] `infrastructure/reference/vendor-inventory.md` `Last Updated` header bumped to today's date.
 - [ ] `## DNS / CDN / Domain` section's GoDaddy row carries the transfer-in-flight annotation referencing ADR-0029 and noting per-domain state on migration packets.
 - [ ] Same section's Cloudflare row carries the "registrar role pending — first cutover lands with P4" annotation.
 - [ ] No other rows or sections in `vendor-inventory.md` are edited.
@@ -90,7 +90,7 @@ None. This packet is fully delegable; the agent edits the doc and opens a PR.
 
 ## Referenced ADR Decisions
 
-**ADR-0029 §If Accepted:** "Update `infrastructure/vendor-inventory.md` — replace the GoDaddy row with Cloudflare (registrar)... and update the lock-in assessment to reflect the consolidation." This packet is the *first* increment toward that line. The collapse-the-row-out edit lands in P4 (Cloudflare row scope flip + lock-in assessment add) and the closing edit in the last P5 packet (GoDaddy row removed). Splitting the work across the rollout keeps the catalog truthful at every PR-merge boundary; the alternative is a multi-week stretch where the catalog says GoDaddy is gone while two domains still live there.
+**ADR-0029 §If Accepted:** "Update `infrastructure/reference/vendor-inventory.md` — replace the GoDaddy row with Cloudflare (registrar)... and update the lock-in assessment to reflect the consolidation." This packet is the *first* increment toward that line. The collapse-the-row-out edit lands in P4 (Cloudflare row scope flip + lock-in assessment add) and the closing edit in the last P5 packet (GoDaddy row removed). Splitting the work across the rollout keeps the catalog truthful at every PR-merge boundary; the alternative is a multi-week stretch where the catalog says GoDaddy is gone while two domains still live there.
 
 **ADR-0029 D1:** "All Grid-owned domains move to Cloudflare Registrar... Existing domains at GoDaddy transfer one at a time, in the order in §Implementation." The catalog state mirrors the migration state.
 
@@ -104,7 +104,7 @@ None. This is the first packet in the rollout.
 
 ## Agent Handoff
 
-**Objective:** Annotate the GoDaddy and Cloudflare rows in `infrastructure/vendor-inventory.md` to reflect that the transfer is in flight per ADR-0029. Per-domain row-state edits and the eventual GoDaddy row removal happen on the downstream migration packets.
+**Objective:** Annotate the GoDaddy and Cloudflare rows in `infrastructure/reference/vendor-inventory.md` to reflect that the transfer is in flight per ADR-0029. Per-domain row-state edits and the eventual GoDaddy row removal happen on the downstream migration packets.
 
 **Target:** `HoneyDrunk.Architecture`, branch from `main`.
 
@@ -124,7 +124,7 @@ None. This is the first packet in the rollout.
 - **Stay narrow — annotation only.** This packet does NOT collapse the GoDaddy row out, does NOT rescope the Cloudflare row, does NOT touch the lock-in assessment table, and does NOT rename the section. Those are P4 and P5 work; pre-empting them produces stale catalog state for the transfer window.
 
 **Key Files:**
-- `infrastructure/vendor-inventory.md` (the only doc edited)
+- `infrastructure/reference/vendor-inventory.md` (the only doc edited)
 - `CHANGELOG.md` (Unreleased section append)
 
 **Contracts:** None changed. This is a doc-catalog edit, not an interface change.

@@ -53,6 +53,6 @@ Create a per-Node Key Vault named `kv-hd-{service}-{env}` in the matching resour
 
 ## Cross references
 
-- [ADR-0005](../adrs/ADR-0005-configuration-and-secrets-strategy.md)
-- [ADR-0006](../adrs/ADR-0006-secret-rotation-and-lifecycle.md)
-- [Invariant 17–22](../constitution/invariants.md)
+- [ADR-0005](../../adrs/ADR-0005-configuration-and-secrets-strategy.md)
+- [ADR-0006](../../adrs/ADR-0006-secret-rotation-and-lifecycle.md)
+- [Invariant 17–22](../../constitution/invariants.md)
