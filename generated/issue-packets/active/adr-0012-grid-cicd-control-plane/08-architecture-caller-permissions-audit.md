@@ -194,7 +194,7 @@ The audit produces the baseline state for invariant 39 enforcement.
 - **`HoneyDrunkStudios/HoneyDrunk.Architecture` is excluded from the comparison side** but `HoneyDrunkStudios/HoneyDrunk.Actions` self-test workflows (if any call `pr-core.yml` against itself) are audited and listed in the table separately.
 
 **Key Files:**
-- `infrastructure/oidc-federated-credentials.md` — style reference (existing infrastructure walkthrough/audit doc).
+- `infrastructure/walkthroughs/oidc-federated-credentials.md` — style reference (existing infrastructure walkthrough/audit doc).
 - `HoneyDrunk.Actions/docs/consumer-usage.md` — canonical baselines source (after packet 05 lands).
 - `adrs/ADR-0012-grid-cicd-control-plane.md` D5 — fallback canonical baselines source.
 - Every Live + workflow-bearing Grid repo's `.github/workflows/*.yml` files — read-only audit targets.

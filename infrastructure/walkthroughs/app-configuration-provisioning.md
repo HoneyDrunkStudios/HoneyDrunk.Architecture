@@ -109,6 +109,6 @@ For values that point at secrets, create **Key Vault references**:
 
 ## Cross references
 
-- [ADR-0005 three-tier split](../adrs/ADR-0005-configuration-and-secrets-strategy.md)
-- [ADR-0006 Tier 4](../adrs/ADR-0006-secret-rotation-and-lifecycle.md)
-- [Invariant 18, 20–22](../constitution/invariants.md)
+- [ADR-0005 three-tier split](../../adrs/ADR-0005-configuration-and-secrets-strategy.md)
+- [ADR-0006 Tier 4](../../adrs/ADR-0006-secret-rotation-and-lifecycle.md)
+- [Invariant 18, 20–22](../../constitution/invariants.md)

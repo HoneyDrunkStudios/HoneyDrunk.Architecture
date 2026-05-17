@@ -56,7 +56,7 @@ The exact proxied/DNS-only choice for the apex follows ADR-0029 D3 default for "
 - GoDaddy auto-renew for `honeydrunkstudios.com` is Off; any GoDaddy add-ons cancelled.
 - **Post-cutover smoke (per [`infrastructure/cloudflare-domain-transfer.md`](../../../../infrastructure/cloudflare-domain-transfer.md) §Post-cutover smoke):** mail-loop probe pass-pass-pass, every third-party verification record from the BIND export confirmed verified in its issuing service portal, DMARC `rua=` reachability confirmed at T+24h / T+48h.
 
-### Update `infrastructure/vendor-inventory.md` (state-flip for this row, not removal)
+### Update `infrastructure/reference/vendor-inventory.md` (state-flip for this row, not removal)
 
 This packet's vendor-inventory edits:
 
@@ -104,7 +104,7 @@ Under `### Changed`:
 
 ## Affected Files
 - `adrs/ADR-0029-cloudflare-dns-and-edge-platform.md` (Status flip + Acceptance section)
-- `infrastructure/vendor-inventory.md` (row scope flip, section rename, lock-in assessment row added)
+- `infrastructure/reference/vendor-inventory.md` (row scope flip, section rename, lock-in assessment row added)
 - `CHANGELOG.md`
 
 No file in the `HoneyDrunk.Studios` repo is touched. Vercel-side configuration is unchanged (the Vercel custom-domain binding works with whichever authoritative nameserver returns the validation TXT — Cloudflare returns the same record imported from the BIND export).
@@ -130,7 +130,7 @@ The agent's role on this packet is **verification + bookkeeping**, not driving t
 - [ ] **(Verification — post-cutover smoke)** Per [`infrastructure/cloudflare-domain-transfer.md`](../../../../infrastructure/cloudflare-domain-transfer.md) §Post-cutover smoke: mail-loop probe shows DKIM + SPF + DMARC pass; every third-party verification TXT record from the BIND export verified in its issuing service portal; DMARC `rua=` reachability confirmed at T+24h and T+48h. Smoke results recorded in the PR body.
 - [ ] **(Decision recorded in PR body)** CAA posture decision for `honeydrunkstudios.com`. Default at v1 per ADR-0029 is "no CAA record (any CA may issue)," but record the explicit per-domain decision in the PR body so the posture is on the record. If a CAA record is set, list which CAs are permitted and why.
 - [ ] **(Bookkeeping)** ADR-0029 Status flipped from Proposed to Accepted in this packet's PR; an `## Acceptance` section appended with the date and a reference to the migration walkthrough.
-- [ ] **(Bookkeeping)** `infrastructure/vendor-inventory.md` updated per the spec above: section renamed, Cloudflare row scope flipped to include Registrar (active for `honeydrunkstudios.com`), GoDaddy row annotation updated to list the remaining domains (`tatteddev.com`, `honeyhub.app`), Cloudflare row added to Vendor Lock-In Assessment.
+- [ ] **(Bookkeeping)** `infrastructure/reference/vendor-inventory.md` updated per the spec above: section renamed, Cloudflare row scope flipped to include Registrar (active for `honeydrunkstudios.com`), GoDaddy row annotation updated to list the remaining domains (`tatteddev.com`, `honeyhub.app`), Cloudflare row added to Vendor Lock-In Assessment.
 - [ ] **(Bookkeeping)** `CHANGELOG.md` `## [Unreleased]` section has both changed-entries described above.
 - [ ] PR description references this packet (invariant 32).
 
@@ -214,7 +214,7 @@ P1 is independent (vendor-inventory transitional annotation lands first); not a 
 
 **Key Files:**
 - `adrs/ADR-0029-cloudflare-dns-and-edge-platform.md` (Status flip + Acceptance section)
-- `infrastructure/vendor-inventory.md` (state-flip edits, lock-in assessment add, section rename)
+- `infrastructure/reference/vendor-inventory.md` (state-flip edits, lock-in assessment add, section rename)
 - `CHANGELOG.md`
 
 **Reference Walkthroughs:**

@@ -70,5 +70,5 @@ Example starter queries (adapt table names to your diagnostic schema):
 
 ## Cross references
 
-- [ADR-0006 Tier 4 and SLA model](../adrs/ADR-0006-secret-rotation-and-lifecycle.md)
-- [Invariant 20 and 22](../constitution/invariants.md)
+- [ADR-0006 Tier 4 and SLA model](../../adrs/ADR-0006-secret-rotation-and-lifecycle.md)
+- [Invariant 20 and 22](../../constitution/invariants.md)

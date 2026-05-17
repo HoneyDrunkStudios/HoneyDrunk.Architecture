@@ -65,11 +65,11 @@ Create a per-Node Linux consumption Function App named `func-hd-{service}-{env}`
 
 ## Cross references
 
-- [ADR-0005: Configuration and Secrets Strategy](../adrs/ADR-0005-configuration-and-secrets-strategy.md)
-- [ADR-0015: Container Hosting Platform](../adrs/ADR-0015-container-hosting-platform.md)
+- [ADR-0005: Configuration and Secrets Strategy](../../adrs/ADR-0005-configuration-and-secrets-strategy.md)
+- [ADR-0015: Container Hosting Platform](../../adrs/ADR-0015-container-hosting-platform.md)
 - [Key Vault creation](key-vault-creation.md)
 - [Key Vault RBAC assignments](key-vault-rbac-assignments.md)
 - [OIDC federated credentials](oidc-federated-credentials.md)
 - [App Configuration provisioning](app-configuration-provisioning.md)
 - [Log Analytics workspace and alerts](log-analytics-workspace-and-alerts.md)
-- [Grid Invariants](../constitution/invariants.md) — 17, 18, 19, 22, 34.
+- [Grid Invariants](../../constitution/invariants.md) — 17, 18, 19, 22, 34.

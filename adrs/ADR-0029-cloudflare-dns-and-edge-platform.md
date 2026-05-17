@@ -9,7 +9,7 @@
 
 Accepting this ADR creates infrastructure and catalog obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
 
-- [ ] Update `infrastructure/vendor-inventory.md` — replace the GoDaddy row with Cloudflare (registrar), keep Cloudflare DNS/CDN row, and update the lock-in assessment to reflect the consolidation
+- [ ] Update `infrastructure/reference/vendor-inventory.md` — replace the GoDaddy row with Cloudflare (registrar), keep Cloudflare DNS/CDN row, and update the lock-in assessment to reflect the consolidation
 - [ ] Add `infrastructure/cloudflare-account-provisioning.md` — portal walkthrough for the Cloudflare account, the API token storage convention (per ADR-0005 / ADR-0006), and the lean tag/comment scheme for DNS records
 - [ ] Add `infrastructure/cloudflare-domain-transfer.md` — portal walkthrough for the GoDaddy → Cloudflare transfer of `honeydrunkstudios.com` and any other domain currently held at GoDaddy
 - [ ] Migration packets — one per domain, in the order recommended in §Implementation; scope agent emits packets at acceptance time
@@ -17,7 +17,7 @@ Accepting this ADR creates infrastructure and catalog obligations that must be c
 
 ## Context
 
-The Grid currently runs with a split between **registrar** (GoDaddy) and **DNS / CDN / DDoS** (Cloudflare), per `infrastructure/vendor-inventory.md` (last updated 2026-04-26). The studio holds multiple domains at GoDaddy and pays the GoDaddy retail-renewal markup on each, with the upsell-and-renewal-noise UX that goes with it. Cloudflare was already chosen for DNS, edge caching, and DDoS protection — but only for the domains that were manually configured to point their nameservers at Cloudflare. Newly registered domains, by default, sit on GoDaddy DNS until that step happens.
+The Grid currently runs with a split between **registrar** (GoDaddy) and **DNS / CDN / DDoS** (Cloudflare), per `infrastructure/reference/vendor-inventory.md` (last updated 2026-04-26). The studio holds multiple domains at GoDaddy and pays the GoDaddy retail-renewal markup on each, with the upsell-and-renewal-noise UX that goes with it. Cloudflare was already chosen for DNS, edge caching, and DDoS protection — but only for the domains that were manually configured to point their nameservers at Cloudflare. Newly registered domains, by default, sit on GoDaddy DNS until that step happens.
 
 Several Grid concerns are starting to consolidate around the "where do public-facing surfaces resolve" question:
 
@@ -132,7 +132,7 @@ None proposed at this ADR. Cloudflare adoption is a vendor / platform commitment
 
 ### Catalog Obligations
 
-- `infrastructure/vendor-inventory.md` — collapse the GoDaddy row out and update the Cloudflare row's scope to include registrar.
+- `infrastructure/reference/vendor-inventory.md` — collapse the GoDaddy row out and update the Cloudflare row's scope to include registrar.
 - No `catalogs/` changes. Cloudflare is a vendor, not a Node, and is not represented in `catalogs/nodes.json` or `catalogs/relationships.json`.
 
 ### Negative
@@ -162,7 +162,7 @@ The migration is sketched here; full per-domain packets are scope-agent's output
 4. Approve the transfer; wait for it to complete (typically 5–7 days, per registrar policy).
 5. After transfer completion, verify nameservers, TLS, and any consumer-Node ingress.
 6. Apply Registrar-level transfer lock at Cloudflare.
-7. Update `infrastructure/vendor-inventory.md` and the relevant Node's repo context if the domain crosses a Node boundary.
+7. Update `infrastructure/reference/vendor-inventory.md` and the relevant Node's repo context if the domain crosses a Node boundary.
 
 **No automation at v1** — every step is manual portal work per D2 and the user's portal-over-CLI preference.
 

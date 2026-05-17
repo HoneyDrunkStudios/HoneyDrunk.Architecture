@@ -238,7 +238,7 @@ If the analyzer flags `Microsoft.Extensions.DependencyInjection.Abstractions` as
 
 ## Human Prerequisites
 
-- [ ] NuGet feed credentials accessible to the publish workflow. If the org-wide `NUGET_API_KEY` secret is already wired for other Grid repos (Notify, Vault, Kernel), Communications inherits that — confirm. If not, set the org secret once via the GitHub UI: Settings → Secrets and variables → Actions → New organization secret. Cross-link: `infrastructure/azure-identity-and-secrets.md` if the credential lives in Vault rather than GitHub secrets.
+- [ ] NuGet feed credentials accessible to the publish workflow. If the org-wide `NUGET_API_KEY` secret is already wired for other Grid repos (Notify, Vault, Kernel), Communications inherits that — confirm. If not, set the org secret once via the GitHub UI: Settings → Secrets and variables → Actions → New organization secret. Cross-link: `infrastructure/conventions/azure-identity-and-secrets.md` if the credential lives in Vault rather than GitHub secrets.
 - [ ] After PR merges, push the `abstractions-v0.2.0` tag manually to trigger the first publish (agents never push tags per invariant 27). Verify the package appears on the NuGet feed.
 
 ## Dependencies

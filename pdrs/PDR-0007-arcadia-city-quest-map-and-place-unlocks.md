@@ -1,8 +1,8 @@
 # PDR-0007: Arcadia — City Quest Map and Place Unlocks
 
-**Status:** Superseded by PDR-0004 (amended 2026-05-09)
+**Status:** Superseded by PDR-0008 (Curiosities) — originally superseded by PDR-0004 (amended 2026-05-09)
 **Date:** 2026-05-07
-**Superseded:** 2026-05-09
+**Superseded:** 2026-05-09 (absorbed into PDR-0004 §P); 2026-05-16 (PDR-0004 in turn superseded by PDR-0008, which makes this PDR's discovery loop the v1 lead — the live direction is now PDR-0008)
 **Deciders:** HoneyDrunk Studios
 **Sector:** Market / Location / AI / Play
 **Codename:** Arcadia (final product name TBD)

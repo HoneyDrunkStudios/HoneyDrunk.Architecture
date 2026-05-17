@@ -2,7 +2,7 @@
 
 Canonical naming rules for all Azure resources in the HoneyDrunk Grid.
 
-**Last Updated:** 2026-04-25
+**Last Updated:** 2026-05-16
 
 ---
 
@@ -44,6 +44,7 @@ Canonical naming rules for all Azure resources in the HoneyDrunk Grid.
 | Container Registry | `acr` | 50 | **Lowercase alphanumeric only** (no hyphens) |
 | Container Apps Environment | `cae` | 32 | Alphanumeric, hyphens |
 | Container App | `ca` | 32 | Alphanumeric, hyphens |
+| Application Insights | `appi` | 260 | Alphanumeric, hyphens, periods, parentheses |
 
 ---
 
@@ -62,11 +63,13 @@ Canonical naming rules for all Azure resources in the HoneyDrunk Grid.
 | Container Registry (shared) | `acrhdshared{env}` | `acrhdshareddev` |
 | Container Apps Environment (shared) | `cae-hd-{env}` | `cae-hd-dev` |
 | Container App | `ca-hd-{service}-{env}` | `ca-hd-notify-dev` |
+| Application Insights | `appi-hd-{service}-{env}` | `appi-hd-notify-dev` |
 
 **Notes:**
 
 - The Container Registry and Container Apps Environment are **provisioned once per environment** and shared across every containerized Node (Invariant 35). Hence no `{service}` segment in the Container Registry name (`shared` substitutes for it under Azure's no-hyphen ACR constraint) and no `{service}` segment in the CAE name. Both live in `rg-hd-platform-{env}`. See ADR-0015.
 - Container Apps inherit the per-Node `{service}` pattern and live in `rg-hd-{service}-{env}` alongside their Key Vault.
+- Application Insights is **per-Node** (each app gets its own component for clean APM separation), but every component is **workspace-based and bound to the shared `log-hd-{env}` Log Analytics workspace** (`log-hd-shared-dev` in dev). One diagnostics sink, per-Node telemetry partitioning — never a standalone classic App Insights.
 
 ## Naming Examples — HoneyHub (`hh`)
 

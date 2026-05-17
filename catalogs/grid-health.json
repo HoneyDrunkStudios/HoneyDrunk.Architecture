@@ -1,7 +1,7 @@
 {
   "_meta": {
     "description": "Live health snapshot of every Node in the Grid. Written by CI workflows and agents; read by Claude Code, HoneyHub (when live), and the developer. Not a substitute for the Project board — this tracks repo-level readiness, not individual work items.",
-    "updated": "2026-04-12",
+    "updated": "2026-05-16",
     "schema_version": "1.0"
   },
   "nodes": [
@@ -99,10 +99,10 @@
       "sector": "Ops",
       "signal": "Live",
       "version": "0.1.0",
-      "canary_status": "passing",
+      "canary_status": "none",
       "last_release": "2026-05-05",
-      "active_blockers": [],
-      "notes": "v0.1.0 packages released. Contracts and welcome-flow runtime are stood up: intents, recipient resolution, preference store, cadence policy, decision log, and Notify delegation. Durable stores/testing package remain deferred."
+      "active_blockers": ["ADR-0019 D8 / Invariant 43 contract-shape canary not wired in CI — tracked by HoneyDrunkStudios/HoneyDrunk.Communications#12"],
+      "notes": "v0.1.0 packages released. Contracts and welcome-flow runtime are stood up: intents, recipient resolution, preference store, cadence policy, decision log, and Notify delegation. Durable stores/testing package remain deferred. CORRECTION 2026-05-16: canary_status was reported 'passing' in error — no contract-shape canary is actually wired (Communications uses shared pr-core.yml, which has no api-compatibility job). See Communications#12."
     },
     {
       "id": "pulse",
@@ -263,8 +263,8 @@
     "total_nodes": 23,
     "live": 10,
     "seed": 13,
-    "canary_passing": 9,
-    "canary_none": 14,
+    "canary_passing": 8,
+    "canary_none": 15,
     "canary_failing": 0,
     "blocked_nodes": ["honeydrunk-vault-rotation", "honeydrunk-notify", "honeydrunk-communications", "pulse", "honeydrunk-lore", "honeydrunk-actions", "honeydrunk-agents", "honeydrunk-ai", "honeydrunk-memory", "honeydrunk-knowledge", "honeydrunk-evals", "honeydrunk-capabilities", "honeydrunk-flow", "honeydrunk-operator", "honeydrunk-sim"]
   }

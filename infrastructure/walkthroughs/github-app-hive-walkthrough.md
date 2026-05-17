@@ -111,7 +111,7 @@ A short overlap window (both keys valid simultaneously) is fine. Don't delete th
 
 ## Cross references
 
-- [ADR-0008: Packet Lifecycle](../adrs/ADR-0008-work-tracking-and-execution-flow.md)
-- [ADR-0012: Actions as CI/CD Control Plane](../adrs/ADR-0012-grid-cicd-control-plane.md)
+- [ADR-0008: Packet Lifecycle](../../adrs/ADR-0008-work-tracking-and-execution-flow.md)
+- [ADR-0012: Actions as CI/CD Control Plane](../../adrs/ADR-0012-grid-cicd-control-plane.md)
 - [`HoneyDrunk.Actions/scripts/file-packets.sh`](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/blob/main/scripts/file-packets.sh) — consumer of the minted token via `GH_TOKEN` and `HIVE_FIELD_MIRROR_TOKEN` env vars.
 - [`HoneyDrunk.Actions/.github/workflows/file-packets.yml`](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/blob/main/.github/workflows/file-packets.yml) — the reusable workflow that mints the App token.

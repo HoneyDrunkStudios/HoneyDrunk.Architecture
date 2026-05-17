@@ -48,5 +48,5 @@ These are non-sensitive identifiers and must be stored as **environment variable
 
 ## Cross references
 
-- [ADR-0005 Operational Consequences](../adrs/ADR-0005-configuration-and-secrets-strategy.md)
-- [Invariant 17–18](../constitution/invariants.md)
+- [ADR-0005 Operational Consequences](../../adrs/ADR-0005-configuration-and-secrets-strategy.md)
+- [Invariant 17–18](../../constitution/invariants.md)

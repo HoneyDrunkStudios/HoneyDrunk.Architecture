@@ -16,7 +16,7 @@ Provision Azure infrastructure and get both services running in the development 
 
 **Why now:** ADR-0015 is still 2/5 closed. The Architecture walkthroughs and shared Actions deploy workflow are done; the remaining work is service-specific Azure/release execution.
 
-**See:** `infrastructure/azure-provisioning-guide.md` and `generated/issue-packets/active/adr-0015-container-apps-rollout/dispatch-plan.md`.
+**See:** `infrastructure/walkthroughs/azure-provisioning-guide.md` and `generated/issue-packets/active/adr-0015-container-apps-rollout/dispatch-plan.md`.
 
 ### HoneyDrunk.AI Stand-Up
 

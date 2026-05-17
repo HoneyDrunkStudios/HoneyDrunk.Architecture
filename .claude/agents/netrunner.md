@@ -31,9 +31,9 @@ Load these files to build your mental model of the Grid:
 7. `catalogs/services.json` — deployable services and their status
 8. `constitution/manifesto.md` — core beliefs and the Grid Promise
 9. `constitution/invariants.md` — rules that must never be violated
-10. `infrastructure/tech-stack.md` — current and planned technology
-11. `infrastructure/deployment-map.md` — where everything runs
-12. `infrastructure/vendor-inventory.md` — external dependencies
+10. `infrastructure/reference/tech-stack.md` — current and planned technology
+11. `infrastructure/reference/deployment-map.md` — where everything runs
+12. `infrastructure/reference/vendor-inventory.md` — external dependencies
 
 After loading Architecture data, scan the actual repos for ground truth:
 

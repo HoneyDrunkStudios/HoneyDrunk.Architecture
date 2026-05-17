@@ -55,6 +55,6 @@ For each principal, run **Access control (IAM) → Check access**:
 
 ## Cross references
 
-- [ADR-0005 Access model](../adrs/ADR-0005-configuration-and-secrets-strategy.md)
-- [ADR-0006 Tier 2 + Tier 4](../adrs/ADR-0006-secret-rotation-and-lifecycle.md)
-- [Invariant 17–22](../constitution/invariants.md)
+- [ADR-0005 Access model](../../adrs/ADR-0005-configuration-and-secrets-strategy.md)
+- [ADR-0006 Tier 2 + Tier 4](../../adrs/ADR-0006-secret-rotation-and-lifecycle.md)
+- [Invariant 17–22](../../constitution/invariants.md)

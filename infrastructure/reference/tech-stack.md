@@ -139,7 +139,7 @@ Transport has its own built-in retry/backoff — it does not use Polly.
 | Vercel | Studios website |
 | NuGet.org | All Node packages |
 
-See [deployment-map.md](../infrastructure/deployment-map.md) for full deployment details.
+See [deployment-map.md](deployment-map.md) for full deployment details.
 
 ---
 

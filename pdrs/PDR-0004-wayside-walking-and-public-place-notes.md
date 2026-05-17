@@ -1,8 +1,9 @@
 # PDR-0004: Wayside — Walking, Place-Memory, and Public Marginalia for Regular Humans
 
-**Status:** Proposed
+**Status:** Superseded by PDR-0008 (Curiosities)
 **Date:** 2026-05-05
-**Amended:** 2026-05-09 — supersedes PDR-0007 (Arcadia); absorbs the question-mark unlock mechanic into Wayside as a v1.5 "Curiosities" mode (see §P).
+**Superseded:** 2026-05-16 — PDR-0008 inverts this PDR's priority: the curated question-mark discovery loop becomes the v1 lead, private place-memory + Mochi become the supporting backbone, and the public marginalia UGC layer is cut from v1. This PDR is retained as historical record and as the source of detail for Mochi's persona (§D), the watercolor map pipeline (§E), the moderation stack should public notes ever return (§C), and the original Atlas/pricing logic (§K/§L). See PDR-0008.
+**Amended:** 2026-05-09 — absorbed PDR-0007 (Arcadia)'s question-mark unlock mechanic as a v1.5 "Curiosities" mode (§P). This amendment is itself superseded by PDR-0008.
 **Deciders:** HoneyDrunk Studios
 **Sector:** Market
 **Codename:** Wayside (real product name TBD — previous codename was "Lantern Line")

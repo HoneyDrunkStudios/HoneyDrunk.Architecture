@@ -13,6 +13,14 @@ node: honeydrunk-notify
 
 # Feature: Release workflow and Azure bring-up for `Notify.Functions`
 
+> ## ⚠️ Reality Corrections (2026-05-16, post-implementation)
+> Verified against the actual repo while standing up dev infra and authoring the workflow. Where the body below conflicts with these points, **these win**:
+> - **Not greenfield — this is a rework.** `release-functions.yml` *replaces* the pre-existing `.github/workflows/deploy-functions.yml` (branch-triggered, only `NotifyQueueConnection`, no `resolve` job). The old file was deleted.
+> - **Paths in this packet are wrong.** No `src/` directory. Real layout is nested: solution `HoneyDrunk.Notify/HoneyDrunk.Notify.slnx`, project `HoneyDrunk.Notify/HoneyDrunk.Notify.Functions/HoneyDrunk.Notify.Functions.csproj`.
+> - **No `/api/health` exists.** Notify.Functions has only a queue trigger (`NotifyDispatcherFunction`) and an HTTP vault-invalidation function (`internal/vault/invalidate`). The shipped workflow omits `health-check-url` (probe skipped). Adding `/api/health` is a separate app-code change with test impact — **not done**; the acceptance criterion and `health-check-url: /api/health` below are void until that lands.
+> - **Reusable-workflow caller jobs cannot declare `environment:`.** Environment-scoped GitHub vars are resolved in a prior `resolve` job (`environment: dev`) whose outputs feed the `uses:` deploy job. The flat build→deploy shape sketched below does not work for env-scoped vars.
+> - The 6 Key Vault secrets are correct. As-built: `HoneyDrunk.Notify/.github/workflows/release-functions.yml`.
+
 ## Summary
 Add a release workflow that publishes `HoneyDrunk.Notify.Functions` and deploys it to an Azure Function App (`func-hd-notify-{env}`) via the reusable `job-deploy-function.yml`. Provision the supporting Azure resources (resource group, Function App, Key Vault access, OIDC federated credential).
 
@@ -47,10 +55,10 @@ Environment strategy: start with `dev` only. Staging / prod gates are a follow-u
 Create the following in the Azure portal before the first release run:
 
 - `rg-hd-notify-dev` resource group (if not already present from the ADR-0005 rollout — check first).
-- `kv-hd-notify-dev` Key Vault, seeded with the six secrets listed above. Walkthrough: `infrastructure/key-vault-creation.md`.
-- `func-hd-notify-dev` Function App — Linux Consumption, .NET 10 Isolated, system-assigned MI, bootstrap app settings (`AZURE_KEYVAULT_URI`, `AZURE_APPCONFIG_ENDPOINT`, `ASPNETCORE_ENVIRONMENT=Development`, `HONEYDRUNK_NODE_ID=honeydrunk-notify`). Walkthrough: `infrastructure/function-app-creation.md` (from packet 01).
-- RBAC: `func-hd-notify-dev` MI → `Key Vault Secrets User` on `kv-hd-notify-dev`. Walkthrough: `infrastructure/key-vault-rbac-assignments.md`.
-- OIDC federated credential on the Azure AD app registration used by `HoneyDrunk.Notify` CI. Subject: `repo:HoneyDrunkStudios/HoneyDrunk.Notify:environment:dev` (or `:ref:refs/tags/functions-v*` depending on workflow trigger). Grant `Contributor` on `rg-hd-notify-dev`. Walkthrough: `infrastructure/oidc-federated-credentials.md`.
+- `kv-hd-notify-dev` Key Vault, seeded with the six secrets listed above. Walkthrough: `infrastructure/walkthroughs/key-vault-creation.md`.
+- `func-hd-notify-dev` Function App — Linux Consumption, .NET 10 Isolated, system-assigned MI, bootstrap app settings (`AZURE_KEYVAULT_URI`, `AZURE_APPCONFIG_ENDPOINT`, `ASPNETCORE_ENVIRONMENT=Development`, `HONEYDRUNK_NODE_ID=honeydrunk-notify`). Walkthrough: `infrastructure/walkthroughs/function-app-creation.md` (from packet 01).
+- RBAC: `func-hd-notify-dev` MI → `Key Vault Secrets User` on `kv-hd-notify-dev`. Walkthrough: `infrastructure/walkthroughs/key-vault-rbac-assignments.md`.
+- OIDC federated credential on the Azure AD app registration used by `HoneyDrunk.Notify` CI. Subject: `repo:HoneyDrunkStudios/HoneyDrunk.Notify:environment:dev` (or `:ref:refs/tags/functions-v*` depending on workflow trigger). Grant `Contributor` on `rg-hd-notify-dev`. Walkthrough: `infrastructure/walkthroughs/oidc-federated-credentials.md`.
 - GitHub Actions environment `dev` on the `HoneyDrunk.Notify` repo, with `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`, `HD_ENV=dev` as environment variables (not secrets — these are not sensitive).
 
 ### `CHANGELOG.md`
@@ -86,10 +94,10 @@ No new packages added by this packet unless the health endpoint is absent.
 - [ ] Rollback dry-run: redeploy the prior tag successfully (exercises the artifact + deploy path twice).
 
 ## Human Prerequisites
-- [ ] Provision `rg-hd-notify-dev`, `kv-hd-notify-dev`, and seed the six Key Vault secrets (Resend, Twilio ×2, Smtp ×2, NotifyQueueConnection). Cross-link: [`infrastructure/key-vault-creation.md`](../../../../infrastructure/key-vault-creation.md).
-- [ ] Provision `func-hd-notify-dev` via portal per [`infrastructure/function-app-creation.md`](../../../../infrastructure/function-app-creation.md) (created in packet 01 of this initiative).
-- [ ] Assign `Key Vault Secrets User` on `kv-hd-notify-dev` to the Function App MI. Cross-link: [`infrastructure/key-vault-rbac-assignments.md`](../../../../infrastructure/key-vault-rbac-assignments.md).
-- [ ] Create OIDC federated credential for `HoneyDrunkStudios/HoneyDrunk.Notify` (environment `dev`). Grant `Contributor` on `rg-hd-notify-dev`. Cross-link: [`infrastructure/oidc-federated-credentials.md`](../../../../infrastructure/oidc-federated-credentials.md).
+- [ ] Provision `rg-hd-notify-dev`, `kv-hd-notify-dev`, and seed the six Key Vault secrets (Resend, Twilio ×2, Smtp ×2, NotifyQueueConnection). Cross-link: [`infrastructure/walkthroughs/key-vault-creation.md`](../../../../infrastructure/walkthroughs/key-vault-creation.md).
+- [ ] Provision `func-hd-notify-dev` via portal per [`infrastructure/walkthroughs/function-app-creation.md`](../../../../infrastructure/walkthroughs/function-app-creation.md) (created in packet 01 of this initiative).
+- [ ] Assign `Key Vault Secrets User` on `kv-hd-notify-dev` to the Function App MI. Cross-link: [`infrastructure/walkthroughs/key-vault-rbac-assignments.md`](../../../../infrastructure/walkthroughs/key-vault-rbac-assignments.md).
+- [ ] Create OIDC federated credential for `HoneyDrunkStudios/HoneyDrunk.Notify` (environment `dev`). Grant `Contributor` on `rg-hd-notify-dev`. Cross-link: [`infrastructure/walkthroughs/oidc-federated-credentials.md`](../../../../infrastructure/walkthroughs/oidc-federated-credentials.md).
 - [ ] Create GitHub Actions environment `dev` on the repo with `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`, `HD_ENV=dev` as environment variables.
 - [ ] Confirm Log Analytics workspace `log-hd-shared-dev` is receiving diagnostics from the new Function App.
 

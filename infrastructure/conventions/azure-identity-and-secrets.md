@@ -162,6 +162,6 @@ Each GitHub repo with deployable services configures **Environments** (Settings 
 ## How to Update This File
 
 - **New service:** Add its App Registration, federated credential, RBAC assignments, and Key Vault secrets.
-- **New secret:** Add to the service's secrets table and update [deployment-map.md](deployment-map.md).
+- **New secret:** Add to the service's secrets table and update [deployment-map.md](../reference/deployment-map.md).
 - **New environment:** Duplicate the federated credential with the new environment subject.
 - **Auth method change:** Update the Authentication Strategy section.

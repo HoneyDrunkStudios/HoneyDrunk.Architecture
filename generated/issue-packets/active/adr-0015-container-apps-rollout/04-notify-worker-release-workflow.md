@@ -13,6 +13,15 @@ node: honeydrunk-notify
 
 # Feature: Release workflow and Azure bring-up for `Notify.Worker` on Azure Container Apps
 
+> ## ⚠️ Reality Corrections (2026-05-16, post-implementation)
+> Verified against the actual repo while standing up dev infra and authoring the workflow. Where the body below conflicts with these points, **these win**:
+> - **Notify.Worker is NOT a pure queue-driven `BackgroundService`.** It is a `WebApplication` (Program.cs uses `WebApplication.CreateBuilder` + `app.Run()`) that maps exactly one HTTP route — `/internal/vault/invalidate` (Event Grid vault-cache invalidation webhook). The "spends most time idle, queue-only" framing in the Motivation is inaccurate; it still needs ingress for that webhook.
+> - **No `/health` endpoint exists**, and the runtime base image is `mcr.microsoft.com/dotnet/runtime:10.0` (not `aspnet`), so there is **no default :8080**. The shipped workflow omits `health-check-url` (probe skipped); the "add a minimal HTTP health listener" instruction is a separate app-code change with test impact — **not done**. Acceptance criteria depending on `/health` are void until that lands.
+> - **Dockerfile is already correct** — non-root (`USER 1654`, not `USER app`), multi-stage. The "Dockerfile review / add non-root user" section is already satisfied; no Dockerfile change made.
+> - **Build context is the solution root, not `src/`.** Dockerfile declares `Build context: HoneyDrunk.Notify/`. Workflow uses `build-context: HoneyDrunk.Notify`, `dockerfile: HoneyDrunk.Notify.Worker/Dockerfile`.
+> - **Reusable-workflow caller jobs cannot declare `environment:`.** Env-scoped vars resolve in a prior `resolve` job (`environment: dev`) feeding the `uses:` deploy job.
+> - The KEDA queue scale rule, 6 Key Vault secrets, and Multiple-revision requirement are correct (revision mode was set Multiple in the portal post-create). As-built: `HoneyDrunk.Notify/.github/workflows/release-worker.yml`.
+
 ## Summary
 Add a release workflow that builds `HoneyDrunk.Notify.Worker` as a container image, pushes to `acrhdshared{env}`, and deploys to `ca-hd-notify-worker-{env}` via the new reusable `job-deploy-container-app.yml`. Provision the supporting Azure resources.
 
@@ -105,7 +114,7 @@ Add entry under Unreleased for "Add release workflow for Notify.Worker Container
 ## Human Prerequisites
 - [ ] `acrhdshareddev` and `cae-hd-dev` provisioned per packet 01 walkthroughs.
 - [ ] `rg-hd-notify-dev`, `kv-hd-notify-dev` provisioned (shared with packet 03 if Notify.Functions lands first).
-- [ ] `ca-hd-notify-worker-dev` Container App provisioned via portal per [`infrastructure/container-app-creation.md`](../../../../infrastructure/container-app-creation.md):
+- [ ] `ca-hd-notify-worker-dev` Container App provisioned via portal per [`infrastructure/walkthroughs/container-app-creation.md`](../../../../infrastructure/walkthroughs/container-app-creation.md):
   - Resource group: `rg-hd-notify-dev`
   - Environment: `cae-hd-dev`
   - System-assigned MI

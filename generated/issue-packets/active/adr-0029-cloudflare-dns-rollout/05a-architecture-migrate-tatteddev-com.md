@@ -16,7 +16,7 @@ node: honeydrunk-architecture
 ## Summary
 Migrate the apex domain `tatteddev.com` from GoDaddy to Cloudflare per the ADR-0029 rollout. Wave 3 — runs after the Studios cutover (P4) validates the transfer flow on the lowest-risk domain. Marked `human-only` for the multi-day GoDaddy-side operational sequence; agent owns verification + bookkeeping. Independent of P5b (`honeyhub.app`); the two can run in parallel.
 
-This packet flips `tatteddev.com`'s row state in `infrastructure/vendor-inventory.md`. If this is the **last** of the two P5 packets to merge, this packet also performs the **closing edit**: removes the GoDaddy row entirely, finalizes the Cloudflare row's scope as "Registrar, authoritative DNS, CDN, DDoS protection, WAF" with the at-cost-Free pricing posture, and updates the Cloudflare lock-in assessment row to reflect the consolidation. The closing-edit branch is conditional on P5b's merge state at PR-open time.
+This packet flips `tatteddev.com`'s row state in `infrastructure/reference/vendor-inventory.md`. If this is the **last** of the two P5 packets to merge, this packet also performs the **closing edit**: removes the GoDaddy row entirely, finalizes the Cloudflare row's scope as "Registrar, authoritative DNS, CDN, DDoS protection, WAF" with the at-cost-Free pricing posture, and updates the Cloudflare lock-in assessment row to reflect the consolidation. The closing-edit branch is conditional on P5b's merge state at PR-open time.
 
 ## Target Repo
 `HoneyDrunkStudios/HoneyDrunk.Architecture`
@@ -60,7 +60,7 @@ The `tatteddev.com` portfolio is not pre-flagged with third-party services in th
 - If `tatteddev.com` serves a hosted surface (HTTP / HTTPS), the surface resolves correctly post-cutover. If parked, no certificate-chain check is required; Cloudflare's default parked-domain page is acceptable unless the domain previously served custom content.
 - **Post-cutover smoke (per [`infrastructure/cloudflare-domain-transfer.md`](../../../../infrastructure/cloudflare-domain-transfer.md) §Post-cutover smoke):** mail-loop probe (only if MX records exist on `tatteddev.com`), every third-party verification record from the BIND export verified in its issuing service portal, DMARC `rua=` reachability if DMARC was configured pre-transfer.
 
-### Update `infrastructure/vendor-inventory.md` (per-domain state flip + conditional closing edit)
+### Update `infrastructure/reference/vendor-inventory.md` (per-domain state flip + conditional closing edit)
 
 This packet's vendor-inventory edits depend on whether P5b (`honeyhub.app`) has merged at the time this PR is opened.
 
@@ -112,7 +112,7 @@ If closing-edit branch, also append:
 - "Vendor inventory: GoDaddy row removed; Cloudflare row scope finalized (Registrar, authoritative DNS, CDN, DDoS, WAF); lock-in assessment finalized for full-Grid registrar coverage. ADR-0029 rollout complete."
 
 ## Affected Files
-- `infrastructure/vendor-inventory.md` (per-domain state flip; closing edit if last to merge)
+- `infrastructure/reference/vendor-inventory.md` (per-domain state flip; closing edit if last to merge)
 - `generated/issue-packets/active/adr-0029-cloudflare-dns-rollout/dispatch-plan.md` (Wave 3 status line)
 - `CHANGELOG.md`
 - No code in any Node touched. No catalog graph changes.
@@ -135,8 +135,8 @@ The agent's role is **verification + bookkeeping** (same as P4). User owns the m
 - [ ] **(Verification)** GoDaddy-side: domain status is Transferred Out, auto-renew is Off, any GoDaddy add-ons are cancelled.
 - [ ] **(Verification — post-cutover smoke)** Per [`infrastructure/cloudflare-domain-transfer.md`](../../../../infrastructure/cloudflare-domain-transfer.md) §Post-cutover smoke: mail-loop probe (if MX records exist) shows DKIM + SPF + DMARC pass; every third-party verification TXT record from the BIND export verified in its issuing service portal; DMARC `rua=` reachability confirmed at T+24h and T+48h if DMARC was configured pre-transfer. Smoke results recorded in the PR body.
 - [ ] **(Decision recorded in PR body)** CAA posture decision for `tatteddev.com`. Default at v1 per ADR-0029 is "no CAA record (any CA may issue)," but record the explicit per-domain decision in the PR body. If a CAA record is set, list which CAs are permitted and why.
-- [ ] **(Bookkeeping — branch decision)** Inspect P5b's merge state on `main` at PR-open time. Pick Branch A (P5b not merged yet) or Branch B (P5b merged — closing edit) for the `infrastructure/vendor-inventory.md` edits per the spec above. Document the chosen branch in the PR body.
-- [ ] **(Bookkeeping)** `infrastructure/vendor-inventory.md` updated per the chosen branch. If Branch A: GoDaddy row annotation updated, Cloudflare row's active-registrar list extended, lock-in assessment row's registrar coverage updated. If Branch B (closing): GoDaddy row removed, Cloudflare row finalized, lock-in assessment finalized.
+- [ ] **(Bookkeeping — branch decision)** Inspect P5b's merge state on `main` at PR-open time. Pick Branch A (P5b not merged yet) or Branch B (P5b merged — closing edit) for the `infrastructure/reference/vendor-inventory.md` edits per the spec above. Document the chosen branch in the PR body.
+- [ ] **(Bookkeeping)** `infrastructure/reference/vendor-inventory.md` updated per the chosen branch. If Branch A: GoDaddy row annotation updated, Cloudflare row's active-registrar list extended, lock-in assessment row's registrar coverage updated. If Branch B (closing): GoDaddy row removed, Cloudflare row finalized, lock-in assessment finalized.
 - [ ] **(Bookkeeping)** Dispatch plan Wave 3 has a status line dated for the `tatteddev.com` cutover; if Branch B, also flags GoDaddy account closure as available at user discretion.
 - [ ] **(Bookkeeping)** `CHANGELOG.md` `## [Unreleased]` section has the changed-entry for `tatteddev.com`; if Branch B, also has the rollout-complete entry.
 - [ ] PR description references this packet (invariant 32).
@@ -180,7 +180,7 @@ The agent's role is **verification + bookkeeping** (same as P4). User owns the m
 
 - `packet:04` — `honeydrunkstudios.com` cutover. P4 validates the transfer flow on the lowest-risk domain. P5a should not execute until P4 is verified-clean. This is the Wave 2 → Wave 3 boundary.
 
-P5a and P5b are siblings within Wave 3 — neither is wired as the other's dependency. The conditional closing-edit branch in `infrastructure/vendor-inventory.md` handles the merge-order coordination at execution time.
+P5a and P5b are siblings within Wave 3 — neither is wired as the other's dependency. The conditional closing-edit branch in `infrastructure/reference/vendor-inventory.md` handles the merge-order coordination at execution time.
 
 ## Labels
 `feature`, `tier-2`, `infrastructure`, `adr-0029`, `human-only`
@@ -214,7 +214,7 @@ P5a and P5b are siblings within Wave 3 — neither is wired as the other's depen
 - **Lean record comments per ADR-0029 D6.** `purpose=...` only.
 
 **Key Files:**
-- `infrastructure/vendor-inventory.md`
+- `infrastructure/reference/vendor-inventory.md`
 - `generated/issue-packets/active/adr-0029-cloudflare-dns-rollout/dispatch-plan.md`
 - `CHANGELOG.md`
 

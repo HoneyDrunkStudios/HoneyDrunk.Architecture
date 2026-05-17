@@ -38,5 +38,5 @@ Subscribe each Key Vault to `Microsoft.KeyVault.SecretNewVersionCreated` so secr
 
 ## Cross references
 
-- [ADR-0006 Tier 3](../adrs/ADR-0006-secret-rotation-and-lifecycle.md)
-- [Invariant 20–22](../constitution/invariants.md)
+- [ADR-0006 Tier 3](../../adrs/ADR-0006-secret-rotation-and-lifecycle.md)
+- [Invariant 20–22](../../constitution/invariants.md)

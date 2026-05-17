@@ -25,7 +25,7 @@ Provisioning a new service:
 6. Configure GitHub Environment variables
 7. Test the deployment
 
-Use [azure-naming-conventions.md](azure-naming-conventions.md) for all resource names.
+Use [azure-naming-conventions.md](../conventions/azure-naming-conventions.md) for all resource names.
 
 > **Containerized Nodes:** Per ADR-0015, every containerized deployable Node runs on **Azure Container Apps**, not App Service. Provisioning relies on the shared Container Registry (`acrhdshared{env}`) and Container Apps Environment (`cae-hd-{env}`) in `rg-hd-platform-{env}`. Stand those up once per environment via the dedicated walkthroughs before standing up any per-Node Container App.
 
@@ -127,7 +127,7 @@ Before you can add secrets, you need the Key Vault Secrets Officer role on the v
 | `Twilio--AccountSid` | Twilio Account SID | twilio.com console |
 | `Twilio--AuthToken` | Twilio Auth Token | twilio.com console |
 
-See [azure-identity-and-secrets.md](azure-identity-and-secrets.md) for secret naming rules and the full list per service.
+See [azure-identity-and-secrets.md](../conventions/azure-identity-and-secrets.md) for secret naming rules and the full list per service.
 
 ---
 
@@ -230,7 +230,7 @@ Then add service-specific variables:
 | `ACR_REGISTRY` | `acrhdshareddev.azurecr.io` |
 | `COLLECTOR_KEYVAULT_SECRETS` | Newline-separated secret names |
 
-See [azure-identity-and-secrets.md](azure-identity-and-secrets.md) for the full variable reference.
+See [azure-identity-and-secrets.md](../conventions/azure-identity-and-secrets.md) for the full variable reference.
 
 ---
 
@@ -261,8 +261,8 @@ If the run fails, check:
 - [ ] RBAC assigned (Contributor on RG + Key Vault Secrets Officer on KV)
 - [ ] GitHub Environment created with all required variables
 - [ ] Test deployment succeeds
-- [ ] [azure-resource-inventory.md](azure-resource-inventory.md) updated (status -> Provisioned)
-- [ ] [deployment-map.md](deployment-map.md) updated if new secrets or services were added
+- [ ] [azure-resource-inventory.md](../reference/azure-resource-inventory.md) updated (status -> Provisioned)
+- [ ] [deployment-map.md](../reference/deployment-map.md) updated if new secrets or services were added
 
 ---
 

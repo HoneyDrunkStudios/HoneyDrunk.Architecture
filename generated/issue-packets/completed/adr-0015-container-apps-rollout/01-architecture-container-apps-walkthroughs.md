@@ -26,10 +26,10 @@ The Grid's first three deployables (Wave 2 of this initiative) need provisioning
 
 Add four new walkthroughs under `infrastructure/`, each matching the existing portal-first style (goal → portal breadcrumb → step-by-step → post-create hardening → references):
 
-- `infrastructure/function-app-creation.md` — Create a `func-hd-{service}-{env}` Function App in `rg-hd-{service}-{env}`, Linux consumption plan, .NET 10 isolated, system-assigned Managed Identity, diagnostics to `log-hd-shared-{env}`, bootstrap app settings seeded (`AZURE_KEYVAULT_URI`, `AZURE_APPCONFIG_ENDPOINT`, `ASPNETCORE_ENVIRONMENT`, `HONEYDRUNK_NODE_ID`).
-- `infrastructure/container-registry-creation.md` — Create shared `acrhdshared{env}` (Basic SKU) once per environment. Enable admin user only if explicitly required for a break-glass scenario; otherwise leave off. Diagnostics to shared Log Analytics.
-- `infrastructure/container-apps-environment-creation.md` — Create shared `cae-hd-{env}` Container Apps Environment once per environment. Consumption-only workload profile. Diagnostics to shared Log Analytics. Pre-create the resource group `rg-hd-platform-{env}` if a shared platform RG does not yet exist; document that choice clearly.
-- `infrastructure/container-app-creation.md` — Create a per-Node `ca-hd-{service}-{env}` Container App in `rg-hd-{service}-{env}`, attached to the shared `cae-hd-{env}`, pulling from `acrhdshared{env}`. System-assigned MI, `AcrPull` on ACR, `Key Vault Secrets User` on its own vault (cross-link to `key-vault-rbac-assignments.md`). Ingress enabled for HTTP/gRPC as appropriate. Revision mode `Multiple`. Bootstrap env vars seeded.
+- `infrastructure/walkthroughs/function-app-creation.md` — Create a `func-hd-{service}-{env}` Function App in `rg-hd-{service}-{env}`, Linux consumption plan, .NET 10 isolated, system-assigned Managed Identity, diagnostics to `log-hd-shared-{env}`, bootstrap app settings seeded (`AZURE_KEYVAULT_URI`, `AZURE_APPCONFIG_ENDPOINT`, `ASPNETCORE_ENVIRONMENT`, `HONEYDRUNK_NODE_ID`).
+- `infrastructure/walkthroughs/container-registry-creation.md` — Create shared `acrhdshared{env}` (Basic SKU) once per environment. Enable admin user only if explicitly required for a break-glass scenario; otherwise leave off. Diagnostics to shared Log Analytics.
+- `infrastructure/walkthroughs/container-apps-environment-creation.md` — Create shared `cae-hd-{env}` Container Apps Environment once per environment. Consumption-only workload profile. Diagnostics to shared Log Analytics. Pre-create the resource group `rg-hd-platform-{env}` if a shared platform RG does not yet exist; document that choice clearly.
+- `infrastructure/walkthroughs/container-app-creation.md` — Create a per-Node `ca-hd-{service}-{env}` Container App in `rg-hd-{service}-{env}`, attached to the shared `cae-hd-{env}`, pulling from `acrhdshared{env}`. System-assigned MI, `AcrPull` on ACR, `Key Vault Secrets User` on its own vault (cross-link to `key-vault-rbac-assignments.md`). Ingress enabled for HTTP/gRPC as appropriate. Revision mode `Multiple`. Bootstrap env vars seeded.
 
 Update `infrastructure/README.md`:
 - Add the four new walkthroughs to the Walkthrough Index in provisioning order (ACR → Container Apps Environment are platform-shared prerequisites; Function App / Container App are per-Node).
@@ -41,10 +41,10 @@ Update `constitution/invariants.md`:
 Update `catalogs/nodes.json` or equivalent if Node metadata carries hosting platform (check during implementation; if no such field exists, do not invent one in this packet).
 
 ## Affected Files
-- `infrastructure/function-app-creation.md` (new)
-- `infrastructure/container-registry-creation.md` (new)
-- `infrastructure/container-apps-environment-creation.md` (new)
-- `infrastructure/container-app-creation.md` (new)
+- `infrastructure/walkthroughs/function-app-creation.md` (new)
+- `infrastructure/walkthroughs/container-registry-creation.md` (new)
+- `infrastructure/walkthroughs/container-apps-environment-creation.md` (new)
+- `infrastructure/walkthroughs/container-app-creation.md` (new)
 - `infrastructure/README.md`
 - `constitution/invariants.md`
 
@@ -117,10 +117,10 @@ None. First packet in the initiative.
 - **Invariant 36 (proposed):** Container App revision mode is `Multiple` with explicit traffic splitting on deploy. Walkthrough for Container App creation must select `Multiple` revision mode and show how to inspect current traffic splits.
 
 **Key Files:**
-- `infrastructure/function-app-creation.md` (new)
-- `infrastructure/container-registry-creation.md` (new)
-- `infrastructure/container-apps-environment-creation.md` (new)
-- `infrastructure/container-app-creation.md` (new)
+- `infrastructure/walkthroughs/function-app-creation.md` (new)
+- `infrastructure/walkthroughs/container-registry-creation.md` (new)
+- `infrastructure/walkthroughs/container-apps-environment-creation.md` (new)
+- `infrastructure/walkthroughs/container-app-creation.md` (new)
 - `infrastructure/README.md`
 - `constitution/invariants.md`
 - Existing walkthroughs (`key-vault-creation.md`, `key-vault-rbac-assignments.md`, `oidc-federated-credentials.md`, `log-analytics-workspace-and-alerts.md`) for cross-linking and style matching.

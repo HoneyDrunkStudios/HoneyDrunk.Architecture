@@ -32,7 +32,7 @@ The walkthrough must also document two Grid-specific conventions:
 
 ### New file: `infrastructure/cloudflare-account-provisioning.md`
 
-Match the structural template used by the existing portal walkthroughs (`infrastructure/key-vault-creation.md`, `infrastructure/container-app-creation.md`, etc.). Sections:
+Match the structural template used by the existing portal walkthroughs (`infrastructure/walkthroughs/key-vault-creation.md`, `infrastructure/walkthroughs/container-app-creation.md`, etc.). Sections:
 
 1. **Goal** — one-paragraph statement of what the walkthrough produces (a Cloudflare account ready to receive the Grid's domains, with the security posture and conventions documented).
 
@@ -61,7 +61,7 @@ Match the structural template used by the existing portal walkthroughs (`infrast
      - Storage: the consuming Node's per-Node Key Vault (`kv-hd-{service}-{env}`), at the secret name `Cloudflare--ApiToken` (single-purpose) or `Cloudflare--{Purpose}--ApiToken` (multi-purpose).
      - Access: through `ISecretStore` per Invariant 9 — never read from environment variables, config files, or the Cloudflare SDK directly.
      - Rotation: ADR-0006 Tier 2 (third-party rotation), ≤ 90 days. Manual rotation through the Cloudflare dashboard at v1; automation is a future ADR.
-     - Cross-link: `infrastructure/key-vault-creation.md` (where the secret will live), `infrastructure/key-vault-rbac-assignments.md` (how the consuming Node's Managed Identity gains read access).
+     - Cross-link: `infrastructure/walkthroughs/key-vault-creation.md` (where the secret will live), `infrastructure/walkthroughs/key-vault-rbac-assignments.md` (how the consuming Node's Managed Identity gains read access).
 
    **Case B — Token consumed by a GitHub Actions workflow** (e.g., a workflow in `HoneyDrunk.Actions` that updates DNS records during deployment, runs a takedown script, or rotates a downstream record at release time).
      - Token name in the Cloudflare dashboard: `hd-actions-{purpose}-{env}` (e.g., `hd-actions-dns-readwrite-prod`). Distinct from runtime tokens; the `actions-` prefix makes the consumer obvious in the Cloudflare audit log.
@@ -209,7 +209,7 @@ None. P2 and P3 are foundation walkthroughs; P1 is independent of both. The disp
 - `CHANGELOG.md`
 
 **Reference Walkthroughs (style/structure to mirror):**
-- `infrastructure/key-vault-creation.md` (structural template — Goal / Portal Breadcrumb / Step-by-step / Verification / Cross references)
-- `infrastructure/oidc-federated-credentials.md` (similar shape — account-level setup with security posture)
+- `infrastructure/walkthroughs/key-vault-creation.md` (structural template — Goal / Portal Breadcrumb / Step-by-step / Verification / Cross references)
+- `infrastructure/walkthroughs/oidc-federated-credentials.md` (similar shape — account-level setup with security posture)
 
 **Contracts:** None changed. Doc-only packet.
