@@ -91,7 +91,7 @@ Accepting this ADR creates the following implementation obligations. Each is a d
 
 ### New Invariant (added on acceptance)
 
-On acceptance, the following invariant is added to `constitution/invariants.md` under the **Grid CI/CD Invariants** section, numbered after the existing ADR-0012 invariants (i.e. invariant 44, subject to renumbering if intervening ADRs land first):
+On acceptance, the implementing packet adds the following invariant to `constitution/invariants.md`. **The invariant number is assigned by the implementing packet at acceptance, not fixed here**, per the established workflow where final invariant numbers are assigned when an initiative lands. Numbers **44** (audit-emission boundary) and **45–46** are already reserved by the ADR-0030 / ADR-0031 audit-substrate initiative and must not be reused here; this invariant takes the next free number after those reservations (47 unless an intervening ADR lands first). The implementing packet must run a hard number-collision scan against `constitution/invariants.md` before committing and place the invariant in the appropriate themed section, consistent with the file's section organization:
 
 > **Test-bearing repos enforce the coverage gate at PR time.** For any solution containing at least one unit test project, a PR fails tier-1 validation if patch coverage is below the policy threshold, total coverage regressed below the committed `.github/coverage-baseline.json` value, or total coverage is below the Grid-wide absolute floor. Solutions with no test projects skip the gate. Available (non-vulnerable) NuGet updates never fail validation; they surface as a non-blocking PR-summary section and a single grouped per-repo tracking issue. See ADR-0032.
 

@@ -49,6 +49,24 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - Reconcile HoneyDrunk.Operator as consumer/emitter of the relocated contracts (separate packet)
 - **Scope trigger:** ADR-0030 acceptance PRs merged + ADR-0030 flipped to Accepted (this initiative complete) — then the user requests an ADR-0031 scoping run
 
+### ADR-0032 PR Validation Policy — Coverage Gate & NuGet Flagging
+**Status:** In Progress
+**Scope:** Meta (Actions CI/CD control plane) + ten test-bearing Nodes (per-repo coverage backfill)
+**Initiative:** `adr-0032-pr-validation-policy`
+**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
+**Description:** One PR Validation Policy owned by the Actions control plane, implemented once in the reusable workflows: (1) a blocking coverage gate — patch coverage threshold, no-regression vs. committed `.github/coverage-baseline.json`, flat absolute floor, skip-when-no-test-projects; (2) non-blocking NuGet flagging — outdated never blocks, surfaced as a PR-summary section and a single grouped `📦 Outdated Dependencies` issue per repo. Builds on ADR-0009 (outdated-vs-vulnerable split), ADR-0011 (`pr-core.yml` tier-1 gate), ADR-0012 (Actions as CI/CD control plane).
+
+**Tracking (Wave 1 — Actions control plane, parallel):**
+- [ ] Actions#NN: Coverage gate + ⚠️ outdated-packages PR-summary section (D1–D5) (packet 01)
+- [ ] Actions#NN: `nightly-deps` grouped per-repo `📦 Outdated Dependencies` tracking issue (D6) (packet 02)
+
+**Tracking (Wave 2 — per-repo coverage backfill to the absolute floor, hard-blocked by packet 01 only, fully parallel):**
+- [ ] Kernel / Transport / Vault / Vault.Rotation / Auth / Web.Rest / Data / Pulse / Notify / Communications — one backfill packet each (packets 03–12)
+
+**Notes:**
+- New constitutional invariant (coverage gate at PR time) is added by the implementing packet; number assigned at acceptance, after the ADR-0030/0031 audit reservations (44–46) — see ADR-0032's New Invariant section.
+- **Scope trigger:** ADR-0032 Proposed 2026-05-17, scoped same day; packets land via the standard pipeline. Wave 2 unblocks when Wave 1 packet 01 merges.
+
 ### Hive Sync Rollout (ADR-0014)
 **Status:** In Progress
 **Scope:** Architecture

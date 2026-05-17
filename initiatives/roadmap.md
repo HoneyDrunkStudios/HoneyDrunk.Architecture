@@ -28,6 +28,7 @@ High-level roadmap for the HoneyDrunk Grid.
 - [ ] HoneyDrunk.AI — Model/provider abstraction stand-up underway *(ADR-0016 packets open: Architecture#72, Architecture#73, AI#2)*
 - [ ] **ADR-0010 Phase 1 (Observation Layer & AI Routing contracts)** *(0/3 issues closed; scoped 2026-04-18 — Observe side ready to file, AI routing deferred pending HoneyDrunk.AI standup ADR)*
 - [ ] **ADR-0030 Grid-Wide Audit Substrate — Capability Acceptance** *(2 packets — catalog/sectors/context-folder/ADR-0018-amendment + audit-emission boundary invariant; standup is the separate ADR-0031 initiative)*
+- [ ] **ADR-0032 PR Validation Policy — Coverage Gate & NuGet Flagging** *(12 packets — 2 Actions control-plane (blocking coverage gate + grouped outdated-deps issue) + 10 per-repo coverage backfills to the absolute floor)*
 - [ ] HoneyDrunk.Capabilities — Tool registry, discovery, permissioning, initial tool descriptors
 - [ ] HoneyDrunk.Agents — Agent runtime, lifecycle, execution context, tool/memory interfaces
 - [ ] HoneyDrunk.Memory — Agent memory contracts, InMemory provider, Agents integration
