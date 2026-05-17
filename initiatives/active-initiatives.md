@@ -4,6 +4,28 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 ## In Progress
 
+### Kernel Adoption Alignment
+**Status:** Scoped
+**Scope:** Kernel, Transport, Vault, Auth, Web.Rest, Data, Vault.Rotation, Notify, Pulse, Communications, Architecture
+**Initiative:** `kernel-adoption-alignment`
+**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
+**Description:** Follow-up from the 2026-05-17 Kernel adoption audit. Align active .NET Nodes on canonical Kernel identity/context usage, remove avoidable runtime Kernel dependencies, enforce Grid/Operation context at HTTP/message/background entry points, clean up Notify queue-secret bootstrap drift, and reconcile Architecture compatibility metadata after repo PRs merge.
+
+**Tracking:**
+- [ ] Kernel#NN: Align Kernel context bootstrap and well-known Node IDs (packet 01)
+- [ ] Transport#NN: Drop Transport dependency on Kernel runtime (packet 02)
+- [ ] Vault#NN: Align Vault to current Kernel packages (packet 03)
+- [ ] Auth#NN: Align Auth to current Kernel packages (packet 04)
+- [ ] Web.Rest#NN: Require Kernel context in Web.Rest request pipeline (packet 05)
+- [ ] Data#NN: Require context for Data outbox enrichment (packet 06)
+- [ ] Vault.Rotation#NN: Establish Kernel context for rotation timer jobs (packet 07)
+- [ ] Notify#NN: Align Notify Kernel identity and queue secret boundary (packet 08)
+- [ ] Pulse#NN: Align Pulse to Kernel canonical identity (packet 09)
+- [ ] Communications#NN: Drop Communications runtime Kernel dependency (packet 10)
+- [ ] Architecture#NN: Reconcile Kernel adoption catalogs and compatibility (packet 11)
+
+> **Sync (2026-05-17):** Packets scoped under `generated/issue-packets/active/kernel-adoption-alignment/`. Filing pending.
+
 ### ADR-0010 Observation Layer & AI Routing — Phase 1
 **Status:** In Progress
 **Scope:** Architecture, Observe (new), AI

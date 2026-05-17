@@ -2,7 +2,7 @@
 
 Canonical naming rules for all artifacts in the HoneyDrunk Grid.
 
-**Last Updated:** 2026-03-22
+**Last Updated:** 2026-05-17
 
 ---
 
@@ -12,9 +12,9 @@ Used in `catalogs/nodes.json`, `relationships.json`, `services.json`, and the we
 
 - **Format:** `honeydrunk-{name}` (kebab-case)
 - **Examples:** `honeydrunk-kernel`, `honeydrunk-transport`, `honeydrunk-web-rest`
-- **Exception:** `pulse` — historical, no prefix
+- **No exceptions:** all Node IDs use the `honeydrunk-` prefix.
 
-When creating a new Node, always use the `honeydrunk-` prefix. The `pulse` exception is grandfathered and should not be repeated.
+When creating a new Node, always use the `honeydrunk-` prefix. Pulse now follows the same prefix rule as every other Node.
 
 ---
 
@@ -125,7 +125,4 @@ Used in `catalogs/services.json` to identify deployable processes.
 
 ## Known Exceptions
 
-| Item | Convention | Actual | Reason |
-|------|-----------|--------|--------|
-| Pulse node ID | `honeydrunk-pulse` | `pulse` | Historical — predates convention. Grandfathered. |
-| Pulse repo name | `HoneyDrunk.Pulse` | `HoneyDrunk.Pulse` | Repo name follows convention; only the catalog ID is short. |
+None currently. Pulse previously used the short catalog ID `pulse`, but the canonical Node ID is now `honeydrunk-pulse`.

@@ -53,7 +53,7 @@
       "notes": "Transport dependency for outbox store implementations."
     },
     {
-      "node": "pulse",
+      "node": "honeydrunk-pulse",
       "currentVersion": "0.1.0",
       "compatibleWith": {
         "honeydrunk-kernel": ">=0.4.0"

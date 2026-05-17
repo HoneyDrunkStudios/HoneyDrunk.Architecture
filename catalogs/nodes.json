@@ -354,10 +354,10 @@
     "cooldown_days": 14
   },
   {
-    "id": "pulse",
+    "id": "honeydrunk-pulse",
     "type": "node",
-    "name": "Pulse",
-    "public_name": "Pulse",
+    "name": "HoneyDrunk.Pulse",
+    "public_name": "HoneyDrunk.Pulse",
     "short": "Observability suite (logs/traces/metrics)",
     "description": "Unified observability. Logs, traces, and metrics in one interface. See the heartbeat of The Hive.",
     "sector": "Ops",
