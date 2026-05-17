@@ -100,5 +100,19 @@
   "generated/issue-packets/active/adr-0029-cloudflare-dns-rollout/04-architecture-migrate-honeydrunkstudios-com.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/101",
   "generated/issue-packets/active/adr-0029-cloudflare-dns-rollout/05a-architecture-migrate-tatteddev-com.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/102",
   "generated/issue-packets/active/adr-0029-cloudflare-dns-rollout/05b-architecture-migrate-honeyhub-app.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/103",
-  "generated/issue-packets/active/adr-0010-observe-ai-routing-phase-1/03-observe-abstractions-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Observe/issues/2"
+  "generated/issue-packets/active/adr-0010-observe-ai-routing-phase-1/03-observe-abstractions-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Observe/issues/2",
+  "generated/issue-packets/active/adr-0030-audit-substrate/01-architecture-adr-0030-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/108",
+  "generated/issue-packets/active/adr-0030-audit-substrate/02-architecture-audit-emission-invariant.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/109",
+  "generated/issue-packets/active/adr-0032-pr-validation-policy/01-actions-coverage-gate-and-nuget-summary.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/77",
+  "generated/issue-packets/active/adr-0032-pr-validation-policy/02-actions-nightly-deps-grouped-tracking-issue.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/78",
+  "generated/issue-packets/active/adr-0032-pr-validation-policy/03-kernel-coverage-backfill-to-70.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Kernel/issues/28",
+  "generated/issue-packets/active/adr-0032-pr-validation-policy/04-transport-coverage-backfill-to-70.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Transport/issues/26",
+  "generated/issue-packets/active/adr-0032-pr-validation-policy/05-vault-coverage-backfill-to-70.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Vault/issues/30",
+  "generated/issue-packets/active/adr-0032-pr-validation-policy/06-vault-rotation-coverage-backfill-to-70.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Vault.Rotation/issues/6",
+  "generated/issue-packets/active/adr-0032-pr-validation-policy/07-auth-coverage-backfill-to-70.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Auth/issues/19",
+  "generated/issue-packets/active/adr-0032-pr-validation-policy/08-web-rest-coverage-backfill-to-70.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Web.Rest/issues/16",
+  "generated/issue-packets/active/adr-0032-pr-validation-policy/09-data-coverage-backfill-to-70.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Data/issues/20",
+  "generated/issue-packets/active/adr-0032-pr-validation-policy/10-pulse-coverage-backfill-to-70.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/14",
+  "generated/issue-packets/active/adr-0032-pr-validation-policy/11-notify-coverage-backfill-to-70.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/12",
+  "generated/issue-packets/active/adr-0032-pr-validation-policy/12-communications-coverage-backfill-to-70.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications/issues/13"
 }
