@@ -309,6 +309,51 @@
     "cooldown_days": 14
   },
   {
+    "id": "honeydrunk-audit",
+    "type": "node",
+    "name": "HoneyDrunk.Audit",
+    "public_name": "HoneyDrunk.Audit",
+    "short": "Grid-wide durable, attributable security and action record",
+    "description": "The Grid's durable, attributable system of record for security and privileged-action events — login attempts, authorization grants and denials, privileged-action execution. Append-only by interface; Data-backed; audit-class retention distinct from observability. Phase 1 is append-only-by-interface, NOT tamper-evident.",
+    "sector": "Core",
+    "signal": "Seed",
+    "cluster": "security",
+    "energy": 0,
+    "priority": 0,
+    "flow": 0,
+    "tags": ["audit", "security", "forensics", "append-only", "attributable", "record", "retention"],
+    "links": {
+      "repo": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Audit"
+    },
+    "long_description": {
+      "overview": "HoneyDrunk.Audit is the Core sector's single Node that owns the Grid's durable, attributable security-and-action record. It durably records 'actor X attempted or executed action Y' — login attempts, authorization grants and denials, privileged-action execution — and serves that record back for incident reconstruction and forensics. It is a record substrate, not a control plane (that is Auth and Operator) and not an observability pipeline (that is Pulse). It owns the durable write, the append-only guarantee enforced at the interface surface, the audit-class retention, and the forensic read surface.",
+      "why_it_exists": "The Grid had no durable, attributable system of record for security and privileged-action events. Pulse is OTel-only and disclaims being a system of record; Auth keeps identity out of traces by design; no Node owned Grid-wide audit. Login attempts, authz denials, and privileged actions evaporated into sampled telemetry and lossy logs — exactly the events a security review or incident reconstruction needs.",
+      "primary_audience": "Security reviewers and incident responders reconstructing what happened; Nodes (Auth first, Operator next) that need to record durable attributable security or privileged-action events; a future tenant-facing forensics surface.",
+      "value_props": [
+        "Durable, attributable record of security and privileged-action events",
+        "Append-only enforced at the interface surface — IAuditLog exposes no update or delete",
+        "Audit-class retention distinct from Pulse/observability retention",
+        "Forensic read surface (IAuditQuery) for incident reconstruction",
+        "Boundary-correct: the recorder is not the actor (separate from Operator)",
+        "Phase-1 honest limitation: append-only-by-interface, NOT tamper-evident"
+      ],
+      "monetization_signal": "Internal-first Core primitive. A future tenant-facing forensics Service is a deferred capability behind the now-existing boundary.",
+      "roadmap_focus": "Stand up the Node, Abstractions package, and Data-backed append-only store (ADR-0031). Auth wired as first emitter and Operator reconciled as consumer/emitter follow as separate packets. Hash-chain/WORM tamper-evidence and the tenant-facing forensics Service are deferred behind the boundary, each gated on a stated trigger.",
+      "grid_relationship": "Consumes Kernel (IGridContext, lifecycle, health, telemetry) and Data (IRepository, IUnitOfWork for the append-only store). Emits its own operational telemetry consumed by Pulse — no runtime dependency on Pulse. Consumed by Auth (first emitter) and Operator (reconciled consumer/emitter). Downstream Nodes compile only against HoneyDrunk.Audit.Abstractions.",
+      "integration_depth": "medium",
+      "demo_path": "Write an AuditEntry through IAuditLog → read it back through IAuditQuery against the in-memory fixture → observe append-only (no update/delete on the IAuditLog surface).",
+      "signal_quote": "Who did what, when, against what, and was it allowed.",
+      "stability_tier": "seed",
+      "impact_vector": "security posture"
+    },
+    "foundational": false,
+    "strategy_base": 12,
+    "tier": "none",
+    "time_pressure": 0,
+    "done": false,
+    "cooldown_days": 14
+  },
+  {
     "id": "pulse",
     "type": "node",
     "name": "Pulse",

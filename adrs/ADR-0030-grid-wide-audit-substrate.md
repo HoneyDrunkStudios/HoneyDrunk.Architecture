@@ -1,6 +1,6 @@
 # ADR-0030: Grid-Wide Security and Action Audit is a First-Class Concern Homed in a Dedicated HoneyDrunk.Audit Node
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-05-16
 **Deciders:** HoneyDrunk Studios
 **Sector:** Core

@@ -83,6 +83,17 @@
       "notes": "Repository pattern, unit of work, tenant-aware data, outbox stable."
     },
     {
+      "id": "honeydrunk-audit",
+      "name": "HoneyDrunk.Audit",
+      "sector": "Core",
+      "signal": "Seed",
+      "version": "0.0.0",
+      "canary_status": "none",
+      "last_release": null,
+      "active_blockers": ["Repo not yet scaffolded — scaffold governed by ADR-0031 standup, separate initiative"],
+      "notes": "ADR-0030 (capability/decision) Accepted. Three frozen contracts (IAuditLog, IAuditQuery, AuditEntry) registered. Awaiting ADR-0031 standup: HoneyDrunk.Audit.Abstractions + Data-backed HoneyDrunk.Audit.Data, contract-shape canary on all three contracts, the Node's own managed identity, in-memory fixture. Phase 1 is append-only-by-interface, NOT tamper-evident (ADR-0030 D9)."
+    },
+    {
       "id": "honeydrunk-notify",
       "name": "HoneyDrunk.Notify",
       "sector": "Ops",
@@ -266,6 +277,6 @@
     "canary_passing": 8,
     "canary_none": 15,
     "canary_failing": 0,
-    "blocked_nodes": ["honeydrunk-vault-rotation", "honeydrunk-notify", "honeydrunk-communications", "pulse", "honeydrunk-lore", "honeydrunk-actions", "honeydrunk-agents", "honeydrunk-ai", "honeydrunk-memory", "honeydrunk-knowledge", "honeydrunk-evals", "honeydrunk-capabilities", "honeydrunk-flow", "honeydrunk-operator", "honeydrunk-sim"]
+    "blocked_nodes": ["honeydrunk-vault-rotation", "honeydrunk-notify", "honeydrunk-communications", "pulse", "honeydrunk-lore", "honeydrunk-actions", "honeydrunk-agents", "honeydrunk-ai", "honeydrunk-memory", "honeydrunk-knowledge", "honeydrunk-evals", "honeydrunk-capabilities", "honeydrunk-flow", "honeydrunk-operator", "honeydrunk-sim", "honeydrunk-audit"]
   }
 }

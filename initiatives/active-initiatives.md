@@ -32,6 +32,23 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 > **Sync (2026-04-18):** Initiative scoped today. Packets 01–03 ready to file (Observe side). Packet 04 (AI routing contracts) parked pending HoneyDrunk.AI standup ADR — bundling scaffold with routing contracts would embed foundational-Node architectural decisions silently.
 
+### ADR-0030 Grid-Wide Audit Substrate — Capability Acceptance
+**Status:** In Progress
+**Scope:** Architecture (capability acceptance only; HoneyDrunk.Audit standup is a separate ADR-0031-governed initiative)
+**Initiative:** `adr-0030-audit-substrate`
+**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
+**Description:** Accept the capability/decision ADR for the Grid-wide durable, attributable security and action audit substrate homed in a new dedicated `HoneyDrunk.Audit` Node (Core sector). Registers the Node and its four new dependency edges across the catalogs, adds the Core-sector Audit row, flips the ADR index, verifies (does not modify) ADR-0018's pre-existing 2026-05-16 amendment (relocating `IAuditLog`/`AuditEntry` out of Operator, reclassifying Operator to consumer-not-owner), creates the `repos/HoneyDrunk.Audit/` context folder, and adds the constitutional audit-emission boundary invariant. The Node scaffold, the contract-shape canary, the Auth first-emitter wiring, and the Operator reconciliation are **all governed by the separate ADR-0031 standup** and are NOT in this initiative.
+
+**Tracking:**
+- [ ] Architecture#NN: Accept ADR-0030 — catalog registration, sectors row, ADR index flip, ADR-0018 amendment verification, repo context folder, trackers (packet 01)
+- [ ] Architecture#NN: Add the audit-emission boundary invariant to the constitution (packet 02)
+
+**Next (separate initiative — ADR-0031 standup, not yet scoped here):**
+- Stand up `HoneyDrunk.Audit` — public repo, `HoneyDrunk.Audit.Abstractions` + `HoneyDrunk.Audit.Data`, three frozen contracts, Data-backed append-only store, the Node's own managed identity, in-memory fixture, contract-shape canary
+- Wire HoneyDrunk.Auth as the first emitter (separate packet against the stood-up Abstractions)
+- Reconcile HoneyDrunk.Operator as consumer/emitter of the relocated contracts (separate packet)
+- **Scope trigger:** ADR-0030 acceptance PRs merged + ADR-0030 flipped to Accepted (this initiative complete) — then the user requests an ADR-0031 scoping run
+
 ### Hive Sync Rollout (ADR-0014)
 **Status:** In Progress
 **Scope:** Architecture
