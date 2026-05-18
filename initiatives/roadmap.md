@@ -2,7 +2,7 @@
 
 High-level roadmap for the HoneyDrunk Grid.
 
-**Last Updated:** 2026-05-16
+**Last Updated:** 2026-05-18
 
 ## Q1 2026 (Jan–Mar)
 
