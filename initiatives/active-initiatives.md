@@ -34,12 +34,12 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 **Description:** Accept ADR-0010 and ship Phase 1 (contracts + stubs). Catalog registration for HoneyDrunk.Observe, new Observe repo scaffold with Abstractions package, and routing contracts in HoneyDrunk.AI.Abstractions. Phase 2 (first GitHub connector + cost-first routing policy) and Phase 3 (HoneyHub integration, blocked on HoneyHub Phase 1 being live) are tracked below so they do not get lost.
 
 **Tracking (Phase 1 — Observe side):**
-- [ ] Architecture#NN: Accept ADR-0010 — catalog, context folder, sectors, invariant 29-30 text, ADR index flip, initiative/roadmap trackers (packet 01)
-- [ ] Architecture#NN: Create HoneyDrunk.Observe GitHub repo (human-only chore — packet 02)
-- [ ] Observe#1: Scaffold HoneyDrunk.Observe.Abstractions with IObservationTarget / IObservationConnector / IObservationEvent (packet 03)
+- [ ] Architecture#35: Accept ADR-0010 — catalog, context folder, sectors, invariant 29-30 text, ADR index flip, initiative/roadmap trackers (packet 01)
+- [x] Architecture#36: Create HoneyDrunk.Observe GitHub repo (human-only chore — packet 02)
+- [ ] Observe#2: Scaffold HoneyDrunk.Observe.Abstractions with IObservationTarget / IObservationConnector / IObservationEvent (packet 03)
 
 **Deferred (Phase 1 — AI routing contracts side):**
-- AI#NN: Add IModelRouter / IRoutingPolicy / ModelCapabilityDeclaration to HoneyDrunk.AI.Abstractions (packet 04) — **parked pending HoneyDrunk.AI standup ADR**. The HoneyDrunk.AI repo exists but is empty; scaffolding choices (solution layout, M.E.AI alignment, package split, first provider, Pulse integration) deserve their own ADR. Provisional next step: draft `ADR-0016-stand-up-honeydrunk-ai-node`, accept it, run a scaffolding initiative, then file packet 04. Invariant 28's `(Proposed)` qualifier stays intact until packet 04 merges.
+- AI#1: Add IModelRouter / IRoutingPolicy / ModelCapabilityDeclaration to HoneyDrunk.AI.Abstractions (packet 04) — **parked pending HoneyDrunk.AI standup ADR**. The HoneyDrunk.AI repo exists but is empty; scaffolding choices (solution layout, M.E.AI alignment, package split, first provider, Pulse integration) deserve their own ADR. Provisional next step: draft `ADR-0016-stand-up-honeydrunk-ai-node`, accept it, run a scaffolding initiative, then file packet 04. Invariant 28's `(Proposed)` qualifier stays intact until packet 04 merges.
 
 **Next (Phase 2 — not yet scoped):**
 - Implement `HoneyDrunk.Observe.Connectors.GitHub` — webhook receiver + repo health checks
@@ -52,7 +52,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - Allow HoneyHub to read routing-policy outcomes as plan-adjustment signals
 - **Scope trigger:** HoneyHub Phase 1 domain model + graph API live
 
-> **Sync (2026-04-18):** Initiative scoped today. Packets 01–03 ready to file (Observe side). Packet 04 (AI routing contracts) parked pending HoneyDrunk.AI standup ADR — bundling scaffold with routing contracts would embed foundational-Node architectural decisions silently.
+> **Sync (2026-05-18):** Architecture#36 closed 2026-05-16; the Observe repo creation packet was moved to the completed archive. Architecture#35 and Observe#2 remain open; AI routing remains parked/gated as documented.
 
 ### ADR-0030 Grid-Wide Audit Substrate — Capability Acceptance
 **Status:** In Progress
