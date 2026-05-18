@@ -32,6 +32,7 @@ and remain manually-flippable until rescoped.
 | [ADR-0029](../adrs/ADR-0029-cloudflare-dns-and-edge-platform.md) | Cloudflare as Registrar, Authoritative DNS, and Edge Platform | Infrastructure | 2026-05-08 | 10 |
 | [ADR-0031](../adrs/ADR-0031-stand-up-honeydrunk-audit-node.md) | Stand Up the HoneyDrunk.Audit Node — Grid-Wide Durable Security and Action Record | Core | 2026-05-16 | 2 |
 | [ADR-0032](../adrs/ADR-0032-pr-validation-policy-coverage-gate-and-nuget-flagging.md) | Grid-Wide PR Validation Policy — Coverage Gate and NuGet Update Flagging | Meta | 2026-05-17 | 1 |
+| [ADR-0033](../adrs/ADR-0033-environment-gated-deploy-trigger-model.md) | Environment-Gated Deploy-Trigger Model for Deployable Nodes | Ops | 2026-05-18 | 0 |
 | [PDR-0002](../pdrs/PDR-0002-notify-as-a-service-first-commercial-product.md) | HoneyDrunk Notify — First Commercial Product on the Grid | Ops (primary) · Meta (positioning) | 2026-05-02 | 16 |
 | [PDR-0003](../pdrs/PDR-0003-lately-currents-based-connection-app.md) | Lately — A Currents-Based Connection App for Regular Humans | Market / Core / Ops | 2026-05-05 | 13 |
 | [PDR-0005](../pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md) | Hearth — Personal Growth as a Living Town | Market / AI / Ops | 2026-05-05 | 13 |

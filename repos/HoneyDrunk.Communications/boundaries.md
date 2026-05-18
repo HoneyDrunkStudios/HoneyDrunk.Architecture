@@ -8,7 +8,8 @@
 - Cadence decisions: send now, suppress, or defer.
 - Multi-step communication workflow intent, starting with the welcome-email/follow-up slice.
 - Append-only decision logging for every send-or-suppress outcome.
-- Delegating approved delivery to Notify through `INotificationSender`.
+- Delegating approved delivery to Notify through `INotificationSender` from `HoneyDrunk.Notify.Abstractions`.
+- Consuming Grid/Operation context through `HoneyDrunk.Kernel.Abstractions` without taking a full Kernel runtime dependency.
 
 ## What Communications Does NOT Own
 
@@ -30,6 +31,10 @@ Before adding behavior to Communications, ask:
 4. Does it decide whether an action is authorized or requires human approval? Auth/Operator.
 5. Does it persist or query generalized application data? Data.
 6. Does it coordinate arbitrary long-running workflows beyond messaging semantics? Flow.
+
+## Kernel Split Rule
+
+Communications may require Kernel abstractions (`IGridContextAccessor`, `IOperationContextAccessor`, telemetry activity factory, typed tenant IDs), but must not bring in the full Kernel runtime package unless a future ADR explicitly changes the boundary.
 
 ## Notify Split Rule
 

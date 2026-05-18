@@ -1,7 +1,7 @@
 # HoneyDrunk.Transport — Overview
 
 **Sector:** Core  
-**Version:** 0.4.0  
+**Version:** 0.6.0
 **Framework:** .NET 10.0  
 **Repo:** `HoneyDrunkStudios/HoneyDrunk.Transport`
 

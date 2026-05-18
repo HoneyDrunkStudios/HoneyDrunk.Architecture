@@ -1,72 +1,92 @@
 {
   "description": "Tracks which versions of each Node are compatible with each other. Updated when a Node ships a new major or minor version.",
-  "lastUpdated": "2026-03-22",
+  "lastUpdated": "2026-05-18",
   "matrix": [
     {
       "node": "honeydrunk-kernel",
-      "currentVersion": "0.4.0",
+      "currentVersion": "0.7.0",
       "compatibleWith": {},
-      "notes": "Root of the dependency tree. No upstream dependencies."
+      "notes": "Root of the dependency tree. v0.7.0 carries canonical WellKnownNodes, typed TenantId, and current Grid/Operation context contracts."
     },
     {
       "node": "honeydrunk-transport",
-      "currentVersion": "0.4.0",
+      "currentVersion": "0.6.0",
       "compatibleWith": {
-        "honeydrunk-kernel": ">=0.4.0"
+        "honeydrunk-kernel": ">=0.7.0"
       },
-      "notes": "Violates Invariant #2: depends on full Kernel (not just Abstractions) because GridContext.Initialize() is only on the concrete class, not IGridContext. Used by GridContextFactory and GridContextPropagationMiddleware. Fix requires exposing an initialization method on IGridContext in Kernel.Abstractions."
+      "notes": "Consumes HoneyDrunk.Kernel.Abstractions only for Grid context and telemetry; full Kernel runtime dependency removed."
     },
     {
       "node": "honeydrunk-vault",
-      "currentVersion": "0.2.0",
+      "currentVersion": "0.5.0",
       "compatibleWith": {
-        "honeydrunk-kernel": ">=0.4.0"
+        "honeydrunk-kernel": ">=0.7.0"
       },
-      "notes": "Depends on HoneyDrunk.Kernel runtime and Kernel.Abstractions."
+      "notes": "Aligned to current Kernel packages; cancellation and provider facade behavior stabilized."
     },
     {
       "node": "honeydrunk-auth",
-      "currentVersion": "0.2.0",
+      "currentVersion": "0.4.0",
       "compatibleWith": {
-        "honeydrunk-kernel": ">=0.4.0",
-        "honeydrunk-vault": ">=0.2.0"
+        "honeydrunk-vault": ">=0.5.0",
+        "honeydrunk-kernel": ">=0.7.0"
       },
-      "notes": "Uses Vault for signing key retrieval."
+      "notes": "Validation-only Auth boundary preserved; consumes Kernel/Vault contracts for request validation and signing-key access."
     },
     {
       "node": "honeydrunk-web-rest",
-      "currentVersion": "0.2.0",
+      "currentVersion": "0.5.0",
       "compatibleWith": {
-        "honeydrunk-kernel": ">=0.4.0",
-        "honeydrunk-transport": ">=0.4.0",
-        "honeydrunk-auth": ">=0.2.0"
+        "honeydrunk-auth": ">=0.4.0",
+        "honeydrunk-kernel": ">=0.7.0",
+        "honeydrunk-transport": ">=0.6.0"
       },
-      "notes": "Optional Transport dependency for outbox integration."
+      "notes": "Requires live Kernel request context at DI registration and execution; Kernel operation correlation is authoritative."
     },
     {
       "node": "honeydrunk-data",
-      "currentVersion": "0.3.0",
+      "currentVersion": "0.6.0",
       "compatibleWith": {
-        "honeydrunk-kernel": ">=0.4.0",
-        "honeydrunk-transport": ">=0.4.0"
+        "honeydrunk-transport": ">=0.6.0",
+        "honeydrunk-kernel": ">=0.7.0"
       },
-      "notes": "Transport dependency for outbox store implementations."
+      "notes": "Outbox enrichment requires current operation context or explicit non-empty CorrelationId and TenantId."
     },
     {
-      "node": "honeydrunk-pulse",
-      "currentVersion": "0.1.0",
+      "node": "honeydrunk-vault-rotation",
+      "currentVersion": "0.0.0",
       "compatibleWith": {
-        "honeydrunk-kernel": ">=0.4.0"
+        "honeydrunk-vault": ">=0.5.0",
+        "honeydrunk-kernel": ">=0.7.0"
       },
-      "notes": "Depends on Kernel.Abstractions only."
+      "notes": "No published package yet; timer work now establishes Kernel Grid/Operation context and shared placeholder rotators."
     },
     {
       "node": "honeydrunk-notify",
-      "currentVersion": "0.1.0",
+      "currentVersion": "0.3.0",
       "compatibleWith": {
-        "honeydrunk-kernel": ">=0.4.0"
+        "honeydrunk-vault": ">=0.5.0",
+        "honeydrunk-kernel": ">=0.7.0"
       },
-      "notes": "Depends on Kernel.Abstractions only."
+      "notes": "Uses Kernel canonical Notify identity fallback while preserving deploy-time overrides; queue credentials resolve through Vault-backed secret boundary."
+    },
+    {
+      "node": "honeydrunk-pulse",
+      "currentVersion": "0.3.0",
+      "compatibleWith": {
+        "honeydrunk-transport": ">=0.6.0",
+        "honeydrunk-kernel": ">=0.7.0"
+      },
+      "notes": "Collector uses Kernel canonical Pulse identity fallback while preserving HONEYDRUNK_NODE_ID; Loki/Mimir/Tempo share linked internal HTTP OTLP sink helpers."
+    },
+    {
+      "node": "honeydrunk-communications",
+      "currentVersion": "0.2.0",
+      "compatibleWith": {
+        "honeydrunk-notify": ">=0.3.0",
+        "honeydrunk-kernel": ">=0.7.0"
+      },
+      "notes": "Consumes HoneyDrunk.Kernel.Abstractions only; full Kernel runtime dependency removed. Delivery remains delegated through HoneyDrunk.Notify.Abstractions."
     }
   ],
   "upgradeRules": {

@@ -1,8 +1,8 @@
 # HoneyDrunk.Communications - Overview
 
 **Sector:** Ops  
-**Version:** 0.1.0  
-**Framework:** .NET 10.0  
+**Version:** 0.2.0
+**Framework:** .NET 10.0
 **Repo:** `HoneyDrunkStudios/HoneyDrunk.Communications`
 
 ## Purpose
@@ -28,6 +28,8 @@ Outbound-messaging orchestration substrate above Notify. Communications decides 
 
 ## Current Runtime Shape
 
+As of v0.2.0, Communications consumes Kernel through `HoneyDrunk.Kernel.Abstractions` only; it does not depend on the full Kernel runtime package. Delivery remains delegated through `HoneyDrunk.Notify.Abstractions`.
+
 The first runtime slice ships the welcome-email path:
 
 1. A caller passes a `WelcomeEmailIntent` or another `IMessageIntent` to `ICommunicationOrchestrator`.
@@ -39,5 +41,5 @@ The first runtime slice ships the welcome-email path:
 ## Deferred Surfaces
 
 - A separate `HoneyDrunk.Communications.Testing` package from ADR-0019 is intentionally deferred; test fixtures currently live in the runtime/test project.
-- Durable preference, cadence, follow-up, and decision-log stores are deferred. The 0.1.0 runtime uses in-memory implementations.
+- Durable preference, cadence, follow-up, and decision-log stores are deferred. The current runtime uses in-memory implementations.
 - Complex campaign/flow orchestration is deferred. The current slice proves the boundary through welcome-email orchestration.

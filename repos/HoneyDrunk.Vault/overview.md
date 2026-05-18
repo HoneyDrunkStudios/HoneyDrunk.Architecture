@@ -1,7 +1,7 @@
 # HoneyDrunk.Vault — Overview
 
 **Sector:** Core  
-**Version:** 0.2.0  
+**Version:** 0.5.0
 **Framework:** .NET 10.0  
 **Repo:** `HoneyDrunkStudios/HoneyDrunk.Vault`
 
