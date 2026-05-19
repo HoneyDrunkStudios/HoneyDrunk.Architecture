@@ -44,9 +44,15 @@ Several rollouts have all packet issues closed and should be reviewed for archiv
 
 Stand up the Agent Kit Node — agent execution runtime, tool abstraction, and memory. This is the foundation for AI-powered workflows across the Grid.
 
-### Grid v0.4 Alignment (Notify + Pulse)
+### Kernel Adoption Alignment Cleanup
 
-Align Notify and Pulse with Kernel 0.4.0 patterns where still needed. Notify has moved through the ADR-0019/v0.2.0 boundary release; Pulse production deployment and dashboard work remain.
+The Core repo implementation pass is effectively complete and Architecture metadata now reflects the new baseline. Three implementation issues still need GitHub-state cleanup before the initiative can archive cleanly:
+
+- `Kernel#29`: v0.7.0 released, issue still open.
+- `Transport#27`: v0.6.0 released, issue still open.
+- `Communications#14`: runtime/abstractions v0.2.0 released, issue still open.
+
+After those issue states close, Hive Sync can move packets 01, 02, and 10 to `completed/`, then close/archive Architecture#111.
 
 ### Canary Test Coverage
 

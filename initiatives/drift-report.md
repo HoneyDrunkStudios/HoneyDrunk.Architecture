@@ -19,6 +19,12 @@ _No drift detected._
 
 _No drift detected._
 
+## Issue Packet Manifest Drift
+
+| Path | Issue | Detail | First Surfaced |
+|------|-------|--------|----------------|
+| `generated/issue-packets/active/adr-0010-observe-ai-routing-phase-1/04-ai-add-routing-contracts.md` | HoneyDrunk.AI#1 | Manifest references a packet file that no longer exists; a `.superseded.md` packet for the same original scope remains and is separately filed as HoneyDrunk.AI#3. Human/scope agent should reconcile duplicate open issues before executing ADR-0010/ADR-0016 AI work. | 2026-05-18 |
+
 ## Nodes in `nodes.json` with Missing GitHub Repos
 
 | Node | Repo URL | Detail | First Surfaced |

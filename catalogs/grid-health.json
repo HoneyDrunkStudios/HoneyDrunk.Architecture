@@ -1,7 +1,7 @@
 {
   "_meta": {
     "description": "Live health snapshot of every Node in the Grid. Written by CI workflows and agents; read by Claude Code, HoneyHub (when live), and the developer. Not a substitute for the Project board — this tracks repo-level readiness, not individual work items.",
-    "updated": "2026-05-16",
+    "updated": "2026-05-18",
     "schema_version": "1.0"
   },
   "nodes": [
@@ -10,33 +10,33 @@
       "name": "HoneyDrunk.Kernel",
       "sector": "Core",
       "signal": "Live",
-      "version": "0.4.0",
+      "version": "0.7.0",
       "canary_status": "passing",
-      "last_release": "2026-04-05",
+      "last_release": "2026-05-17",
       "active_blockers": [],
-      "notes": "Grid v0.4 stabilization release. Three-ID context model locked. AddHoneyDrunkNode is canonical API."
+      "notes": "Kernel v0.7.0 is the current Core baseline: canonical WellKnownNodes, typed TenantId, and Grid/Operation context contracts."
     },
     {
       "id": "honeydrunk-transport",
       "name": "HoneyDrunk.Transport",
       "sector": "Core",
       "signal": "Live",
-      "version": "0.4.0",
+      "version": "0.6.0",
       "canary_status": "passing",
-      "last_release": "2026-04-05",
+      "last_release": "2026-05-18",
       "active_blockers": [],
-      "notes": "Aligned to Kernel 0.4.0. Azure Service Bus, Storage Queue, and InMemory adapters stable."
+      "notes": "Aligned to Kernel 0.7.0 abstractions; full Kernel runtime dependency removed; repo changelog finalized after v0.6.0 tag."
     },
     {
       "id": "honeydrunk-vault",
       "name": "HoneyDrunk.Vault",
       "sector": "Core",
       "signal": "Live",
-      "version": "0.4.0",
+      "version": "0.5.0",
       "canary_status": "passing",
-      "last_release": "2026-04-05",
+      "last_release": "2026-05-18",
       "active_blockers": [],
-      "notes": "ADR-0005 env-var-driven bootstrap in place. Awaiting Wave 2 per-Node Key Vault provisioning."
+      "notes": "Aligned to Kernel 0.7.0; provider facade cancellation behavior and provider-helper consolidation completed."
     },
     {
       "id": "honeydrunk-vault-rotation",
@@ -44,10 +44,12 @@
       "sector": "Core",
       "signal": "Seed",
       "version": "0.0.0",
-      "canary_status": "none",
+      "canary_status": "passing",
       "last_release": null,
-      "active_blockers": ["Repo not yet scaffolded"],
-      "notes": "ADR-0006 rotation Function. Bring-up packets filed. Awaiting repo creation (human-only step)."
+      "active_blockers": [
+        "No published package/tag yet by decision"
+      ],
+      "notes": "Repo scaffolded. Timer jobs establish Kernel Grid/Operation context; placeholder provider rotators consolidated. No release tag required for this pass."
     },
     {
       "id": "honeydrunk-auth",
@@ -56,31 +58,31 @@
       "signal": "Live",
       "version": "0.4.0",
       "canary_status": "passing",
-      "last_release": "2026-04-05",
+      "last_release": "2026-05-18",
       "active_blockers": [],
-      "notes": "JWT validation and policy-based authorization stable. Vault-backed key retrieval wired."
+      "notes": "Aligned to Kernel 0.7.0; validation-only Auth boundary preserved and no token issuance added."
     },
     {
       "id": "honeydrunk-web-rest",
       "name": "HoneyDrunk.Web.Rest",
       "sector": "Core",
       "signal": "Live",
-      "version": "0.4.0",
+      "version": "0.5.0",
       "canary_status": "passing",
-      "last_release": "2026-04-05",
+      "last_release": "2026-05-18",
       "active_blockers": [],
-      "notes": "Response envelopes, correlation, and exception mapping stable."
+      "notes": "Requires Kernel request context at registration and live execution; Kernel operation correlation is authoritative."
     },
     {
       "id": "honeydrunk-data",
       "name": "HoneyDrunk.Data",
       "sector": "Core",
       "signal": "Live",
-      "version": "0.4.0",
+      "version": "0.6.0",
       "canary_status": "passing",
-      "last_release": "2026-04-05",
+      "last_release": "2026-05-18",
       "active_blockers": [],
-      "notes": "Repository pattern, unit of work, tenant-aware data, outbox stable."
+      "notes": "Aligned to Kernel 0.7.0 and Transport 0.6.0; outbox enrichment requires operation context or explicit CorrelationId/TenantId."
     },
     {
       "id": "honeydrunk-audit",
@@ -90,7 +92,9 @@
       "version": "0.0.0",
       "canary_status": "none",
       "last_release": null,
-      "active_blockers": ["Repo not yet scaffolded — scaffold governed by ADR-0031 standup, separate initiative"],
+      "active_blockers": [
+        "Repo not yet scaffolded — scaffold governed by ADR-0031 standup, separate initiative"
+      ],
       "notes": "ADR-0030 (capability/decision) Accepted. Three frozen contracts (IAuditLog, IAuditQuery, AuditEntry) registered. Awaiting ADR-0031 standup: HoneyDrunk.Audit.Abstractions + Data-backed HoneyDrunk.Audit.Data, contract-shape canary on all three contracts, the Node's own managed identity, in-memory fixture. Phase 1 is append-only-by-interface, NOT tamper-evident (ADR-0030 D9)."
     },
     {
@@ -98,33 +102,35 @@
       "name": "HoneyDrunk.Notify",
       "sector": "Ops",
       "signal": "Live",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "canary_status": "passing",
-      "last_release": "2026-05-05",
+      "last_release": "2026-05-18",
       "active_blockers": [],
-      "notes": "Delivery/intake Node released at v0.2.0 after ADR-0019 refactor. Notify owns structural validation, queue-backed intake, provider dispatch, retry/delivery mechanics; preference/cadence policy moved to Communications."
+      "notes": "Aligned to Kernel canonical Notify identity; queue credential resolution moved behind Vault-backed secret boundary. NuGet/GitHub Release published; changelog hygiene follow-up remains in Notify PR #16."
     },
     {
       "id": "honeydrunk-communications",
       "name": "HoneyDrunk.Communications",
       "sector": "Ops",
       "signal": "Live",
-      "version": "0.1.0",
-      "canary_status": "none",
-      "last_release": "2026-05-05",
-      "active_blockers": ["ADR-0019 D8 / Invariant 43 contract-shape canary not wired in CI — tracked by HoneyDrunkStudios/HoneyDrunk.Communications#12"],
-      "notes": "v0.1.0 packages released. Contracts and welcome-flow runtime are stood up: intents, recipient resolution, preference store, cadence policy, decision log, and Notify delegation. Durable stores/testing package remain deferred. CORRECTION 2026-05-16: canary_status was reported 'passing' in error — no contract-shape canary is actually wired (Communications uses shared pr-core.yml, which has no api-compatibility job). See Communications#12."
+      "version": "0.2.0",
+      "canary_status": "passing",
+      "last_release": "2026-05-18",
+      "active_blockers": [],
+      "notes": "Full Kernel runtime dependency removed; runtime now consumes Kernel abstractions only and Notify.Abstractions 0.3.0. Runtime/Abstractions v0.2.0 release workflows succeeded."
     },
     {
       "id": "honeydrunk-pulse",
       "name": "HoneyDrunk.Pulse",
       "sector": "Ops",
-      "signal": "Seed",
-      "version": "0.1.0",
-      "canary_status": "none",
-      "last_release": null,
-      "active_blockers": ["Production deployment pending", "Grafana templates pending"],
-      "notes": "Multi-backend telemetry pipeline and OTLP collector implemented. Awaiting production deployment."
+      "signal": "Live",
+      "version": "0.3.0",
+      "canary_status": "passing",
+      "last_release": "2026-05-18",
+      "active_blockers": [
+        "Container image publication blocked by upstream Ubuntu sed CVE-2026-5958"
+      ],
+      "notes": "Aligned to Kernel canonical Pulse identity and Transport 0.6.0; NuGet/GitHub Release published. Container scan blocked only image push, not package release."
     },
     {
       "id": "honeydrunk-actions",
@@ -134,7 +140,9 @@
       "version": "N/A",
       "canary_status": "passing",
       "last_release": "2026-04-10",
-      "active_blockers": ["D6 batch-filing action not yet built (primary bottleneck for initiative launch)"],
+      "active_blockers": [
+        "D6 batch-filing action not yet built (primary bottleneck for initiative launch)"
+      ],
       "notes": "hive-field-mirror.yml shipped (Actions#22 closed). D6 batch-filer will incorporate mirror step, resolving D5 for the primary flow. hive-backfill-issue.sh exists for manual one-offs."
     },
     {
@@ -145,7 +153,10 @@
       "version": "0.0.0",
       "canary_status": "none",
       "last_release": null,
-      "active_blockers": ["Repo not yet scaffolded", "Bring-up packets on deck"],
+      "active_blockers": [
+        "Repo not yet scaffolded",
+        "Bring-up packets on deck"
+      ],
       "notes": "LLM-compiled living wiki. 6 packets scoped and ready to file. On deck after ADR-0005/0006 wave completes."
     },
     {
@@ -156,7 +167,10 @@
       "version": "N/A",
       "canary_status": "passing",
       "last_release": "2026-04-12",
-      "active_blockers": ["Org Project auto-add not yet enabled", "ADR-0003 Phase 1 scoping needed"],
+      "active_blockers": [
+        "Org Project auto-add not yet enabled",
+        "ADR-0003 Phase 1 scoping needed"
+      ],
       "notes": "Command center. Grid-health.json, contracts.json, sector-interaction-map.md added 2026-04-12."
     },
     {
@@ -178,7 +192,10 @@
       "version": "0.0.0",
       "canary_status": "none",
       "last_release": null,
-      "active_blockers": ["Repo not yet scaffolded", "Awaiting AI sector bring-up initiative"],
+      "active_blockers": [
+        "Repo not yet scaffolded",
+        "Awaiting AI sector bring-up initiative"
+      ],
       "notes": "Agent runtime and lifecycle. Designed in ai-sector-architecture.md. Repo context docs in repos/HoneyDrunk.Agents/."
     },
     {
@@ -189,7 +206,10 @@
       "version": "0.0.0",
       "canary_status": "none",
       "last_release": null,
-      "active_blockers": ["Repo not yet scaffolded", "Awaiting AI sector bring-up initiative"],
+      "active_blockers": [
+        "Repo not yet scaffolded",
+        "Awaiting AI sector bring-up initiative"
+      ],
       "notes": "Model/provider abstraction. Microsoft.Extensions.AI alignment planned Q3 2026."
     },
     {
@@ -200,7 +220,9 @@
       "version": "0.0.0",
       "canary_status": "none",
       "last_release": null,
-      "active_blockers": ["Repo not yet scaffolded"],
+      "active_blockers": [
+        "Repo not yet scaffolded"
+      ],
       "notes": "Agent memory — short-term, long-term, scoped. Designed in ai-sector-architecture.md."
     },
     {
@@ -211,7 +233,9 @@
       "version": "0.0.0",
       "canary_status": "none",
       "last_release": null,
-      "active_blockers": ["Repo not yet scaffolded"],
+      "active_blockers": [
+        "Repo not yet scaffolded"
+      ],
       "notes": "External knowledge ingestion, embeddings, RAG pipelines."
     },
     {
@@ -222,7 +246,9 @@
       "version": "0.0.0",
       "canary_status": "none",
       "last_release": null,
-      "active_blockers": ["Repo not yet scaffolded"],
+      "active_blockers": [
+        "Repo not yet scaffolded"
+      ],
       "notes": "Prompt evaluation, regression testing, model comparison."
     },
     {
@@ -233,7 +259,9 @@
       "version": "0.0.0",
       "canary_status": "none",
       "last_release": null,
-      "active_blockers": ["Repo not yet scaffolded"],
+      "active_blockers": [
+        "Repo not yet scaffolded"
+      ],
       "notes": "Tool registry, discovery, permissioning, versioning."
     },
     {
@@ -244,7 +272,9 @@
       "version": "0.0.0",
       "canary_status": "none",
       "last_release": null,
-      "active_blockers": ["Repo not yet scaffolded"],
+      "active_blockers": [
+        "Repo not yet scaffolded"
+      ],
       "notes": "Workflow engine, multi-step pipelines, sagas, compensation."
     },
     {
@@ -255,7 +285,9 @@
       "version": "0.0.0",
       "canary_status": "none",
       "last_release": null,
-      "active_blockers": ["Repo not yet scaffolded"],
+      "active_blockers": [
+        "Repo not yet scaffolded"
+      ],
       "notes": "Human oversight — approvals, safety, circuit breakers, cost controls, audit."
     },
     {
@@ -266,7 +298,9 @@
       "version": "0.0.0",
       "canary_status": "none",
       "last_release": null,
-      "active_blockers": ["Repo not yet scaffolded"],
+      "active_blockers": [
+        "Repo not yet scaffolded"
+      ],
       "notes": "Simulation, plan evaluation, risk analysis."
     }
   ],
@@ -277,6 +311,21 @@
     "canary_passing": 8,
     "canary_none": 15,
     "canary_failing": 0,
-    "blocked_nodes": ["honeydrunk-vault-rotation", "honeydrunk-notify", "honeydrunk-communications", "honeydrunk-pulse", "honeydrunk-lore", "honeydrunk-actions", "honeydrunk-agents", "honeydrunk-ai", "honeydrunk-memory", "honeydrunk-knowledge", "honeydrunk-evals", "honeydrunk-capabilities", "honeydrunk-flow", "honeydrunk-operator", "honeydrunk-sim", "honeydrunk-audit"]
+    "blocked_nodes": [
+      "honeydrunk-vault-rotation",
+      "honeydrunk-pulse",
+      "honeydrunk-lore",
+      "honeydrunk-actions",
+      "honeydrunk-agents",
+      "honeydrunk-ai",
+      "honeydrunk-memory",
+      "honeydrunk-knowledge",
+      "honeydrunk-evals",
+      "honeydrunk-capabilities",
+      "honeydrunk-flow",
+      "honeydrunk-operator",
+      "honeydrunk-sim",
+      "honeydrunk-audit"
+    ]
   }
 }

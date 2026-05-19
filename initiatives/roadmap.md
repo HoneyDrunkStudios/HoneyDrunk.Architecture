@@ -22,13 +22,14 @@ High-level roadmap for the HoneyDrunk Grid.
 - [x] **Package Scanning Rollout (ADR-0009) — complete** *(8/8 issues closed; ready for archive review)*
 - [x] **Hive Sync Rollout (ADR-0014) - implementation merged** *(6/6 issues closed; ready for archive/exit-criteria review)*
 - [ ] **ADR-0015 Container Apps Rollout — underway** *(2/5 issues closed; walkthroughs + reusable deploy workflow complete; Notify/Pulse release work remains)*
-- [ ] Pulse — Production hardening, Grafana dashboard templates, finalize 0.1.0 release
-- [x] Notify — v0.2.0 ADR-0019 intake-boundary release and Azure Functions deploy workflow complete
-- [x] HoneyDrunk.Communications — v0.1.0 contracts/runtime release with welcome-flow boundary slice
+- [x] Pulse — v0.3.0 Kernel-aligned package release complete; production deployment / Grafana templates remain under ADR-0015 and Ops observability work
+- [x] Notify — v0.3.0 Kernel-aligned package release complete; Azure Functions/Worker deployment remains under ADR-0015
+- [x] HoneyDrunk.Communications — v0.2.0 Kernel-abstractions-only runtime/abstractions release complete
 - [ ] HoneyDrunk.AI — Model/provider abstraction stand-up underway *(ADR-0016 packets open: Architecture#72, Architecture#73, AI#2)*
 - [ ] **ADR-0010 Phase 1 (Observation Layer & AI Routing contracts)** *(0/3 issues closed; scoped 2026-04-18 — Observe side ready to file, AI routing deferred pending HoneyDrunk.AI standup ADR)*
 - [ ] **ADR-0030 Grid-Wide Audit Substrate — Capability Acceptance** *(2 packets — catalog/sectors/context-folder/ADR-0018-amendment + audit-emission boundary invariant; standup is the separate ADR-0031 initiative)*
 - [ ] **ADR-0032 PR Validation Policy — Coverage Gate & NuGet Flagging** *(12 packets — 2 Actions control-plane (blocking coverage gate + grouped outdated-deps issue) + 10 per-repo coverage backfills to the absolute floor)*
+- [ ] **Kernel Adoption Alignment** *(7/11 packet issues closed; package baseline reconciled to Kernel 0.7.0, with Kernel#29 / Transport#27 / Communications#14 issue-state cleanup still open)*
 - [ ] HoneyDrunk.Capabilities — Tool registry, discovery, permissioning, initial tool descriptors
 - [ ] HoneyDrunk.Agents — Agent runtime, lifecycle, execution context, tool/memory interfaces
 - [ ] HoneyDrunk.Memory — Agent memory contracts, InMemory provider, Agents integration

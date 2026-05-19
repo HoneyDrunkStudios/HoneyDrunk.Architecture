@@ -1,7 +1,7 @@
 # HoneyDrunk.Notify — Overview
 
 **Sector:** Ops  
-**Version:** 0.2.0
+**Version:** 0.3.0
 **Framework:** .NET 10.0
 **Repo:** `HoneyDrunkStudios/HoneyDrunk.Notify`
 

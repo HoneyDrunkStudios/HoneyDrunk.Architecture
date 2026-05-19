@@ -2,55 +2,114 @@
 
 Centralized view of what shipped across the Grid.
 
-**Last Updated:** 2026-05-16
+**Last Updated:** 2026-05-18
 
 ---
 
 ## Q2 2026
 
-> **Human review pending:** Five release entries below still need CHANGELOG confirmation and release notes. Status: Vault#12 (release issue for 0.3.0) still open — verify whether 0.3.0 or 0.4.0 was shipped. Vault.Rotation#4 (0.1.0 release) also pending — repo scaffolded 2026-04-11 but not yet released.
+> **Human review pending:** Vault.Rotation still has no published package/tag by decision; keep it out of release history until Oleg asks for an actual release.
 
 ### Pending Verification
 
-#### Vault 0.4.0
-
-- **Signal:** Live
-- **Shipped:** Q2 2026 (2026-04-05 per grid-health.json)
-- **Highlights:**
-  - Highlights pending — check HoneyDrunk.Vault CHANGELOG and confirm tag exists before publishing
-- **Breaking Changes:** Unknown — review CHANGELOG
-
-#### Auth 0.4.0
-
-- **Signal:** Live
-- **Shipped:** Q2 2026 (2026-04-05 per grid-health.json)
-- **Highlights:**
-  - Highlights pending — check HoneyDrunk.Auth CHANGELOG and confirm tag exists before publishing
-- **Breaking Changes:** Unknown — review CHANGELOG
-
-#### Web.Rest 0.4.0
-
-- **Signal:** Live
-- **Shipped:** Q2 2026 (2026-04-05 per grid-health.json)
-- **Highlights:**
-  - Highlights pending — check HoneyDrunk.Web.Rest CHANGELOG and confirm tag exists before publishing
-- **Breaking Changes:** Unknown — review CHANGELOG
-
-#### Data 0.4.0
-
-- **Signal:** Live
-- **Shipped:** Q2 2026 (2026-04-05 per grid-health.json)
-- **Highlights:**
-  - Highlights pending — check HoneyDrunk.Data CHANGELOG and confirm tag exists before publishing
-- **Breaking Changes:** Unknown — review CHANGELOG
-
-#### Vault.Rotation 0.1.0
+#### Vault.Rotation initial release
 
 - **Signal:** Seed
-- **Shipped:** Q2 2026 (pending — Vault.Rotation repo created 2026-04-11, issues Vault.Rotation#3–4 open)
+- **Shipped:** Not released
 - **Highlights:**
-  - Highlights pending — repo scaffold and Function app implementation in progress (Vault.Rotation#3 open, release pending Vault.Rotation#4)
-- **Breaking Changes:** N/A (initial release)
+  - Repo scaffold and Function app implementation are in place.
+  - Kernel timer-context alignment landed, but no package/tag was needed for that pass.
+- **Breaking Changes:** N/A (not released)
+
+### Kernel 0.7.0
+
+- **Signal:** Live
+- **Shipped:** 2026-05-17
+- **Highlights:**
+  - Canonical `WellKnownNodes` identifiers for active Grid Nodes
+  - Current `TenantId` / Grid / Operation context contracts consumed by downstream Core packages
+  - Baseline for the Kernel adoption alignment wave
+- **Breaking Changes:** Yes — downstream packages aligned to the current Kernel context/identity contract
+
+### Transport 0.6.0
+
+- **Signal:** Live
+- **Shipped:** 2026-05-18
+- **Highlights:**
+  - Removed full Kernel runtime dependency; Transport consumes Kernel abstractions for context propagation
+  - Fail-fast envelope/Grid context validation preserved
+  - Repository changelog finalized after tag publication
+- **Breaking Changes:** Yes — Kernel dependency shape and package baseline changed during pre-1.0 alignment
+
+### Vault 0.5.0
+
+- **Signal:** Live
+- **Shipped:** 2026-05-18
+- **Highlights:**
+  - Aligned Vault to Kernel 0.7.0 package baseline
+  - Consolidated provider helpers
+  - Preserved cooperative cancellation behavior through facades
+- **Breaking Changes:** Yes — pre-1.0 Kernel baseline alignment
+
+### Data 0.6.0
+
+- **Signal:** Live
+- **Shipped:** 2026-05-18
+- **Highlights:**
+  - Aligned Data to Kernel 0.7.0 / Transport 0.6.0
+  - Outbox enrichment now requires live operation context or explicit non-empty CorrelationId/TenantId
+  - Consolidated EF/SQL test and registration helpers
+- **Breaking Changes:** Yes — stricter outbox context requirement
+
+### Auth 0.4.0
+
+- **Signal:** Live
+- **Shipped:** 2026-05-18
+- **Highlights:**
+  - Aligned Auth to current Kernel packages
+  - Preserved validation-only boundary; no token issuance added
+  - Updated integration docs for Kernel/Vault boundary shape
+- **Breaking Changes:** Yes — pre-1.0 Kernel baseline alignment
+
+### Web.Rest 0.5.0
+
+- **Signal:** Live
+- **Shipped:** 2026-05-18
+- **Highlights:**
+  - Requires Kernel request context at DI registration and live execution
+  - Treats Kernel `IOperationContext.CorrelationId` as authoritative
+  - Consolidated API result factories without changing serialized response contracts
+- **Breaking Changes:** Yes — stricter Kernel context requirement
+
+### Notify 0.3.0
+
+- **Signal:** Live
+- **Shipped:** 2026-05-18
+- **Highlights:**
+  - Uses Kernel canonical Notify identity fallback while preserving deploy-time overrides
+  - Queue credential resolution moved behind Vault-backed `ISecretStore`
+  - Template/provider/queue registration helpers consolidated
+- **Breaking Changes:** Yes — pre-1.0 Kernel/secret-boundary alignment
+
+### Pulse 0.3.0
+
+- **Signal:** Live
+- **Shipped:** 2026-05-18
+- **Highlights:**
+  - Uses Kernel canonical Pulse identity fallback while preserving `HONEYDRUNK_NODE_ID`
+  - Loki/Mimir/Tempo share internal HTTP OTLP export/auth/retry helpers
+  - NuGet packages and GitHub Release published; container image publication blocked separately by upstream Ubuntu `sed` CVE-2026-5958
+- **Breaking Changes:** Yes — pre-1.0 Kernel/Transport baseline alignment
+
+### Communications 0.2.0
+
+- **Signal:** Live
+- **Shipped:** 2026-05-18
+- **Highlights:**
+  - Removed full `HoneyDrunk.Kernel` runtime dependency from Communications runtime
+  - Runtime consumes Kernel abstractions only and `HoneyDrunk.Notify.Abstractions` 0.3.0
+  - Internal tenant handling aligned to Kernel `TenantId.Internal` / `TenantId.IsInternal`
+- **Breaking Changes:** Yes — pre-1.0 dependency-shape alignment
 
 ### Communications 0.1.0
 
@@ -169,9 +228,9 @@ See [roadmap.md](roadmap.md) for planned work.
 
 | Node | Next Version | Target | Key Goal |
 |------|-------------|--------|----------|
-| Pulse | 0.1.0 GA | Q2 2026 | Production hardening, Grafana dashboards |
-| HoneyDrunk.Communications | 0.2.0 | Q2 2026 | Durable stores/testing package if needed by first consumers |
-| Notify | 0.3.0 | Q2 2026 | Provider hardening and production smoke coverage |
+| Pulse | production deploy follow-up | Q2 2026 | Resolve container scan/image publication follow-up, production hardening, Grafana dashboards |
+| HoneyDrunk.Communications | 0.3.0 | Q2 2026 | Durable stores/testing package if needed by first consumers |
+| Notify | deployment follow-up | Q2 2026 | Provider hardening, production smoke coverage, Functions/Worker Azure bring-up |
 | Agent Kit | 0.1.0 | Q2 2026 | Agent execution runtime, tool abstraction |
 | Orchestrator | 0.1.0 | Q2 2026 | Workflow orchestration, multi-step pipelines |
 | HoneyHub | 0.1.0 | Q2–Q3 2026 | Project orchestration, creator dashboard |
