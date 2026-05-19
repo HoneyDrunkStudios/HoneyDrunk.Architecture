@@ -313,8 +313,6 @@
     "canary_failing": 0,
     "blocked_nodes": [
       "honeydrunk-vault-rotation",
-      "honeydrunk-notify",
-      "honeydrunk-communications",
       "honeydrunk-pulse",
       "honeydrunk-lore",
       "honeydrunk-actions",

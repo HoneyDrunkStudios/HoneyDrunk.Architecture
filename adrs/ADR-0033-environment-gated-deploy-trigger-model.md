@@ -113,4 +113,3 @@ Rejected as not mechanically possible and not desirable. A reusable workflow con
 ### Promote the dev-built artifact to staging/prod (artifact promotion)
 
 Deferred, not adopted (D6). Same-binary promotion has appeal (build once, deploy many) but dev builds carry no version stamp and the reusable workflows already build-on-deploy from source/Dockerfile, so rebuild-from-tag is the lower-friction model today. Reconsider if build non-determinism or build-time cost becomes a concrete problem.
-</invoke>
