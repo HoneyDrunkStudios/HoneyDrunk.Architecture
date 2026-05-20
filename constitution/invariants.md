@@ -108,9 +108,18 @@ Rules that must never be violated across the HoneyDrunk Grid. Canary tests enfor
 ## AI Invariants
 
 28. **Application code must never hardcode a model name or provider.**
-    All model selection goes through `IModelRouter` in HoneyDrunk.AI. Routing policies are stored in App Configuration (ADR-0005) and are operator-configurable without a redeploy. See ADR-0010 (Proposed — this invariant takes effect when ADR-0010 is accepted).
+    All model selection goes through `IModelRouter` in HoneyDrunk.AI. Routing policies are stored in App Configuration (ADR-0005) and are operator-configurable without a redeploy. See ADR-0010.
 
-_Invariants 29–30 are reserved for the Observation Layer (ADR-0010). They will be added here when ADR-0010 is accepted._
+_Invariants 29–30 are reserved for Observation Layer follow-up implementation work from ADR-0010._
+
+44. **Downstream AI-sector Nodes take a runtime dependency only on `HoneyDrunk.AI.Abstractions`.**
+    Composition against `HoneyDrunk.AI` and any `HoneyDrunk.AI.Providers.*` package is a host-time concern resolved at application startup from App Configuration. This is the same abstraction/runtime split applied for Vault and Transport, restated here because it is the specific rule that allows blocked AI-sector Nodes (Capabilities, Operator, Agents, Memory, Knowledge, Evals) to proceed on `Abstractions` alone without waiting for provider packages. See ADR-0016 D9.
+
+45. **Token cost rates, routing policies, and capability declarations are sourced from Azure App Configuration via Vault's `IConfigProvider`.**
+    Hardcoded rates, policies, or capability declarations in application code are forbidden. Rate-table refresh is operator-driven — change the config value, restart or hot-reload, no deploy required. This applies in particular to the cost-rate table consumed by `ICostLedger`: token prices per model are operator-configurable, never compiled constants. See ADR-0016 D5 and ADR-0005.
+
+46. **The HoneyDrunk.AI Node CI must include a contract-shape canary that fails the build on shape drift to `IChatClient`, `IEmbeddingGenerator`, `IModelProvider`, or `IModelRouter` without a corresponding version bump.**
+    These four are the hot-path abstractions every downstream consumer compiles against. Accidental shape drift on any of them breaks every AI-sector Node simultaneously. The canary makes this a compile-time failure at AI's own CI, not a discovery at consumer sites. The implementation may be the existing `job-api-compatibility.yml` reusable workflow scoped to `HoneyDrunk.AI.Abstractions`; the obligation is to keep the gate, not to use any specific implementation. See ADR-0016 D8.
 
 ## Code Review Invariants
 

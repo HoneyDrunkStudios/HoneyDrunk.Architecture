@@ -99,7 +99,10 @@ No AI Node operates without a path to human oversight. The Operator Node provide
 - `IChatClient` — aligned with `Microsoft.Extensions.AI` when adopted
 - `IEmbeddingGenerator` — aligned with `Microsoft.Extensions.AI`
 - `IModelProvider` — provider slot interface
-- `IInferenceResult` — normalized response with metadata (tokens, model, latency)
+- `IModelRouter` — capability-driven model selection
+- `IRoutingPolicy` — pluggable routing policy
+- `ModelCapabilityDeclaration` — machine-readable capability metadata
+- `ICostLedger` — per-call token and cost accounting surface
 
 **Provider Slot Pattern:**
 ```
@@ -108,12 +111,14 @@ HoneyDrunk.AI                       → runtime, routing, telemetry
 HoneyDrunk.AI.Providers.OpenAI      → OpenAI adapter
 HoneyDrunk.AI.Providers.Anthropic   → Anthropic adapter
 HoneyDrunk.AI.Providers.AzureOpenAI → Azure OpenAI adapter
-HoneyDrunk.AI.Providers.Local       → local/ONNX models
+HoneyDrunk.AI.Providers.InMemory    → deterministic test double for Evals and CI
 ```
 
-**Depends on:** Kernel (context, telemetry), Vault (API keys), Pulse (inference telemetry)
+**Depends on:** Kernel (context, telemetry), Vault (API keys + App Configuration for routing policies and cost-rate tables)
 
-**Note:** The tech stack already plans adoption of `Microsoft.Extensions.AI` (`IChatClient`/`IEmbeddingGenerator`) for Q3 2026. HoneyDrunk.AI should align with these abstractions rather than invent competing ones. The provider adapters wrap `Microsoft.Extensions.AI` implementations with Grid context enrichment, Pulse telemetry, and Vault-backed credential resolution.
+**Emits to (no runtime dependency):** Pulse (inference telemetry per call - token counts, latency, model identifiers, cost estimates)
+
+**Note:** The tech stack already plans adoption of `Microsoft.Extensions.AI` (`IChatClient`/`IEmbeddingGenerator`) for Q3 2026. HoneyDrunk.AI should align with these abstractions rather than invent competing ones. Provider adapters expose Grid-owned abstractions with runtime context enrichment, Pulse telemetry, and Vault-backed credential resolution; Microsoft.Extensions.AI interop remains a follow-up adapter path.
 
 ---
 

@@ -18,15 +18,18 @@ Model and provider abstraction layer for the Grid. Normalizes inference contract
 | `HoneyDrunk.AI.Providers.OpenAI` | Provider | OpenAI adapter |
 | `HoneyDrunk.AI.Providers.Anthropic` | Provider | Anthropic adapter |
 | `HoneyDrunk.AI.Providers.AzureOpenAI` | Provider | Azure OpenAI adapter |
-| `HoneyDrunk.AI.Providers.Local` | Provider | Local/ONNX model adapter |
+| `HoneyDrunk.AI.Providers.InMemory` | Provider | Deterministic test double for Evals and CI |
 
 ## Key Interfaces
 
 - `IChatClient` — Chat completion (aligned with `Microsoft.Extensions.AI`)
 - `IEmbeddingGenerator` — Embedding generation (aligned with `Microsoft.Extensions.AI`)
 - `IModelProvider` — Provider slot interface for model backends
-- `IInferenceResult` — Normalized response with metadata (tokens, model, latency, cost)
+- `IModelRouter` — Capability-driven model selection
+- `IRoutingPolicy` — Pluggable routing strategy
+- `ModelCapabilityDeclaration` — Machine-readable capability metadata
+- `ICostLedger` — Per-call token and cost accounting surface
 
 ## Design Notes
 
-Provider adapters wrap `Microsoft.Extensions.AI` implementations with Grid context enrichment, Pulse telemetry, and Vault-backed credential resolution. When `Microsoft.Extensions.AI` reaches stable adoption (planned Q3 2026), HoneyDrunk.AI aligns with those abstractions rather than inventing competing ones.
+Provider adapters expose Grid-owned abstractions with runtime context enrichment, Pulse telemetry, and Vault-backed credential resolution. InMemory provides deterministic tests; external SDK adapters land in follow-up packets. When `Microsoft.Extensions.AI` reaches stable adoption (planned Q3 2026), HoneyDrunk.AI aligns with those abstractions rather than inventing competing ones.

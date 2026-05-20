@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Registered ADR-0016 HoneyDrunk.AI architecture prerequisites: corrected the AI contract catalog to D3 (`ICostLedger` instead of stale `IInferenceResult`), replaced retired `Providers.Local` references with `Providers.InMemory`, clarified AI emits telemetry consumed by Pulse without a Pulse runtime dependency, added invariants 44-46 for downstream AI coupling, App Config-sourced AI rates/policies, and the AI contract-shape canary, and dropped invariant 28's stale ADR-0010 Proposed qualifier, and flipped ADR-0016 to Accepted in the ADR index/proposed-ADR tracker.
 - Reconciled Architecture catalogs and trackers to the Kernel Adoption Alignment release baseline: Kernel 0.7.0, Transport 0.6.0, Vault 0.5.0, Auth 0.4.0, Web.Rest 0.5.0, Data 0.6.0, Notify 0.3.0, Pulse 0.3.0, and Communications 0.2.0.
 - Moved closed Kernel Adoption and consolidation packets from `active/` to `completed/` and updated `filed-packets.json` paths while preserving still-open packet issues in `active/`.
 - Added ADR-0033 for the environment-gated deploy-trigger model for deployable Nodes.
