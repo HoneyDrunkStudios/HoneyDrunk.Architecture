@@ -147,5 +147,9 @@
   "generated/issue-packets/active/adr-0022-memory-standup/03-memory-node-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Memory/issues/2",
   "generated/issue-packets/active/adr-0023-evals-standup/01-architecture-evals-catalog-registration.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/137",
   "generated/issue-packets/active/adr-0023-evals-standup/02-architecture-evals-invariants.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/138",
-  "generated/issue-packets/active/adr-0023-evals-standup/03-architecture-create-evals-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/139"
+  "generated/issue-packets/active/adr-0023-evals-standup/03-architecture-create-evals-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/139",
+  "generated/issue-packets/active/adr-0024-flow-standup/01-architecture-flow-catalog-registration.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/141",
+  "generated/issue-packets/active/adr-0024-flow-standup/02-architecture-flow-invariants.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/142",
+  "generated/issue-packets/active/adr-0024-flow-standup/02b-architecture-verify-flow-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/143",
+  "generated/issue-packets/active/adr-0024-flow-standup/03-flow-node-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Flow/issues/2"
 }
