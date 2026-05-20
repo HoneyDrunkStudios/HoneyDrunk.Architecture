@@ -132,5 +132,9 @@
   "generated/issue-packets/active/adr-0018-operator-standup/01-architecture-operator-catalog-registration.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/121",
   "generated/issue-packets/active/adr-0018-operator-standup/02-architecture-operator-invariants.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/122",
   "generated/issue-packets/active/adr-0018-operator-standup/02b-architecture-verify-operator-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/123",
-  "generated/issue-packets/active/adr-0018-operator-standup/03-operator-node-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Operator/issues/3"
+  "generated/issue-packets/active/adr-0018-operator-standup/03-operator-node-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Operator/issues/3",
+  "generated/issue-packets/active/adr-0020-agents-standup/01-architecture-agents-catalog-registration.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/125",
+  "generated/issue-packets/active/adr-0020-agents-standup/02-architecture-agents-invariants.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/126",
+  "generated/issue-packets/active/adr-0020-agents-standup/02b-architecture-verify-agents-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/127",
+  "generated/issue-packets/active/adr-0020-agents-standup/03-agents-node-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Agents/issues/2"
 }
