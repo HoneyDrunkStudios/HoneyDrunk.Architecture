@@ -151,5 +151,8 @@
   "generated/issue-packets/active/adr-0024-flow-standup/01-architecture-flow-catalog-registration.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/141",
   "generated/issue-packets/active/adr-0024-flow-standup/02-architecture-flow-invariants.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/142",
   "generated/issue-packets/active/adr-0024-flow-standup/02b-architecture-verify-flow-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/143",
-  "generated/issue-packets/active/adr-0024-flow-standup/03-flow-node-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Flow/issues/2"
+  "generated/issue-packets/active/adr-0024-flow-standup/03-flow-node-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Flow/issues/2",
+  "generated/issue-packets/active/adr-0025-sim-standup/01-architecture-sim-catalog-registration.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/145",
+  "generated/issue-packets/active/adr-0025-sim-standup/02-architecture-sim-invariants.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/146",
+  "generated/issue-packets/active/adr-0025-sim-standup/03-architecture-create-sim-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/147"
 }
