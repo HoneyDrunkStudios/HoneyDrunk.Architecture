@@ -128,5 +128,9 @@
   "generated/issue-packets/active/adr-0028-event-driven-architecture/01-architecture-transport-integration-points-matrix.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/117",
   "generated/issue-packets/active/adr-0028-event-driven-architecture/02-architecture-transport-boundaries-scope-clarification.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/118",
   "generated/issue-packets/active/adr-0028-event-driven-architecture/03-architecture-pulse-boundaries-signals-vs-events.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/119",
-  "generated/issue-packets/active/adr-0028-event-driven-architecture/04-communications-notify-sender-boundary.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications/issues/17"
+  "generated/issue-packets/active/adr-0028-event-driven-architecture/04-communications-notify-sender-boundary.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications/issues/17",
+  "generated/issue-packets/active/adr-0018-operator-standup/01-architecture-operator-catalog-registration.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/121",
+  "generated/issue-packets/active/adr-0018-operator-standup/02-architecture-operator-invariants.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/122",
+  "generated/issue-packets/active/adr-0018-operator-standup/02b-architecture-verify-operator-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/123",
+  "generated/issue-packets/active/adr-0018-operator-standup/03-operator-node-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Operator/issues/3"
 }
