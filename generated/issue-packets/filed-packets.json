@@ -144,5 +144,8 @@
   "generated/issue-packets/active/adr-0022-memory-standup/01-architecture-memory-catalog-registration.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/134",
   "generated/issue-packets/active/adr-0022-memory-standup/02-architecture-memory-invariants.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/135",
   "generated/issue-packets/active/adr-0022-memory-standup/02b-architecture-verify-memory-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/136",
-  "generated/issue-packets/active/adr-0022-memory-standup/03-memory-node-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Memory/issues/2"
+  "generated/issue-packets/active/adr-0022-memory-standup/03-memory-node-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Memory/issues/2",
+  "generated/issue-packets/active/adr-0023-evals-standup/01-architecture-evals-catalog-registration.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/137",
+  "generated/issue-packets/active/adr-0023-evals-standup/02-architecture-evals-invariants.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/138",
+  "generated/issue-packets/active/adr-0023-evals-standup/03-architecture-create-evals-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/139"
 }
