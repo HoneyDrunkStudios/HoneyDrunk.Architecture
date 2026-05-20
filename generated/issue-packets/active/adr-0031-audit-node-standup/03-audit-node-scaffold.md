@@ -25,20 +25,9 @@ This is the unblocker for `HoneyDrunk.Auth` (packet 04 of this initiative) and a
 `HoneyDrunkStudios/HoneyDrunk.Audit`
 
 ## Motivation
-ADR-0031 establishes *what* HoneyDrunk.Audit is, what it owns, what contracts it exposes, and what scaffolds in the first PR (D11). The `HoneyDrunkStudios/HoneyDrunk.Audit` GitHub repo was created by packet 02 of this initiative (`02-architecture-create-audit-repo.md`); the local working tree at `c:/Users/tatte/source/repos/HoneyDrunkStudios/HoneyDrunk.Audit/` was cloned by the same chore. The repo currently contains only `.gitignore`, `LICENSE`, and possibly a placeholder `README.md` — no `.slnx`, no projects, no contracts, no store, no CI. The substrate has been registered in the Architecture catalogs (by ADR-0030 packet 01) and the three Audit-related constitutional invariants are in place under `## Audit Invariants` — the substrate-level invariant (audit-emission boundary, by ADR-0030 packet 02) plus `{N-coupling}` (downstream Abstractions-only coupling) and `{N-canary}` (contract-shape canary, both by packet 01 of this initiative). What is missing is the code.
+ADR-0031 D11 specifies the first-PR scaffold for HoneyDrunk.Audit. Packet 02 created the GitHub repo and cloned the local tree at `c:/Users/tatte/source/repos/HoneyDrunkStudios/HoneyDrunk.Audit/` (`.gitignore`, `LICENSE`, placeholder `README.md` only). Catalogs and Audit invariants (`{N-substrate}`, `{N-coupling}`, `{N-canary}`) are already in place. This packet ships the code.
 
-Until this packet ships:
-
-- `HoneyDrunk.Auth` cannot wire the first emitter — the package it would reference (`HoneyDrunk.Audit.Abstractions 0.1.0`) does not exist on the NuGet feed.
-- The contract-shape canary's baseline does not exist; there is nothing to diff against on future PRs.
-- The Phase-1 append-only-by-interface promise (ADR-0030 D9 / the substrate-level audit-emission boundary invariant landed by ADR-0030 packet 02) is not actually enforced anywhere — the contract that enforces it (`IAuditLog` with no update/delete method) has not been authored.
-- Operator's eventual reconciliation (D5 / D6) has nothing to consume.
-
-This packet is intentionally larger than typical bring-up packets because:
-
-- ADR-0031 D11 explicitly lists everything the first PR must produce; splitting it across multiple packets would conflate "the substrate exists and compiles" with "two specific Nodes are migrated onto it" — exactly the bundling the standup-ADR convention exists to prevent (the Auth emitter wiring lives in packet 04, separately).
-- All three D3 contracts must land in the first commit so the contract-shape canary has a coherent baseline.
-- The Data-backed store and the in-memory fixture together prove the round-trip — writing the contracts without proving they round-trip would ship dead code.
+Until this packet ships: Auth (packet 04) has no `HoneyDrunk.Audit.Abstractions 0.1.0` to reference; the contract-shape canary has no baseline; the Phase-1 append-only-by-interface guarantee is unenforced; Operator's eventual reconciliation has nothing to consume. ADR-0031 D11 explicitly requires all three D3 contracts + round-trip proof in the first commit so the canary has a coherent baseline.
 
 ## Proposed Implementation
 
@@ -92,7 +81,7 @@ HoneyDrunk.Audit/
         └── SmokeTests.cs                      (end-to-end: write via IAuditLog → read via IAuditQuery against in-memory)
 ```
 
-**Why the in-memory fixtures live `internal` to `HoneyDrunk.Audit.Data.Tests/Fixtures/` and not as a published `HoneyDrunk.Audit.Testing` package:** per ADR-0031 D2 and ADR-0031 §Alternatives Considered ("Ship a `HoneyDrunk.Audit.Testing` package at stand-up (ADR-0017 pattern) — rejected for this Node"), the consumer set at stand-up is small and known (Auth, Operator). ADR-0027 D3 is the precedent: a speculative `Testing` package is not shipped when the consumer set is small and known; the fixture is cut into a package as a non-breaking change when a third consumer emerges. Auth (packet 04) writes its own narrowly-scoped test double rather than taking a dependency on a non-existent `HoneyDrunk.Audit.Testing` package.
+**Fixtures stay `internal`** to `HoneyDrunk.Audit.Data.Tests/Fixtures/` per ADR-0031 D2 + ADR-0027 D3 (no speculative Testing package; cut later as non-breaking when a third consumer needs it). Auth (packet 04) writes its own narrowly-scoped test double.
 
 ### Solution
 
@@ -123,46 +112,27 @@ Per invariant 27 (all projects in a solution share one version and move together
 
 ### Contract details — `HoneyDrunk.Audit.Abstractions`
 
-All three D3 contracts. Records drop the `I` prefix per the Grid-wide naming rule (memory `project_naming_rule_records`); interfaces keep it.
+Records drop the `I` prefix per the Grid-wide naming rule; interfaces keep it.
 
-**`HoneyDrunk.Audit.Abstractions` carries exactly ONE `HoneyDrunk.*` reference: `HoneyDrunk.Kernel.Abstractions`**, for the `TenantId` strong type. This is permitted by ADR-0031 D2 ("Zero runtime dependencies beyond `HoneyDrunk.Kernel` abstractions"). The Data/Vault/Pulse/runtime references all live in `HoneyDrunk.Audit.Data`, not here.
+**Single `HoneyDrunk.*` reference: `HoneyDrunk.Kernel.Abstractions`** (for `TenantId` strong type per ADR-0026). Permitted by ADR-0031 D2. This is a deliberate departure from ADR-0016 AI standup's zero-`HoneyDrunk` stance — Audit is queried for per-tenant compliance/forensic retrieval; stringly-typing tenancy at this surface re-introduces the consumer-side parse-and-default footgun ADR-0026 closed. Every downstream emitter already has Kernel.Abstractions in its closure, so no new transitively-pinned package.
 
-**Deliberate departure from the ADR-0016 AI standup's zero-`HoneyDrunk` strict stance.** ADR-0026 (Accepted) promoted `IGridContext.TenantId` from `string?` to the strong type `HoneyDrunk.Kernel.Abstractions.Identity.TenantId` with a non-null `Internal` sentinel. The Audit Node will be queried for **per-tenant compliance and forensic retrieval**. Stringly-typing tenancy at this contract surface would re-introduce exactly the footgun ADR-0026 closed: every consumer parsing `string` → `TenantId` at use site, malformed values silently swallowed, the Internal default handled inconsistently across consumers. The trade for taking a `Kernel.Abstractions` dependency is: every downstream emitter and reader already has Kernel in its closure (Auth has it, Operator will have it, any Grid Node by definition does), so this introduces zero new transitively-pinned `HoneyDrunk.*` package — just the one already-universal Abstractions package whose entire purpose is grid-wide primitives like this.
+**`CorrelationId` stays `string` at v0.1.0** — lower stakes (forensic queries filter by actor/action/tenant/time, not correlation), and keeps the canary baseline narrow. v0.2.0 follow-up packet promotes it to `Kernel.Abstractions.Identity.CorrelationId` as one intentional shape bump.
 
-**`CorrelationId` stays `string` at v0.1.0 with a follow-up flagged.** Kernel.Abstractions also exposes `CorrelationId` as a strong type. The same anti-footgun argument applies in principle, but `CorrelationId` has lower stakes at the Audit surface — forensic queries are not typically filtered by correlation id (they're filtered by actor, action, tenant, time-window), and the read path treats correlation id as an opaque tracer rather than a queried dimension. To keep the contract-shape canary baseline small at v0.1.0 and avoid a contract-shape change immediately after the canary establishes its baseline, ship `CorrelationId` as `string` now. Follow-up packet: promote `CorrelationId` to `Kernel.Abstractions.Identity.CorrelationId` at v0.2.0 as a single intentional contract-shape bump — that's the right moment to also revisit any other first-pass `AuditQueryFilter` member shapes (see "First-pass shape" note below).
-
-**`AuditEntry.Id` is a strong type `AuditEntryId` from v0.1.0.** Define `AuditEntryId` as a `readonly record struct` in `HoneyDrunk.Audit.Abstractions/AuditEntryId.cs`, matching the Kernel pattern that produced `TenantId` and `CorrelationId`:
+**`AuditEntry.Id` is the strong type `AuditEntryId` from v0.1.0** — assigned writer-side (single-site, internal — no propagation cost) and the primary-key shape in storage, so promoting later would be wider than `CorrelationId`. Define it as a `readonly record struct` matching the Kernel template (`TenantId`, `CorrelationId`):
 
 ```csharp
 namespace HoneyDrunk.Audit.Abstractions;
 
-/// <summary>
-/// Strong-typed identifier for an <see cref="AuditEntry"/>. Wraps a ULID-shaped string
-/// assigned by the writer at append time. Construct via <see cref="New"/> for a freshly
-/// generated id, or via the explicit string ctor for round-trip reads.
-/// </summary>
 public readonly record struct AuditEntryId(string Value)
 {
     public static AuditEntryId New() => new(System.Guid.NewGuid().ToString("N"));
-    // (Or use a ULID library — match whichever ID strategy DataAuditLog actually uses.)
-
     public static AuditEntryId Empty { get; } = new(string.Empty);
-
     public bool IsEmpty => string.IsNullOrEmpty(Value);
-
     public override string ToString() => Value;
 }
 ```
 
-Why strong-type `Id` at v0.1.0 even though `CorrelationId` stays string until v0.2.0:
-
-- **`Id` is writer-assigned, not propagated.** The promotion-cost trade-off that pushes `CorrelationId` to v0.2.0 (every emitter passes a string from `IGridContext.CorrelationId`, which itself is `string`; the wrapping has to happen at the *boundary* per-emitter) doesn't apply to `Id`. `Id` is assigned inside `DataAuditLog.AppendAsync`, so the construction is single-site and internal.
-- **`Id` is the *primary key shape* in the storage layer.** Strong-typing it at v0.1.0 means storage code, query code, and future `IAuditQuery.GetByIdAsync` (if ever added) all see the same type. Migrating it later would be a much wider contract-shape change than promoting `CorrelationId`.
-- **Matches the Kernel template.** `TenantId` and `CorrelationId` in `HoneyDrunk.Kernel.Abstractions.Identity` are both `readonly record struct` wrappers over ULID-shaped strings. `AuditEntryId` follows the same shape so consumers see a consistent idiom.
-
-`AuditEntry.Id` is therefore `AuditEntryId` (the strong type), not `string`. Consumers create entries with `Id: AuditEntryId.Empty` (the writer overwrites at append time). The in-memory fixture and the smoke test use the typed sentinel.
-
-Update the `AuditEntry` record definition below to reflect this.
+Consumers create entries with `Id: AuditEntryId.Empty`; the writer overwrites at append time.
 
 ```csharp
 // IAuditLog.cs
@@ -246,11 +216,9 @@ public sealed record AuditEntry(
     string? Context = null);
 ```
 
-**First-pass shape; subject to refinement before v0.2.0 baseline lock.** The exact member set of `AuditQueryFilter` (specifically whether to include richer predicates like `outcome` filtering or tag-based search) is first-pass. The contract-shape canary established in this packet makes any post-v0.1.0 change a deliberate version-bump event, so the executing agent should land workable shapes here without overdesigning — refinement before Operator (the second consumer) locks against v0.2.0 is expected. The three names `IAuditLog`, `IAuditQuery`, `AuditEntry` are stable across refinement; only `AuditQueryFilter` is on the negotiable list.
+**`AuditQueryFilter` is first-pass; refinement expected before v0.2.0.** The three names `IAuditLog`, `IAuditQuery`, `AuditEntry` are stable; only `AuditQueryFilter` members are negotiable.
 
-**`Id` and `OccurredAt` assignment policy.** `Id` is assigned by the writer (`DataAuditLog.AppendAsync` generates a ULID and overwrites whatever value is passed in via the `AuditEntry` record). `OccurredAt` is set by the caller (Auth, Operator) at the moment the audited action happened — Audit does not overwrite it. The XML docs above reflect this; the `Id` parameter on the record carries a comment that consumers may pass `string.Empty` and the writer will assign.
-
-**Abstractions stance — exactly one `HoneyDrunk.*` reference, for `Kernel.Abstractions.Identity.TenantId`.** `HoneyDrunk.Audit.Abstractions.csproj` carries exactly one `HoneyDrunk.*` PackageReference: `HoneyDrunk.Kernel.Abstractions`. No `HoneyDrunk.Kernel` (runtime), no `HoneyDrunk.Data*`, no `HoneyDrunk.Vault*`, no `HoneyDrunk.Pulse*`. The `HoneyDrunk.Standards` reference uses `PrivateAssets="all"` so analyzers do not propagate (allowed; that is the standard pattern). Any GridContext propagation, telemetry, or App Config sourcing lives in `HoneyDrunk.Audit.Data`, not in `Abstractions`. The `TenantId` field on `AuditEntry` and `AuditQueryFilter` is the Kernel strong type per ADR-0026; the `CorrelationId` field stays `string` at v0.1.0 with a v0.2.0 promotion flagged. (This is a **deliberate departure** from the ADR-0016 AI standup's zero-`HoneyDrunk` strict stance — driven by ADR-0026's per-tenant typing requirement. See "Contract details — `HoneyDrunk.Audit.Abstractions`" section above for the rationale.)
+**`Id` and `OccurredAt` assignment.** Writer assigns `Id` (`DataAuditLog.AppendAsync` overwrites caller-passed). Caller assigns `OccurredAt`; Audit never overwrites it.
 
 ### Runtime details — `HoneyDrunk.Audit.Data`
 
@@ -272,20 +240,16 @@ public sealed record AuditEntry(
 - Emits operational telemetry via `ITelemetryActivityFactory` (`audit.log.append`, latency, byte size). Telemetry direction is **one-way to Pulse** per D7 — `HoneyDrunk.Audit.Data` does not reference any `HoneyDrunk.Pulse` package.
 
 **`DataAuditQuery`** — implements `IAuditQuery.ReadAsync(AuditQueryFilter, CancellationToken)`:
-- **Composes the filter as a single `Expression<Func<AuditEntry, bool>>` and calls `IReadOnlyRepository<AuditEntry>.FindAsync(predicate, ct)`.** Per the actual `HoneyDrunk.Data.Abstractions/Repositories/IReadOnlyRepository.cs` surface (the public read methods are `FindByIdAsync(object id, ct)`, `FindAsync(Expression<Func<TEntity,bool>>, ct)`, `FindOneAsync(...)`, `ExistsAsync(...)`, `CountAsync(...)`), there is **no `Query()` method** on either `IRepository<T>` or `IReadOnlyRepository<T>` at v0.1.0. `FindAsync` is the supported predicate-based read path; the implementation builds the time-window + optional `Actor`/`Action`/`CorrelationId`/`TenantId` predicate at the C# `Expression` level and passes it to `FindAsync`, which the Data backing translates to a backing-store query.
-- **Ordering and `Limit` happen post-fetch, in memory.** `FindAsync` returns `IReadOnlyList<TEntity>` without exposing order-by or take semantics at the abstraction. `DataAuditQuery` does the `OrderBy(e => e.OccurredAt)` and the `Take(limit)` after `FindAsync` returns. This is a **known Phase-1 inefficiency** for very large result sets — the entire filtered set is materialized in memory, then ordered and truncated. Acceptable at v0.1.0 because forensic queries are low-volume and the time-window predicate already bounds the result set. **Phase-2 hardening item:** when `IReadOnlyRepository<T>` ships order-by/take primitives (or `DataAuditQuery` switches to direct `DbContext`-internal access), revisit this; tracked as a known gap, not shipped at v0.1.0.
-- Honors the optional `Limit` field (default if unset: 1000; cap if set above: 10000 — these are constants in the class, not App-Config-sourced, because they are query-shape concerns not retention concerns).
-- Emits operational telemetry (`audit.query.read`, latency, result count).
+- Composes the filter as a single `Expression<Func<AuditEntry, bool>>` and calls `IReadOnlyRepository<AuditEntry>.FindAsync(predicate, ct)`. Per the actual `HoneyDrunk.Data.Abstractions/Repositories/IReadOnlyRepository.cs` surface (`FindByIdAsync`, `FindAsync`, `FindOneAsync`, `ExistsAsync`, `CountAsync`), there is **no `Query()` method** at v0.1.0.
+- **Ordering and `Limit` happen post-fetch, in memory** (`FindAsync` returns `IReadOnlyList<TEntity>` without order-by/take semantics). Phase-1 inefficiency for very large result sets — acceptable because forensic queries are low-volume and time-window-bounded. Phase-2 revisits when `IReadOnlyRepository<T>` ships order-by/take or `DataAuditQuery` drops to direct `DbContext`. The class file carries a `// Phase-1: FindAsync + in-memory order/take` comment near the read site.
+- `Limit`: default 1000, cap 10000 (class constants — query-shape, not App-Config).
+- Emits `audit.query.read` telemetry.
 
-**Open question for the executing agent:** if `IReadOnlyRepository<T>.FindAsync` materializes the *entire matching set* before in-memory ordering proves too costly on a real backing (large time-windows over months of audit), the alternative is to drop down to **direct `DbContext` access inside `DataAuditQuery`** with an explicit "intentional Data-internal coupling at Phase-1; rotate to public read surface when Data ships order-by/take primitives" comment in the class file. This is acceptable for the Audit Node specifically because (a) Audit's reads are forensic — bounded by user-supplied time-window — not a hot path, and (b) the boundary violation is contained to one class file with an inline TODO. **Pick `FindAsync` + in-memory order/take at v0.1.0 unless the executing agent's `dotnet build` profiles show >1s latency at realistic forensic volumes**, in which case fall back to direct `DbContext` access with the inline rationale. Either path satisfies the contract — `IAuditQuery.ReadAsync` returns a correctly time-ordered, optionally limited `IReadOnlyList<AuditEntry>`.
+**`AuditRetentionPolicy`** — sources `audit:retention:days` from `IConfigProvider.GetValueAsync` **once at startup**. Default if unset: **365 days** with a `::warning::` log. Exposes `public int RetentionDays { get; }`. `IConfigProvider` exposes no change-token at v0.1.0 (surface is `GetValueAsync`/`TryGetValueAsync`/`GetValueAsync<T>`); config changes require host restart. Hot-reload is out of scope. Retention enforcement (background job or query-time filter) is Phase-2; Phase-1 ships only the value and read path. Audit-class retention is distinct from observability per ADR-0030 D4 / ADR-0031 D4 — 365d is intentionally order-of-magnitude longer than observability defaults.
 
-**`AuditRetentionPolicy`** — Sources the audit-class retention value (in days) from App Configuration via `IConfigProvider.GetValueAsync` **once at startup**. Default if the key is unset: **365 days**, with a `::warning::` logged ("audit:retention:days not configured; defaulting to 365d. Set this in App Configuration per the consuming deployable's policy."). The retention enforcement itself (whether implemented as a background job or as a query-time filter on reads) is a Phase-2 concern — Phase 1 lands the policy *value* and the read of it, not the enforcement loop. The class exposes a public `int RetentionDays { get; }` property populated at startup. **`IConfigProvider` does not expose change-events at v0.1.0** (see `HoneyDrunk.Vault.Abstractions/IConfigProvider.cs` — the surface is `GetValueAsync` / `TryGetValueAsync` / typed `GetValueAsync<T>`; no observable/change-token contract). Configuration changes therefore require a host restart to take effect at v0.1.0. **Hot-reload is a follow-up concern not in this packet's scope** — it requires either Vault adding a change-token surface to `IConfigProvider` or Audit subscribing to its own out-of-band notification channel. Neither is in scope here.
+**`AuditTelemetry`** — Convenience helpers wrapping `ITelemetryActivityFactory`. GridContext/CorrelationId propagation onto telemetry activities lives here, not in `Abstractions`.
 
-**Per ADR-0030 D4 and ADR-0031 D4: audit-class retention is distinct from observability retention; the two regimes are not shared and not interchangeable.** The default 365d is a sensible audit-class baseline (a full year of forensic depth) and is intentionally an order of magnitude longer than observability defaults — observability defaults are typically days/weeks for traces and a few months for sampled logs.
-
-**`AuditTelemetry`** — Convenience helpers for `DataAuditLog` and `DataAuditQuery` to emit consistent activity names and tags. Wraps `ITelemetryActivityFactory`. **GridContext / CorrelationId propagation onto telemetry activities lives here** (not in `Abstractions`).
-
-**Host registration of `IConfigProvider`, `IRepository`, `IUnitOfWork`.** All three are host concerns — the deployable host is responsible for `services.AddVault().AddAppConfigurationProvider(...)`, `services.AddData(...)`, and any `IUnitOfWork` registration. `HoneyDrunk.Audit.Data` references the contracts (`HoneyDrunk.Vault` for `IConfigProvider`, `HoneyDrunk.Data.Abstractions` for `IRepository`/`IUnitOfWork`); it does not reference any specific Data backing or Vault provider package. `AddHoneyDrunkAuditData()` throws a clear `InvalidOperationException` at first resolution if any of `IConfigProvider`, `IRepository<AuditEntry>`, or `IUnitOfWork` is missing, so a misconfigured host fails fast with a useful message.
+**Host registration.** `IConfigProvider`, `IRepository`, `IUnitOfWork` are host-wired. `AddHoneyDrunkAuditData()` throws `InvalidOperationException` at first resolution if any is missing.
 
 Service registration:
 
@@ -308,15 +272,13 @@ public static class ServiceCollectionExtensions
 
 ### Lifetime story — `DataAuditLog` and `DataAuditQuery` are Singleton
 
-`IAuditLog` and `IAuditQuery` are both registered as Singleton. This is deliberate and matches the in-memory fixture pattern (the `InMemoryAuditLog` test double uses `List<AuditEntry>` + `lock(_gate)` for thread-safe append; the production class follows the same shape — internal locking around the durable backing call). The reasons:
+Both registered Singleton. Reasoning:
 
-1. **Auth's emitters are Singleton.** `BearerTokenAuthenticationProvider` and `DefaultAuthorizationPolicy` are registered as Singleton by `HoneyDrunkAuthServiceCollectionExtensions.AddHoneyDrunkAuth()` (see packet 04 §Lifetime story). If `IAuditLog` were Scoped, Auth's Singleton emitters injecting it would create a **captive dependency** — the Singleton would close over the first scope's `IAuditLog` instance, and every subsequent emit would write to a disposed/stale scoped instance. Scoped → Singleton dep is the classic ASP.NET Core lifetime trap.
+1. **Auth's emitters are Singleton.** Scoped `IAuditLog` injected into Auth's Singleton emitters = captive-dep on first scope.
+2. **`DataAuditLog.AppendAsync` holds no scoped state.** Resolves `IGridContext` via `IGridContextAccessor.GridContext` (ambient, not ctor-injected). Resolves Scoped `IRepository<AuditEntry>` + `IUnitOfWork` fresh per call via `IServiceScopeFactory.CreateAsyncScope()`.
+3. **Append is single-row** — per-call scope is the right UoW.
 
-2. **`DataAuditLog.AppendAsync` does not hold scoped state across calls.** It receives the `AuditEntry` and the `IGridContext`-derived `CorrelationId`/`TenantId` per call (resolved via `IGridContextAccessor.GridContext` ambient access, **not** via direct `IGridContext` ctor injection — same captive-dep avoidance pattern as Auth's emitters). The `IRepository<AuditEntry>` and `IUnitOfWork` it consumes are resolved fresh per call via `IServiceScopeFactory` (Singleton-friendly resolver) — Data's `IRepository`/`IUnitOfWork` are themselves typically Scoped, so `DataAuditLog` creates a short-lived scope for each `AppendAsync` and disposes it after `SaveChangesAsync` returns. The per-call scope churn is the cost of keeping `IAuditLog` Singleton; it is paid per audit emit, which is low-frequency relative to per-request work.
-
-3. **Append is single-row.** `IAuditLog` exposes exactly `AppendAsync(AuditEntry, CancellationToken)`. There is no batching, no bulk insert, no transaction spanning multiple appends. A per-call scope is the right unit of work.
-
-The class-level shape:
+Shape:
 
 ```csharp
 public sealed class DataAuditLog : IAuditLog
@@ -327,165 +289,41 @@ public sealed class DataAuditLog : IAuditLog
 
     public async Task AppendAsync(AuditEntry entry, CancellationToken cancellationToken = default)
     {
-        // Stamp Id, enrich CorrelationId/TenantId from ambient grid context, etc.
-        // ...
-
+        // Stamp Id, enrich CorrelationId/TenantId from _gridContextAccessor.GridContext if empty
         using var scope = _scopeFactory.CreateAsyncScope();
         var repo = scope.ServiceProvider.GetRequiredService<IRepository<AuditEntry>>();
         var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-
         await repo.AddAsync(stamped, cancellationToken);
         await uow.SaveChangesAsync(cancellationToken);
     }
 }
 ```
 
-`DataAuditQuery` follows the same per-call-scope pattern for its `FindAsync` call.
+`DataAuditQuery` follows the same per-call-scope pattern. `AuditRetentionPolicy` resolves `IConfigProvider` via `IServiceScopeFactory` at startup (read-once, Singleton-safe regardless of Vault provider's `IConfigProvider` lifetime).
 
-**`IConfigProvider` lifetime.** `IConfigProvider` is host-side registered (via Vault); Audit consumes it from `AuditRetentionPolicy`'s ctor at the Singleton's first resolution to read `audit:retention:days` once at startup. No per-call resolution needed since the value is read-once. If `IConfigProvider` is itself Scoped in some Vault providers, the Singleton-resolving-Scoped captive-dep trap applies — `AuditRetentionPolicy` resolves it via `IServiceScopeFactory` at startup to be safe.
+### In-memory fixture — `tests/HoneyDrunk.Audit.Data.Tests/Fixtures/`
 
-**Alternative rejected — Scoped `IAuditLog` with per-call resolution from Singleton emitters.** Could have kept `IAuditLog` Scoped and asked Auth's Singleton emitters to resolve it per-call via `IServiceScopeFactory.CreateAsyncScope()`. Rejected: pushes the scope-creation cost to every emitting Node, multiplies the per-call scope churn (Auth creates one for IAuditLog, then DataAuditLog creates one for IRepository — two scopes per emit), and makes the lifetime contract harder to reason about. Singleton-with-internal-scope-factory is simpler and matches the in-memory fixture's threading model.
+Two `internal sealed` classes; not packaged at v0.1.0 (per D2 + ADR-0027 D3). Cut into `HoneyDrunk.Audit.Testing` as non-breaking change when a third consumer needs it.
 
-### In-memory fixture details — `tests/HoneyDrunk.Audit.Data.Tests/Fixtures/`
-
-The in-memory fixture exists for two distinct consumers:
-
-- **Audit's own `.Tests` projects** — for the end-to-end smoke test that proves the contracts round-trip without a database backing.
-- **Future downstream consumers** that need a deterministic test double **eventually** — but not at v0.1.0. Per D2 / ADR-0027 D3 precedent, the fixture stays `internal` until a third consumer needs it; at that point it is cut into `HoneyDrunk.Audit.Testing` as a non-breaking change.
-
-Implementation:
-
-```csharp
-// tests/HoneyDrunk.Audit.Data.Tests/Fixtures/InMemoryAuditLog.cs
-namespace HoneyDrunk.Audit.Data.Tests.Fixtures;
-
-internal sealed class InMemoryAuditLog : IAuditLog
-{
-    private readonly List<AuditEntry> _entries = new();
-    private readonly object _gate = new();
-
-    public Task AppendAsync(AuditEntry entry, CancellationToken cancellationToken = default)
-    {
-        lock (_gate)
-        {
-            // Assign Id at append time, like the real DataAuditLog does.
-            var stamped = entry with { Id = entry.Id.IsEmpty ? AuditEntryId.New() : entry.Id };
-            _entries.Add(stamped);
-        }
-        return Task.CompletedTask;
-    }
-
-    internal IReadOnlyList<AuditEntry> Snapshot()
-    {
-        lock (_gate) { return _entries.ToArray(); }
-    }
-}
-```
-
-```csharp
-// tests/HoneyDrunk.Audit.Data.Tests/Fixtures/InMemoryAuditQuery.cs
-namespace HoneyDrunk.Audit.Data.Tests.Fixtures;
-
-internal sealed class InMemoryAuditQuery : IAuditQuery
-{
-    private readonly InMemoryAuditLog _backing;
-
-    public InMemoryAuditQuery(InMemoryAuditLog backing) => _backing = backing;
-
-    public Task<IReadOnlyList<AuditEntry>> ReadAsync(AuditQueryFilter filter, CancellationToken cancellationToken = default)
-    {
-        var snapshot = _backing.Snapshot();
-        IEnumerable<AuditEntry> q = snapshot
-            .Where(e => e.OccurredAt >= filter.Since && e.OccurredAt <= filter.Until);
-        if (filter.Actor is not null) q = q.Where(e => e.Actor == filter.Actor);
-        if (filter.Action is not null) q = q.Where(e => e.Action == filter.Action);
-        if (filter.CorrelationId is not null) q = q.Where(e => e.CorrelationId == filter.CorrelationId);
-        if (filter.TenantId is TenantId t) q = q.Where(e => e.TenantId == t);
-        q = q.OrderBy(e => e.OccurredAt);
-        if (filter.Limit is int limit) q = q.Take(limit);
-        return Task.FromResult<IReadOnlyList<AuditEntry>>(q.ToArray());
-    }
-}
-```
+- `InMemoryAuditLog : IAuditLog` — `List<AuditEntry>` + `lock(_gate)`; `AppendAsync` stamps `Id` (via `entry with { Id = entry.Id.IsEmpty ? AuditEntryId.New() : entry.Id }`) and appends; exposes `internal IReadOnlyList<AuditEntry> Snapshot()` for assertions.
+- `InMemoryAuditQuery : IAuditQuery` — takes `InMemoryAuditLog` in ctor; `ReadAsync` filters snapshot by `Since/Until`/optional `Actor`/`Action`/`CorrelationId`/`TenantId`, `OrderBy(e => e.OccurredAt)`, applies `Limit` via `Take`.
 
 ### Smoke test — `tests/HoneyDrunk.Audit.Data.Tests/SmokeTests.cs`
 
-```csharp
-namespace HoneyDrunk.Audit.Data.Tests;
-
-public class SmokeTests
-{
-    [Fact]
-    public async Task WriteThroughIAuditLog_ReadBackThroughIAuditQuery_RoundTrips()
-    {
-        var fixture = new InMemoryAuditLog();
-        IAuditLog log = fixture;
-        IAuditQuery query = new InMemoryAuditQuery(fixture);
-
-        var occurredAt = DateTimeOffset.UtcNow;
-        var entry = new AuditEntry(
-            Id: AuditEntryId.Empty, // writer assigns
-            OccurredAt: occurredAt,
-            Actor: "user:42",
-            Action: "auth.login.attempt",
-            Outcome: "granted",
-            CorrelationId: "corr-abc",
-            TenantId: TenantId.Internal);
-
-        await log.AppendAsync(entry);
-
-        var results = await query.ReadAsync(new AuditQueryFilter(
-            Since: occurredAt.AddMinutes(-1),
-            Until: occurredAt.AddMinutes(1)));
-
-        Assert.Single(results);
-        Assert.Equal("user:42", results[0].Actor);
-        Assert.Equal("auth.login.attempt", results[0].Action);
-        Assert.Equal("granted", results[0].Outcome);
-        Assert.False(results[0].Id.IsEmpty);
-    }
-}
-```
-
-Per ADR-0031 D11: "An `AuditEntry` written through `IAuditLog` is read back through `IAuditQuery` against the in-memory fixture." This satisfies that requirement.
+`WriteThroughIAuditLog_ReadBackThroughIAuditQuery_RoundTrips`: instantiate `InMemoryAuditLog` + `InMemoryAuditQuery` over it; append one `AuditEntry` with `Id: AuditEntryId.Empty`, `Actor: "user:42"`, `Action: "auth.login.attempt"`, `Outcome: "granted"`, `TenantId: TenantId.Internal`; query a one-minute window around `OccurredAt`; assert single result with the expected Actor/Action/Outcome and `Id.IsEmpty == false` (writer-stamped). Satisfies ADR-0031 D11.
 
 ### Append-only-at-interface enforcement test
 
-`tests/HoneyDrunk.Audit.Abstractions.Tests/AppendOnlyAtInterfaceTests.cs` uses reflection to prove `IAuditLog` exposes exactly one method (`AppendAsync`) — no `UpdateAsync`, no `DeleteAsync`, no `ReplaceAsync`. This is a build-time defense against accidental future addition of an update/delete method that would silently break the substrate-level audit-emission boundary invariant (ADR-0030 packet 02; numbered `{N-substrate}` in the constitution at this packet's edit time).
-
-```csharp
-[Fact]
-public void IAuditLog_HasOnlyAppendAsync_NoUpdateOrDelete()
-{
-    var methods = typeof(IAuditLog).GetMethods().Select(m => m.Name).ToHashSet(StringComparer.Ordinal);
-    Assert.Contains("AppendAsync", methods);
-    Assert.DoesNotContain("UpdateAsync", methods);
-    Assert.DoesNotContain("ReplaceAsync", methods);
-    Assert.DoesNotContain("DeleteAsync", methods);
-    Assert.DoesNotContain("RemoveAsync", methods);
-    Assert.Equal(1, methods.Count);
-}
-```
+`tests/HoneyDrunk.Audit.Abstractions.Tests/AppendOnlyAtInterfaceTests.cs` uses reflection — asserts `typeof(IAuditLog).GetMethods()` contains exactly `AppendAsync` and none of `UpdateAsync`/`ReplaceAsync`/`DeleteAsync`/`RemoveAsync`. Build-time defense against accidental future update/delete addition.
 
 ### CI workflows
 
-All five workflow files are thin callers of `HoneyDrunk.Actions` reusable workflows. No bespoke CI logic in the Audit repo.
+All five workflow files are thin callers of `HoneyDrunk.Actions` reusable workflows.
+
+- **`pr-core.yml`** — calls `pr-core.yml@main`, `dotnet-version: '10.0.x'`.
+- **`api-compatibility.yml`** (D8 / `{N-canary}`):
 
 ```yaml
-# .github/workflows/pr-core.yml
-name: PR Core
-on:
-  pull_request:
-    branches: [main]
-jobs:
-  core:
-    uses: HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/pr-core.yml@main
-    with:
-      dotnet-version: '10.0.x'
-```
-
-```yaml
-# .github/workflows/api-compatibility.yml — ADR-0031 D8 / invariant {N-canary}
 name: API Compatibility (Abstractions)
 on:
   pull_request:
@@ -500,28 +338,18 @@ jobs:
       project-path: src/HoneyDrunk.Audit.Abstractions/HoneyDrunk.Audit.Abstractions.csproj
 ```
 
-The path filter ensures the canary only runs when `Abstractions` changes **or when the solution-level version moves** (a `Directory.Build.props` edit). Version bumps are the intentional contract-shape change events — leaving them out of the trigger means a `<Version>0.1.0 → 0.2.0</Version>` bump that accompanies a contract-shape change could merge without the canary running, leaving the baseline unverified. Mirror this in any AI-sector / Capabilities canary precedents if they are not already similar. The whole-assembly diff produced by `job-api-compatibility.yml` is sufficient to enforce D8 / invariant `{N-canary}`: per D9 / invariant `{N-coupling}`, `Abstractions` is the only thing downstream Nodes compile against, so any shape drift in any public type in `Abstractions` (`IAuditLog`, `IAuditQuery`, `AuditEntry`, `AuditQueryFilter`, `AuditEntryId`) counts. There is no low-traffic remainder to leave un-frozen.
+Path filter includes `Directory.Build.props` so version-bumped contract-shape changes don't merge without the canary running. Whole-assembly diff covers `IAuditLog`/`IAuditQuery`/`AuditEntry`/`AuditQueryFilter`/`AuditEntryId`.
+
+- **`release.yml`** — `on: push: tags: [v*.*.*]`, calls `release.yml@main` with `enable-nuget-publish: true` and:
 
 ```yaml
-# .github/workflows/release.yml
-name: Release
-on:
-  push:
-    tags:
-      - 'v*.*.*'
-jobs:
-  release:
-    uses: HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/release.yml@main
-    with:
-      dotnet-version: '10.0.x'
-      enable-nuget-publish: true
     secrets:
       nuget-api-key: ${{ secrets.NUGET_API_KEY }}
 ```
 
-The reusable `release.yml` in `HoneyDrunk.Actions` declares a named optional secret `nuget-api-key` (and authenticates ACR via OIDC, which is what `id-token: write` in the reusable workflow's permissions block enables). **No `secrets: inherit`** — the caller passes only what `release.yml` actually declares. The packet 02 chore that created the `HoneyDrunk.Audit` repo must seed the `NUGET_API_KEY` repository secret (or org-level secret available to this repo) for `dotnet nuget push` to succeed; if the secret is missing, `release.yml`'s `nuget/push` action falls through and the publish step fails with a clear "API key not set" message. Tags are human-pushed per invariant 27 — agents do not push tags. The release workflow packs and publishes both `src/*` projects in a single tag-driven run.
+**No `secrets: inherit`** — the caller passes only the named secret `release.yml` declares. ACR auth is OIDC. Tags are human-pushed per invariant 27. Packet 02 must seed `NUGET_API_KEY`.
 
-`nightly-deps.yml` and `nightly-security.yml` follow the same thin-caller pattern — copy the configurations from `HoneyDrunk.Vault` or `HoneyDrunk.Auth` for reference. The exact `with:` and `secrets:` blocks should match those repos verbatim so nightly runs converge across Grid Nodes.
+- **`nightly-deps.yml` / `nightly-security.yml`** — thin callers; copy `with:`/`secrets:` blocks verbatim from `HoneyDrunk.Vault` or `HoneyDrunk.Auth`.
 
 ### `HoneyDrunk.Standards` wiring
 
@@ -537,14 +365,13 @@ This pulls in the StyleCop ruleset, `.editorconfig`, and analyzer suite that eve
 
 ### Documentation
 
-- **Repo `README.md`** — purpose statement, package matrix, link to the active-work tracker in `repos/HoneyDrunk.Audit/active-work.md` (or to GitHub issues), plus a dedicated `## For downstream consumers — minimal wiring` section showing the host-side `services.AddVault().AddData(...).AddHoneyDrunkAuditData()` snippet. This snippet is copy-pasteable into a downstream Node's deployable host. Also include a "Phase-1 honest limitation" section that names two distinct, intentional gaps:
-  1. **The interface is append-only; the underlying storage is not cryptographically tamper-evident.** Hash-chain / WORM tamper-evidence is deferred behind the boundary.
-  2. **Append-only is enforced at the `IAuditLog` interface surface (no `Update`/`Delete` methods exposed). At the storage layer, `DataAuditLog` consumes `IRepository<AuditEntry>` which technically exposes `Update`/`Remove`/`UpdateRange`/`RemoveRange` methods inherited from `HoneyDrunk.Data.Abstractions/Repositories/IRepository.cs`.** `DataAuditLog`'s source code does not call any of those methods (and the `AppendOnlyAtInterfaceTests` reflection check on `IAuditLog` enforces the contract at the interface). A stronger compile-time guarantee — e.g., an `IAppendOnlyRepository<T>` carve-out from `HoneyDrunk.Data.Abstractions` that exposes only `AddAsync`/`AddRangeAsync` + the read methods — is a **Phase-2 hardening item**, not shipped at v0.1.0. The boundary at v0.1.0 is enforced by (a) the `IAuditLog` interface shape, (b) `DataAuditLog`'s reviewed source code, and (c) the Audit Node's dedicated managed identity (per ADR-0031 D5) which scopes who can perform storage-layer writes regardless of the C# surface.
+- **Repo `README.md`** — purpose statement, package matrix, link to active-work tracker, plus a `## For downstream consumers — minimal wiring` section showing copy-pasteable `services.AddVault().AddData(...).AddHoneyDrunkAuditData()`. Also a **`## Phase-1 honest limitation`** section naming two intentional gaps:
+  1. The interface is append-only; storage is **NOT** cryptographically tamper-evident. Hash-chain/WORM is deferred behind the boundary.
+  2. Append-only is enforced at `IAuditLog`'s surface only. `DataAuditLog` consumes `IRepository<AuditEntry>` which exposes `Update`/`Remove`/`UpdateRange`/`RemoveRange` (inherited from `HoneyDrunk.Data.Abstractions/Repositories/IRepository.cs`). `DataAuditLog`'s source calls none of them, and `AppendOnlyAtInterfaceTests` enforces the interface shape. An `IAppendOnlyRepository<T>` carve-out is a Phase-2 hardening item. v0.1.0 boundary = (a) `IAuditLog` shape, (b) reviewed source, (c) Audit's dedicated managed identity (ADR-0031 D5).
 
-  **Per memory `feedback_no_adr_in_docs`, the README does not cite "ADR-0031" by number in its narrative.** It explains what the package does and what its honest limitations are.
-- **Repo `CHANGELOG.md`** — `## [0.1.0] - YYYY-MM-DD` entry covering the entire scaffold landing. **Per memory `feedback_no_unreleased_commits`, do not land entries under `## Unreleased` — use the dated, SemVer-bumped section.**
-- **Per-package `README.md`** — purpose, public API surface summary, install command. Required by invariant 12 for new packages.
-- **Per-package `CHANGELOG.md`** — `## [0.1.0]` entry for each package introduced in this packet.
+  Per memory `feedback_no_adr_in_docs`, the README does not cite ADR numbers in narrative.
+- **Repo `CHANGELOG.md`** — `## [0.1.0] - YYYY-MM-DD` entry. No `## Unreleased` at commit time.
+- **Per-package `README.md`** + **`CHANGELOG.md`** — required by invariant 12 for both new packages.
 
 ## Affected Files
 Entire repo is created from this packet. Notable new files:
@@ -564,51 +391,39 @@ Every new `.csproj` lists `HoneyDrunk.Standards` (`PrivateAssets="all"`) per inv
 | Package | Notes |
 |---|---|
 | `HoneyDrunk.Standards` | `PrivateAssets="all"` |
-| `HoneyDrunk.Kernel.Abstractions` | For `TenantId` strong type per ADR-0026. **Deliberate departure** from ADR-0016's zero-`HoneyDrunk` strict stance in Abstractions — see Abstractions stance section above. ADR-0031 D2 explicitly permits "zero runtime dependencies beyond `HoneyDrunk.Kernel` abstractions" for this Node's `Abstractions`. |
-
-(No `HoneyDrunk.Kernel` runtime reference — `Kernel.Abstractions` carries the contracts including `TenantId`. Per invariant 2, `Abstractions` references `Abstractions`, never runtime.)
+| `HoneyDrunk.Kernel.Abstractions` | For `TenantId` strong type (ADR-0026). Deliberate departure from zero-`HoneyDrunk` stance per ADR-0031 D2. |
 
 ### `HoneyDrunk.Audit.Data.csproj`
 
 | Package | Notes |
 |---|---|
 | `HoneyDrunk.Standards` | `PrivateAssets="all"` |
-| `HoneyDrunk.Kernel.Abstractions` | For `ITelemetryActivityFactory`, `IGridContext`, `IOperationContext`, `TenantId` — compile-time contract consumption. Per invariant 2, depend on Abstractions not runtime where the consumed surface is interfaces. |
-| `HoneyDrunk.Kernel` | Optional — only if Data needs concrete Kernel runtime types (lifecycle registration extensions, concrete `IGridContext` builder). If only the interfaces from `Kernel.Abstractions` are used, **drop this row** and let the composing host wire Kernel. Audit a similar Grid-Node `Data` package (e.g. `HoneyDrunk.Communications`, `HoneyDrunk.Notify`) to confirm which pattern it follows; mirror that pattern. |
+| `HoneyDrunk.Kernel.Abstractions` | For `ITelemetryActivityFactory`, `IGridContext`, `IOperationContext`, `TenantId` |
+| `HoneyDrunk.Kernel` | Optional — drop if `Kernel.Abstractions` suffices. Mirror a peer `Data` package (Communications/Notify). |
 | `HoneyDrunk.Data.Abstractions` | For `IRepository`, `IUnitOfWork` |
-| `HoneyDrunk.Vault` | For `IConfigProvider` (D4 — App Config sourcing for audit-class retention). The interface namespace is `HoneyDrunk.Vault.Abstractions` but the package is `HoneyDrunk.Vault` — Vault does not ship a separate `.Abstractions` NuGet. If a future Vault refactor splits Abstractions out, switch this row to `HoneyDrunk.Vault.Abstractions`. |
-| `Microsoft.Extensions.DependencyInjection.Abstractions` | DI registration helpers |
-| `Microsoft.Extensions.Hosting.Abstractions` | For startup hook integration |
+| `HoneyDrunk.Vault` | For `IConfigProvider` (interface namespace is `Vault.Abstractions`; Vault ships one package only). |
+| `Microsoft.Extensions.DependencyInjection.Abstractions` | DI helpers |
+| `Microsoft.Extensions.Hosting.Abstractions` | Startup hook |
 | `Microsoft.Extensions.Logging.Abstractions` | Logger contracts |
-| `Microsoft.Extensions.Options.ConfigurationExtensions` | Bind options from `IConfigProvider` |
+| `Microsoft.Extensions.Options.ConfigurationExtensions` | Bind options |
 
 Project reference: `HoneyDrunk.Audit.Abstractions`.
 
 ### Test projects
 
-| Package | Notes |
-|---|---|
-| `HoneyDrunk.Standards` | `PrivateAssets="all"` |
-| `Microsoft.NET.Test.Sdk` | Standard |
-| `xunit` | Standard |
-| `xunit.runner.visualstudio` | Standard |
-| `Microsoft.Extensions.DependencyInjection` | For DI in Data tests |
-
-Project references as appropriate to each `.Tests` project:
-- `HoneyDrunk.Audit.Abstractions.Tests` → `HoneyDrunk.Audit.Abstractions`
-- `HoneyDrunk.Audit.Data.Tests` → `HoneyDrunk.Audit.Data` and `HoneyDrunk.Audit.Abstractions`
+`HoneyDrunk.Standards` (`PrivateAssets="all"`), `Microsoft.NET.Test.Sdk`, `xunit`, `xunit.runner.visualstudio`, `Microsoft.Extensions.DependencyInjection`. Project refs: `Abstractions.Tests` → `Abstractions`; `Data.Tests` → both.
 
 ## Boundary Check
 
-- [x] All work inside `HoneyDrunk.Audit`. No edits to other Grid repos.
-- [x] `HoneyDrunk.Audit.Abstractions` carries exactly ONE `HoneyDrunk.*` reference: `HoneyDrunk.Kernel.Abstractions` (for `TenantId`). Per ADR-0031 D2's "zero runtime dependencies beyond `HoneyDrunk.Kernel` abstractions" allowance, and ADR-0026's per-tenant strong typing requirement. No `HoneyDrunk.Kernel` runtime ref; no `HoneyDrunk.Data*`, no `HoneyDrunk.Vault*`, no `HoneyDrunk.Pulse*` from Abstractions.
-- [x] `HoneyDrunk.Audit.Data` references `HoneyDrunk.Audit.Abstractions` (project reference), `HoneyDrunk.Kernel.Abstractions` (for interfaces), `HoneyDrunk.Data.Abstractions`, `HoneyDrunk.Vault` — and **no** `HoneyDrunk.Pulse`. Optional `HoneyDrunk.Kernel` runtime reference dropped if not needed (audit a peer `Data` package to confirm). Telemetry is one-way to Pulse per D7; Audit has no runtime dependency on Pulse.
-- [x] No secrets in code. The retention value is read via `IConfigProvider` from App Configuration (ADR-0005 host composition); no key vault access is needed from this runtime (the retention value is non-secret configuration).
-- [x] `IAuditLog` exposes exactly `AppendAsync` — no update, no replace, no delete. Append-only is enforced at the interface surface per the substrate-level audit-emission boundary invariant `{N-substrate}` (ADR-0030 packet 02) and repo-local invariant 2.
-- [x] `AuditEntry` is a record (no `I` prefix). `IAuditLog` and `IAuditQuery` are interfaces (with `I`). `AuditQueryFilter` is a record (no `I`). Per Grid-wide naming rule (memory `project_naming_rule_records`).
-- [x] In-memory fixtures live `internal` to the test project — not packaged. Per D2 + ADR-0027 D3 precedent.
-- [x] The scaffold does NOT include hash-chain / WORM tamper-evidence (deferred per D9 / ADR-0030 D8a). The scaffold does NOT include the deployable tenant-facing forensics Service (deferred per ADR-0030 D8b). The scaffold does NOT include the Auth emitter wiring (packet 04 — separate). The scaffold does NOT include Operator reconciliation (Operator scaffolding initiative — separate).
-- [x] Per ADR-0030 D9 / D4: the store is **not** documented or described as tamper-evident. Repo README's "Phase-1 honest limitation" section names this explicitly.
+- [x] All work inside `HoneyDrunk.Audit`. No other Grid repos edited.
+- [x] `HoneyDrunk.Audit.Abstractions` carries exactly ONE `HoneyDrunk.*` ref: `HoneyDrunk.Kernel.Abstractions` (for `TenantId`). No Data/Vault/Pulse/Kernel-runtime refs.
+- [x] `HoneyDrunk.Audit.Data` references `Abstractions` (project), `Kernel.Abstractions`, `Data.Abstractions`, `Vault`. No `HoneyDrunk.Pulse` (telemetry is one-way per D7).
+- [x] No secrets in code; retention value is non-secret config read via `IConfigProvider`.
+- [x] `IAuditLog` exposes exactly `AppendAsync` — no update/replace/delete. Enforces `{N-substrate}` at interface surface.
+- [x] Records drop `I` (`AuditEntry`, `AuditQueryFilter`); interfaces keep it (`IAuditLog`, `IAuditQuery`).
+- [x] Fixtures `internal` to test project; not packaged.
+- [x] Scaffold does NOT include: hash-chain/WORM tamper-evidence (Phase-2), tenant-facing forensics Service (deferred), Auth emitter wiring (packet 04), Operator reconciliation (separate).
+- [x] Store is **not** documented as tamper-evident anywhere. README's `## Phase-1 honest limitation` section is explicit.
 
 ## Acceptance Criteria
 
@@ -656,79 +471,62 @@ Project references as appropriate to each `.Tests` project:
 
 ## Referenced Invariants
 
-> **Invariant 1:** Abstractions packages have zero runtime dependencies on other HoneyDrunk packages. Only `Microsoft.Extensions.*` abstractions are permitted. — `HoneyDrunk.Audit.Abstractions.csproj` must contain zero `HoneyDrunk.*` references. The `HoneyDrunk.Standards` analyzer reference uses `PrivateAssets="all"` so it does not propagate.
+> **Invariant 1:** Abstractions packages have zero runtime dependencies on other HoneyDrunk packages. Only `Microsoft.Extensions.*` abstractions are permitted. — `Abstractions.csproj` carries ONE `HoneyDrunk.*` ref (`Kernel.Abstractions` for `TenantId`) — intentional, ADR-0031 D2-permitted exception. `HoneyDrunk.Standards` uses `PrivateAssets="all"`.
 
-> **Invariant 2:** Runtime packages depend on Abstractions, never on other runtime packages at the same layer. — `HoneyDrunk.Audit.Data` references `HoneyDrunk.Audit.Abstractions` (project reference) and `HoneyDrunk.Kernel.Abstractions`, `HoneyDrunk.Data.Abstractions`, `HoneyDrunk.Vault` for runtime needs; the layered structure is preserved. The `HoneyDrunk.Kernel` runtime row in the NuGet table is optional — only added if Data needs concrete Kernel runtime types beyond the interfaces from `Kernel.Abstractions`.
+> **Invariant 2:** Runtime packages depend on Abstractions, never on other runtime packages at the same layer. — `Audit.Data` references `Audit.Abstractions` (project), `Kernel.Abstractions`, `Data.Abstractions`, `Vault`.
 
-> **Invariant 3:** Provider packages depend on their parent Node's contracts, not internal implementation details. — Not directly applicable here (Audit has no provider packages at Phase 1). A future sibling backing slot (e.g. `HoneyDrunk.Audit.Cosmos`) would reference `HoneyDrunk.Audit.Abstractions` only, per this rule.
+> **Invariant 3:** Provider packages depend on their parent Node's contracts, not internal implementation details. — N/A at Phase 1 (no Audit providers).
 
-> **Invariant 4:** No circular dependencies. The dependency graph is a DAG. Kernel is always at the root. — `HoneyDrunk.Audit.Data` references Kernel and Data; nothing in `HoneyDrunk.Audit.*` is referenced back from Kernel or Data. Audit → Data → Kernel and Audit → Kernel are all DAG-consistent per ADR-0031 D10.
+> **Invariant 4:** No circular dependencies. The dependency graph is a DAG. Kernel is always at the root. — Audit → Data → Kernel and Audit → Kernel are DAG-consistent.
 
-> **Invariant 5:** GridContext must be present in every scoped operation. Every HTTP request, message handler, and background job must have a populated `IGridContext`, including a non-null `TenantId`. — `DataAuditLog.AppendAsync` resolves `IGridContext` from DI to enrich the entry's `CorrelationId` and `TenantId` defensively. Callers are expected to populate the fields themselves; Audit is the durable-record-of-last-resort and enriches when the fields are empty to avoid unattributable entries.
+> **Invariant 5:** GridContext must be present in every scoped operation. Every HTTP request, message handler, and background job must have a populated `IGridContext`, including a non-null `TenantId`. — `DataAuditLog.AppendAsync` enriches `CorrelationId`/`TenantId` from `IGridContextAccessor.GridContext` defensively when caller-passed fields are empty.
 
-> **Invariant 6:** CorrelationId is never null or empty, and TenantId is never absent, in a live GridContext. — `DataAuditLog` honors this by enriching empty entry fields from `IGridContext` rather than persisting unattributable entries. Per `repos/HoneyDrunk.Audit/integration-points.md`: "an audit entry without correlation and tenant is unattributable, which defeats the substrate's purpose."
+> **Invariant 6:** CorrelationId is never null or empty, and TenantId is never absent, in a live GridContext. — Audit enriches empty entry fields rather than persisting unattributable entries.
 
-> **Invariant 9:** Vault is the only source of secrets. No Node reads secrets directly from environment variables, config files, or provider SDKs. All access goes through `ISecretStore`. — The retention value is non-secret configuration, sourced via `IConfigProvider` (App Configuration), not via `ISecretStore`. This is the App-Configuration-via-Vault pattern per ADR-0005, not a secret read.
+> **Invariant 9:** Vault is the only source of secrets. No Node reads secrets directly from environment variables, config files, or provider SDKs. All access goes through `ISecretStore`. — Retention value is non-secret config via `IConfigProvider` (ADR-0005), not `ISecretStore`.
 
-> **Invariant 11:** One repo per Node. Each repo has its own solution, CI pipeline, and versioning. — This packet establishes HoneyDrunk.Audit's solution and CI pipeline. Per the new-Node convention, the standup is itself ADR-governed (ADR-0031).
+> **Invariant 11:** One repo per Node. Each repo has its own solution, CI pipeline, and versioning. — This packet establishes Audit's solution + CI.
 
-> **Invariant 12:** Semantic versioning with CHANGELOG and README. New projects must have both files from the first commit. — Both `src/*` projects ship `README.md` and `CHANGELOG.md` in the same commit. Repo-level `CHANGELOG.md` and `README.md` also present.
+> **Invariant 12:** Semantic versioning with CHANGELOG and README. New projects must have both files from the first commit. — Both packages ship README + CHANGELOG; repo-level files also.
 
-> **Invariant 13:** All public APIs have XML documentation. Enforced by HoneyDrunk.Standards analyzers. — All three D3 contracts and `AuditQueryFilter` carry `///` summaries.
+> **Invariant 13:** All public APIs have XML documentation. Enforced by HoneyDrunk.Standards analyzers. — All contracts + `AuditQueryFilter` + `AuditEntryId` carry `///` summaries.
 
-> **Invariant 14:** Canary tests validate cross-Node boundaries. Each Node that depends on another has a `.Canary` project verifying integration assumptions. — Future-facing: downstream Nodes (Auth at packet 04, eventually Operator) will add `.Canary` projects against `HoneyDrunk.Audit.Abstractions`. This packet does not author those — they belong with each consuming Node's wiring packet. **Audit itself does not need a `.Canary` project at this scaffold** because it consumes Kernel and Data via well-established contracts; the dependency-direction canaries on Kernel/Data would catch any boundary drift on the *consumed* side. (If invariant 14's intent is interpreted as requiring every consuming Node to ship a `.Canary` project even when its consumed contracts are pre-stable, raise that as a follow-up — this packet ships the round-trip smoke test as the equivalent boundary-verification shape.)
+> **Invariant 14:** Canary tests validate cross-Node boundaries. — Audit consumes Kernel/Data via pre-stable contracts; downstream `.Canary` projects (Auth at packet 04, Operator later) carry the boundary-verification load. Audit's own round-trip smoke test is the equivalent shape here.
 
-> **Invariant 15:** Tests never depend on external services. Use InMemory providers for isolation. — The in-memory `IAuditLog`/`IAuditQuery` fixture exists specifically to satisfy this for Audit's own tests at v0.1.0, and (eventually, via a future `HoneyDrunk.Audit.Testing` package) for downstream Nodes' tests.
+> **Invariant 15:** Tests never depend on external services. Use InMemory providers for isolation. — In-memory `IAuditLog`/`IAuditQuery` fixture satisfies this.
 
-> **Invariant 16:** No test code in runtime packages. Tests live in dedicated `.Tests` or `.Canary` projects only. — Fixtures live under `tests/HoneyDrunk.Audit.Data.Tests/Fixtures/`, not in `src/HoneyDrunk.Audit.Data/`.
+> **Invariant 16:** No test code in runtime packages. Tests live in dedicated `.Tests` or `.Canary` projects only. — Fixtures live under `tests/...Tests/Fixtures/`.
 
-> **Invariant 26:** Issue packets for .NET code work must include an explicit `## NuGet Dependencies` section. `HoneyDrunk.Standards` must be on every new .NET project. — This packet's NuGet Dependencies section enumerates all four new `.csproj` references plus the two test-project reference sets.
+> **Invariant 26:** Issue packets for .NET code work must include an explicit `## NuGet Dependencies` section. `HoneyDrunk.Standards` must be on every new .NET project. — Confirmed above.
 
-> **Invariant 27:** All projects in a solution share one version and move together. When a version bump is warranted, every `.csproj` in the solution (excluding test projects) is updated to the same new version in a single commit. — Initial scaffold ships at `0.1.0` across both `src/*` packages.
+> **Invariant 27:** All projects in a solution share one version and move together. When a version bump is warranted, every `.csproj` in the solution (excluding test projects) is updated to the same new version in a single commit. — Both `src/*` ship at `0.1.0`.
 
-> **Invariant `{N-substrate}` (ADR-0030 packet 02):** Durable, attributable security and action events are emitted to the `HoneyDrunk.Audit` substrate via `IAuditLog`, on a durable channel separate from observability telemetry. Phase-1 audit integrity is append-only-by-interface (`IAuditLog` exposes no update and no delete method); it is explicitly **not** tamper-evident, and Phase 1 must not be documented or marketed as such. — This scaffold IS the durable substrate this invariant references. `IAuditLog` exposes no update or delete method (proven by `AppendOnlyAtInterfaceTests`); the README's "Phase-1 honest limitation" section names the not-tamper-evident reality.
+> **Invariant `{N-substrate}` (ADR-0030 packet 02):** Durable, attributable security and action events are emitted to the `HoneyDrunk.Audit` substrate via `IAuditLog`, on a durable channel separate from observability telemetry. Phase-1 audit integrity is append-only-by-interface (`IAuditLog` exposes no update and no delete method); it is explicitly **not** tamper-evident, and Phase 1 must not be documented or marketed as such. — This scaffold IS the substrate. `AppendOnlyAtInterfaceTests` enforces the interface shape; README's `## Phase-1 honest limitation` names the not-tamper-evident reality.
 
-> **Invariant `{N-coupling}` (this initiative, packet 01):** Downstream Nodes take a runtime dependency only on `HoneyDrunk.Audit.Abstractions`. Composition against `HoneyDrunk.Audit.Data` is a host-time concern resolved at application startup from App Configuration. — Reinforced in this scaffold by keeping `Abstractions` near-minimal (one `HoneyDrunk.Kernel.Abstractions` reference for `TenantId`; nothing else) so consumers (Auth at packet 04, Operator later) don't transit unintended pins through.
+> **Invariant `{N-coupling}` (this initiative, packet 01):** Downstream Nodes take a runtime dependency only on `HoneyDrunk.Audit.Abstractions`. Composition against `HoneyDrunk.Audit.Data` is a host-time concern resolved at application startup from App Configuration. — `Abstractions` kept near-minimal (one Kernel.Abstractions ref).
 
-> **Invariant `{N-canary}` (this initiative, packet 01):** The HoneyDrunk.Audit Node CI must include a contract-shape canary for `IAuditLog`, `IAuditQuery`, and `AuditEntry`. Shape drift on any of the three is a build failure unless paired with an intentional version bump. — `api-compatibility.yml` calls `HoneyDrunk.Actions/job-api-compatibility.yml` scoped to `HoneyDrunk.Audit.Abstractions`. The whole-assembly diff covers all three contracts plus `AuditQueryFilter`.
+> **Invariant `{N-canary}` (this initiative, packet 01):** The HoneyDrunk.Audit Node CI must include a contract-shape canary for `IAuditLog`, `IAuditQuery`, and `AuditEntry`. Shape drift on any of the three is a build failure unless paired with an intentional version bump. — `api-compatibility.yml` covers this (whole-assembly diff over `Abstractions`).
 
 ## Referenced ADR Decisions
 
-**ADR-0031 D1 (Audit Node ownership):** HoneyDrunk.Audit is the Core sector's single Node owning the Grid's durable, attributable security-and-action record. It is a record substrate, not a control plane and not an observability pipeline. This scaffold ships only the substrate — no allow/deny decision logic, no sampling/aggregation.
-
-**ADR-0031 D2 (Package families):** Two packages — `HoneyDrunk.Audit.Abstractions` + `HoneyDrunk.Audit.Data`. The runtime is named for its backing per the §Alternatives Considered rejection of a bare runtime package; a future sibling backing slot is left open. In-memory fixtures live `internal` to the test project per ADR-0027 D3 precedent.
-
-**ADR-0031 D3 (Exposed contracts):** Three contracts — `IAuditLog` (interface), `IAuditQuery` (interface), `AuditEntry` (record). Records drop `I`; interfaces keep it.
-
-**ADR-0031 D4 (Storage is Data-backed; append-only enforced at the interface):** `HoneyDrunk.Audit.Data` implements the store over `HoneyDrunk.Data`'s `IRepository`/`IUnitOfWork`. The append-only guarantee is enforced at the interface surface: `IAuditLog` exposes no update and no delete method. Audit data carries an audit-class retention policy distinct from observability retention; the retention value is sourced via the App Configuration pattern (ADR-0005), not hardcoded. **Phase-1 integrity is append-only-by-interface, not tamper-evident** (D9 / ADR-0030 D9) — this is the stated, accepted limitation and the standup must not document or describe the store as tamper-evident.
-
-**ADR-0031 D5 (Managed identity):** The Audit Node runs under its own dedicated managed identity, distinct from Auth's and Operator's. **This scaffold is a library Node** — both packages are libraries, not deployables. The managed identity provisioning belongs with whichever packet first deploys an Audit-composing host. Cross-link the Azure provisioning walkthroughs at that future point. This packet's Human Prerequisites note the deferral.
-
-**ADR-0031 D6 (First emitter Auth; Operator reconciled):** Auth is the first emitter — that work lands in packet 04 of this initiative against the `Abstractions` this scaffold ships. Operator reconciliation lands with Operator's own scaffolding initiative (Operator is not yet scaffolded as of 2026-05-20).
-
-**ADR-0031 D7 (Telemetry direction):** `DataAuditLog` and `DataAuditQuery` emit operational telemetry via `ITelemetryActivityFactory` (Kernel). No Pulse package reference. Pulse consumes downstream — out of scope for this packet. **Audit *records* are not telemetry and never flow to Pulse.**
-
-**ADR-0031 D8 (Contract-shape canary):** `api-compatibility.yml` is the canary. Scoped to `HoneyDrunk.Audit.Abstractions` since per D9 that is the only public-boundary package. All three contracts plus `AuditQueryFilter` are frozen from the first scaffold.
-
-**ADR-0031 D9 (Downstream coupling):** Emitters and readers (Auth, Operator, future) compile only against `HoneyDrunk.Audit.Abstractions`. `Abstractions` is HoneyDrunk-dependency-free so consumers don't pull Kernel/Data/Vault transitively.
-
-**ADR-0031 D10 (Kernel and Data as first-class):** Audit takes runtime dependencies on Kernel (for `IGridContext`, lifecycle, telemetry) and Data (for `IRepository`/`IUnitOfWork`). New edges in `catalogs/relationships.json` were landed by ADR-0030 packet 01.
-
-**ADR-0031 D11 (Standup checklist):** This packet implements the full D11 first-PR checklist: solution layout, HoneyDrunk.Standards wiring, CI via Actions reused workflows, per-package README/CHANGELOG, LICENSE, Data-backed append-only store, the Node's managed identity *deferred* per the library-Node rationale above (D5), in-memory fixture, end-to-end smoke test.
-
-**ADR-0030 D4 (Audit-class retention distinct from observability):** The `AuditRetentionPolicy` class lands in this scaffold; the value is sourced from `IConfigProvider`, default 365d, with a `::warning::` if unset. The retention enforcement loop is a Phase-2 concern; the *value* and the *read path* land here.
-
-**ADR-0030 D5 (Contract relocation + Operator reconciliation):** `IAuditLog` and `AuditEntry` are authored in `HoneyDrunk.Audit.Abstractions` here (not relocated from existing Operator code, because Operator was never scaffolded — the relocation is a conceptual catalog-level move). Operator's eventual reconciliation is a separate packet against this `Abstractions`.
-
-**ADR-0030 D9 (Phase-1 honest limitation):** Phase 1 is append-only-by-interface, NOT tamper-evident. The scaffold must not document or describe the store as tamper-evident. The repo `README.md` carries a `## Phase-1 honest limitation` section naming this explicitly.
-
-**ADR-0026 (Grid Multi-Tenant Primitives — `TenantId` strong type, Accepted):** `IGridContext.TenantId` is the non-nullable `HoneyDrunk.Kernel.Abstractions.Identity.TenantId` ULID record struct with a well-known `Internal` sentinel for non-multi-tenant operations. The Audit Node is queried for per-tenant compliance and forensic retrieval — re-introducing `string`-typed tenancy at the Audit contract surface would re-create exactly the consumer-side parse-and-default footgun ADR-0026 closed. This scaffold uses the `TenantId` strong type on `AuditEntry.TenantId` and `AuditQueryFilter.TenantId` (nullable on the filter for "no filter on tenant"), taking a single, well-bounded `HoneyDrunk.Kernel.Abstractions` reference on `HoneyDrunk.Audit.Abstractions.csproj`. The same argument applies to `CorrelationId`; at v0.1.0 the trade is to keep correlation `string` and promote to the Kernel strong type at v0.2.0 as one intentional contract-shape change (flagged as a follow-up).
-
-**ADR-0027 (No speculative Testing package; cut later as non-breaking):** ADR-0031 D2 + §Alternatives Considered explicitly invoke this precedent. The in-memory `IAuditLog`/`IAuditQuery` fixture lives `internal` to `tests/HoneyDrunk.Audit.Data.Tests/Fixtures/`; no `HoneyDrunk.Audit.Testing` package is shipped at v0.1.0.
-
-**ADR-0009 (Dependabot stance, Accepted):** No `.github/dependabot.yml` is created. Dependency-scanning is delegated to `nightly-deps.yml` and `nightly-security.yml` calling `HoneyDrunk.Actions` reusable workflows.
-
-**ADR-0005 (App Configuration via Vault, Accepted):** `HoneyDrunk.Audit.Data` reads the retention value through `IConfigProvider` from `HoneyDrunk.Vault`, not via direct App Configuration SDK calls. The composing host wires the App Configuration provider; this scaffold consumes the abstraction.
+- **ADR-0031 D1** — Audit is the Core sector's single Node for durable security-and-action record. Substrate only; no allow/deny logic, no aggregation.
+- **ADR-0031 D2** — Two packages (`Abstractions` + `Data`); runtime named for backing; fixtures `internal` per ADR-0027 D3.
+- **ADR-0031 D3** — Three contracts: `IAuditLog`, `IAuditQuery`, `AuditEntry`.
+- **ADR-0031 D4** — Data-backed via `IRepository`/`IUnitOfWork`; append-only at interface (no update/delete method). Audit-class retention distinct from observability; sourced via App Config / `IConfigProvider`. Phase-1 is append-only-by-interface, NOT tamper-evident (D9).
+- **ADR-0031 D5** — Audit runs under its own managed identity. Both packages are libraries here; identity provisioning belongs with the first deploying packet.
+- **ADR-0031 D6** — Auth is first emitter (packet 04); Operator reconciliation lands with Operator scaffolding (separate initiative).
+- **ADR-0031 D7** — Telemetry one-way to Pulse via `ITelemetryActivityFactory`. **Audit records are not telemetry and never flow to Pulse.** No Pulse package ref.
+- **ADR-0031 D8** — `api-compatibility.yml` canary scoped to `Abstractions`.
+- **ADR-0031 D9** — Downstream Nodes compile only against `Abstractions`.
+- **ADR-0031 D10** — Audit takes runtime deps on Kernel + Data. Catalog edges landed by ADR-0030 packet 01.
+- **ADR-0031 D11** — This packet implements the full first-PR checklist (managed identity deferred per library-Node rationale).
+- **ADR-0030 D4** — Audit-class retention distinct from observability. `AuditRetentionPolicy` ships value + read path; enforcement loop is Phase-2.
+- **ADR-0030 D5** — `IAuditLog`/`AuditEntry` authored here (conceptual relocation; Operator was never scaffolded).
+- **ADR-0030 D9** — Phase-1 honest limitation: append-only-by-interface, NOT tamper-evident. README's `## Phase-1 honest limitation` is explicit.
+- **ADR-0026** — `IGridContext.TenantId` is the non-nullable Kernel `TenantId` strong type with `Internal` sentinel. Audit's per-tenant forensic query path requires strong-typing at the contract surface to avoid re-introducing consumer-side parse-and-default footgun. `CorrelationId` stays string at v0.1.0; v0.2.0 follow-up promotes it.
+- **ADR-0027** — No speculative Testing package; fixture `internal` until third consumer needs it.
+- **ADR-0009** — No `.github/dependabot.yml`; nightly workflows handle deps.
+- **ADR-0005** — Retention sourced through `IConfigProvider` from Vault, not direct App Config SDK.
 
 ## Dependencies
 
@@ -767,16 +565,15 @@ Project references as appropriate to each `.Tests` project:
 - **Invariant `{N-substrate}` (substrate-level audit-emission boundary, ADR-0030 packet 02):** Durable, attributable security and action events are emitted to the `HoneyDrunk.Audit` substrate via `IAuditLog`, on a durable channel separate from observability telemetry. Phase-1 audit integrity is append-only-by-interface (`IAuditLog` exposes no update and no delete method); it is explicitly **not** tamper-evident, and Phase 1 must not be documented or marketed as such. — `IAuditLog` exposes exactly `AppendAsync`. The reflection test `AppendOnlyAtInterfaceTests` makes accidental future addition of an update/delete method a build failure. The README's "Phase-1 honest limitation" section names the not-tamper-evident reality.
 - **Invariant `{N-coupling}`:** Downstream Nodes take a runtime dependency only on `HoneyDrunk.Audit.Abstractions`. Composition against `HoneyDrunk.Audit.Data` is a host-time concern. — Reinforced by keeping `Abstractions` near-minimal (one `HoneyDrunk.Kernel.Abstractions` reference for `TenantId`).
 - **Invariant `{N-canary}`:** The HoneyDrunk.Audit Node CI must include a contract-shape canary for `IAuditLog`, `IAuditQuery`, and `AuditEntry`. Shape drift is a build failure unless paired with an intentional version bump. — `api-compatibility.yml` covers this by scoping to `HoneyDrunk.Audit.Abstractions`.
-- **Canary on the scaffolding PR is expected to report `status: skipped`, not fail.** The shared `HoneyDrunk.Actions/.github/actions/api/check-compatibility/action.yml` emits `::warning::` and exits 0 with `status: skipped` when `git worktree add` against the baseline ref fails — which it always does on a first PR against a near-empty repo. Do not treat the skip as a misconfiguration and do not chase it. The scaffolding PR's merge establishes the `main` baseline; verification of the canary actually firing happens **post-merge** via a throwaway breaking-change PR that is reverted after observation.
-- **Abstractions stance — exactly one `HoneyDrunk.*` reference, intentional.** `HoneyDrunk.Audit.Abstractions` ships with exactly one `HoneyDrunk.*` reference: `HoneyDrunk.Kernel.Abstractions`, for the `TenantId` strong type per ADR-0026. This is a **deliberate departure** from the ADR-0016 AI standup's zero-`HoneyDrunk` stance, justified by ADR-0026's per-tenant typing requirement and ADR-0031 D2's explicit allowance ("zero runtime dependencies beyond `HoneyDrunk.Kernel` abstractions"). Concretely: `AuditEntry.TenantId` and `AuditQueryFilter.TenantId` are the Kernel `TenantId` strong type (not `string`); `AuditEntry.CorrelationId` and `AuditQueryFilter.CorrelationId` stay `string` at v0.1.0 with a v0.2.0 promotion to the Kernel strong type flagged as a follow-up. Do NOT add any other `HoneyDrunk.*` reference to `HoneyDrunk.Audit.Abstractions.csproj` — not `HoneyDrunk.Kernel` (runtime), not `HoneyDrunk.Data*`, not `HoneyDrunk.Vault*`, not `HoneyDrunk.Pulse*`.
-- **Records drop `I`; interfaces keep it.** `AuditEntry` is a record (no `I`). `AuditQueryFilter` is a record (no `I`). `IAuditLog` and `IAuditQuery` are interfaces (with `I`). Per Grid-wide naming rule (memory `project_naming_rule_records`).
-- **Per ADR-0009, no `.github/dependabot.yml` is created.** Dependency-scanning is delegated to `nightly-deps.yml` and `nightly-security.yml` calling `HoneyDrunk.Actions` reusable workflows. GitHub Dependabot security alerts remain enabled at repo settings (org default — packet 02 confirms). No grouped or per-package `dependabot.yml` configuration file is committed to this repo.
-- **Phase-1 store is NOT tamper-evident.** Per ADR-0030 D9 / ADR-0031 §Negative: hash-chain/WORM is deferred behind the boundary. The scaffold must not document, describe, or market the store as tamper-evident anywhere — in code comments, in package descriptions (`<Description>` in csproj), in READMEs, or in CHANGELOG entries. The repo `README.md` carries a `## Phase-1 honest limitation` section that names this explicitly. Do not soften, hedge, or marketize the limitation.
-- **`IAuditLog` has exactly one method — `AppendAsync`.** No `UpdateAsync`, no `ReplaceAsync`, no `DeleteAsync`, no `RemoveAsync`, no `AppendBatchAsync` (the contract is single-entry append; batching is a future-version concern). The `AppendOnlyAtInterfaceTests` reflection test makes this a build-time gate.
-- **`AuditEntry.Id` is writer-assigned at append time.** `DataAuditLog.AppendAsync` overwrites whatever value the caller passed in via the `AuditEntry.Id` field with a freshly-generated ULID. Callers may pass `string.Empty` (the in-memory fixture and the smoke test both do this). The XML docs on `AuditEntry.Id` reflect this convention.
-- **`AuditEntry.OccurredAt` is caller-assigned and never overwritten.** The caller (Auth, Operator, future) sets `OccurredAt` at the moment the audited action occurred. `DataAuditLog` does not touch it.
-- **No `HoneyDrunk.Pulse.*` reference anywhere in this repo.** Telemetry direction is one-way to Pulse per D7; Audit emits via Kernel's `ITelemetryActivityFactory`, and Pulse observes downstream. `HoneyDrunk.Audit.Data.csproj` must not contain a `HoneyDrunk.Pulse.*` PackageReference.
-- **In-memory fixtures stay `internal` to the test project.** Per D2 + ADR-0027 D3: no `src/HoneyDrunk.Audit.Testing/` project at v0.1.0. The fixture files live under `tests/HoneyDrunk.Audit.Data.Tests/Fixtures/` with `internal` visibility. Future cutting into a `HoneyDrunk.Audit.Testing` package is a non-breaking change when a third consumer needs it — out of scope here.
+- **Canary on the scaffolding PR reports `status: skipped`, not fail.** First PR against near-empty repo: `git worktree add` against the baseline ref fails → `::warning::` + exit 0. Not a misconfiguration. Scaffold merge establishes baseline; verify post-merge via a throwaway breaking-change PR (revert after).
+- **Abstractions stance — exactly ONE `HoneyDrunk.*` ref**, `HoneyDrunk.Kernel.Abstractions` (for `TenantId` per ADR-0026). No `Kernel`-runtime, no `Data*`, no `Vault*`, no `Pulse*`. `CorrelationId` stays `string` until v0.2.0.
+- **Records drop `I`; interfaces keep it.**
+- **No `.github/dependabot.yml`** (ADR-0009). Org-default Dependabot security alerts stay enabled.
+- **Phase-1 store is NOT tamper-evident.** Do not soften the README's `## Phase-1 honest limitation`. No "tamper-evident" language in code/csproj/README/CHANGELOG.
+- **`IAuditLog` has exactly `AppendAsync`** — no Update/Replace/Delete/Remove/AppendBatch. Reflection test enforces.
+- **`AuditEntry.Id` writer-assigned; `OccurredAt` caller-assigned and never overwritten.**
+- **No `HoneyDrunk.Pulse.*` ref anywhere.**
+- **In-memory fixtures stay `internal`** — no `src/HoneyDrunk.Audit.Testing/` at v0.1.0.
 
 **Key Files:**
 - `HoneyDrunk.Audit.slnx`, `Directory.Build.props`
