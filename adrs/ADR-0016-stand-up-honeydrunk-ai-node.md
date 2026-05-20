@@ -1,6 +1,6 @@
 # ADR-0016: Stand Up the HoneyDrunk.AI Node — Inference Substrate for the AI Sector
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-04-19
 **Deciders:** HoneyDrunk Studios
 **Sector:** AI
@@ -9,12 +9,12 @@
 
 Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
 
-- [ ] Add entries to `catalogs/contracts.json` for the seven exposed contracts: `IChatClient`, `IEmbeddingGenerator`, `IModelProvider`, `IModelRouter`, `IRoutingPolicy`, `ModelCapabilityDeclaration`, `ICostLedger`
-- [ ] Add `honeydrunk-ai` Node entry and per-contract entries to `catalogs/grid-health.json`
-- [ ] Tighten loose "depends on Pulse" phrasing in `catalogs/nodes.json` (HoneyDrunk.AI entry) and `constitution/ai-sector-architecture.md` (~line 114) to "emits telemetry consumed by Pulse; no runtime dependency"
+- [x] Add entries to `catalogs/contracts.json` for the seven exposed contracts: `IChatClient`, `IEmbeddingGenerator`, `IModelProvider`, `IModelRouter`, `IRoutingPolicy`, `ModelCapabilityDeclaration`, `ICostLedger`
+- [x] Add `honeydrunk-ai` Node entry and per-contract entries to `catalogs/grid-health.json`
+- [x] Tighten loose "depends on Pulse" phrasing in `catalogs/nodes.json` (HoneyDrunk.AI entry) and `constitution/ai-sector-architecture.md` (~line 114) to "emits telemetry consumed by Pulse; no runtime dependency"
 - [ ] Wire the contract-shape canary into Actions (freezes `IChatClient`, `IEmbeddingGenerator`, `IModelProvider`, `IModelRouter` shapes)
-- [ ] File the HoneyDrunk.AI scaffold packet (repo bootstrap, solution structure, HoneyDrunk.Standards wiring, CI pipeline, InMemory provider)
-- [ ] Scope agent assigns final invariant numbers when flipping Status → Accepted
+- [x] File the HoneyDrunk.AI scaffold packet (repo bootstrap, solution structure, HoneyDrunk.Standards wiring, CI pipeline, InMemory provider)
+- [x] Scope agent assigns final invariant numbers when flipping Status → Accepted
 
 ## Context
 
