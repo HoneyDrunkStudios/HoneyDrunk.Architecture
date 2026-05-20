@@ -136,5 +136,9 @@
   "generated/issue-packets/active/adr-0020-agents-standup/01-architecture-agents-catalog-registration.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/125",
   "generated/issue-packets/active/adr-0020-agents-standup/02-architecture-agents-invariants.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/126",
   "generated/issue-packets/active/adr-0020-agents-standup/02b-architecture-verify-agents-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/127",
-  "generated/issue-packets/active/adr-0020-agents-standup/03-agents-node-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Agents/issues/2"
+  "generated/issue-packets/active/adr-0020-agents-standup/03-agents-node-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Agents/issues/2",
+  "generated/issue-packets/active/adr-0021-knowledge-standup/01-architecture-knowledge-catalog-registration.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/129",
+  "generated/issue-packets/active/adr-0021-knowledge-standup/02-architecture-knowledge-invariants.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/130",
+  "generated/issue-packets/active/adr-0021-knowledge-standup/02b-architecture-verify-knowledge-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/131",
+  "generated/issue-packets/active/adr-0021-knowledge-standup/03-knowledge-node-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Knowledge/issues/2"
 }
