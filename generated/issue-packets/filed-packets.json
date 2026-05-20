@@ -140,5 +140,9 @@
   "generated/issue-packets/active/adr-0021-knowledge-standup/01-architecture-knowledge-catalog-registration.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/129",
   "generated/issue-packets/active/adr-0021-knowledge-standup/02-architecture-knowledge-invariants.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/130",
   "generated/issue-packets/active/adr-0021-knowledge-standup/02b-architecture-verify-knowledge-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/131",
-  "generated/issue-packets/active/adr-0021-knowledge-standup/03-knowledge-node-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Knowledge/issues/2"
+  "generated/issue-packets/active/adr-0021-knowledge-standup/03-knowledge-node-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Knowledge/issues/2",
+  "generated/issue-packets/active/adr-0022-memory-standup/01-architecture-memory-catalog-registration.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/134",
+  "generated/issue-packets/active/adr-0022-memory-standup/02-architecture-memory-invariants.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/135",
+  "generated/issue-packets/active/adr-0022-memory-standup/02b-architecture-verify-memory-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/136",
+  "generated/issue-packets/active/adr-0022-memory-standup/03-memory-node-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Memory/issues/2"
 }
