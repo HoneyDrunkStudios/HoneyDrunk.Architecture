@@ -8,7 +8,7 @@ No active work. AI Node is in design phase. The repo context documents (`overvie
 
 ## Prerequisites Before Bring-Up
 
-AI has the fewest upstream dependencies in the AI sector — it depends on Core Nodes (Kernel, Vault) which are Live, and Ops Node Pulse which is Seed but non-blocking. AI can be the **first AI sector Node to scaffold**.
+AI has the fewest upstream dependencies in the AI sector — it depends on Core Nodes (Kernel, Vault) which are Live, and emits telemetry consumed by Pulse without taking a runtime dependency. AI can be the **first AI sector Node to scaffold**.
 
 1. **Kernel** — `IGridContext`, `IOperationContext`, `ITelemetryActivityFactory` (all Live at 0.4.0) ✅
 2. **Vault** — `ISecretStore` for model API key resolution (Live at 0.4.0) ✅
@@ -17,13 +17,13 @@ AI has the fewest upstream dependencies in the AI sector — it depends on Core 
 ## On-Deck Work (not yet filed)
 
 - Repo scaffolding: solution structure, `HoneyDrunk.AI.Abstractions` + `HoneyDrunk.AI` projects, `HoneyDrunk.Standards` wired
-- Contract definition: `IChatClient`, `IEmbeddingGenerator`, `IModelProvider`, `IInferenceResult`
+- Contract definition: `IChatClient`, `IEmbeddingGenerator`, `IModelProvider`, `IModelRouter`, `IRoutingPolicy`, `ModelCapabilityDeclaration`, `ICostLedger`
   - Align with `Microsoft.Extensions.AI` abstractions (planned Q3 2026 adoption)
-- Provider adapters: OpenAI, Anthropic, Azure OpenAI (each as separate package, provider slot pattern)
+- Provider adapters: OpenAI, Anthropic, Azure OpenAI, InMemory (each as separate package, provider slot pattern)
   - `HoneyDrunk.AI.Providers.OpenAI`
   - `HoneyDrunk.AI.Providers.Anthropic`
   - `HoneyDrunk.AI.Providers.AzureOpenAI`
-  - `HoneyDrunk.AI.Providers.Local` (ONNX — deferred)
+  - `HoneyDrunk.AI.Providers.InMemory` (deterministic test double for Evals and CI)
 - AI Routing: `IModelRouter`, `IRoutingPolicy`, `ModelCapabilityDeclaration` (from ADR-0010)
   - Cost-first routing policy as the first implementation
   - Policy storage via App Configuration (ADR-0005)

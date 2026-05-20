@@ -9,10 +9,10 @@
 
 Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
 
-- [ ] Add entries to `catalogs/contracts.json` for the seven exposed contracts: `IChatClient`, `IEmbeddingGenerator`, `IInferenceResult`, `IModelProvider`, `IModelRouter`, `IRoutingPolicy`, `ModelCapabilityDeclaration`
+- [ ] Add entries to `catalogs/contracts.json` for the seven exposed contracts: `IChatClient`, `IEmbeddingGenerator`, `IModelProvider`, `IModelRouter`, `IRoutingPolicy`, `ModelCapabilityDeclaration`, `ICostLedger`
 - [ ] Add `honeydrunk-ai` Node entry and per-contract entries to `catalogs/grid-health.json`
 - [ ] Tighten loose "depends on Pulse" phrasing in `catalogs/nodes.json` (HoneyDrunk.AI entry) and `constitution/ai-sector-architecture.md` (~line 114) to "emits telemetry consumed by Pulse; no runtime dependency"
-- [ ] Wire the contract-shape canary into Actions (freezes `IChatClient`, `IEmbeddingGenerator`, `IInferenceResult`, `IModelProvider` shapes)
+- [ ] Wire the contract-shape canary into Actions (freezes `IChatClient`, `IEmbeddingGenerator`, `IModelProvider`, `IModelRouter` shapes)
 - [ ] File the HoneyDrunk.AI scaffold packet (repo bootstrap, solution structure, HoneyDrunk.Standards wiring, CI pipeline, InMemory provider)
 - [ ] Scope agent assigns final invariant numbers when flipping Status → Accepted
 
@@ -39,7 +39,7 @@ This ADR is the **stand-up decision** for the AI Node — what it owns, what it 
 
 The AI Node ships the following package families, mirroring the provider-slot shape used by Vault and Transport:
 
-- `HoneyDrunk.AI.Abstractions` — all interfaces, request/response shapes, capability declarations, cost records. Zero runtime dependencies beyond `HoneyDrunk.Kernel` abstractions.
+- `HoneyDrunk.AI.Abstractions` — all interfaces, request/response shapes, capability declarations, cost records. Zero runtime dependencies beyond `Microsoft.Extensions.*` abstractions.
 - `HoneyDrunk.AI` — runtime composition: default `IModelRouter`, default `ICostLedger`, DI wiring, policy loader.
 - `HoneyDrunk.AI.Providers.*` — provider-slot packages, one per inference backend. First-wave slot names (contents filed by later packets):
   - `HoneyDrunk.AI.Providers.OpenAI`

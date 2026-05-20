@@ -17,8 +17,10 @@ AI-specific invariants (supplements `constitution/invariants.md`).
 5. **Model identifiers are normalized.**
    Regardless of provider, model identifiers follow a canonical format so telemetry and routing are comparable.
 
-6. **GridContext is propagated on every inference call.**
-   CorrelationId and CausationId flow through to provider requests for end-to-end tracing.
+6. **GridContext is propagated on every inference call — by the AI runtime package, not by Abstractions.**
+   CorrelationId and CausationId flow through to provider requests for end-to-end tracing. Implementation lives in HoneyDrunk.AI runtime (specifically InferenceTelemetry); HoneyDrunk.AI.Abstractions stays HoneyDrunk-dependency-free per invariant 1.
 
 7. **No provider-specific types leak through Abstractions.**
    Consumers of `HoneyDrunk.AI.Abstractions` never see OpenAI SDK types, Anthropic SDK types, etc.
+
+_Constitutional invariants 28, 44, 45, 46 (in `constitution/invariants.md`) also apply — hardcoded model names forbidden (28); downstream-only Abstractions coupling (44); App-Config-sourced rates and policies (45); contract-shape canary in CI (46)._

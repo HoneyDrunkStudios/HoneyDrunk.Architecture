@@ -3,7 +3,7 @@
 ## What AI Owns
 
 - Normalized inference contracts (chat completion, text completion, embeddings, structured output)
-- Provider adapters (OpenAI, Anthropic, Azure OpenAI, local models)
+- Provider adapters (OpenAI, Anthropic, Azure OpenAI, InMemory test double)
 - Request/response normalization — uniform types regardless of provider
 - Token and latency telemetry — every inference call emits Pulse traces
 - Model selection and routing based on capability requirements

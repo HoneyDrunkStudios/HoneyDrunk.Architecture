@@ -207,10 +207,9 @@
       "canary_status": "none",
       "last_release": null,
       "active_blockers": [
-        "Repo not yet scaffolded",
-        "Awaiting AI sector bring-up initiative"
+        "Scaffold packet (HoneyDrunk.AI#2 — packet 03 of adr-0016-honeydrunk-ai-standup) not yet executed"
       ],
-      "notes": "Model/provider abstraction. Microsoft.Extensions.AI alignment planned Q3 2026."
+      "notes": "ADR-0016 standup ADR Proposed 2026-04-19. Catalog surface registered (7 contracts per D3). Awaiting scaffold execution: HoneyDrunk.AI.Abstractions (7 contracts), HoneyDrunk.AI runtime, four provider-slot packages (OpenAI/Anthropic/AzureOpenAI/InMemory), Standards wiring, CI with api-compatibility canary scoped to Abstractions (D8), InMemory provider for Evals/CI determinism."
     },
     {
       "id": "honeydrunk-memory",
