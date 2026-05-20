@@ -121,5 +121,8 @@
   "generated/issue-packets/completed/standalone/2026-04-26-actions-file-packets-hardening.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/57",
   "generated/issue-packets/completed/standalone/2026-04-28-actions-hive-field-mirror-app-auth.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/69",
   "generated/issue-packets/completed/standalone/2026-04-28-actions-hive-field-mirror-cache-and-rest.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/70",
-  "generated/issue-packets/completed/standalone/2026-05-04-communications-consolidate-communications-tenant-predicates.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications/issues/9"
+  "generated/issue-packets/completed/standalone/2026-05-04-communications-consolidate-communications-tenant-predicates.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications/issues/9",
+  "generated/issue-packets/active/adr-0033-deploy-trigger-model/01-notify-functions-deploy-trigger-model.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/19",
+  "generated/issue-packets/active/adr-0033-deploy-trigger-model/02-notify-worker-deploy-trigger-model.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/20",
+  "generated/issue-packets/active/adr-0033-deploy-trigger-model/03-pulse-collector-deploy-trigger-model.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/18"
 }
