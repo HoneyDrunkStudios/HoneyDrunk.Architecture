@@ -26,14 +26,12 @@ This packet does **not** introduce identity-bearing PII into Auth's OTel traces;
 
 ## Motivation
 
-Per ADR-0030 D6 and ADR-0031 D6, Auth is the first real emitter wired against the stood-up `HoneyDrunk.Audit.Abstractions`. The two event classes Auth must durably record are:
+Per ADR-0030 D6 / ADR-0031 D6, Auth is the first emitter against the substrate. Two event classes:
 
-- **Token validation outcomes** — every time `BearerTokenAuthenticationProvider` validates a bearer token, the outcome (`granted` for a valid token; `denied` for an invalid/expired/missing-claim token) is a security-relevant event that today evaporates into sampled OTel traces (and identity is deliberately kept *out* of those traces per Auth's identity-out-of-traces invariant — so an incident reconstruction has to correlate token-id against external systems). A durable, attributable audit record solves this without compromising the trace-side identity-out invariant.
-- **Authorization-policy decisions** — every time `DefaultAuthorizationPolicy.EvaluateAsync` returns an `AuthorizationDecision` (Allow or Deny), that's a security-relevant event that today is similarly trace-only. Durable record matters here too: "user X was denied access to resource Y at time T" is exactly the kind of question audit answers. **The emission lives on `DefaultAuthorizationPolicy`, NOT on `AuthorizationPolicyEvaluator`.** `AuthorizationPolicyEvaluator` is a `public sealed class` whose single method `Evaluate(AuthenticatedIdentity?, AuthorizationRequest)` is `static` — it's the pure, side-effect-free decision core. `DefaultAuthorizationPolicy` is the I/O-side decorator (Singleton, DI-resolvable, implements `IAuthorizationPolicy`) that wraps the pure evaluator and already adds telemetry/logging. Audit emission is another I/O-side cross-cutting concern and belongs in the same decorator alongside the existing telemetry tagging. Attempting to inject `IAuditLog` into the static evaluator is structurally impossible (no constructor, no instance state) and would defeat the deliberate purity of the static method.
+- **Token validation outcomes** — `BearerTokenAuthenticationProvider` validates a bearer token; today the outcome lives only in sampled OTel traces (with identity deliberately kept out per Auth's identity-out-of-traces invariant). Durable, attributable audit solves this without compromising the trace invariant.
+- **Authorization-policy decisions** — `DefaultAuthorizationPolicy.EvaluateAsync` returns Allow or Deny; same trace-only problem today. **Emission lives on `DefaultAuthorizationPolicy`, NOT `AuthorizationPolicyEvaluator`.** `AuthorizationPolicyEvaluator.Evaluate(...)` is a `public sealed class` with a `static` method — the pure, side-effect-free decision core. `DefaultAuthorizationPolicy` is the I/O-side Singleton decorator (`IAuthorizationPolicy`) that already wraps the pure evaluator with telemetry/logging. Audit goes there too. Injecting `IAuditLog` into the static evaluator is structurally impossible and would defeat its deliberate purity.
 
-Per ADR-0030 D6: "recording durable attributable security events additively to its existing OTel traces, on a separate durable channel, with Auth's identity-out-of-traces invariant untouched." This packet implements that.
-
-Until this packet ships, the substrate-level audit-emission boundary invariant `{N-substrate}` (auditable security events emitted to the Audit substrate via `IAuditLog`) has a substrate but no first compliant emitter. Auth not emitting is exactly the kind of gap that invariant exists to make visible — and this packet closes it for Auth.
+Per ADR-0030 D6: recording is additive to OTel traces, on a separate durable channel, identity-out-of-traces invariant untouched.
 
 ## Proposed Implementation
 
@@ -55,46 +53,37 @@ In `HoneyDrunk.Auth/HoneyDrunk.Auth.csproj`, add:
 
 **`DefaultAuthorizationPolicy`** — Same pattern: add `IAuditLog` and `IGridContextAccessor` to the existing primary-constructor parameter list (`ITelemetryActivityFactory telemetryFactory, ILogger<DefaultAuthorizationPolicy> logger, IAuditLog auditLog, IGridContextAccessor gridContextAccessor`). Emission lands inside `EvaluateAsync` after the existing `RecordTelemetry`/`LogDecision` calls, on the same return path that already returns `Task.FromResult(decision)`. The pure static `AuthorizationPolicyEvaluator.Evaluate` is **not** touched — keeping it pure is the whole reason `DefaultAuthorizationPolicy` exists.
 
-### Lifetime story — Singleton emitters with ambient grid-context access (avoiding captive-dep)
+### Lifetime story — Singleton emitters with `IGridContextAccessor` (avoid captive-dep)
 
-Both `BearerTokenAuthenticationProvider` and `DefaultAuthorizationPolicy` are registered as `Singleton` by `HoneyDrunkAuthServiceCollectionExtensions.AddHoneyDrunkAuth()` (lines 83 and 86 of `HoneyDrunkAuthServiceCollectionExtensions.cs`). `IGridContext` is registered as `Scoped` (one instance per DI scope, populated by middleware at request intake per the Kernel ownership model). **Directly injecting `IGridContext` into a Singleton is the captive-dep anti-pattern** — the Singleton would close over the first scope's `IGridContext` and every subsequent request would see stale or invalid context.
+`BearerTokenAuthenticationProvider` and `DefaultAuthorizationPolicy` are registered Singleton by `HoneyDrunkAuthServiceCollectionExtensions.AddHoneyDrunkAuth()` (lines 83, 86). `IGridContext` is Scoped — direct ctor injection into a Singleton is the captive-dep anti-pattern.
 
-Auth already solves this exact problem with `IOperationContextAccessor` and `IGridContextAccessor` — both live in `HoneyDrunk.Kernel.Abstractions.Context` and were designed for this case. Per `IGridContextAccessor`'s own XML docs: "Provides ambient access to the current DI-scoped Grid context. … Use sparingly — prefer explicit `IGridContext` injection via constructor when possible. The accessor exists for scenarios where constructor injection is not feasible (e.g., static methods, cross-cutting concerns)." Singleton-emitters resolving Scoped context per-call is exactly that case.
-
-Concretely, in both emitters:
+Both emitters take `IGridContextAccessor` (ambient access, Singleton-friendly) instead. Per its XML docs: "exists for scenarios where constructor injection is not feasible (e.g., static methods, cross-cutting concerns)." At emit site:
 
 ```csharp
-// Constructor (DefaultAuthorizationPolicy, BearerTokenAuthenticationProvider)
-private readonly IGridContextAccessor _gridContextAccessor;
-private readonly IAuditLog _auditLog;
-
-// At each emit site, inside the method that already exists (EvaluateAsync / AuthenticateAsync):
-var gridContext = _gridContextAccessor.GridContext; // resolves the current scope's instance
-// ...build AuditEntry using gridContext.CorrelationId, gridContext.TenantId...
+var gridContext = _gridContextAccessor.GridContext; // current scope's instance
+// build AuditEntry with gridContext.CorrelationId / gridContext.TenantId
 ```
 
-`IGridContextAccessor` is already in `services.ValidateKernelServices()`'s required list (`HoneyDrunkAuthServiceCollectionExtensions.cs:99`) — the host is guaranteed to have it registered before `AddHoneyDrunkAuth()` runs, so the new constructor parameter is always resolvable.
-
-**Do NOT add `IGridContext` directly to either constructor.** The build will succeed but every request after the first will read stale context.
+`IGridContextAccessor` is already in `ValidateKernelServices()` required list (line 99). **Do NOT add `IGridContext` directly to either constructor.**
 
 ### Emission shape
 
 **On token validation in `BearerTokenAuthenticationProvider`:**
 
-After the existing `ValidateTokenAsync(...)` returns its `AuthenticationResult`, and before `AuthenticateAsync` returns it to the caller, emit an `AuditEntry`. Inspect the actual `AuthenticationResult` shape at `HoneyDrunk.Auth.Abstractions/AuthenticationResult.cs` before authoring — the success-discriminator is `IsAuthenticated` (a `bool` property), `Identity` is a nullable `AuthenticatedIdentity?` populated only on success, and `Identity.SubjectId` is the non-null `string` on a successful identity:
+After `ValidateTokenAsync(...)` returns its `AuthenticationResult`, before `AuthenticateAsync` returns to caller, emit. Inspect the actual `AuthenticationResult` shape at `HoneyDrunk.Auth.Abstractions/AuthenticationResult.cs` — success-discriminator is `IsAuthenticated` (bool), `Identity` is nullable `AuthenticatedIdentity?` populated on success, `Identity.SubjectId` is non-null `string` on success:
 
 ```csharp
 var gridContext = _gridContextAccessor.GridContext;
 try
 {
     await _auditLog.AppendAsync(new AuditEntry(
-        Id: string.Empty, // writer assigns at append time
+        Id: AuditEntryId.Empty,
         OccurredAt: DateTimeOffset.UtcNow,
         Actor: result.Identity?.SubjectId ?? "anonymous",
         Action: "auth.token.validate",
         Outcome: result.IsAuthenticated ? "granted" : "denied",
-        CorrelationId: gridContext.CorrelationId,  // IGridContext.CorrelationId is already string; no .ToString()
-        TenantId: gridContext.TenantId,            // Kernel strong type per ADR-0026 — pass through, do not stringify
+        CorrelationId: gridContext.CorrelationId,  // already string; no .ToString()
+        TenantId: gridContext.TenantId,            // Kernel strong type per ADR-0026 — pass through
         Context: BuildValidationContext(result)
     ), cancellationToken);
 }
@@ -104,70 +93,41 @@ catch (Exception ex)
 }
 ```
 
-Where `BuildValidationContext` produces a JSON-shaped string containing **non-identity-bearing** metadata: token-id (`jti` claim if present), issuer (`iss`), audience (`aud`), expiration (`exp`), and the `FailureCode` enum value + `FailureMessage` string when `IsAuthenticated` is false. **No raw token text. No bearer-token contents. No claim values beyond the standard identifier claims.** Use the static whitelist `AuditAllowedClaims` constant defined on the class (see "AuditAllowedClaims whitelist" below) so the allow-list is exactly one source of truth that both production code and tests reference.
+`BuildValidationContext` produces JSON-shaped string with non-identity-bearing metadata: token-id (`jti`), issuer (`iss`), audience (`aud`), expiration (`exp`), plus `FailureCode`+`FailureMessage` when `IsAuthenticated == false`. **No raw token text. No claim values beyond identifier claims.** Use the `AuditAllowedClaims` constant (below) — single source of truth.
 
-**Failure to emit must not fail the request.** As shown above, the `AppendAsync` call is wrapped in try/catch that logs the exception to the existing `ILogger<BearerTokenAuthenticationProvider>` and continues. A flaky audit store should not break authentication — the existing trace-side telemetry is the secondary observability, and a failed durable audit emission is a problem for the audit substrate's own SLO, not Auth's request handling.
+**Emit failure must not fail the request.** try/catch logs and continues — audit-store SLO problem, not Auth's.
 
-**Note on `IGridContext.CorrelationId` shape at v0.1.0.** `IGridContext.CorrelationId` is already declared as `string` (see `HoneyDrunk.Kernel.Abstractions/Context/IGridContext.cs:52`). The emission pass-through is direct — no `.ToString()` call, that would be redundant. **v0.2.0 follow-up:** when `AuditEntry.CorrelationId` is promoted from `string` to the strong type `HoneyDrunk.Kernel.Abstractions.Identity.CorrelationId` (flagged in packet 03 §Contract details — `HoneyDrunk.Audit.Abstractions`), the boundary cannot stay a pass-through — Kernel's `IGridContext.CorrelationId` will still be `string` for back-compat, so Auth's emission site will need to wrap explicitly: `CorrelationId: new CorrelationId(gridContext.CorrelationId)`. That construction is the v0.2.0 packet's job, not this packet's.
+**`IGridContext.CorrelationId` is `string` at v0.1.0** (see `HoneyDrunk.Kernel.Abstractions/Context/IGridContext.cs:52`). Pass-through direct, no `.ToString()`. v0.2.0 follow-up wraps as `new CorrelationId(gridContext.CorrelationId)` when `AuditEntry.CorrelationId` promotes.
 
 **On authorization-policy decision in `DefaultAuthorizationPolicy`:**
 
-After the existing `RecordTelemetry(activity, decision)` and `LogDecision(request, decision)` calls inside `EvaluateAsync`, and before `return Task.FromResult(decision);`, emit:
+After existing `RecordTelemetry(activity, decision)` + `LogDecision(request, decision)` inside `EvaluateAsync`, before `return Task.FromResult(decision);`, emit (same try/catch shape) with `Actor: identity?.SubjectId ?? "anonymous"`, `Action: $"auth.authorize.{request.Action}"`, `Outcome: decision.IsAllowed ? "granted" : "denied"`, `Context: BuildAuthorizationContext(decision, request)`. The method body's last line changes from `return Task.FromResult(decision);` to `await _auditLog.AppendAsync(...); return decision;` (method becomes truly async).
 
-```csharp
-var gridContext = _gridContextAccessor.GridContext;
-try
-{
-    await _auditLog.AppendAsync(new AuditEntry(
-        Id: string.Empty,
-        OccurredAt: DateTimeOffset.UtcNow,
-        Actor: identity?.SubjectId ?? "anonymous",
-        Action: $"auth.authorize.{request.Action}",
-        Outcome: decision.IsAllowed ? "granted" : "denied",
-        CorrelationId: gridContext.CorrelationId,
-        TenantId: gridContext.TenantId,
-        Context: BuildAuthorizationContext(decision, request)
-    ), cancellationToken);
-}
-catch (Exception ex)
-{
-    _logger.LogError(ex, "Audit emission failed for authorization decision; decision outcome is unchanged");
-}
-return decision;
-```
+Verify against `HoneyDrunk.Auth/Authorization/DefaultAuthorizationPolicy.cs`:
 
-Verify against the actual shape at `HoneyDrunk.Auth/Authorization/DefaultAuthorizationPolicy.cs`:
+- `EvaluateAsync(AuthenticatedIdentity? identity, AuthorizationRequest request, CancellationToken)` — `identity` is the parameter; null identity already short-circuits to a `NotAuthenticated` deny inside the static evaluator, but the audit emission still happens with `Actor="anonymous"` so denied attempts are durably recorded.
+- `decision.IsAllowed` — **NOT `IsGranted`** (line 67 of existing `RecordTelemetry`).
+- `request.Action` — `string` verb (`read`/`write`/`delete`). Use directly in `auth.authorize.{request.Action}`. `PolicyName` is always `"Default"`, so it goes in `Context`, not `Action`.
 
-- `EvaluateAsync` receives `(AuthenticatedIdentity? identity, AuthorizationRequest request, CancellationToken)` and currently `return Task.FromResult(decision)` is the last statement. The new emit-and-await happens between `LogDecision(...)` and the return; the method changes from `Task<AuthorizationDecision>` returning a completed-task to a `Task<AuthorizationDecision> await`-on-emit-then-return (so the method body becomes `await _auditLog.AppendAsync(...); return decision;` instead of `return Task.FromResult(decision);`).
-- `decision.IsAllowed` is the success-discriminator on `AuthorizationDecision` (already used at line 67 of the existing `RecordTelemetry`). It is `IsAllowed`, NOT `IsGranted`.
-- The actor is `identity?.SubjectId` (the parameter the method already receives), not a property of `AuthorizationDecision`. If `identity` is null the request was never authenticated and the policy already short-circuits to a `NotAuthenticated` deny in the static evaluator — but for audit-record purposes the emission still happens with `Actor="anonymous"` so the denied attempt is durably recorded.
-- `request.Action` (a `string` property on `AuthorizationRequest`) is the verb being authorized — e.g., `read`, `write`, `delete` — and is the conventional first half of the action name. Use it directly in the `Action` string interpolation (`auth.authorize.{request.Action}`); the policy name itself is captured in `Context` rather than the `Action` string because `PolicyName` is always `"Default"` on `DefaultAuthorizationPolicy` and adds no information at this site.
+`Context` carries policy name, `request.Resource` identifier (existing identifier, not new identity surface), `decision.SatisfiedRequirements`, and `decision.DenyReasons` (codes only, since messages can contain subject IDs per existing `LogDecision`).
 
-The `Context` carries the policy name, the `request.Resource` identifier (non-PII; if a resource ID happens to be a tenant-scoped identifier, that is data the resource already carries — Auth is not introducing new identity surface, it is recording the decision against existing identifiers), the `decision.SatisfiedRequirements` collection, and the deny-reason codes from `decision.DenyReasons` (codes, not raw messages, since the messages can contain subject IDs per the existing `LogDecision` comment).
+### `AuditAllowedClaims` whitelist — production constant
 
-### `AuditAllowedClaims` whitelist — production constant, not just a test convention
-
-In `BearerTokenAuthenticationProvider`, add a `private static readonly HashSet<string>` constant near the top of the class:
+In `BearerTokenAuthenticationProvider`:
 
 ```csharp
 private static readonly HashSet<string> AuditAllowedClaims = new(StringComparer.Ordinal)
-{
-    "jti",
-    "iss",
-    "aud",
-    "exp",
-};
+{ "jti", "iss", "aud", "exp" };
 ```
 
-`BuildValidationContext` iterates the result's claims and emits only entries whose key matches `AuditAllowedClaims` into the JSON-shaped context string. The test `BearerTokenAuthenticationProvider_AuditContext_ContainsNoTokenText` (renamed accordingly) verifies the whitelist constant is the single source of truth — it constructs a token whose claims include `"jti"`, `"iss"`, `"sub"`, `"name"`, and a fabricated `"secret-claim"` value, asserts that the emitted `Context` JSON contains `jti`/`iss` and does NOT contain `sub`/`name`/`secret-claim`/the raw token string. **Production code and test reference the same constant; a future PR adding a new claim to the allow-list updates one place.**
+`BuildValidationContext` iterates result claims and emits only keys matching `AuditAllowedClaims` into the JSON. Test `BearerTokenAuthenticationProvider_AuditContext_RespectsAllowedClaimsWhitelist` references the same constant — single source of truth.
 
-### `Context` size limit and defensive truncation (Phase-1)
+### `Context` size limit (Phase-1 defensive truncation)
 
-`AuditEntry.Context` is unbounded `string?` at the contract surface. To prevent a pathological token (an attacker-crafted JWT with a 10MB `iss` claim) from blowing up a single audit row, both emission sites cap the serialized `Context` JSON at **4096 bytes** (4 KiB). If the JSON exceeds the cap, truncate to 4096 bytes, append a sentinel `"...[truncated]"`, and continue. The truncation happens inside `BuildValidationContext` / `BuildAuthorizationContext` — the `AppendAsync` call never sees an over-sized payload.
+`AuditEntry.Context` is unbounded `string?` at the contract surface. Both emission sites cap the serialized JSON at **4096 bytes** (4 KiB) — pathological JWT with a 10MB `iss` claim cannot blow up a single audit row. If over cap, truncate and append `"...[truncated]"`:
 
 ```csharp
 private const int AuditContextMaxBytes = 4096;
-
 private static string CapContext(string json)
 {
     if (System.Text.Encoding.UTF8.GetByteCount(json) <= AuditContextMaxBytes) return json;
@@ -176,7 +136,7 @@ private static string CapContext(string json)
 }
 ```
 
-The 4 KiB cap is a Phase-1 defensive measure; revisit when Audit ships its own context-size policy (Phase-2 concern). Acceptance criterion verifies the cap is enforced.
+Phase-2 revisits when Audit ships its own context-size policy.
 
 ### No-op stub class
 
@@ -206,28 +166,28 @@ This is a startup-time signal that a deployed host is non-compliant with the sub
 
 ### Tests
 
-Add tests under `HoneyDrunk.Auth.Tests/`:
+Add under `HoneyDrunk.Auth.Tests/`:
 
-- `BearerTokenAuthenticationProvider_EmitsAuditEntry_OnValidToken` — sets up an `InMemoryAuditLog` (Auth's own narrowly-scoped test double — see "Test double policy" below), runs a valid-token validation, asserts an `AuditEntry` with `Action=auth.token.validate` and `Outcome=granted` was appended.
-- `BearerTokenAuthenticationProvider_EmitsAuditEntry_OnInvalidToken` — same but invalid-token path; asserts `Outcome=denied`.
-- `BearerTokenAuthenticationProvider_DoesNotFailRequest_WhenAuditLogThrows` — sets up an `IAuditLog` stub that throws; asserts authentication still completes and the throw is logged at `Error` level.
-- `BearerTokenAuthenticationProvider_AuditContext_ContainsNoTokenText` — asserts the `AuditEntry.Context` JSON does NOT contain the literal token string or any claim value beyond `jti`, `iss`, `aud`, `exp`.
-- `DefaultAuthorizationPolicy_EmitsAuditEntry_OnAllow` — sets up an in-memory audit log, runs `EvaluateAsync` against an identity that satisfies the policy, asserts `Action=auth.authorize.{request.Action}` with `Outcome=granted` (matching `decision.IsAllowed == true`).
-- `DefaultAuthorizationPolicy_EmitsAuditEntry_OnDeny` — same but with an identity that fails the policy; asserts `Outcome=denied` (matching `decision.IsAllowed == false`).
-- `NullAuditLog_IsDefault_WhenNothingElseRegistered` — verifies `TryAddSingleton<IAuditLog, NullAuditLog>` wires the stub when the host hasn't registered anything; verifies that a host-side `services.AddSingleton<IAuditLog, SomeOtherImpl>()` BEFORE `AddHoneyDrunkAuth()` is preserved (the `Try` semantics).
-- `Startup_LogsWarning_WhenNullAuditLogIsActive` — verifies the `::warning::` is emitted at startup when no `IAuditLog` backing is composed.
+- `BearerTokenAuthenticationProvider_EmitsAuditEntry_OnValidToken` — `Outcome=granted`, `Action=auth.token.validate`.
+- `BearerTokenAuthenticationProvider_EmitsAuditEntry_OnInvalidToken` — `Outcome=denied`.
+- `BearerTokenAuthenticationProvider_DoesNotFailRequest_WhenAuditLogThrows` — throwing `IAuditLog`; authentication still completes; throw logged at Error.
+- `BearerTokenAuthenticationProvider_AuditContext_RespectsAllowedClaimsWhitelist` — token with `jti`/`iss`/`sub`/`name`/`secret-claim`; assert `Context` contains `jti`/`iss` only; no raw token text. Includes the 10 KB `iss` truncation case (≤ 4096 bytes ending in `"...[truncated]"`).
+- `DefaultAuthorizationPolicy_EmitsAuditEntry_OnAllow` — `decision.IsAllowed == true` → `Outcome=granted`.
+- `DefaultAuthorizationPolicy_EmitsAuditEntry_OnDeny` — `IsAllowed == false` → `Outcome=denied`.
+- `NullAuditLog_IsDefault_WhenNothingElseRegistered` + `HostRegisteredIAuditLog_TakesPrecedenceOverNullAuditLog` — verifies `TryAddSingleton` semantics.
+- `AuthStartupHook_LogsWarning_WhenAuditLogIsNullAuditLog` — `::warning::` fires at startup.
 
 ### Test double policy
 
-**Auth does NOT take a dependency on a `HoneyDrunk.Audit.Testing` package** — per ADR-0031 D2 and the dispatch plan, no such package exists at Audit v0.1.0. Auth writes its own narrowly-scoped in-memory `IAuditLog` test double inside `HoneyDrunk.Auth.Tests/Fakes/InMemoryAuditLog.cs` (≈ 20 lines: a `List<AuditEntry>` + lock + `AppendAsync` that adds to the list + a `Snapshot()` helper for assertions). This is the same pattern Communications uses for testing decision-log emission. Cutting `HoneyDrunk.Audit.Testing` later (when a third consumer needs it) is a non-breaking change; Auth can swap its local fake for the package then if it wants — out of scope here.
+Auth does NOT depend on `HoneyDrunk.Audit.Testing` (no such package at Audit v0.1.0 per ADR-0031 D2 / ADR-0027 D3). Hand-written ≈ 20-line `InMemoryAuditLog` in `HoneyDrunk.Auth.Tests/Fakes/` — `List<AuditEntry>` + lock + `AppendAsync` + `Snapshot()`. Future cut to `HoneyDrunk.Audit.Testing` is non-breaking.
 
 ### Canary project update
 
-`HoneyDrunk.Auth.Canary` is the existing canary against Auth's boundaries. Add a single test there that exercises the audit-emission path end-to-end using the in-memory test double (so the canary doesn't require an audit backing wired). The canary's purpose is to keep the cross-Node assumption (that Auth emits the right shape on `IAuditLog`) compiled and tested even as Audit's contract evolves.
+Add one end-to-end audit-emission test in `HoneyDrunk.Auth.Canary` using the in-memory test double (no backing required).
 
 ### Version bump
 
-Per invariant 27 (one solution version), this is a minor feature addition — bump every `src/*.csproj` `<Version>` from `0.4.0` to `0.5.0` in a single commit. Test projects do not bump.
+Per invariant 27, bump every `src/*.csproj` `<Version>` from `0.4.0` to `0.5.0` in one commit. Test projects do not bump.
 
 ### CHANGELOG entries (repo-level + per-package)
 
@@ -252,23 +212,9 @@ Per invariant 27 (one solution version), this is a minor feature addition — bu
 
 Update `HoneyDrunk.Auth/README.md` to mention the audit emission. Add a short section (≈ 5 lines) describing what Auth records to `IAuditLog`, that it requires a host-side `AddHoneyDrunkAuditData()` (or other backing) to actually persist, and that the emission is additive (Auth's identity-out-of-traces invariant is preserved). **Per memory `feedback_no_adr_in_docs`, do not cite "ADR-0030" or "ADR-0031" by number in the README narrative** — describe what the package does. Link to `HoneyDrunk.Audit`'s README for downstream-consumer wiring guidance.
 
-### Architecture-side: `repos/HoneyDrunk.Auth/integration-points.md` follow-up (separate packet)
+### Architecture-side follow-up (separate packet)
 
-**This packet is Auth-only.** `file-packets.yml`'s `target_repo: HoneyDrunkStudios/HoneyDrunk.Auth` opens the PR in the Auth repo — it cannot cross-commit to the Architecture repo in the same push. The Architecture-side edit (`repos/HoneyDrunk.Auth/integration-points.md` — add an Audit row under "Upstream Dependencies" naming `IAuditLog` as the consumed contract) is captured as a small Architecture follow-up packet rather than crammed into this packet's PR.
-
-The follow-up packet shape, for the user / a future scope pass:
-
-- Target repo: `HoneyDrunkStudios/HoneyDrunk.Architecture`
-- One-file edit: `repos/HoneyDrunk.Auth/integration-points.md` — add the Audit row in the "Upstream Dependencies" table.
-- Adjacent CHANGELOG entry under the current dated SemVer section noting the integration-points reconciliation.
-- Filed after packet 04's PR merges (so the row reflects reality on `main`, not a pre-emptive claim).
-- Listed in this initiative's dispatch-plan §What This Initiative Does NOT Deliver as a known small follow-up.
-
-The row to add looks like:
-
-| Node | Contract | Usage |
-|------|----------|-------|
-| **HoneyDrunk.Audit** | `IAuditLog` (`HoneyDrunk.Audit.Abstractions`) | Durable, attributable security event emission — token-validation outcomes and authorization-policy decisions. Additive to existing OTel traces, on the separate durable channel per the Grid's audit-emission boundary invariant. NullAuditLog stub registered via TryAddSingleton; hosts without a composed IAuditLog backing get a no-op with a startup warning. |
+This packet is Auth-only. `file-packets.yml` cannot cross-commit. The Architecture edit (`repos/HoneyDrunk.Auth/integration-points.md` — add Audit row under "Upstream Dependencies" naming `IAuditLog`) is a separate follow-up Architecture packet, filed after this PR merges. Listed in the dispatch-plan's "What This Initiative Does NOT Deliver".
 
 ## Affected Files
 
@@ -321,8 +267,8 @@ The test project already references `xunit`, `Microsoft.NET.Test.Sdk`, etc. No n
 - [x] `NullAuditLog` stub is the fallback when no host-side backing is composed. Registered via `TryAddSingleton` so host-side registrations win. Startup `::warning::` makes the no-op state visible.
 - [x] Test double lives in `HoneyDrunk.Auth.Tests/Fakes/`, hand-written, NOT taken from a `HoneyDrunk.Audit.Testing` package (no such package exists at Audit v0.1.0; per ADR-0031 D2 and ADR-0027 D3 precedent).
 - [x] Single solution version per invariant 27 — both `Abstractions` and `Auth.AspNetCore` `.csproj` `<Version>` bumped to 0.5.0 even though only `HoneyDrunk.Auth` changed. Per-package CHANGELOG updates land only for the package that actually changed (`HoneyDrunk.Auth`), per invariant 27's no-alignment-noise rule.
-- [x] **Lifetime story documented — both Auth emitters are Singleton; ambient grid-context resolution avoids captive-dep on Scoped `IGridContext`.** `BearerTokenAuthenticationProvider` and `DefaultAuthorizationPolicy` remain registered as Singleton by `AddHoneyDrunkAuth()` (lines 83 and 86 of `HoneyDrunkAuthServiceCollectionExtensions.cs` unchanged). Both classes inject `IGridContextAccessor` (a Singleton-friendly ambient accessor that resolves the current scope's `IGridContext` lazily per call) rather than `IGridContext` directly. Direct `IGridContext` injection into a Singleton is the captive-dep anti-pattern — the Singleton would close over the first scope's context and serve stale `CorrelationId`/`TenantId` to every subsequent request. The accessor pattern is exactly the workaround `IGridContextAccessor`'s own XML docs name as the intended use. `IGridContextAccessor` is already in `ValidateKernelServices()`'s required list at line 99 of the DI extensions file — every Auth-composing host already has it registered.
-- [x] **`AuthorizationPolicyEvaluator` (the pure static decision core) is not touched.** Audit emission lands on `DefaultAuthorizationPolicy.EvaluateAsync` (the I/O-side decorator that wraps the static evaluator with telemetry and logging — the same place existing cross-cutting concerns live). The static evaluator stays pure, deterministic, and side-effect-free per its file's own XML docs.
+- [x] **Both emitters stay Singleton; inject `IGridContextAccessor`, NOT `IGridContext`** (captive-dep avoidance — see Lifetime story).
+- [x] **`AuthorizationPolicyEvaluator` (pure static decision core) is not touched.** Audit emission lands on `DefaultAuthorizationPolicy.EvaluateAsync` (the I/O-side decorator).
 
 ## Acceptance Criteria
 
