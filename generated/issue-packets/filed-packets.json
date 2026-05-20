@@ -159,5 +159,7 @@
   "generated/issue-packets/active/adr-0027-notify-cloud-standup/02-architecture-notify-cloud-invariants.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/150",
   "generated/issue-packets/active/adr-0027-notify-cloud-standup/03-notify-fsl-license.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/21",
   "generated/issue-packets/active/adr-0027-notify-cloud-standup/04-communications-fsl-license.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications/issues/18",
-  "generated/issue-packets/active/adr-0027-notify-cloud-standup/05-architecture-create-notify-cloud-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/151"
+  "generated/issue-packets/active/adr-0027-notify-cloud-standup/05-architecture-create-notify-cloud-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/151",
+  "generated/issue-packets/active/adr-0031-audit-node-standup/01-architecture-audit-coupling-and-canary-invariants.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/153",
+  "generated/issue-packets/active/adr-0031-audit-node-standup/02-architecture-create-audit-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/154"
 }
