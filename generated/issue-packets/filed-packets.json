@@ -154,5 +154,10 @@
   "generated/issue-packets/active/adr-0024-flow-standup/03-flow-node-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Flow/issues/2",
   "generated/issue-packets/active/adr-0025-sim-standup/01-architecture-sim-catalog-registration.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/145",
   "generated/issue-packets/active/adr-0025-sim-standup/02-architecture-sim-invariants.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/146",
-  "generated/issue-packets/active/adr-0025-sim-standup/03-architecture-create-sim-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/147"
+  "generated/issue-packets/active/adr-0025-sim-standup/03-architecture-create-sim-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/147",
+  "generated/issue-packets/active/adr-0027-notify-cloud-standup/01-architecture-notify-cloud-context-folder.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/149",
+  "generated/issue-packets/active/adr-0027-notify-cloud-standup/02-architecture-notify-cloud-invariants.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/150",
+  "generated/issue-packets/active/adr-0027-notify-cloud-standup/03-notify-fsl-license.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/21",
+  "generated/issue-packets/active/adr-0027-notify-cloud-standup/04-communications-fsl-license.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications/issues/18",
+  "generated/issue-packets/active/adr-0027-notify-cloud-standup/05-architecture-create-notify-cloud-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/151"
 }
