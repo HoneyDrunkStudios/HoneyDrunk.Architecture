@@ -124,5 +124,9 @@
   "generated/issue-packets/completed/standalone/2026-05-04-communications-consolidate-communications-tenant-predicates.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications/issues/9",
   "generated/issue-packets/active/adr-0033-deploy-trigger-model/01-notify-functions-deploy-trigger-model.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/19",
   "generated/issue-packets/active/adr-0033-deploy-trigger-model/02-notify-worker-deploy-trigger-model.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/20",
-  "generated/issue-packets/active/adr-0033-deploy-trigger-model/03-pulse-collector-deploy-trigger-model.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/18"
+  "generated/issue-packets/active/adr-0033-deploy-trigger-model/03-pulse-collector-deploy-trigger-model.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/18",
+  "generated/issue-packets/active/adr-0028-event-driven-architecture/01-architecture-transport-integration-points-matrix.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/117",
+  "generated/issue-packets/active/adr-0028-event-driven-architecture/02-architecture-transport-boundaries-scope-clarification.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/118",
+  "generated/issue-packets/active/adr-0028-event-driven-architecture/03-architecture-pulse-boundaries-signals-vs-events.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/119",
+  "generated/issue-packets/active/adr-0028-event-driven-architecture/04-communications-notify-sender-boundary.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications/issues/17"
 }
