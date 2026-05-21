@@ -9,6 +9,9 @@
 
 ## Summary
 
+> **Reconciliation update (2026-05-21):** Phase 1 contract/catalog work is complete. Architecture#35/#36 and Observe#2 are closed; `HoneyDrunk.Observe.Abstractions` shipped in Observe PR #3. The AI routing-contract packet was superseded by ADR-0016: HoneyDrunk.AI is no longer empty, and AI#2 / PR #5 shipped `IModelRouter`, `IRoutingPolicy`, and `ModelCapabilityDeclaration`. Treat the older "AI repo is empty" deferral language below as historical context only.
+
+
 ADR-0010 introduced two new architectural layers — the Observation Layer (new Node `HoneyDrunk.Observe` in the Ops sector) and the AI Routing Layer (extension of existing `HoneyDrunk.AI`). The ADR explicitly partitions the work into three phases. This initiative ships **Phase 1 only** — contracts, catalogs, and stubs — so Phase 2 (first GitHub connector + cost-first routing policy) and Phase 3 (HoneyHub integration, blocked on HoneyHub Phase 1) can be scoped later without getting lost.
 
 Phase 1 touches three repos:
@@ -41,8 +44,8 @@ Execution is **manual on Codex Cloud** matching the ADR-0005/0006 rollout patter
 
 Run these first. They establish the catalog identity and GitHub surface that Wave 2 consumes.
 
-- [ ] `HoneyDrunk.Architecture`: Accept ADR-0010 — catalog registration, repo context folder, sector update, invariants 28–30 finalized, ADR index flipped, initiative/roadmap trackers — [`01-architecture-adr-0010-acceptance.md`](01-architecture-adr-0010-acceptance.md)
-- [ ] `HoneyDrunk.Architecture` (**human-only chore**): Create the `HoneyDrunk.Observe` GitHub repo — [`02-architecture-create-observe-repo.md`](02-architecture-create-observe-repo.md)
+- [x] `HoneyDrunk.Architecture`: Accept ADR-0010 — catalog registration, repo context folder, sector update, invariants 28–30 finalized, ADR index flipped, initiative/roadmap trackers — [`01-architecture-adr-0010-acceptance.md`](01-architecture-adr-0010-acceptance.md)
+- [x] `HoneyDrunk.Architecture` (**human-only chore**): Create the `HoneyDrunk.Observe` GitHub repo — [`02-architecture-create-observe-repo.md`](02-architecture-create-observe-repo.md)
   - `Actor=Human`, `human-only` label. 3-minute portal task. Root blocker for the scaffold packet below.
 
 **Wave 1 exit criteria (before starting Wave 2 on Codex Cloud):**
@@ -59,7 +62,7 @@ Run these first. They establish the catalog identity and GitHub surface that Wav
 
 Only the Observe side ships in Wave 2 of this initiative. The AI routing-contracts packet is **deferred** (see next section).
 
-- [ ] `HoneyDrunk.Observe` (**BLOCKED on `02-architecture-create-observe-repo.md`**): Scaffold repo, solution, and `HoneyDrunk.Observe.Abstractions` with three contracts — [`03-observe-abstractions-scaffold.md`](03-observe-abstractions-scaffold.md)
+- [x] `HoneyDrunk.Observe`: Scaffold repo, solution, and `HoneyDrunk.Observe.Abstractions` with three contracts — [`03-observe-abstractions-scaffold.md`](03-observe-abstractions-scaffold.md)
   - **Blocked on:** `02-architecture-create-observe-repo.md` closing. File this packet via the Next Steps script embedded in packet 02.
 
 **Wave 2 exit criteria:**
@@ -69,16 +72,16 @@ Only the Observe side ships in Wave 2 of this initiative. The AI routing-contrac
 
 ### Deferred — packet 04 (AI routing contracts)
 
-[`04-ai-add-routing-contracts.md`](04-ai-add-routing-contracts.md) is **parked pending a HoneyDrunk.AI standup ADR**. The repo exists on GitHub but is empty, and scaffolding choices for a foundational AI-sector Node — solution layout, Microsoft.Extensions.AI alignment strategy, package family split, inference-vs-routing contract boundaries, Pulse/Vault integration, first provider — are architectural decisions that deserve their own ADR (provisional `ADR-0014-honeydrunk-ai-standup`).
+[`04-ai-add-routing-contracts.superseded.md`](../../completed/adr-0010-observe-ai-routing-phase-1/04-ai-add-routing-contracts.superseded.md) is **superseded by ADR-0016**. HoneyDrunk.AI is scaffolded and the originally requested routing contracts have shipped, and scaffolding choices for a foundational AI-sector Node — solution layout, Microsoft.Extensions.AI alignment strategy, package family split, inference-vs-routing contract boundaries, Pulse/Vault integration, first provider — are architectural decisions that deserve their own ADR (provisional `ADR-0014-honeydrunk-ai-standup`).
 
-**What happens next:**
-1. A new ADR draft (`ADR-0014-honeydrunk-ai-standup` or next-available number) is authored via the adr-composer agent
-2. ADR is accepted
-3. A scoping initiative derived from that ADR ships the HoneyDrunk.AI first-commit scaffold including a minimum-viable `HoneyDrunk.AI.Abstractions` package
-4. Packet 04 becomes fileable as a strict additive contracts PR on the now-existing Abstractions package
-5. Invariant 28's "Proposed" qualifier flip rides alongside that PR, as originally specified
+**Current resolution:**
+1. ADR-0016 became the HoneyDrunk.AI standup ADR.
+2. ADR-0016 Architecture packets registered the AI contract/catalog/invariant surface.
+3. HoneyDrunk.AI issue #2 / PR #5 shipped the first scaffold, including `HoneyDrunk.AI.Abstractions` and the routing contracts originally requested here.
+4. Duplicate/superseded ADR-0010 AI routing issues should stay closed for traceability.
+5. New work belongs in ADR-0010 Phase 2 implementation packets, not packet 04 re-filing.
 
-Do **not** file packet 04 against the empty HoneyDrunk.AI repo. The packet's Preflight acceptance criterion directs the executor to stop and flag rather than improvise a scaffold.
+Do **not** file packet 04 again.
 
 ## Archival
 

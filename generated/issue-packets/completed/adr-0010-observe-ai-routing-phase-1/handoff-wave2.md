@@ -6,6 +6,9 @@
 
 This handoff is a one-shot baton pass. It is read at the transition and then left alone — it is not a live tracker.
 
+
+> **Reconciliation update (2026-05-21):** Wave 2 is complete. Observe#2 merged via PR #3, and `HoneyDrunk.Observe.Abstractions` now exists with the three observation contracts. The AI routing contracts are also present, but via ADR-0016 AI#2 / PR #5 rather than this handoff's original packet 04 path. Treat references below to an empty HoneyDrunk.AI repo as historical context.
+
 ## Wave 1 completion state
 
 Before starting Wave 2, confirm the following are true:
