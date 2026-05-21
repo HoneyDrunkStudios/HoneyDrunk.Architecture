@@ -10,14 +10,14 @@
 
 Accepting this ADR creates catalog obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
 
-- [ ] Add `honeydrunk-observe` to `catalogs/nodes.json` with full metadata (include package families: `HoneyDrunk.Observe.Abstractions`, `HoneyDrunk.Observe`, and the `HoneyDrunk.Observe.Connectors.*` provider slots)
-- [ ] Add entries to `catalogs/relationships.json` (consumed_by, exposes.contracts, consumes_detail)
-- [ ] Add contract stubs for `IObservationTarget`, `IObservationConnector`, `IObservationEvent` to `catalogs/contracts.json`
-- [ ] Add `honeydrunk-observe` to `catalogs/grid-health.json` and remove any `honeydrunk-observe-connectors` stubs (connectors ship from the Observe repo, not a separate Node)
-- [ ] Create `repos/HoneyDrunk.Observe/` context folder (overview, boundaries, invariants, active-work, integration-points)
-- [ ] Update `constitution/sectors.md` Node table to add `HoneyDrunk.Observe` under the Ops sector
-- [ ] Update ADR index (ADRs/README.md) status from Proposed → Accepted
-- [ ] Update `constitution/invariants.md` to add invariants 28–30 (currently added speculatively — revert if ADR is not accepted)
+- [x] Add `honeydrunk-observe` to `catalogs/nodes.json` with full metadata (include package families: `HoneyDrunk.Observe.Abstractions`, `HoneyDrunk.Observe`, and the `HoneyDrunk.Observe.Connectors.*` provider slots)
+- [x] Add entries to `catalogs/relationships.json` (consumed_by, exposes.contracts, consumes_detail)
+- [x] Add contract stubs for `IObservationTarget`, `IObservationConnector`, `IObservationEvent` to `catalogs/contracts.json`
+- [x] Add `honeydrunk-observe` to `catalogs/grid-health.json` and remove any `honeydrunk-observe-connectors` stubs (connectors ship from the Observe repo, not a separate Node)
+- [x] Create `repos/HoneyDrunk.Observe/` context folder (overview, boundaries, invariants, active-work, integration-points)
+- [x] Update `constitution/sectors.md` Node table to add `HoneyDrunk.Observe` under the Ops sector
+- [x] Update ADR index (ADRs/README.md) status from Proposed → Accepted
+- [x] Update `constitution/invariants.md` to add invariants 28–30 (currently added speculatively — revert if ADR is not accepted)
 
 ## Context
 

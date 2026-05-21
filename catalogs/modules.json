@@ -224,6 +224,14 @@
     "description": "Communication orchestration runtime — welcome flow, preference/cadence checks, decision logging, and Notify delegation"
   },
   {
+    "id": "observe-abstractions",
+    "nodeId": "honeydrunk-observe",
+    "name": "HoneyDrunk.Observe.Abstractions",
+    "type": "abstractions",
+    "version": "0.0.0",
+    "description": "Zero-dependency observation contracts — IObservationTarget, IObservationConnector, and IObservationEvent"
+  },
+  {
     "id": "audit-abstractions",
     "nodeId": "honeydrunk-audit",
     "name": "HoneyDrunk.Audit.Abstractions",

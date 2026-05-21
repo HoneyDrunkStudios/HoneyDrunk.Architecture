@@ -110,7 +110,11 @@ Rules that must never be violated across the HoneyDrunk Grid. Canary tests enfor
 28. **Application code must never hardcode a model name or provider.**
     All model selection goes through `IModelRouter` in HoneyDrunk.AI. Routing policies are stored in App Configuration (ADR-0005) and are operator-configurable without a redeploy. See ADR-0010.
 
-_Invariants 29–30 are reserved for Observation Layer follow-up implementation work from ADR-0010._
+29. **Observation connectors must delegate credential resolution to Vault.**
+    No connector stores credentials directly. Connection secrets (webhook secrets, API tokens for external services) are resolved via `ISecretStore` at connection establishment. See ADR-0010.
+
+30. **HoneyDrunk.Observe events must be normalized to the canonical observation format before routing out of the Observe boundary.**
+    Raw external formats (GitHub webhook JSON, Azure alert schema) never cross the Observe boundary — only normalized `IObservationEvent` types. See ADR-0010.
 
 44. **Downstream AI-sector Nodes take a runtime dependency only on `HoneyDrunk.AI.Abstractions`.**
     Composition against `HoneyDrunk.AI` and any `HoneyDrunk.AI.Providers.*` package is a host-time concern resolved at application startup from App Configuration. This is the same abstraction/runtime split applied for Vault and Transport, restated here because it is the specific rule that allows blocked AI-sector Nodes (Capabilities, Operator, Agents, Memory, Knowledge, Evals) to proceed on `Abstractions` alone without waiting for provider packages. See ADR-0016 D9.

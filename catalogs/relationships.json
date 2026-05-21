@@ -4,7 +4,7 @@
       "id": "honeydrunk-kernel",
       "consumes": [],
       "consumed_by": ["honeydrunk-transport", "honeydrunk-vault", "honeydrunk-vault-rotation", "honeydrunk-auth", "honeydrunk-web-rest", "honeydrunk-data", "honeydrunk-notify", "honeydrunk-pulse", "honeydrunk-communications"],
-      "consumed_by_planned": ["honeydrunk-ai", "honeydrunk-capabilities", "honeydrunk-agents", "honeydrunk-memory", "honeydrunk-knowledge", "honeydrunk-flow", "honeydrunk-operator", "honeydrunk-audit"],
+      "consumed_by_planned": ["honeydrunk-ai", "honeydrunk-capabilities", "honeydrunk-agents", "honeydrunk-memory", "honeydrunk-knowledge", "honeydrunk-flow", "honeydrunk-operator", "honeydrunk-audit", "honeydrunk-observe"],
       "blocked_by": [],
       "exposes": {
         "contracts": ["IGridContext", "INodeContext", "IOperationContext", "IStartupHook", "IShutdownHook", "INodeLifecycle", "IHealthContributor", "IReadinessContributor", "ITraceEnricher", "ILogScopeFactory", "IAgentExecutionContext"],
@@ -30,7 +30,7 @@
       "id": "honeydrunk-vault",
       "consumes": ["honeydrunk-kernel"],
       "consumed_by": ["honeydrunk-auth"],
-      "consumed_by_planned": ["honeydrunk-ai", "honeydrunk-vault-rotation"],
+      "consumed_by_planned": ["honeydrunk-ai", "honeydrunk-vault-rotation", "honeydrunk-observe"],
       "blocked_by": [],
       "exposes": {
         "contracts": ["ISecretStore", "IConfigProvider", "IVaultClient", "ISecretProvider", "IConfigSource"],
@@ -128,6 +128,22 @@
       },
       "consumes_detail": {
         "honeydrunk-kernel": ["IGridContext", "WellKnownNodes.Ops.Pulse", "HoneyDrunk.Kernel.Abstractions"]
+      }
+    },
+    {
+      "id": "honeydrunk-observe",
+      "consumes": ["honeydrunk-kernel", "honeydrunk-vault"],
+      "consumed_by": [],
+      "consumed_by_planned": [],
+      "blocked_by": [],
+      "exposes": {
+        "contracts": ["IObservationTarget", "IObservationConnector", "IObservationEvent"],
+        "packages": ["HoneyDrunk.Observe.Abstractions"],
+        "packages_planned": ["HoneyDrunk.Observe", "HoneyDrunk.Observe.Connectors.GitHub", "HoneyDrunk.Observe.Connectors.Azure", "HoneyDrunk.Observe.Connectors.Http"]
+      },
+      "consumes_detail": {
+        "honeydrunk-kernel": ["IGridContext", "IOperationContext", "IStartupHook", "HoneyDrunk.Kernel"],
+        "honeydrunk-vault": ["ISecretStore", "HoneyDrunk.Vault"]
       }
     },
     {

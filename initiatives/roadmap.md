@@ -26,7 +26,7 @@ High-level roadmap for the HoneyDrunk Grid.
 - [x] Notify — v0.3.0 Kernel-aligned package release complete; Azure Functions/Worker deployment remains under ADR-0015
 - [x] HoneyDrunk.Communications — v0.2.0 Kernel-abstractions-only runtime/abstractions release complete
 - [ ] HoneyDrunk.AI — Model/provider abstraction stand-up underway *(ADR-0016 packets open: Architecture#72, Architecture#73, AI#2)*
-- [ ] **ADR-0010 Phase 1 (Observation Layer & AI Routing contracts)** *(0/3 issues closed; scoped 2026-04-18 — Observe side ready to file, AI routing deferred pending HoneyDrunk.AI standup ADR)*
+- [ ] **ADR-0010 Phase 1 (Observation Layer & AI Routing contracts)** *(1/3 issues closed; Architecture#35 acceptance cleanup in progress; Observe#2 remains next; AI routing deferred pending HoneyDrunk.AI standup ADR)*
 - [x] **ADR-0030 Grid-Wide Audit Substrate — Capability Acceptance** *(2/2 packet issues closed; ready for archive/exit-criteria review; standup is the separate ADR-0031 initiative)*
 - [x] **ADR-0032 PR Validation Policy — Coverage Gate & NuGet Flagging** *(12/12 packet issues closed; ADR remains Proposed until `accepts:` frontmatter is reconciled or manually flipped)*
 - [x] **Kernel Adoption Alignment** *(11/11 packet issues closed; package baseline reconciled to Kernel 0.7.0; ready for archive/exit-criteria review)*
