@@ -21,7 +21,7 @@ This ADR decides distribution, identity, signing, metadata, and the approved-fee
 
 ## Decision
 
-### D1 — Primary feed: nuget.org under the `HoneyDrunk` owner
+### D1 — Primary feed: nuget.org under the `HoneyDrunkStudios` owner
 
 All public `.Abstractions` packages and their default backings publish to **nuget.org** under a single owner account (`HoneyDrunkStudios`). nuget.org is the default `dotnet add package` resolver and the lowest-friction surface for external consumers. GitHub Packages is **not** the primary public feed — it requires authenticated pulls which defeats "install without an account."
 

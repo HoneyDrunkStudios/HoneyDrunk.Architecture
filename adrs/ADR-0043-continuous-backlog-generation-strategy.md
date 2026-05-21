@@ -11,7 +11,7 @@ Work creation in the Grid is manual today. The pipeline downstream of a packet i
 
 This is a bottleneck. The Grid is 12 live Nodes + 13 Seed Nodes + Meta surface; the studio is one developer plus AI agents. The repos can each be improved and expanded, and there is no system that **finds** that work, **queues** it, and **surfaces** it for triage. Concrete evidence:
 
-- The 9 ADRs accepted today (0034–0042) imply 50+ packets across at least 8 repos; without a deliberate scope pass, those will be created ad-hoc as the next person remembers them.
+- The 9 ADRs proposed today (0034–0042) imply 50+ packets across at least 8 repos once accepted; without a deliberate scope pass on acceptance, those will be created ad-hoc as the next person remembers them.
 - `initiatives/current-focus.md` lists "Archive / Exit-Criteria Review" against multiple 100%-closed rollouts that have been ready for review for weeks; no scheduled trigger turns "ready" into "queued."
 - `node-audit` exists and is opinionated about per-Node health, but no rotation runs it; the audit surface is dormant unless invoked.
 - `hive-sync` produces `initiatives/drift-report.md` for human eyes; drift items never become packets unless a human reads the report and writes one.

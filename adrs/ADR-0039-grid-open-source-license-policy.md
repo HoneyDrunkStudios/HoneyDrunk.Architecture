@@ -36,7 +36,7 @@ Every Grid Node defaults to **MIT** unless an exception applies (D2, D3). MIT wa
 
 `<PackageLicenseExpression>MIT</PackageLicenseExpression>` becomes the `Directory.Build.props` default per ADR-0034 D3.
 
-### D2 — Revenue Nodes: Functional Source License (FSL) 1-year MIT delay
+### D2 — Revenue Nodes: Functional Source License (FSL) 2-year MIT delay
 
 Revenue Nodes — Nodes the Studio intends to monetize directly or that exist primarily to support a paid product — license under **FSL-1.1-MIT**, the same license precedent set by ADR-0027 for `HoneyDrunk.Notify` and `HoneyDrunk.Communications`.
 

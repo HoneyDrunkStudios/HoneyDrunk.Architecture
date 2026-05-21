@@ -356,7 +356,7 @@ Adds two:
 - **Invariant: every non-draft PR on an `enabled` repo runs the cloud-wired `review` agent.** Skip is via the `skip-review` label or `enabled: false` config — both explicit, both visible.
 - **Invariant: agent-authored PRs touching a high-risk Node receive two independent LLM-review perspectives before merge.** The catalog of high-risk Nodes lives in `catalogs/grid-health.json`.
 
-ADR-0011's invariants 31–33 are preserved. Numbering for these two new invariants is reserved at 34–35 (with the caveat that the next-numbered ADR's invariants must avoid collision — `hive-sync` reconciles).
+ADR-0011's invariants 31–33 are preserved. Final invariant numbers for the two new invariants are assigned when the implementing work updates `constitution/invariants.md`; this ADR deliberately does not reserve specific numbers because the existing 34+ range is already contested between ADR-0012's CI/CD invariants (34–38) and ADR-0015's hosting invariants (34–36). `hive-sync` reconciles the final assignments at landing time.
 
 ### Operational Consequences
 
