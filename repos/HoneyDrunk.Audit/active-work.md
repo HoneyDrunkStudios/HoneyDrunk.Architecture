@@ -11,11 +11,12 @@
 
 - Create the `HoneyDrunk.Audit` public GitHub repo
 - Scaffold `HoneyDrunk.Audit.slnx` with `HoneyDrunk.Audit.Abstractions` + `HoneyDrunk.Audit.Data` and matching `.Tests` projects
-- Author the three frozen contracts (`IAuditLog`, `IAuditQuery`, `AuditEntry`)
+- Author the D3 public surface (`IAuditLog`, `IAuditQuery`, `AuditEntry`) plus supporting category/outcome/target/change value types
 - Data-backed append-only store over `IRepository`/`IUnitOfWork`; audit-class retention hook (App Config-sourced)
+- First-class support for activity/security/system events and data-change events, including redaction guidance for changed fields
 - The Node's own managed identity (per-Node isolation)
 - In-memory `IAuditLog`/`IAuditQuery` fixture (internal to the test project)
-- Contract-shape canary on all three contracts in CI
+- Contract-shape canary on the full `HoneyDrunk.Audit.Abstractions` public surface in CI
 
 ## Deferred (behind the now-existing boundary — each gated on a stated trigger)
 
