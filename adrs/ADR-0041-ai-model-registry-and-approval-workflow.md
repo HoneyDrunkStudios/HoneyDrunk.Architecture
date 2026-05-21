@@ -1,4 +1,4 @@
-# ADR-DRAFT: AI Model Registry and Approval Workflow
+# ADR-0041: AI Model Registry and Approval Workflow
 
 **Status:** Proposed
 **Date:** 2026-05-21

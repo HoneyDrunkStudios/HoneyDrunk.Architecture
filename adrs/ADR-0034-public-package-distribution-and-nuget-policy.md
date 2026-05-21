@@ -1,4 +1,4 @@
-# ADR-DRAFT: Public Package Distribution and NuGet Policy
+# ADR-0034: Public Package Distribution and NuGet Policy
 
 **Status:** Proposed
 **Date:** 2026-05-21

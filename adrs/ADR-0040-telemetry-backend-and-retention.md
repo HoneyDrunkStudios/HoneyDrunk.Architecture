@@ -1,4 +1,4 @@
-# ADR-DRAFT: Telemetry Backend and Retention
+# ADR-0040: Telemetry Backend and Retention
 
 **Status:** Proposed
 **Date:** 2026-05-21

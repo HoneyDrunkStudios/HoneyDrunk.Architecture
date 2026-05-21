@@ -1,4 +1,4 @@
-# ADR-DRAFT: Disaster Recovery and Backup Policy
+# ADR-0036: Disaster Recovery and Backup Policy
 
 **Status:** Proposed
 **Date:** 2026-05-21

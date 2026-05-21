@@ -1,4 +1,4 @@
-# ADR-DRAFT: Grid Open Source License Policy
+# ADR-0039: Grid Open Source License Policy
 
 **Status:** Proposed
 **Date:** 2026-05-21

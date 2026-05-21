@@ -1,4 +1,4 @@
-# ADR-DRAFT: Idempotency Contract for Async Boundaries
+# ADR-0042: Idempotency Contract for Async Boundaries
 
 **Status:** Proposed
 **Date:** 2026-05-21

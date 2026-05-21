@@ -1,4 +1,4 @@
-# ADR-DRAFT: Abstractions Versioning and Deprecation Policy
+# ADR-0035: Abstractions Versioning and Deprecation Policy
 
 **Status:** Proposed
 **Date:** 2026-05-21

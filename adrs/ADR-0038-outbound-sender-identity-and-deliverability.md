@@ -1,4 +1,4 @@
-# ADR-DRAFT: Outbound Sender Identity and Deliverability
+# ADR-0038: Outbound Sender Identity and Deliverability
 
 **Status:** Proposed
 **Date:** 2026-05-21

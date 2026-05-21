@@ -1,4 +1,4 @@
-# ADR-DRAFT: Payment and Billing Integration
+# ADR-0037: Payment and Billing Integration
 
 **Status:** Proposed
 **Date:** 2026-05-21
