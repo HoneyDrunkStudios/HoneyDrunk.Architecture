@@ -58,7 +58,7 @@ Intent → Classify → Scope → Issue Packets → GitHub Issues → Execute �
 | `catalogs/` | JSON registries — nodes, packages, services, relationships, contracts, health, signals, compatibility |
 | `adrs/` | Architecture Decision Records governing Grid design |
 | `pdrs/` | Product Decision Records governing platform strategy |
-| `business/` | Business Decision Records and operational context — entity, banking, vendors, contracts |
+| `business/` | Business Decision Records (BDRs) and operational context — entity, banking, vendors, insurance, signed contracts |
 | `routing/` | Request classification, repo discovery, execution rules, SDLC lifecycle, site sync triggers |
 | `repos/` | Per-Node context — boundaries, invariants, overview, integration points for every Grid repo |
 | `initiatives/` | Active initiatives, current focus, roadmap, release history |
@@ -66,15 +66,15 @@ Intent → Classify → Scope → Issue Packets → GitHub Issues → Execute �
 | `issues/templates/` | Issue packet templates by type (feature, bug, cross-repo, CI, canary, etc.) |
 | `generated/` | Output directory for issue packets, ADR drafts, PDR drafts, site sync packets, incident logs |
 | `copilot/` | Agent behavior rules — issue authoring standards, PR review checklists, global instructions |
-| `.claude/agents/` | Claude Code agent definitions (scope, refine, review, node-audit, adr-composer, pdr-composer, netrunner, site-sync, file-issues) |
+| `.claude/agents/` | Claude Code agent definitions (scope, refine, review, node-audit, adr-composer, pdr-composer, netrunner, site-sync, file-issues, hive-sync) |
 | `scripts/` | Automation scripts for issue filing and board management |
 
 ## The Grid
 
 | Sector | Signal | Nodes |
 |--------|--------|-------|
-| **Core** | Live | Kernel, Transport, Vault, Auth, Web.Rest, Data |
-| **Ops** | Mixed | Pulse (Seed), Notify (Live), Actions (Live) |
+| **Core** | Mixed | Kernel (Live), Transport (Live), Vault (Live), Auth (Live), Web.Rest (Live), Data (Live), Vault.Rotation (Seed), Audit (Seed) |
+| **Ops** | Mixed | Pulse (Live), Notify (Live), Communications (Live), Actions (Live) |
 | **Meta** | Mixed | Architecture (Live), Studios (Live), Lore (Seed) |
 | **AI** | Seed | Agents, AI, Memory, Knowledge, Evals, Capabilities, Flow, Operator, Sim |
 | **HoneyNet** | Planned | — |
