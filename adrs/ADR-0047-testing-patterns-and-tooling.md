@@ -9,7 +9,7 @@
 
 The Grid has no formal testing-patterns ADR. Today:
 
-- **Unit tests** exist in most Nodes using xUnit and Moq, but conventions drift between Nodes — different assertion libraries, different mocking patterns, no shared test-data approach.
+- **Unit tests** exist in most Nodes using xUnit and Moq, but conventions drift between Nodes — different assertion libraries, different mocking patterns, no shared test-data approach. (The Moq stewardship problem from 2023 — see D2 — is an additional reason to formalize a different default going forward.)
 - **Integration tests** are explicitly named as an unresolved gap (ADR-0011 Gap 1). The slot in `pr-core.yml` tier 2 is defined; no implementation pattern is committed.
 - **E2E tests** are named as an unresolved gap (ADR-0011 Gap 3) with Playwright identified as the chosen tool — but no scope, no setup pattern, no environment commitments.
 - **Mobile E2E** is undecided. Six consumer-app PDRs (PDR-0003 Lately, PDR-0005 Hearth, PDR-0006 Currents, PDR-0007 Arcadia, PDR-0008 Curiosities, plus PDR-0004 Wayside) all imply mobile distribution; mobile platform itself is pending an ADR, and the mobile E2E story is downstream.
@@ -45,16 +45,18 @@ The pyramid shape: many unit tests, fewer integration tests, fewer still E2E tes
 
 **Why two integration tiers (2a and 2b):** The Grid's coupling rule (Abstractions-first per every standup ADR) makes most cross-Node testing possible **without** spinning up real dependencies — the contract-compatible fakes (Invariant 15) cover most cases at low cost. Tier 2a is the workhorse. Tier 2b exists for the cases where the **real dependency's behavior** is what's being tested (e.g., does our Postgres migration actually run? does the Service Bus deduplication window behave as expected under our `IdempotencyKey` scheme per ADR-0042?). Splitting them lets Tier 2a stay fast and parallel-friendly while Tier 2b carries the heavier startup cost only where it earns its keep.
 
-### D2 — Unit tests: xUnit + Moq + AwesomeAssertions
+### D2 — Unit tests: xUnit + NSubstitute + AwesomeAssertions
 
 The committed unit-test stack:
 
 - **xUnit** as the test framework. Already in use across most Nodes; mature, well-supported, parallel-test-friendly. The ADR commits to xUnit v2.x for consumption stability (xUnit v3 is in development; adopt when stable).
-- **Moq** as the mocking library. Already in use; user-directed. (Moq's 2023 SponsorLink incident is acknowledged as a brand-trust event; the technical decision stands because Moq is what the codebase uses today and the alternative migration cost — NSubstitute, FakeItEasy — exceeds the marginal benefit. NSubstitute is documented as a future-amendment option if Moq's stewardship becomes a problem.)
+- **NSubstitute** as the mocking library. **Not Moq.** Moq's August 2023 SponsorLink incident (the maintainer shipped undisclosed build-time telemetry that scraped developer git-config emails, hashed them, and phoned home to check sponsorship status) damaged stewardship trust meaningfully. SponsorLink was reverted under community pressure, but the question of whether a similar surprise might recur is not resolved by code; it's resolved by stewardship history, and that history is now suspect. NSubstitute is the community's pragmatic answer — clean API, active maintenance, no stewardship drama. Migrating from Moq to NSubstitute is mechanical (different syntax but equivalent capability) and the migration cost is paid once; the trust cost of staying on Moq compounds with every release.
 - **AwesomeAssertions** as the assertion library. **Not FluentAssertions** — FluentAssertions v8 (October 2024) moved to a paid commercial license, and the Studio is technically a commercial entity. AwesomeAssertions is the community MIT-licensed fork of FluentAssertions v7, drop-in compatible with the v7 API, actively maintained. This is the cheapest option that preserves the assertion-fluency the codebase already depends on; the alternative (downgrading to xUnit's native assertions) would be a meaningful regression in test readability.
 - **coverlet** as the coverage tool. Already standard in .NET; integrates with `dotnet test`.
 
-The combined stack — xUnit + Moq + AwesomeAssertions + coverlet — is the **default unit-test configuration** in `Directory.Build.props` per the test-project conventions added in D10.
+The combined stack — xUnit + NSubstitute + AwesomeAssertions + coverlet — is the **default unit-test configuration** in `Directory.Build.props` per the test-project conventions added in D10.
+
+Both library replacements (Moq → NSubstitute and FluentAssertions → AwesomeAssertions) follow the same principle: prefer the option with cleaner stewardship and licensing where the technical capability is equivalent. Aligns with the broader cost-and-trust-aware default pattern from ADR-0040 / 0045 / 0046.
 
 ### D3 — Coverage targets per Node tier
 
@@ -222,7 +224,7 @@ This ADR binds the **frameworks and structural standards**; `.claude/agents/revi
 
 ### D14 — Phased rollout
 
-- **Phase 1 (Week 1)** — Adopt the unit-test stack (xUnit + Moq + AwesomeAssertions + coverlet) as `Directory.Build.props` defaults. Migrate any Node using FluentAssertions (where the migration is mechanical — drop-in API). Establish per-tier coverage thresholds (D3) in CI gates.
+- **Phase 1 (Week 1–2)** — Adopt the unit-test stack (xUnit + NSubstitute + AwesomeAssertions + coverlet) as `Directory.Build.props` defaults. Two mechanical migrations: (a) FluentAssertions → AwesomeAssertions (drop-in API); (b) Moq → NSubstitute (syntax change but equivalent capability — `mock.Setup(x => x.Foo()).Returns(42)` becomes `sub.Foo().Returns(42)`; lambda-based to property-based). The Moq migration is the larger lift and may run in parallel with Phase 1 rather than blocking it. Establish per-tier coverage thresholds (D3) in CI gates.
 - **Phase 2 (Week 2–3)** — Author `job-integration-tests.yml` (Tier 2a) in HoneyDrunk.Actions. Wire it into `pr-core.yml`. Each Node opts in by adding a `*.Tests.Integration` project; the CI job auto-discovers.
 - **Phase 3 (Week 4–6)** — Author `job-integration-tests-containers.yml` (Tier 2b). Pilot on `HoneyDrunk.Data` (Testcontainers Postgres is the natural fit) and `HoneyDrunk.Kernel` (idempotency-store contract tests per ADR-0042).
 - **Phase 4 (Month 2)** — Author `job-e2e-web.yml`. Pilot against `HoneyDrunk.Studios.Tests.E2E` (lowest-risk first surface). Wire nightly schedule against `dev`.
@@ -235,7 +237,7 @@ Each phase is a discrete go/no-go.
 
 ### Affected Nodes
 
-- **Every Node with tests** (which is every Node) — `Directory.Build.props` updated for the unit-test stack; existing FluentAssertions usages migrate to AwesomeAssertions; coverage thresholds wired per D3.
+- **Every Node with tests** (which is every Node) — `Directory.Build.props` updated for the unit-test stack; existing FluentAssertions usages migrate to AwesomeAssertions (drop-in API); existing Moq usages migrate to NSubstitute (syntax change, mechanical but non-trivial); coverage thresholds wired per D3.
 - **HoneyDrunk.Actions** — gains four new reusable workflows (`job-integration-tests.yml`, `job-integration-tests-containers.yml`, `job-e2e-web.yml`, `job-e2e-mobile.yml`).
 - **HoneyDrunk.Kernel** — gains the integration-test pattern for `IIdempotencyStore` contract tests per ADR-0042.
 - **HoneyDrunk.Data** — pilot Node for Tier 2b (Testcontainers + Postgres).
@@ -256,6 +258,7 @@ Adds two:
 ### Operational Consequences
 
 - **Existing FluentAssertions usages migrate to AwesomeAssertions.** API is drop-in for v7-compatible code; mechanical change, low risk. One-time effort per Node.
+- **Existing Moq usages migrate to NSubstitute.** Syntax change, not drop-in — `mock.Setup(...).Returns(...)` becomes `sub.Method().Returns(...)`; `It.IsAny<T>()` becomes `Arg.Any<T>()`; `Verify` becomes `Received`. Per-Node effort is bounded but non-trivial. A community migration guide exists; the `scope` agent can author per-Node migration packets that batch the changes.
 - **Tier 2b containers add CI runtime.** Docker image pulls and container startup add ~30–60s per integration test job. Mitigated by layer caching in CI; meaningful but not blocker-level cost.
 - **E2E test environments need to exist.** Phase 4's Playwright pilot requires the Studios marketing site deployed to `dev`. Ahead of that being live, Phase 4 can't start. Acceptable; recorded as a dependency.
 - **Mobile E2E is zero work until the first mobile app exists.** Maestro choice records the decision so the first mobile-app PR doesn't re-litigate it.
@@ -266,6 +269,7 @@ Adds two:
 
 - Author `job-integration-tests.yml`, `job-integration-tests-containers.yml`, `job-e2e-web.yml`, `job-e2e-mobile.yml` in HoneyDrunk.Actions (Phases 2–5).
 - Migrate existing FluentAssertions usages to AwesomeAssertions across all Node repos (Phase 1).
+- Migrate existing Moq usages to NSubstitute across all Node repos (Phase 1; per-Node packets via `scope` agent given the syntax-change scope).
 - Add `coverlet.runsettings` files per Node with the D3 thresholds.
 - Author the `Directory.Build.props` defaults for the unit-test stack.
 - Pilot Tier 2b on HoneyDrunk.Data and HoneyDrunk.Kernel (Phase 3).
@@ -285,9 +289,15 @@ Considered. FluentAssertions v8 is the de-facto standard; switching is non-zero 
 
 Considered. Always-free, no library dependency. Rejected because xUnit's native assertions are materially less expressive (`Assert.Equal(expected, actual)` vs `actual.Should().Be(expected).Because("...")`). Test readability matters; AwesomeAssertions costs nothing.
 
-### NSubstitute or FakeItEasy instead of Moq
+### Stay on Moq
 
-Considered (the Moq SponsorLink incident in 2023 hit Moq's reputation). Rejected at v1 because the codebase already uses Moq and migration cost exceeds the marginal benefit at current scale. Documented as a future-amendment option if Moq's stewardship problems recur; NSubstitute is the leading alternative if/when that happens.
+Considered (and was the original draft of this ADR before the stewardship discussion). The argument for staying: codebase already uses Moq; migration cost is non-zero. Rejected because the SponsorLink incident is **not a one-time event being reasoned about** — it's a **stewardship signal about future behavior**. Code that ships undisclosed build-time telemetry once has demonstrated a willingness to do it again; the only question is whether the maintainer learned the lesson. That's an unfalsifiable belief, and structuring the test stack around it is fragile.
+
+NSubstitute provides equivalent capability with cleaner stewardship history. The mechanical migration cost (Phase 1 work) is bounded; the trust cost of staying on Moq is unbounded over time. Pay the migration once.
+
+### FakeItEasy instead of NSubstitute
+
+Considered. FakeItEasy is a reasonable third option with similar capability and clean stewardship. Rejected because NSubstitute has materially larger community adoption in the .NET ecosystem post-2023; defaulting to the larger-community option reduces the risk of stack abandonment and increases the pool of available examples. FakeItEasy stays a fine choice for projects that already use it; new work uses NSubstitute.
 
 ### Shouldly instead of AwesomeAssertions
 
@@ -323,4 +333,4 @@ Considered. Invariant 14 already establishes canaries; this ADR's D8 is largely 
 
 ### Establish testing patterns as a per-Node decision rather than Grid-wide
 
-Rejected. Per-Node testing drift is exactly the symptom this ADR addresses. Grid-wide commitment to a stack (xUnit + Moq + AwesomeAssertions + Testcontainers + Playwright + Maestro) means the `scope` agent can write packets that assume the stack, the `review` agent can apply consistent quality checks, and contributors (human or agent) don't re-litigate tooling per PR.
+Rejected. Per-Node testing drift is exactly the symptom this ADR addresses. Grid-wide commitment to a stack (xUnit + NSubstitute + AwesomeAssertions + Testcontainers + Playwright + Maestro) means the `scope` agent can write packets that assume the stack, the `review` agent can apply consistent quality checks, and contributors (human or agent) don't re-litigate tooling per PR.
