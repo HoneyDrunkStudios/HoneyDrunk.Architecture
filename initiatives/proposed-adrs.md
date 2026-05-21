@@ -22,6 +22,20 @@ and remain manually-flippable until rescoped.
 | [ADR-0029](../adrs/ADR-0029-cloudflare-dns-and-edge-platform.md) | ADR-0029: Cloudflare as Registrar, Authoritative DNS, and Edge Platform | Infrastructure | 2026-05-08 | 13 |
 | [ADR-0032](../adrs/ADR-0032-pr-validation-policy-coverage-gate-and-nuget-flagging.md) | ADR-0032: Grid-Wide PR Validation Policy — Coverage Gate and NuGet Update Flagging | Meta | 2026-05-17 | 4 |
 | [ADR-0033](../adrs/ADR-0033-environment-gated-deploy-trigger-model.md) | ADR-0033: Environment-Gated Deploy-Trigger Model for Deployable Nodes | Ops | 2026-05-18 | 3 |
+| [ADR-0034](../adrs/ADR-0034-public-package-distribution-and-nuget-policy.md) | ADR-0034: Public Package Distribution and NuGet Policy | Meta / cross-cutting | 2026-05-21 | 0 |
+| [ADR-0035](../adrs/ADR-0035-abstractions-versioning-and-deprecation-policy.md) | ADR-0035: Abstractions Versioning and Deprecation Policy | Meta / cross-cutting | 2026-05-21 | 0 |
+| [ADR-0036](../adrs/ADR-0036-disaster-recovery-and-backup-policy.md) | ADR-0036: Disaster Recovery and Backup Policy | Infrastructure / cross-cutting | 2026-05-21 | 0 |
+| [ADR-0037](../adrs/ADR-0037-payment-and-billing-integration.md) | ADR-0037: Payment and Billing Integration | Ops / cross-cutting | 2026-05-21 | 0 |
+| [ADR-0038](../adrs/ADR-0038-outbound-sender-identity-and-deliverability.md) | ADR-0038: Outbound Sender Identity and Deliverability | Ops | 2026-05-21 | 0 |
+| [ADR-0039](../adrs/ADR-0039-grid-open-source-license-policy.md) | ADR-0039: Grid Open Source License Policy | Meta / cross-cutting | 2026-05-21 | 0 |
+| [ADR-0040](../adrs/ADR-0040-telemetry-backend-and-retention.md) | ADR-0040: Telemetry Backend and Retention | Ops / cross-cutting | 2026-05-21 | 0 |
+| [ADR-0041](../adrs/ADR-0041-ai-model-registry-and-approval-workflow.md) | ADR-0041: AI Model Registry and Approval Workflow | AI | 2026-05-21 | 0 |
+| [ADR-0042](../adrs/ADR-0042-idempotency-contract-for-async-boundaries.md) | ADR-0042: Idempotency Contract for Async Boundaries | Core / cross-cutting | 2026-05-21 | 0 |
+| [ADR-0043](../adrs/ADR-0043-continuous-backlog-generation-strategy.md) | ADR-0043: Continuous Backlog Generation Strategy | Meta | 2026-05-21 | 0 |
+| [ADR-0044](../adrs/ADR-0044-grid-aware-cloud-code-review-and-ai-authored-pr-discipline.md) | ADR-0044: Grid-Aware Cloud Code Review and AI-Authored PR Discipline | Meta | 2026-05-21 | 0 |
+| [ADR-0045](../adrs/ADR-0045-grid-wide-error-tracking.md) | ADR-0045: Grid-Wide Error Tracking | Ops / cross-cutting | 2026-05-21 | 0 |
+| [ADR-0046](../adrs/ADR-0046-specialist-review-agents.md) | ADR-0046: Specialist Review Agents | Meta | 2026-05-21 | 0 |
+| [ADR-0047](../adrs/ADR-0047-testing-patterns-and-tooling.md) | ADR-0047: Testing Patterns and Tooling | Meta / cross-cutting | 2026-05-21 | 0 |
 | [PDR-0002](../pdrs/PDR-0002-notify-as-a-service-first-commercial-product.md) | PDR-0002: HoneyDrunk Notify — First Commercial Product on the Grid | Ops (primary) · Meta (positioning) | 2026-05-02 | 19 |
 | [PDR-0003](../pdrs/PDR-0003-lately-currents-based-connection-app.md) | PDR-0003: Lately — A Currents-Based Connection App for Regular Humans | Market / Core / Ops | 2026-05-05 | 16 |
 | [PDR-0005](../pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md) | PDR-0005: Hearth — Personal Growth as a Living Town | Market / AI / Ops | 2026-05-05 | 16 |
