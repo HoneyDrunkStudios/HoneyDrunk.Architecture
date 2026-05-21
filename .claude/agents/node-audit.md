@@ -33,7 +33,7 @@ Load the Architecture context first. Do not skip any step — incomplete context
 7. `repos/{node-name}/overview.md` — what this Node is responsible for
 8. `repos/{node-name}/boundaries.md` — what it must NOT do
 9. `repos/{node-name}/invariants.md` — repo-specific rules (if present)
-10. `repos/{node-name}/active-work.md` — work in flight that might explain gaps
+10. `initiatives/active-initiatives.md` — cross-Node work in flight that might explain gaps
 11. Relevant ADRs — any in `adrs/` that govern this Node, its contracts, or its boundaries
 
 Then walk the actual repo on disk under the additional working directories. Read the code — do not infer from docs alone. Check:

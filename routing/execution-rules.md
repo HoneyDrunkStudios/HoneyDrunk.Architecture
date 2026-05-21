@@ -8,7 +8,7 @@ Before generating any artifact (issue packet, PR, code change):
 
 1. **Load repo context** — Read `/repos/{node-name}/overview.md` and `boundaries.md` if they exist. If no repo context directory exists for the target Node, fall back to `catalogs/nodes.json` for the Node's description, sector, and relationships.
 2. **Check invariants** — Verify the proposed change doesn't violate `/constitution/invariants.md`
-3. **Check active work** — Read `/repos/{node-name}/active-work.md` and `/initiatives/current-focus.md` for conflicts (skip if files don't exist)
+3. **Check active work** — Read `/initiatives/current-focus.md` and `/initiatives/active-initiatives.md` for conflicts
 4. **Determine tier** — Use `/catalogs/flow_tiers.json` to classify the change
 5. **Check dependencies** — Use `/catalogs/relationships.json` to identify cascade effects
 

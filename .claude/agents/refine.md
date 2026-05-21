@@ -98,8 +98,7 @@ Ask: "What about {the thing nobody mentioned}?"
 
 ### 6. Conflict Check
 
-- Read `repos/{node}/active-work.md` — does this conflict with in-flight work?
-- Read `initiatives/active-initiatives.md` — does this overlap with another initiative?
+- Read `initiatives/active-initiatives.md` — does this overlap with another initiative or conflict with in-flight work?
 - Check if any existing ADRs in `adrs/` contradict the proposed approach.
 
 Ask: "Doesn't ADR-{N} say we decided against this?"

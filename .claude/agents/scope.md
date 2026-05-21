@@ -45,8 +45,7 @@ Determine scope by checking:
 
 ## Phase 2: Research
 
-- Check `initiatives/active-initiatives.md` and `initiatives/roadmap.md` for related work
-- Check `repos/{node-name}/active-work.md` for in-flight conflicts
+- Check `initiatives/active-initiatives.md` and `initiatives/roadmap.md` for related work and in-flight conflicts
 - Read `repos/{node-name}/overview.md` and `boundaries.md` for each affected repo
 - Search across workspace repos for relevant interfaces, implementations, and current state
 - Check existing ADRs in `adrs/` if the work touches contracts or boundaries

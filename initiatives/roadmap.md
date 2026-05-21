@@ -4,6 +4,8 @@ High-level roadmap for the HoneyDrunk Grid.
 
 **Last Updated:** 2026-05-21
 
+For the near-term ranked priority list, see [current-focus.md](current-focus.md); this roadmap is the quarterly horizon.
+
 ## Q1 2026 (Jan–Mar)
 
 - [x] Kernel 0.4.0 — Context model stabilization, static mappers, DI guard
