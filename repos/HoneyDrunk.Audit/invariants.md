@@ -2,8 +2,8 @@
 
 Audit-specific invariants (supplements `constitution/invariants.md`).
 
-1. **Audit.Abstractions has zero HoneyDrunk dependencies.**
-   Only `Microsoft.Extensions.*` abstractions are allowed. The Kernel/Data references live in the `HoneyDrunk.Audit.Data` runtime package, never in Abstractions.
+1. **Audit.Abstractions stays near-minimal and carries only the ADR-permitted Kernel abstraction dependency.**
+   `HoneyDrunk.Kernel.Abstractions` is allowed for `TenantId`; Data/Vault/Pulse/Kernel-runtime references live outside Abstractions.
 
 2. **`IAuditLog` is append-only at the interface surface.**
    The contract exposes no update method and no delete method. Append-only is enforced at the interface, not only at the storage layer. Consumers that need retention or archival work off `IAuditQuery`, never by mutating entries.
@@ -12,7 +12,7 @@ Audit-specific invariants (supplements `constitution/invariants.md`).
    Audit records; it never decides whether an action is allowed and never halts, gates, or trips breakers. Those are Auth and Operator concerns.
 
 4. **The durable audit channel and the observability channel are never merged.**
-   Auditable security events are emitted to the Audit substrate via `IAuditLog` on a durable channel separate from observability telemetry. Audit *records* are not telemetry and never flow to Pulse. Audit emits its own operational telemetry (write/query latency, throughput) which Pulse observes one-way — Audit has no runtime dependency on Pulse.
+   Auditable security, action, and data-change events are emitted to the Audit substrate via `IAuditLog` on a durable channel separate from observability telemetry. Audit *records* are not telemetry and never flow to Pulse. Audit emits its own operational telemetry (write/query latency, throughput) which Pulse observes one-way — Audit has no runtime dependency on Pulse.
 
 5. **Audit-class retention is distinct from observability retention.**
    Observability retention is short and sampling-tolerant; audit retention is long, lossless, and policy-governed. The two regimes are not shared and not interchangeable. The retention value is sourced from App Configuration via Vault's config provider, never hardcoded.
@@ -22,6 +22,9 @@ Audit-specific invariants (supplements `constitution/invariants.md`).
 
 7. **Downstream Nodes compile only against `HoneyDrunk.Audit.Abstractions`.**
    No runtime dependency on `HoneyDrunk.Audit.Data` in production composition. Composition is a host-time concern.
+
+8. **Sensitive data-change details are redacted before append.**
+   `AuditChange` may carry before/after values, but emitters must redact secrets, credentials, tokens, regulated data, and sensitive PII before calling `IAuditLog`. Audit is durable and queryable; it is not a secret store.
 
 _Constitutional invariant 44 (the audit-emission boundary invariant, in `constitution/invariants.md`) is the Grid-level rule this Node exists to enforce. The Audit-specific downstream-coupling and contract-shape-canary invariants are introduced by the standup ADR and assigned their final constitutional numbers when that standup initiative lands._
 

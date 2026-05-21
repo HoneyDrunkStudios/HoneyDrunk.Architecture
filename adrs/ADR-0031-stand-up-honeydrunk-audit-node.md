@@ -37,7 +37,7 @@ This ADR is the **stand-up decision** for the Audit Node — what it owns, what 
 
 ### D1. HoneyDrunk.Audit is the Core sector's Grid-wide durable security and action record
 
-`HoneyDrunk.Audit` is the single Node in the Core sector that owns the Grid's **durable, attributable security-and-action record** — the contract and runtime machinery that durably records "actor X attempted or executed action Y" (login attempts, authorization grants and denials, privileged-action execution) and serves that record back for incident reconstruction and forensics.
+`HoneyDrunk.Audit` is the single Node in the Core sector that owns the Grid's **durable, attributable security, action, and data-change record** — the contract and runtime machinery that durably records "actor X attempted or executed action Y" and "actor X changed record Y" (login attempts, authorization grants and denials, privileged-action execution, purchases, workflow starts, integration callbacks, and entity create/update/delete records) and serves that record back for incident reconstruction and forensics.
 
 It is a record substrate, not a control plane and not an observability pipeline. It does not decide whether an action is allowed (that is Auth and Operator). It does not sample, aggregate, or surface health signal (that is Pulse). It owns the durable write, the append-only guarantee, the audit-class retention, and the forensic read surface. The boundary against Operator (recorder ≠ actor) and against Pulse (durable attributable record ≠ sampled observability) is pinned by ADR-0030 D1/D2 and is not re-opened here.
 
@@ -54,13 +54,20 @@ An in-memory `IAuditLog`/`IAuditQuery` fixture for deterministic downstream test
 
 ### D3. Exposed contracts
 
-Three surfaces form the Audit Node's public boundary — **two interfaces and one record**. These are the surfaces downstream Nodes are allowed to compile against:
+Three primary surfaces form the Audit Node's public boundary — **two interfaces and one canonical record envelope** — plus supporting value types/enums required by that envelope. These are the surfaces downstream Nodes are allowed to compile against:
 
 | Contract | Kind | Purpose |
 |---|---|---|
 | `IAuditLog` | interface | Append-only write of an `AuditEntry`. No update method. No delete method. Append-only is enforced at the interface surface, not only at storage (ADR-0030 D4). |
 | `IAuditQuery` | interface | Time-ordered and filtered read/forensic retrieval over the durable record. Net-new contract (ADR-0030 D3); has no Operator precedent. Satisfies ADR-0018 D9's "work off the read surface" commitment. |
-| `AuditEntry` | record | Canonical append-only audit record — actor, action, context, outcome, correlation id, tenant. Generalized Grid-wide from the Operator-scoped shape. Drops the `I` prefix per the grid-wide naming rule; `IAuditLog` and `IAuditQuery` retain it. |
+| `AuditEntry` | record | Canonical append-only audit record envelope — category, event name/action, actor, target/resource, outcome, correlation id, tenant, structured metadata, and optional data-change details. Generalized Grid-wide from the Operator-scoped shape. Drops the `I` prefix per the grid-wide naming rule; `IAuditLog` and `IAuditQuery` retain it. |
+
+`AuditEntry` explicitly supports both major audit families from v0.1.0:
+
+1. **Activity/security/system audit** — what an actor attempted or did: login attempts, authorization grants/denials, purchases, workflow starts, integration callbacks, agent/operator decisions, and privileged actions.
+2. **Data-change audit** — what durable record changed: entity created/updated/deleted, entity/resource type, entity/resource id, changed fields, and optional before/after values.
+
+The supporting shape includes `AuditCategory`, `AuditOutcome`, `AuditTarget`, and `AuditChange` so data-change audit is first-class and queryable instead of buried in an opaque context string. `AuditChange` values may carry before/after values, but sensitive fields must be redacted before append. The Audit substrate is durable and queryable; it must not become a secret/PII leak path.
 
 `IAuditLog` and `AuditEntry` are **relocated** from `HoneyDrunk.Operator.Abstractions` to `HoneyDrunk.Audit.Abstractions` and generalized Grid-wide per ADR-0030 D5. The existing `honeydrunk-operator` catalog entries for these two are marked relocated as part of the follow-up work. `IAuditQuery` is added new here. This mirrors the contract-reconciliation pattern ADR-0017 used (`ICapability`/`ICapabilityPermission` superseded by a corrected surface) and ADR-0018 used (`ICostController` → `ICostGuard`).
 
@@ -76,23 +83,31 @@ The Audit Node runs under its **own dedicated managed identity**, distinct from 
 
 The first real emitter wired at stand-up is `HoneyDrunk.Auth`, recording durable attributable security events additively to its existing OTel traces, on a separate durable channel, with Auth's identity-out-of-traces invariant untouched (ADR-0030 D6). `HoneyDrunk.Operator` is reconciled from owner to consumer/emitter of the generalized contracts (ADR-0030 D5): it continues recording its AI-runtime decisions, now by emitting `AuditEntry` against the `IAuditLog` it consumes from `HoneyDrunk.Audit.Abstractions`. ADR-0018 receives an additive amendment note recording the relocation and reclassification (additive only; ADR-0018 Status and decision content unchanged).
 
+Data-change emitters are also first-class consumers of the same `IAuditLog` surface. Automatic Data-layer interception can emit `AuditCategory.DataChange` events only when a redaction policy is explicit; application/domain code remains responsible for business-intent activity events so the Grid can distinguish "row changed" from "purchase completed" or "workflow started."
+
 ### D7. Telemetry emission — Pulse consumes, Audit does not depend
 
 Audit emits its own operational telemetry (write latency, query latency, append throughput) via Kernel's `ITelemetryActivityFactory`; Pulse consumes it downstream. **Audit has no runtime dependency on Pulse.** The direction is one-way by contract: Audit emits operational telemetry, Pulse observes. Same rule as ADR-0016 D7 (AI), ADR-0017 D7 (Capabilities), and ADR-0018 D7 (Operator). Audit *records* are not telemetry and never flow to Pulse — the durable audit channel and the observability channel stay separate (ADR-0030 D1).
 
 ### D8. Contract-shape canary
 
-A contract-shape canary is added to the Audit Node's CI: it fails the build if any of the three frozen contracts change shape (method signatures, parameter shapes, record members) without a corresponding version bump:
+A contract-shape canary is added to the Audit Node's CI: it fails the build if the `HoneyDrunk.Audit.Abstractions` public surface changes shape (method signatures, parameter shapes, record members, enum members, supporting value types) without a corresponding version bump. The protected surface includes:
 
 - `IAuditLog`
 - `IAuditQuery`
 - `AuditEntry`
+- `AuditEntryId`
+- `AuditQueryFilter`
+- `AuditCategory`
+- `AuditOutcome`
+- `AuditTarget`
+- `AuditChange`
 
-All three are the hot path for every emitter and reader. `IAuditLog` is on the write path of every security and privileged-action event in the Grid; `AuditEntry` is its payload; `IAuditQuery` is the contract every forensic reader (and the future tenant-facing forensics Service, ADR-0030 D8b) compiles against. Accidental shape drift on any of them breaks every emitter and reader simultaneously. The canary makes this a compile-time failure at Audit's own CI, not a discovery at consumer sites. This matches the stand-up-time canary requirement established by ADR-0016 D8, ADR-0017 D8, and ADR-0018 D10. Because the public surface is only three contracts, all three are frozen from the first scaffold rather than a four-of-N hot subset.
+These are the hot path for every emitter and reader. `IAuditLog` is on the write path of every security, activity, privileged-action, and data-change event in the Grid; `AuditEntry` and its supporting value types are the payload; `IAuditQuery`/`AuditQueryFilter` are the contracts every forensic reader (and the future tenant-facing forensics Service, ADR-0030 D8b) compiles against. Accidental shape drift breaks emitters/readers simultaneously. The canary makes this a compile-time failure at Audit's own CI, not a discovery at consumer sites.
 
 ### D9. Downstream coupling rule
 
-Emitters and readers (Auth and Operator first; any Node recording a security or privileged-action event later) compile **only** against `HoneyDrunk.Audit.Abstractions`. They do not take a runtime dependency on `HoneyDrunk.Audit.Data` in production composition. Composition — which store backing is active, which retention policy is loaded — is a host-time concern, resolved at application startup from App Configuration. This is the same abstraction/runtime split applied for AI, Capabilities, Operator, Vault, and Transport, restated here because it is the rule that lets Auth and Operator proceed against `Abstractions` alone without waiting for the Data-backed runtime.
+Emitters and readers (Auth and Operator first; any Node recording a security, privileged-action, activity, system, integration, or data-change event later) compile **only** against `HoneyDrunk.Audit.Abstractions`. They do not take a runtime dependency on `HoneyDrunk.Audit.Data` in production composition. Composition — which store backing is active, which retention policy is loaded — is a host-time concern, resolved at application startup from App Configuration. This is the same abstraction/runtime split applied for AI, Capabilities, Operator, Vault, and Transport, restated here because it is the rule that lets Auth and Operator proceed against `Abstractions` alone without waiting for the Data-backed runtime.
 
 ### D10. Dependencies on Kernel and Data are first-class
 
@@ -130,7 +145,7 @@ This ADR is "Done" when all of the following are true:
 
 - [ ] ADR-0030 (Grid-Wide Audit Substrate) is Accepted (driving decision; this stand-up does not flip Accepted before it).
 - [ ] `HoneyDrunk.Audit` public repo created with the structure described in D11.
-- [ ] `HoneyDrunk.Audit.Abstractions 0.1.0` published with the three contracts in D3.
+- [ ] `HoneyDrunk.Audit.Abstractions 0.1.0` published with the D3 public surface and supporting value types.
 - [ ] `HoneyDrunk.Audit.Data 0.1.0` ships with the Data-backed append-only composition and the in-memory test fixture.
 - [ ] Audit's CI includes the D8 contract-shape canary and it is green.
 - [ ] The Node's own managed identity is provisioned per D5.
@@ -146,7 +161,7 @@ Accepting this ADR — and landing the follow-up scaffold packet that produces a
 
 - **HoneyDrunk.Auth** — can wire the first durable attributable security-event emitter against `IAuditLog`, additively, without touching its identity-out-of-traces invariant.
 - **HoneyDrunk.Operator** — can be reconciled from owner to consumer of `IAuditLog`/`AuditEntry`, shedding the recorder-is-also-the-actor structural problem (ADR-0030 D2/D5).
-- **Any Node recording security or privileged-action events** — has a durable, attributable target instead of a lossy log or a sampled trace.
+- **Any Node recording security, activity, system, integration, privileged-action, or data-change events** — has a durable, attributable target instead of a lossy log, sampled trace, or ad-hoc table.
 - **The future tenant-facing forensics Service** — has `IAuditQuery` to build against the moment its trigger fires (ADR-0030 D8b), with no extraction and no contract migration.
 
 ### New invariant (proposed for `constitution/invariants.md`)
@@ -154,9 +169,9 @@ Accepting this ADR — and landing the follow-up scaffold packet that produces a
 Numbering is tentative — scope agent finalizes at acceptance. Proposed by ADR-0030 and restated here for the stand-up's contract-coupling rule:
 
 - **Downstream Nodes take a runtime dependency only on `HoneyDrunk.Audit.Abstractions`.** Composition against `HoneyDrunk.Audit.Data` is a host-time concern. See D9.
-- **The Audit Node CI must include a contract-shape canary for `IAuditLog`, `IAuditQuery`, and `AuditEntry`.** Shape drift on any of the three is a build failure, not a downstream discovery. See D8.
+- **The Audit Node CI must include a contract-shape canary for the `HoneyDrunk.Audit.Abstractions` public surface.** Shape drift on `IAuditLog`, `IAuditQuery`, `AuditEntry`, or the supporting query/category/outcome/target/change value types is a build failure, not a downstream discovery. See D8.
 
-(The audit-emission boundary invariant — auditable security events must be emitted to the Audit substrate on a durable channel separate from observability — is proposed in ADR-0030's Consequences and is the substrate-level invariant; it is not restated here to avoid double-numbering. The scope agent assigns final numbers across both ADRs at acceptance.)
+(The audit-emission boundary invariant — auditable security, action, and data-change events must be emitted to the Audit substrate on a durable channel separate from observability — is proposed in ADR-0030's Consequences and is the substrate-level invariant; it is not restated here to avoid double-numbering. The scope agent assigns final numbers across both ADRs at acceptance.)
 
 ### Contract-shape canary becomes a requirement
 
@@ -188,7 +203,7 @@ Rejected for this Node. ADR-0017 ships `Testing` at stand-up because Capabilitie
 
 ### Freeze only a hot subset of contracts in the canary (ADR-0016/0018 four-of-N pattern)
 
-Rejected. ADR-0016 and ADR-0018 freeze four of a larger surface because the hot subset is a fraction of the public contracts. The Audit public surface is exactly three contracts and all three are on the write/read hot path. There is no low-traffic remainder to leave un-frozen; freezing all three from the first scaffold costs nothing and removes the "which one slipped through" failure mode entirely.
+Rejected. ADR-0016 and ADR-0018 freeze four of a larger surface because the hot subset is a fraction of the public contracts. The Audit public surface is still intentionally small, but data-change support adds supporting value types that are every bit as load-bearing as the primary `AuditEntry` envelope. Freezing the whole `HoneyDrunk.Audit.Abstractions` public surface from the first scaffold costs little and removes the "which one slipped through" failure mode entirely.
 
 ### Defer the Auth emitter and Operator reconciliation into this stand-up
 

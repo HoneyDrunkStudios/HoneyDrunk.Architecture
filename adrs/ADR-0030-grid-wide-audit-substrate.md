@@ -42,7 +42,7 @@ Durable, attributable recording of "actor X attempted or executed action Y" — 
 
 ### D2. The substrate is a new dedicated HoneyDrunk.Audit Node — not Operator, not Kernel
 
-Grid-wide audit is homed in a **new dedicated `HoneyDrunk.Audit` Node** in the Core sector. It is the single Node that owns the Grid's durable, attributable security-and-action record.
+Grid-wide audit is homed in a **new dedicated `HoneyDrunk.Audit` Node** in the Core sector. It is the single Node that owns the Grid's durable, attributable security, action, and data-change record.
 
 **Why not Operator (ADR-0018):**
 
@@ -61,13 +61,20 @@ Every `*.Abstractions` package in the Grid is co-located inside its owning Node'
 
 ### D3. Exposed contracts
 
-The Audit Node's public boundary at stand-up is three surfaces — **two interfaces and one record**:
+The Audit Node's public boundary at stand-up is three primary surfaces — **two interfaces and one canonical record envelope** — plus small supporting value types/enums needed to keep the envelope explicit:
 
 | Contract | Kind | Purpose |
 |---|---|---|
 | `IAuditLog` | interface | Append-only write of an `AuditEntry`. No update method. No delete method. Append-only is enforced **at the interface surface**, not only at the storage layer. |
 | `IAuditQuery` | interface | Read and forensic-retrieval surface over the durable audit record — time-ordered and filtered reads for incident reconstruction and (later) tenant-facing forensics. New contract introduced by this ADR; has no precedent on Operator. |
-| `AuditEntry` | record | Canonical append-only audit record — actor, action, context, outcome, correlation id, tenant. Generalized Grid-wide from the Operator-scoped shape. Drops the `I` prefix per the grid-wide naming rule (records drop `I`, interfaces keep it). |
+| `AuditEntry` | record | Canonical append-only audit record envelope — category, event name/action, actor, target/resource, outcome, correlation id, tenant, metadata, and optional data-change details. Generalized Grid-wide from the Operator-scoped shape. Drops the `I` prefix per the grid-wide naming rule (records drop `I`, interfaces keep it). |
+
+`AuditEntry` supports two first-class audit families from v0.1.0:
+
+1. **Activity/security/system audit** — what an actor attempted or did in the system: login attempts, authorization grants/denials, purchases, workflow starts, agent/operator decisions, privileged actions, integration callbacks.
+2. **Data-change audit** — what durable record changed: entity created/updated/deleted, entity/resource type, entity/resource id, changed fields, and optional before/after values.
+
+The supporting contract shape includes category/outcome/target/change metadata so data-change audit is not bolted on later as an unstructured string. Sensitive before/after values must be redacted by policy before append; the Audit substrate stores the record it is given and must not become a secret/PII leak path.
 
 `IAuditLog` and `AuditEntry` are **generalizations of** the Operator-scoped contracts of the same names — promoted out of `HoneyDrunk.Operator.Abstractions` and into `HoneyDrunk.Audit.Abstractions` (D5). `IAuditQuery` is net-new: Operator's stand-up never carried a read/forensics contract because Operator's audit was write-one-shape self-recording.
 
@@ -91,6 +98,8 @@ This keeps the trust boundary correct: Operator decides and acts; Audit records.
 ### D6. First emitter is HoneyDrunk.Auth, additively
 
 The first real emitter into the Audit substrate is `HoneyDrunk.Auth`, recording durable attributable security events — login attempts, authorization grants, authorization denials. This is **additive to Auth's existing OTel traces** and does **not** change Auth's rule that telemetry stays observational and identity stays out of traces. The audit path is a *separate durable channel*: Auth continues to emit identity-free observational telemetry to Pulse exactly as before, and additionally emits attributable `AuditEntry` records to the Audit substrate. The two channels do not merge; the Auth-traces invariant is untouched.
+
+Data-change emitters are additive and follow the same durable channel: persistence/domain code records create/update/delete events through `IAuditLog` with category `DataChange`, target entity identity, and redacted changed-field details. Automatic Data-layer interception is allowed only when the redaction policy is explicit; business-intent events still belong in application/domain code so the record explains *why* the mutation occurred, not only that a row changed.
 
 ### D7. Telemetry emission — Pulse consumes, Audit does not depend
 
@@ -120,13 +129,13 @@ Stated plainly so it is not oversold: **Phase-1 audit integrity is append-only-b
 
 ### D10. Downstream coupling rule
 
-Emitters and readers (Auth, Operator first; any Node recording a security or privileged-action event later) compile **only** against `HoneyDrunk.Audit.Abstractions`. They do not take a runtime dependency on the Audit runtime package or its Data-backed store in production composition. Composition — which store backend is active, which retention policy is loaded — is a host-time concern. This is the same abstraction/runtime split applied for AI, Capabilities, Operator, Vault, and Transport, restated here because it is the rule that lets Auth and Operator proceed against `Abstractions` alone.
+Emitters and readers (Auth, Operator first; any Node recording a security, privileged-action, activity, system, integration, or data-change event later) compile **only** against `HoneyDrunk.Audit.Abstractions`. They do not take a runtime dependency on the Audit runtime package or its Data-backed store in production composition. Composition — which store backend is active, which retention policy is loaded — is a host-time concern. This is the same abstraction/runtime split applied for AI, Capabilities, Operator, Vault, and Transport, restated here because it is the rule that lets Auth and Operator proceed against `Abstractions` alone.
 
 ## Consequences
 
 ### Unblocks
 
-- **The Grid gains a durable, attributable security and action record** — login attempts, authz denials, and privileged actions are recorded somewhere addressable for the first time.
+- **The Grid gains a durable, attributable security, action, and data-change record** — login attempts, authz denials, privileged actions, and record create/update/delete events are recorded somewhere addressable for the first time.
 - **HoneyDrunk.Auth** can emit durable attributable security events without violating its identity-out-of-traces invariant (separate durable channel, D6).
 - **HoneyDrunk.Operator** keeps recording its AI-runtime decisions, now against a generalized contract it consumes — and sheds the structural problem of being both the actor and the ledger (D2, D5).
 - **A future tenant-facing forensics Service** has a contract (`IAuditQuery`) to build against the moment its trigger fires — no extraction, no contract migration (D8b).
@@ -139,7 +148,7 @@ Emitters and readers (Auth, Operator first; any Node recording a security or pri
 
 Numbering is tentative — scope agent finalizes at acceptance.
 
-- **Durable, attributable security and action events (login attempts, authorization denials, privileged actions) are emitted to the `HoneyDrunk.Audit` substrate via `IAuditLog`, on a durable channel separate from observability telemetry.** Auditable security events routed only to sampled/retention-bounded observability (Pulse/Loki) are a boundary violation. The audit channel and the telemetry channel are never merged. See D1, D6.
+- **Durable, attributable security, action, and data-change events (login attempts, authorization denials, privileged actions, record create/update/delete events) are emitted to the `HoneyDrunk.Audit` substrate via `IAuditLog`, on a durable channel separate from observability telemetry.** Auditable events routed only to sampled/retention-bounded observability (Pulse/Loki) are a boundary violation. Data-change details that include sensitive fields must be redacted before append. The audit channel and the telemetry channel are never merged. See D1, D3, D6.
 
 ### Negative
 

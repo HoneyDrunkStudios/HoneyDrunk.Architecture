@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Amended Audit ADR/standup scope so `HoneyDrunk.Audit` v0.1.0 explicitly supports both activity/security audit and data-change audit via category/outcome/target/change value types, with redaction guidance before scaffold.
 - Reconciled ADR-0010 Phase 1 after Observe PR #3 merge: marked Architecture#35/#36 and Observe#2 complete, moved completed/superseded ADR-0010 packets to `completed/`, removed the stale missing packet-04 manifest entry, closed duplicate AI routing issues superseded by ADR-0016, and refreshed roadmap/initiative tracking for Phase 2 scoping.
 - Accepted ADR-0010 Phase 1 in Architecture: registered `honeydrunk-observe` across catalogs, added Observe repo context, finalized Observation invariants 29-30, refreshed sector boundaries, and kept AI routing contract catalog alignment without touching package code.
 - Registered ADR-0016 HoneyDrunk.AI architecture prerequisites: corrected the AI contract catalog to D3 (`ICostLedger` instead of stale `IInferenceResult`), replaced retired `Providers.Local` references with `Providers.InMemory`, clarified AI emits telemetry consumed by Pulse without a Pulse runtime dependency, added invariants 44-46 for downstream AI coupling, App Config-sourced AI rates/policies, and the AI contract-shape canary, and dropped invariant 28's stale ADR-0010 Proposed qualifier, and flipped ADR-0016 to Accepted in the ADR index/proposed-ADR tracker.
