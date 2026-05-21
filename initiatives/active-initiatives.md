@@ -66,7 +66,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [x] Architecture#108: Accept ADR-0030 — catalog registration, sectors row, ADR index flip, ADR-0018 amendment verification, repo context folder, trackers (packet 01 — closed 2026-05-18)
 - [x] Architecture#109: Add the audit-emission boundary invariant to the constitution (packet 02 — closed 2026-05-18)
 
-**Follow-up sync (2026-05-21):** ADR-0031 standup has now completed its initial packet set: Architecture invariants/catalog work, Audit repo scaffold + `v0.1.0` release, and Auth first-emitter wiring are closed. Remaining Operator reconciliation is future downstream work, not part of ADR-0030 capability acceptance.
+**Follow-up sync (2026-05-21):** ADR-0031 standup has now completed its initial packet set: Architecture invariants/catalog work, Audit repo scaffold + `v0.1.0` release, and Auth first-emitter wiring are closed. Remaining Operator reconciliation is future downstream work, not part of ADR-0030 capability acceptance. Audit `v0.1.0` and Auth `v0.5.0` are both published.
 
 ### ADR-0032 PR Validation Policy — Coverage Gate & NuGet Flagging
 **Status:** In Progress
@@ -139,7 +139,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [ ] Notify#4: Release workflow and Azure bring-up for `Notify.Worker` on Container Apps (open)
 - [ ] Pulse#3: Release workflow and Azure bring-up for `Pulse.Collector` on Container Apps (open)
 
-> **Sync (2026-05-16):** 2/5 issues closed (40%). Foundation walkthroughs and reusable Actions workflow remain complete; Notify#3, Notify#4, and Pulse#3 are still open for service-specific release/Azure bring-up work.
+> **Sync (2026-05-21):** 2/5 issues closed (40%). Foundation walkthroughs and reusable Actions workflow remain complete; Notify#3, Notify#4, and Pulse#3 are still open for service-specific release/Azure bring-up work. ADR-0033 environment-gated deploy-trigger packets (`Notify#19`, `Notify#20`, `Pulse#18`) are open in Backlog and should land before dev deploy verification resumes.
 
 ### Package Scanning Rollout (ADR-0009)
 **Status:** In Progress  
