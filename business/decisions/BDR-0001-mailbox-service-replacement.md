@@ -22,7 +22,7 @@ This BDR decides what we switch to and lays out the switch plan (which includes 
 2. **Reliable scanning is the #1 requirement** — that's why we're leaving.
 3. **Fully remote operation, no in-person visits ever.** Every mail action — view, forward, scan contents, shred — must be doable from an app/portal. The Studio principal will never travel to the physical location.
 4. **Should reduce or hold cost** vs the current ~$400/yr if possible.
-5. **Should support our actual mail patterns** — low volume, mostly state/tax/legal notices, occasional checks (Chase business).
+5. **Should support our actual mail patterns** — low volume, mostly state/tax/legal notices. No paper-check handling required (Chase business hasn't been mailing checks; confirmed in resolved inputs below).
 6. **Switch is reversible but painful** — Sunbiz amendment, update Chase, update IRS/state tax accounts, update any vendors with our address on file.
 
 > Note on constraint 3: every major provider advertises these features. The differentiator isn't *whether* they offer scan/forward/shred — it's whether the people receiving the physical mail are actually employed by the provider you're paying. Franchise/aggregator providers (iPostal1, Anytime Mailbox) license the storefront to a local CMRA; the features exist in the app, but the local operator decides whether to do the work. Corporate-operated providers (VPM, Earth Class Mail, Stable) employ the scanning staff directly. The current iPostal1 failure is a textbook symptom of the franchise model going wrong locally.
@@ -57,7 +57,7 @@ Two structural categories matter more than brand:
 3. **Sunbiz timing:** File standalone amendment now (~$25), don't wait for 2027 Annual Report. Goal is the new address on file with FL before October.
 4. **FL city preference:** Tampa or Orlando. No strong tie to a specific city.
 
-## Recommendation (pending confirmation)
+## Recommendation
 
 **Switch to VirtualPostMail (VPM), Tampa location.**
 

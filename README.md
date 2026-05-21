@@ -58,6 +58,7 @@ Intent → Classify → Scope → Issue Packets → GitHub Issues → Execute �
 | `catalogs/` | JSON registries — nodes, packages, services, relationships, contracts, health, signals, compatibility |
 | `adrs/` | Architecture Decision Records governing Grid design |
 | `pdrs/` | Product Decision Records governing platform strategy |
+| `business/` | Business Decision Records and operational context — entity, banking, vendors, contracts |
 | `routing/` | Request classification, repo discovery, execution rules, SDLC lifecycle, site sync triggers |
 | `repos/` | Per-Node context — boundaries, invariants, overview, integration points for every Grid repo |
 | `initiatives/` | Active initiatives, current focus, roadmap, release history |
