@@ -2,7 +2,7 @@
 
 Centralized view of what shipped across the Grid.
 
-**Last Updated:** 2026-05-18
+**Last Updated:** 2026-05-21
 
 ---
 
@@ -60,6 +60,26 @@ Centralized view of what shipped across the Grid.
   - Outbox enrichment now requires live operation context or explicit non-empty CorrelationId/TenantId
   - Consolidated EF/SQL test and registration helpers
 - **Breaking Changes:** Yes — stricter outbox context requirement
+
+### Auth 0.5.0
+
+- **Signal:** Live
+- **Shipped:** 2026-05-21
+- **Highlights:**
+  - Wired Auth as the first downstream `IAuditLog` emitter via `HoneyDrunk.Audit.Abstractions` 0.1.0
+  - Emits fail-soft token validation and authorization decision audit records
+  - Preserves token/claims privacy by avoiding raw bearer tokens and subject-claim payload copies in audit metadata
+- **Breaking Changes:** No — additive audit emission with fail-soft behavior
+
+### Audit 0.1.0
+
+- **Signal:** Live
+- **Shipped:** 2026-05-21
+- **Highlights:**
+  - Initial `HoneyDrunk.Audit.Abstractions` and `HoneyDrunk.Audit.Data` packages released
+  - Append-only-by-interface durable audit records with activity/security/system/data-change categories
+  - Data-backed store, query surface, in-memory fixtures, and contract-shape canaries shipped
+- **Breaking Changes:** N/A (initial release)
 
 ### Auth 0.4.0
 

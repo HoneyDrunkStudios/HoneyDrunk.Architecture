@@ -1,7 +1,7 @@
 {
   "_meta": {
     "description": "Live health snapshot of every Node in the Grid. Written by CI workflows and agents; read by Claude Code, HoneyHub (when live), and the developer. Not a substitute for the Project board — this tracks repo-level readiness, not individual work items.",
-    "updated": "2026-05-18",
+    "updated": "2026-05-21",
     "schema_version": "1.0"
   },
   "nodes": [
@@ -56,11 +56,11 @@
       "name": "HoneyDrunk.Auth",
       "sector": "Core",
       "signal": "Live",
-      "version": "0.4.0",
+      "version": "0.5.0",
       "canary_status": "passing",
-      "last_release": "2026-05-18",
+      "last_release": "2026-05-21",
       "active_blockers": [],
-      "notes": "Aligned to Kernel 0.7.0; validation-only Auth boundary preserved and no token issuance added."
+      "notes": "Auth emits fail-soft security audit records through HoneyDrunk.Audit.Abstractions 0.1.0 while preserving validation-only boundary and token/claims privacy."
     },
     {
       "id": "honeydrunk-web-rest",
@@ -88,14 +88,12 @@
       "id": "honeydrunk-audit",
       "name": "HoneyDrunk.Audit",
       "sector": "Core",
-      "signal": "Seed",
-      "version": "0.0.0",
-      "canary_status": "none",
-      "last_release": null,
-      "active_blockers": [
-        "Repo not yet scaffolded — scaffold governed by ADR-0031 standup, separate initiative"
-      ],
-      "notes": "ADR-0030 (capability/decision) Accepted. Three frozen contracts (IAuditLog, IAuditQuery, AuditEntry) registered. Awaiting ADR-0031 standup: HoneyDrunk.Audit.Abstractions + Data-backed HoneyDrunk.Audit.Data, contract-shape canary on all three contracts, the Node's own managed identity, in-memory fixture. Phase 1 is append-only-by-interface, NOT tamper-evident (ADR-0030 D9)."
+      "signal": "Live",
+      "version": "0.1.0",
+      "canary_status": "passing",
+      "last_release": "2026-05-21",
+      "active_blockers": [],
+      "notes": "Initial Audit Node released: Abstractions and Data packages provide append-only-by-interface durable audit records, query surface, redaction-before-append boundary, EF-ready data store, in-memory fixtures, and contract canaries."
     },
     {
       "id": "honeydrunk-notify",
