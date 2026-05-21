@@ -166,3 +166,14 @@ Rules that must never be violated across the HoneyDrunk Grid. Canary tests enfor
 42. **Every orchestrated send records a decision-log entry via `ICommunicationDecisionLog`.** A send without a recorded decision is a build or runtime failure, depending on the enforcement point selected by the consuming host. See ADR-0019.
 
 43. **Communications CI must include a contract-shape canary for the hot-path orchestration contracts.** Shape drift on `ICommunicationOrchestrator`, `IMessageIntent` / `MessageIntent`, `IPreferenceStore`, or `ICadencePolicy` is a build failure unless paired with an intentional version bump. See ADR-0019 D8.
+
+## Audit Invariants
+
+47. **Durable, attributable security, action, and data-change events are emitted to the `HoneyDrunk.Audit` substrate via `IAuditLog`, on a durable channel separate from observability telemetry.**
+    Login attempts, authorization grants and denials, privileged-action execution, system/integration activity, and record create/update/delete events are recorded durably and attributably through `IAuditLog`. Auditable events routed only to sampled or retention-bounded observability (Pulse / Loki) are a boundary violation — observability answers "is the system healthy in aggregate," audit answers "who did what, when, against what, and was it allowed." Data-change details that include sensitive fields must be redacted before append. The audit channel and the telemetry channel are never merged: audit *records* are not telemetry and never flow to Pulse, and the Audit Node's own operational telemetry flows one-way to Pulse with no runtime dependency on Pulse. Phase-1 audit integrity is append-only-by-interface (`IAuditLog` exposes no update and no delete method); it is explicitly **not** tamper-evident, and Phase 1 must not be documented or marketed as such. See ADR-0030 D1, D3, D6, D7, D9.
+
+48. **Downstream Nodes take a runtime dependency only on `HoneyDrunk.Audit.Abstractions`.**
+    Emitters and readers compile against `HoneyDrunk.Audit.Abstractions` only. Composition against `HoneyDrunk.Audit.Data` is a host-time concern resolved at application startup; consumer Nodes must not reference `HoneyDrunk.Audit.Data` in production composition. Packaged testing fixtures, when introduced, are test-time only. See ADR-0031 D9.
+
+49. **The HoneyDrunk.Audit Node CI must include a contract-shape canary for the full `HoneyDrunk.Audit.Abstractions` public surface.**
+    Shape drift on `IAuditLog`, `IAuditQuery`, `AuditEntry`, or the supporting query/category/outcome/target/change value types is a build failure unless paired with an intentional version bump. The implementation may be the existing `job-api-compatibility.yml` reusable workflow scoped to `HoneyDrunk.Audit.Abstractions`; the obligation is to keep the gate, not to use any specific implementation. See ADR-0031 D8.
