@@ -87,6 +87,15 @@
         "honeydrunk-kernel": ">=0.7.0"
       },
       "notes": "Consumes HoneyDrunk.Kernel.Abstractions only; full Kernel runtime dependency removed. Delivery remains delegated through HoneyDrunk.Notify.Abstractions."
+    },
+    {
+      "node": "honeydrunk-observe",
+      "currentVersion": "0.0.0",
+      "compatibleWith": {
+        "honeydrunk-kernel": ">=0.7.0",
+        "honeydrunk-vault": ">=0.5.0"
+      },
+      "notes": "Seed Node. Compatibility will be tightened when Observe Abstractions and the first connector package ship."
     }
   ],
   "upgradeRules": {

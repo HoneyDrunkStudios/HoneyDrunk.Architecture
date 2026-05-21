@@ -34,7 +34,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 **Description:** Accept ADR-0010 and ship Phase 1 (contracts + stubs). Catalog registration for HoneyDrunk.Observe, new Observe repo scaffold with Abstractions package, and routing contracts in HoneyDrunk.AI.Abstractions. Phase 2 (first GitHub connector + cost-first routing policy) and Phase 3 (HoneyHub integration, blocked on HoneyHub Phase 1 being live) are tracked below so they do not get lost.
 
 **Tracking (Phase 1 — Observe side):**
-- [ ] Architecture#35: Accept ADR-0010 — catalog, context folder, sectors, invariant 29-30 text, ADR index flip, initiative/roadmap trackers (packet 01)
+- [ ] Architecture#35: Accept ADR-0010 — catalog, context folder, sectors, invariant 29-30 text, ADR index flip, initiative/roadmap trackers (packet 01 — PR in progress)
 - [x] Architecture#36: Create HoneyDrunk.Observe GitHub repo (human-only chore — packet 02)
 - [ ] Observe#2: Scaffold HoneyDrunk.Observe.Abstractions with IObservationTarget / IObservationConnector / IObservationEvent (packet 03)
 
@@ -52,7 +52,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - Allow HoneyHub to read routing-policy outcomes as plan-adjustment signals
 - **Scope trigger:** HoneyHub Phase 1 domain model + graph API live
 
-> **Sync (2026-05-18):** Architecture#36 closed 2026-05-16; the Observe repo creation packet was moved to the completed archive. Architecture#35 and Observe#2 remain open; AI routing remains parked/gated as documented.
+> **Sync (2026-05-21):** Architecture#36 remains closed. Architecture#35 acceptance cleanup is in progress on `chore/adr-0010-architecture-acceptance`; once merged, only Observe#2 remains on the Observe-side Phase 1 path. AI routing remains parked/gated as documented.
 
 ### ADR-0030 Grid-Wide Audit Substrate — Capability Acceptance
 **Status:** In Progress

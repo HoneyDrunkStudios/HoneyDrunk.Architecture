@@ -132,6 +132,17 @@
       ]
     },
     {
+      "node": "honeydrunk-observe",
+      "node_name": "HoneyDrunk.Observe",
+      "package": "HoneyDrunk.Observe.Abstractions",
+      "status": "planned",
+      "interfaces": [
+        { "name": "IObservationTarget", "kind": "interface", "description": "Declares an external system to observe, including identity, connector selection, and credential handle." },
+        { "name": "IObservationConnector", "kind": "interface", "description": "Provider-slot interface. Connector implementations intake external events and translate them to normalized observation events." },
+        { "name": "IObservationEvent", "kind": "interface", "description": "Canonical observation event shape that crosses the Observe boundary regardless of source connector." }
+      ]
+    },
+    {
       "node": "honeydrunk-notify",
       "node_name": "HoneyDrunk.Notify",
       "package": "HoneyDrunk.Notify.Abstractions",

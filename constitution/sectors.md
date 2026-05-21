@@ -27,6 +27,7 @@ From commit to production with confidence — pipelines, deployment orchestratio
 | Node | Signal | Responsibility |
 |------|--------|---------------|
 | **Pulse** | Seed | Multi-backend telemetry pipeline, OTel integration, OTLP collector |
+| **Observe** | Seed | Inbound external-project observation — connectors, event normalization, observation state |
 | **Notify** | Live | Channel-agnostic notification dispatch (email, SMS) |
 | **Actions** | Live | Reusable GitHub Actions workflows for the Grid |
 
@@ -112,5 +113,6 @@ Kernel
 ├── Web.Rest → Kernel.Abstractions, Transport, Auth
 ├── Data → Kernel, Transport
 ├── Notify → Kernel.Abstractions
-└── Pulse → Kernel.Abstractions (optional)
+├── Pulse → Kernel.Abstractions (optional)
+└── Observe → Kernel, Vault
 ```

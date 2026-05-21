@@ -396,6 +396,49 @@
     "cooldown_days": 14
   },
   {
+    "id": "honeydrunk-observe",
+    "type": "node",
+    "name": "HoneyDrunk.Observe",
+    "public_name": "HoneyDrunk.Observe",
+    "short": "External project observation layer",
+    "description": "Inbound observation contracts and provider-slot connector packages for monitoring external projects and services the Grid does not own.",
+    "sector": "Ops",
+    "signal": "Seed",
+    "cluster": "observability",
+    "energy": 0,
+    "priority": 0,
+    "flow": 0,
+    "tags": ["observation", "external", "github", "azure", "http", "connectors", "events", "webhooks"],
+    "links": {
+      "repo": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Observe"
+    },
+    "long_description": {
+      "overview": "HoneyDrunk.Observe is the inbound observation layer of the Grid. It lets the Hive watch external projects — any codebase or service outside HoneyDrunk — with the same operational visibility that Pulse gives internal Nodes. The repo owns observation contracts, connector composition, event normalization, and provider-slot connector packages such as GitHub, Azure, and HTTP.",
+      "why_it_exists": "Pulse handles outbound telemetry from Grid Nodes to sinks. Observe handles inbound observation from external systems into the Grid. Without it, the Hive cannot see projects it does not own, which blocks future HoneyHub planning inputs.",
+      "primary_audience": "Grid operators wiring external systems into the Hive; future HoneyHub planning surfaces consuming external-project signals.",
+      "value_props": [
+        "Canonical observation event model across heterogeneous external sources",
+        "Provider-slot connector packages shipped from one repo",
+        "Vault-backed credential resolution for every connector",
+        "Independent from HoneyHub so intake can ship before planning"
+      ],
+      "monetization_signal": "Internal-first.",
+      "roadmap_focus": "Phase 1: contracts and repo scaffolding. Phase 2: GitHub connector as the first useful increment. Phase 3: HoneyHub integration after the planning surface is live.",
+      "grid_relationship": "Consumes Kernel for context and lifecycle. Consumes Vault for connector credential resolution. Does not route outbound telemetry to sinks — that is Pulse's opposite-direction boundary.",
+      "integration_depth": "medium",
+      "demo_path": "Register an observation target → connector intakes external event → runtime normalizes to IObservationEvent → event visible in observation state.",
+      "signal_quote": "See what the Hive does not own.",
+      "stability_tier": "seed",
+      "impact_vector": "external visibility"
+    },
+    "foundational": false,
+    "strategy_base": 10,
+    "tier": "none",
+    "time_pressure": 0,
+    "done": false,
+    "cooldown_days": 14
+  },
+  {
     "id": "honeydrunk-notify",
     "type": "node",
     "name": "HoneyDrunk.Notify",

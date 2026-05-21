@@ -133,6 +133,19 @@
       "notes": "Aligned to Kernel canonical Pulse identity and Transport 0.6.0; NuGet/GitHub Release published. Container scan blocked only image push, not package release."
     },
     {
+      "id": "honeydrunk-observe",
+      "name": "HoneyDrunk.Observe",
+      "sector": "Ops",
+      "signal": "Seed",
+      "version": "0.0.0",
+      "canary_status": "none",
+      "last_release": null,
+      "active_blockers": [
+        "Repo not yet scaffolded"
+      ],
+      "notes": "ADR-0010 Phase 1 Node. Contracts and connector provider-slot packages (GitHub, Azure, HTTP) will ship from the Observe repo; no separate connectors Node."
+    },
+    {
       "id": "honeydrunk-actions",
       "name": "HoneyDrunk.Actions",
       "sector": "Ops",
@@ -304,17 +317,20 @@
     }
   ],
   "summary": {
-    "total_nodes": 23,
-    "live": 10,
+    "total_nodes": 25,
+    "live": 12,
     "seed": 13,
-    "canary_passing": 8,
-    "canary_none": 15,
+    "canary_passing": 13,
+    "canary_none": 12,
     "canary_failing": 0,
     "blocked_nodes": [
       "honeydrunk-vault-rotation",
+      "honeydrunk-audit",
       "honeydrunk-pulse",
-      "honeydrunk-lore",
+      "honeydrunk-observe",
       "honeydrunk-actions",
+      "honeydrunk-lore",
+      "honeydrunk-architecture",
       "honeydrunk-agents",
       "honeydrunk-ai",
       "honeydrunk-memory",
@@ -323,8 +339,7 @@
       "honeydrunk-capabilities",
       "honeydrunk-flow",
       "honeydrunk-operator",
-      "honeydrunk-sim",
-      "honeydrunk-audit"
+      "honeydrunk-sim"
     ]
   }
 }

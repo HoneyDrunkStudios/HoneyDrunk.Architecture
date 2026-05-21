@@ -89,6 +89,9 @@ No AI Node operates without a path to human oversight. The Operator Node provide
 - Request/response normalization — uniform types regardless of provider
 - Token and latency telemetry — every inference call emits Pulse traces with model, tokens in/out, latency, cost estimate
 - Model selection and routing — choosing the right model for a given request based on capability requirements
+- `IModelRouter` — policy-driven model selection entry point
+- `IRoutingPolicy` — pluggable routing strategy
+- `ModelCapabilityDeclaration` — machine-readable model capability declaration
 
 **Does NOT own:**
 - Agent lifecycle (that's HoneyDrunk.Agents)
