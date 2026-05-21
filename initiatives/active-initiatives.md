@@ -66,11 +66,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [x] Architecture#108: Accept ADR-0030 — catalog registration, sectors row, ADR index flip, ADR-0018 amendment verification, repo context folder, trackers (packet 01 — closed 2026-05-18)
 - [x] Architecture#109: Add the audit-emission boundary invariant to the constitution (packet 02 — closed 2026-05-18)
 
-**Next (separate initiative — ADR-0031 standup, not yet scoped here):**
-- Stand up `HoneyDrunk.Audit` — public repo, `HoneyDrunk.Audit.Abstractions` + `HoneyDrunk.Audit.Data`, three frozen contracts, Data-backed append-only store, the Node's own managed identity, in-memory fixture, contract-shape canary
-- Wire HoneyDrunk.Auth as the first emitter (separate packet against the stood-up Abstractions)
-- Reconcile HoneyDrunk.Operator as consumer/emitter of the relocated contracts (separate packet)
-- **Scope trigger:** ADR-0030 acceptance PRs merged + ADR-0030 flipped to Accepted (this initiative complete) — then the user requests an ADR-0031 scoping run
+**Follow-up sync (2026-05-21):** ADR-0031 standup has now completed its initial packet set: Architecture invariants/catalog work, Audit repo scaffold + `v0.1.0` release, and Auth first-emitter wiring are closed. Remaining Operator reconciliation is future downstream work, not part of ADR-0030 capability acceptance.
 
 ### ADR-0032 PR Validation Policy — Coverage Gate & NuGet Flagging
 **Status:** In Progress

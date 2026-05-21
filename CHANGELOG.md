@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Accepted ADR-0031 after all four standup packets closed: moved the Audit standup packets to `completed/`, updated filed packet paths/proposed-ADR tracking, recorded Audit v0.1.0 as published, and documented Auth PR #24 as the first `IAuditLog` emitter through `HoneyDrunk.Audit.Abstractions` only.
 - Added Audit constitutional invariants 47 (audit-emission boundary), 48 (downstream Nodes depend only on `HoneyDrunk.Audit.Abstractions`), and 49 (Audit Abstractions contract-shape canary); finalized ADR-0030/ADR-0031 invariant references and substituted the assigned numbers in ADR-0031 follow-up packets.
 - Amended Audit ADR/standup scope so `HoneyDrunk.Audit` v0.1.0 explicitly supports both activity/security audit and data-change audit via category/outcome/target/change value types, with redaction guidance before scaffold.
 - Reconciled ADR-0010 Phase 1 after Observe PR #3 merge: marked Architecture#35/#36 and Observe#2 complete, moved completed/superseded ADR-0010 packets to `completed/`, removed the stale missing packet-04 manifest entry, closed duplicate AI routing issues superseded by ADR-0016, and refreshed roadmap/initiative tracking for Phase 2 scoping.

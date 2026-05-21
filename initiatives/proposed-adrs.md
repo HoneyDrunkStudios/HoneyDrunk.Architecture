@@ -55,7 +55,6 @@ and remain manually-flippable until rescoped.
 | [ADR-0025](../adrs/ADR-0025-stand-up-honeydrunk-sim-node.md) | ADR-0025: Stand Up the HoneyDrunk.Sim Node — Simulation and Plan-Evaluation Substrate for the AI Sector | 0/4 closed | [HoneyDrunk.Architecture#145](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/145) open<br>[HoneyDrunk.Architecture#146](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/146) open<br>[HoneyDrunk.Architecture#147](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/147) open<br>missing `generated/issue-packets/active/adr-0025-sim-standup/04-sim-node-scaffold.md` |
 | [ADR-0027](../adrs/ADR-0027-stand-up-honeydrunk-notify-cloud-node.md) | ADR-0027: Stand Up the HoneyDrunk.Notify.Cloud Node — Multi-Tenant Commercial Wrapper Above Notify | 0/6 closed | [HoneyDrunk.Architecture#149](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/149) open<br>[HoneyDrunk.Architecture#150](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/150) open<br>[HoneyDrunk.Notify#21](https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/21) open<br>[HoneyDrunk.Communications#18](https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications/issues/18) open<br>[HoneyDrunk.Architecture#151](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/151) open<br>missing `generated/issue-packets/active/adr-0027-notify-cloud-standup/06-notify-cloud-node-scaffold.md` |
 | [ADR-0028](../adrs/ADR-0028-event-driven-architecture-and-messaging.md) | ADR-0028: Event-Driven Architecture and Messaging — Use-Case-First Backing Selection | 0/4 closed | [HoneyDrunk.Architecture#117](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/117) open<br>[HoneyDrunk.Architecture#118](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/118) open<br>[HoneyDrunk.Architecture#119](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/119) open<br>[HoneyDrunk.Communications#17](https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications/issues/17) open |
-| [ADR-0031](../adrs/ADR-0031-stand-up-honeydrunk-audit-node.md) | ADR-0031: Stand Up the HoneyDrunk.Audit Node — Grid-Wide Durable Security and Action Record | 0/4 closed | [HoneyDrunk.Architecture#153](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/153) open<br>[HoneyDrunk.Architecture#154](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/154) open<br>missing `generated/issue-packets/active/adr-0031-audit-node-standup/03-audit-node-scaffold.md`<br>missing `generated/issue-packets/active/adr-0031-audit-node-standup/04-auth-wire-first-emitter.md` |
 
 ## Pending Flip (qualified for auto-flip but exceeds MAX_FLIPS_PER_RUN this run)
 
@@ -74,7 +73,6 @@ Surface-only items. The agent does not act on these - the human/scope agent does
 | ADR-0023 | accepts packet(s) missing from filed-packets.json: generated/issue-packets/active/adr-0023-evals-standup/04-evals-node-scaffold.md |
 | ADR-0025 | accepts packet(s) missing from filed-packets.json: generated/issue-packets/active/adr-0025-sim-standup/04-sim-node-scaffold.md |
 | ADR-0027 | accepts packet(s) missing from filed-packets.json: generated/issue-packets/active/adr-0027-notify-cloud-standup/06-notify-cloud-node-scaffold.md |
-| ADR-0031 | accepts packet(s) missing from filed-packets.json: generated/issue-packets/active/adr-0031-audit-node-standup/03-audit-node-scaffold.md, generated/issue-packets/active/adr-0031-audit-node-standup/04-auth-wire-first-emitter.md |
 
 ## Flipped This Run
 
@@ -82,4 +80,4 @@ ADRs/PDRs whose Status was changed by **this** sync run from `Proposed` to `Acce
 
 | ID | Title | Sector | Date |
 |----|-------|--------|------|
-| _None._ |  |  |  |
+| [ADR-0031](../adrs/ADR-0031-stand-up-honeydrunk-audit-node.md) | ADR-0031: Stand Up the HoneyDrunk.Audit Node — Grid-Wide Durable Security and Action Record | Core | 2026-05-16 |

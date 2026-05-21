@@ -1,10 +1,10 @@
 # HoneyDrunk.Audit — Overview
 
 **Sector:** Core
-**Version:** TBD (initial release planned 0.1.0 with the standup scaffold)
+**Version:** 0.1.0
 **Framework:** .NET 10.0
 **Repo:** `HoneyDrunkStudios/HoneyDrunk.Audit`
-**Status:** Capability decision accepted; standup not yet executed (governed by the separate standup ADR)
+**Status:** Stood up; `HoneyDrunk.Audit.Abstractions` and `HoneyDrunk.Audit.Data` v0.1.0 published
 
 ## Purpose
 

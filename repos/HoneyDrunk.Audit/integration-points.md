@@ -13,11 +13,11 @@
 |------|-----------|-------|
 | **HoneyDrunk.Pulse** | Audit emits → Pulse observes | One-way by contract. Audit emits operational telemetry (write latency, query latency, append throughput). Audit has **no runtime dependency on Pulse**. Audit *records* are not telemetry and never flow to Pulse — the durable audit channel and the observability channel stay separate. |
 
-## Downstream Consumers (planned — wired by separate follow-up packets)
+## Downstream Consumers
 
 | Node | Contract Used | Status |
 |------|---------------|--------|
-| **HoneyDrunk.Auth** | `IAuditLog` (`HoneyDrunk.Audit.Abstractions`) | Planned first emitter — records durable attributable security events (login attempts, authz grants/denials) additively to its existing OTel traces, on a separate durable channel. Auth's identity-out-of-traces invariant is untouched. |
+| **HoneyDrunk.Auth** | `IAuditLog` (`HoneyDrunk.Audit.Abstractions`) | Wired in Auth PR #24 as the first emitter. Records token-validation outcomes and authorization grants/denials additively to existing OTel traces, on a separate durable channel. Auth's identity-out-of-traces invariant is untouched. |
 | **HoneyDrunk.Operator** | `IAuditLog`, `IAuditQuery` (`HoneyDrunk.Audit.Abstractions`) | Reclassified from owner to consumer/emitter. Continues recording its AI-runtime decisions by emitting `AuditEntry` against the `IAuditLog` it now consumes. |
 | **Future Data-change emitters** | `IAuditLog` (`HoneyDrunk.Audit.Abstractions`) | Record entity/resource create/update/delete events with `AuditCategory.DataChange`, `AuditTarget`, and redacted `AuditChange` details. |
 
