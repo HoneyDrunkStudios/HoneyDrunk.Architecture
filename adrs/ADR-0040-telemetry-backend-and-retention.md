@@ -62,21 +62,23 @@ App Insights' native retention is meaningfully longer than Grafana Cloud's free 
 
 **Audit retention is the load-bearing exception.** Standard log retention satisfies "what happened in the last quarter"; Audit retention satisfies "what happened to this tenant last year." Same workspace, different per-table retention policy. The boundary is enforced by Audit emitter labeling (`source=hd-audit` custom dimension).
 
-### D4 — Sampling: adaptive sampling via App Insights SDK, with rules
+### D4 — Sampling: OpenTelemetry samplers and processors, with rules
 
-App Insights' SDK provides **adaptive sampling** out of the box — default 5 telemetry items/second per host, with the SDK dynamically adjusting the sample rate to hit that target. This replaces ADR-0040's earlier "head-based 10% via OTel SDK" approach with the mechanism native to the backing.
+Consistent with D2's OTLP-only-boundary commitment, sampling is configured via **OpenTelemetry primitives** — a custom `Sampler` composed into the `TracerProvider` and `SpanProcessor` filters wired alongside. The Azure Monitor OpenTelemetry Distro respects whatever sampler the OTel SDK is configured with; the Azure Monitor exporter sends the sampled output onward to App Insights without rewriting the sampling decision. This is the OTel-native path; classic App Insights SDK constructs like `ITelemetryProcessor` are not used (they'd undercut the reversibility property D2 buys).
 
-Rules layered on top of adaptive sampling:
+Default sampler: **`ParentBased(TraceIdRatioBased)`** targeting ~5 items/second per host (matching App Insights' default expectation), implemented as a small custom sampler that wraps `TraceIdRatioBased` with dynamic-rate behavior. Lives in `HoneyDrunk.Observe.Sampling`.
 
-- **100% sampling** for any span with `success=false` or `error=true`.
+Rules layered on top of the base sampler (implemented as a chained `Sampler` or a `SpanProcessor` filter, depending on whether the decision must influence downstream span attribute drops):
+
+- **100% sampling** for any span with `success=false` or `error=true` (decided at end-of-span via tail-sampling-like behavior in a `SpanProcessor`).
 - **100% sampling** for any telemetry attributed to `HoneyDrunk.Audit`.
 - **100% sampling** for any span attributed to a billing event emit (per ADR-0037).
 - **100% sampling** during canary runs.
-- **1 item/sec adaptive** for high-volume background workloads (Pulse collector, Knowledge ingestion batch jobs).
+- **Lower-rate sampling** for high-volume background workloads (Pulse collector, Knowledge ingestion batch jobs) — composed as a stricter `TraceIdRatioBased` under a `ParentBased` boundary keyed on the workload's `service.name`.
 
-Rules implemented as `ITelemetryProcessor` filters in `HoneyDrunk.Observe.AzureMonitor`. The processor is a small, shipped component; per-Node configuration is the rate parameter only.
+The composition lives in `HoneyDrunk.Observe.AzureMonitor`. The Azure Monitor exporter is the connector behind the OTel SDK; the sampling decisions are made by the OTel SDK, not by the exporter or by App Insights post-ingest.
 
-Metrics and logs are **not sampled** at ingestion (same principle as the original ADR — sampling logs/metrics for cost is a false economy; either keep them or don't, and at our volume keeping is cheap).
+Metrics and logs are **not sampled** at ingestion (same principle as the original ADR — sampling logs/metrics for cost is a false economy; either keep them or don't, and at our volume keeping is cheap). Metric views and log filters, if any, are also OTel-native (`View`s for metrics; `LogRecordProcessor`s for logs).
 
 ### D5 — Tenant scoping: tenant-id as a custom dimension
 
@@ -113,7 +115,7 @@ This is a deliberate dual-write because Pulse signal values (e.g., "API latency 
 
 ### D9 — PII and sensitive-content carve-outs
 
-Trace and log content can leak PII or model-output content. Mechanism is `ITelemetryProcessor` (the App Insights-native filter pipeline, parallel to Sentry's `BeforeSend` for the error path per ADR-0045):
+Trace and log content can leak PII or model-output content. Mechanism is **OpenTelemetry `Processor`s** — a `SpanProcessor` for traces and a `LogRecordProcessor` for logs that filter or redact attributes before the Azure Monitor exporter ships them onward. Consistent with D2 (OTel-native primitives, not classic App Insights SDK constructs):
 
 - **Custom dimensions** (`tenant.id`, `service.name`, etc.) are not PII; allowed.
 - **Telemetry containing user-typed content or model outputs** is forbidden by default. Specifically excluded: prompt text, completion text, recipient email addresses, message bodies.
@@ -182,7 +184,7 @@ Adds three:
 
 - Provision App Insights resources for `dev`/`staging`/`prod` (the staging/prod environments are still in flight per ADR-0033).
 - Implement `HoneyDrunk.Observe.AzureMonitor` with the Azure Monitor OpenTelemetry Distro wired through `IObservabilityBackend` (or equivalent existing Observe abstraction).
-- Implement the sampling-rules and PII `ITelemetryProcessor`s; wire into Observe.
+- Implement the OpenTelemetry samplers (in `HoneyDrunk.Observe.Sampling`) and PII `SpanProcessor` / `LogRecordProcessor`s; wire into the OTel `TracerProvider` and `LoggerProvider` builders in `HoneyDrunk.Observe.AzureMonitor`.
 - Implement the volume-discipline canary.
 - Author Workbooks-as-code under `repos/HoneyDrunk.Observe/workbooks/` for the most common operational views.
 - Configure per-table Log Analytics retention for the Audit table (730 days).

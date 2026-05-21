@@ -79,6 +79,8 @@ ADR-0032's PR Validation Policy already mandates a coverage gate; this ADR sets 
 
 **Tier 2b (with real dependencies):** Built on **Testcontainers.NET** for ephemeral real-process dependencies — Postgres, Cosmos DB emulator, Azure Service Bus emulator (in preview at time of writing; falls back to a local emulator container until stable), Azurite for storage emulation. Tests spin up containers per test class via `IAsyncLifetime`, share containers across tests where safe, and tear down deterministically.
 
+**Tier 2b is the explicit, scoped exception to Invariant 15** ("Tests never depend on external services. Use InMemory providers for isolation"). Invariant 15's intent is to forbid tests from depending on *shared, remote, non-deterministic* services — production-like cloud resources that introduce flakiness, cost, and shared state across runs. Testcontainers-driven dependencies do not match that profile: they are **local, ephemeral, single-tenant to the test process, deterministic across runs, and zero-cost beyond container startup**. The Consequences section amends Invariant 15 to make this scoping explicit; the InMemory rule continues to govern unit tests and Tier 2a, and is the default for cross-Node Grid seams everywhere.
+
 The split is enforced by test-project naming convention:
 
 - `HoneyDrunk.<Node>.Tests.Unit` — Tier 1.
@@ -248,12 +250,13 @@ Each phase is a discrete go/no-go.
 
 ### Invariants
 
-Adds two:
+Adds two and amends one:
 
 - **Invariant: every Node has a `*.Tests.Unit` project; deployable Nodes also have `*.Tests.Integration`; HTTP-fronted Nodes also have `*.Tests.E2E`.** Missing required tier is a CI gate failure.
 - **Invariant: no `Thread.Sleep` in test code.** Async work waits via primitives with timeouts. CI gate via analyzer rule.
+- **Amends Invariant 15** ("Tests never depend on external services. Use InMemory providers for isolation"). The amendment scopes the original rule: it governs **unit tests and Tier 2a integration tests** without change, and applies as the default for cross-Node Grid seams. **Tier 2b is the explicit, scoped exception** — Testcontainers-driven local-ephemeral dependencies are allowed because they are not "external services" in the sense Invariant 15 forbids (shared, remote, non-deterministic, production-like). The amended Invariant 15 wording (committed to `constitution/invariants.md`): *"Unit tests and in-process integration tests never depend on external services; use InMemory providers (`InMemorySecretStore`, `InMemoryBroker`, `InMemoryQueue`) for isolation. Container-based integration tests (Tier 2b per ADR-0047) are the scoped exception, allowed because they are local, ephemeral, and deterministic."*
 
-(Final numbering assigned at constitution update time; `hive-sync` reconciles.)
+(Final numbering for the two new invariants assigned at constitution update time; `hive-sync` reconciles. The Invariant 15 amendment is a wording change at its existing position.)
 
 ### Operational Consequences
 

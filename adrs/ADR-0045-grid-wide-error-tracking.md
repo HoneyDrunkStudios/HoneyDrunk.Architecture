@@ -221,7 +221,7 @@ Considered as v1 default in the first draft of this ADR. Strong product: best-in
 
 - **Cost vs already-paid Azure relationship.** App Insights is part of the Azure footprint we already pay for. Sentry is a new vendor and billing line, even on the Team tier ($26/month).
 - **Native cross-link.** App Insights delivers cross-signal navigation (errors → traces → logs → metrics) natively via `operation_id`. Sentry + App Insights would require configured cross-links.
-- **Specu­lative escalation.** The first draft committed to Sentry's premium features before observing whether App Insights' Failures-blade actually fails the operator's needs. At single-digit-errors-per-day v1 volume, premium features sit unused.
+- **Speculative escalation.** The first draft committed to Sentry's premium features before observing whether App Insights' Failures-blade actually fails the operator's needs. At single-digit-errors-per-day v1 volume, premium features sit unused.
 
 Documented as the D11 escalation path with explicit triggers. Picked when real evidence shows App Insights' workflow is the bottleneck, not before.
 
