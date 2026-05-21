@@ -25,7 +25,7 @@ This ADR amends ADR-0011 to **reverse the local-only stance**, **reverse the Cod
 
 ## Decision
 
-The decision has two intertwined halves: the **build** (D1–D4) makes the **discipline** (D5–D8) practical. Neither half stands alone.
+The decision has two intertwined halves: the **build** (D1–D5) makes the **discipline** (D6–D9) practical. Neither half stands alone.
 
 ### D1 — Build the cloud-wired reviewer as `job-review-agent.yml` in HoneyDrunk.Actions
 
@@ -56,41 +56,67 @@ The workflow checks out both the target repo and `HoneyDrunkStudios/HoneyDrunk.A
 
 ADR-0011 D4's coupling rule (review-agent context-loading must mirror scope-agent context-loading) is preserved. Updates land in `.claude/agents/review.md`, the workflow re-runs without code change.
 
-### D3 — Per-repo configuration via `.honeydrunk-review.yaml`
+### D3 — Review goals and rubric
+
+The cloud-wired reviewer (and the local one, since both consume `.claude/agents/review.md`) evaluates every PR against five dimensions. Each dimension carries a category of concerns. The detailed per-dimension checklist — what specifically to look for, what counts as a finding, what severity to apply — lives in `.claude/agents/review.md` per ADR-0007's source-of-truth rule and ADR-0011 D6/D7's binding precedent that responsibility-checklists live in the agent file, not in the ADR text. This ADR binds the **dimensions and their intent**; the agent file binds the **checklists that implement them**.
+
+**1. Correctness and reliability.** Does the code do what the packet says it should? Are bugs likely to be present — off-by-one, null dereference, incorrect boolean logic, race conditions in async paths, swallowed exceptions, incorrect error propagation? Are edge cases handled and error paths exercised? Does the change preserve the behavior of code it touches (no silent regressions)? Are the tests **actually exercising the new behavior** — no tautological assertions (`Assert.True(true)`, `Assert.Equal(x, x)`), no mocked-out system-under-test, no boilerplate that would pass regardless of the production change? Is there at least one negative-path assertion (wrong inputs produce wrong-shaped errors, not silent success)? Are tests in the correct test project (unit in `.Tests`, integration separated per ADR-0011 Gap 1)?
+
+**2. Code quality.** Is the code maintainable, readable, and appropriately simple? Does it honor **DRY** — no copy-paste of logic that already exists in this file, this Node, or another Grid Node's published package? Does it honor **SOLID** where the abstractions justify the cost: single responsibility per class; open for extension, closed for modification; Liskov substitution preserved; interface segregation respected; dependencies inverted at boundaries? Does it follow the conventions in this Node and the Grid (naming, file layout, formatting beyond what analyzers catch, idiomatic patterns)? Does it use **established patterns** rather than inventing parallel ones? Is the result **enterprise-grade** — would a senior engineer at a larger shop ship this without rework?
+
+**3. Design hygiene.** Does the change **extend or reuse existing code** rather than write parallel new code? Before writing a new method or class, was there a usable existing one in this file, this Node, or a referenced Node's package? Cross-Node copy-paste is forbidden and is a Block-grade finding (see also dimension 5). Is the resulting surface **testable** — dependencies injectable, side effects isolated, no static mutable state where avoidable, time and randomness abstracted where they affect behavior? Is it **extensible** at the seams that warrant it (open/closed where the cost is justified, **not** for hypothetical futures — per the project's "no premature abstraction" stance)? Is it **configurable** at the right boundaries (settings, environment, feature flags — not magic numbers, not hardcoded environment-specific values), **without over-engineering toward configurability for its own sake**?
+
+**4. Security and performance.**
+   - **Security.** Does the change introduce a regression — secret in logs (Invariant 8), PII in telemetry (ADR-0040 D9), missing tenant-scoping (ADR-0026), broken or bypassed authentication paths (ADR-0031), unvalidated input crossing a trust boundary, SQL/command injection surface, deserialization of untrusted data, secrets in source? Does it weaken an existing security boundary?
+   - **Performance.** Does the change introduce a regression in a hot path — synchronous I/O in a request handler, unbounded loops, allocation in tight loops, new HTTP or database round-trips per request, N+1 queries, blocking calls in async paths, missing pagination on potentially-large result sets, new outbound calls without timeouts?
+   - **Cost discipline.** ADR-0011 D6's named checklist (log volume, LLM cost caps, CI guards, Azure SKU justification) is part of this dimension, not a separate concern.
+
+**5. Grid fit.** This is the dimension only a Grid-aware reviewer can evaluate, and it is why this reviewer is built rather than bought.
+   - **Node-job adherence.** Is the change consistent with the Node's stated purpose in `repos/{node}/overview.md`? Does the Node continue to do its correct job — neither more (scope inflation) nor less (responsibility erosion)?
+   - **Boundary respect.** Does the change cross a Node boundary it shouldn't? Does it leak responsibility into a different Node's surface (per `repos/{node}/boundaries.md` and the sector-interaction rules in `constitution/sector-interaction-map.md`)?
+   - **Reuse-across-Nodes over reimplementation.** If logic the PR needs already exists in another Grid Node's published package, the PR **must consume that package**, not duplicate the logic. Cross-Node copy-paste is the single most expensive long-term failure mode and is a Block-grade finding.
+   - **Dependency hygiene.** When the PR needs functionality from another Node, does it take the dependency the **right way** — via the upstream Node's published `*.Abstractions` per ADR-0035, never via a reach-around into the backing implementation? Is the version pinned correctly?
+   - **Invariant preservation.** Every Grid-wide invariant (`constitution/invariants.md`) and every per-Node invariant (`repos/{node}/invariants.md`) is preserved. Walked explicitly per ADR-0011 D7.
+   - **Packet adherence.** The change does what the linked packet says — no more (scope creep, undocumented refactors riding along), no less (scope shortfall, declared work missing). Side effects not in the packet are flagged.
+   - **Contract preservation.** Public surfaces (`*.Abstractions`) follow ADR-0035 versioning rules; no silent ABI breaks at minor/patch versions; `PublicAPI.Unshipped.txt` updates match the declared bump.
+
+The verdict comments findings against these dimensions using the severity taxonomy in `copilot/pr-review-rules.md` (`Block` / `Request Changes` / `Suggest`). The taxonomy and the per-dimension checklist are the two things `.claude/agents/review.md` binds; updates land there, not in this ADR. The dimensions themselves change only via amendment to this D3.
+
+### D4 — Per-repo configuration via `.honeydrunk-review.yaml`
 
 Each repo carries an optional `.honeydrunk-review.yaml` at the repo root. The v1 schema is deliberately minimal; the file's primary purpose is the **enabled/disabled gate** during phased rollout. Additional knobs land as later amendments.
 
 v1 schema:
 
 ```yaml
-enabled: true                # required; default-off until repo opts in (D10)
+enabled: true                # required; default-off until repo opts in (D11)
 severity_floor: Suggest      # minimum severity for posted findings: Suggest | Request Changes | Block
 skip_paths:                  # globs excluded from review
   - "**/*.Designer.cs"
   - "**/*.g.cs"
   - "**/generated/**"
-model: sonnet                # sonnet | opus; default sonnet, opus for high-risk-Node touches per D7
+model: sonnet                # sonnet | opus; default sonnet, opus for high-risk-Node touches per D8
 cost_cap_per_pr_usd: 5.00    # hard ceiling; agent aborts if exceeded mid-review and posts a partial-review comment
 ```
 
-Per-path review-instruction overrides (the `path_instructions`-style surface CodeRabbit offers) are **explicitly deferred to a polish phase** (D10). v1 relies on the agent's built-in context loading and the prompt definition in `.claude/agents/review.md`. If per-path overrides earn their keep based on observed v1 gaps, they land in v2 with a documented schema; until then the configuration surface stays small.
+Per-path review-instruction overrides (the `path_instructions`-style surface CodeRabbit offers) are **explicitly deferred to a polish phase** (D11). v1 relies on the agent's built-in context loading and the prompt definition in `.claude/agents/review.md`. If per-path overrides earn their keep based on observed v1 gaps, they land in v2 with a documented schema; until then the configuration surface stays small.
 
 Repos without a `.honeydrunk-review.yaml` are treated as `enabled: false` during v1 phased rollout. This is the opt-in gate.
 
-### D4 — Cost guardrails are part of the build
+### D5 — Cost guardrails are part of the build
 
 The workflow ships with the following cost guardrails as default behavior (not configurable):
 
-- **Hard per-PR ceiling** (`cost_cap_per_pr_usd` from D3, default $5). The agent's runtime tracks accumulated token cost; on cap exceedance, the agent posts a partial-review comment naming what was reviewed and what was skipped, and the workflow exits cleanly. Never silently fails.
+- **Hard per-PR ceiling** (`cost_cap_per_pr_usd` from D4, default $5). The agent's runtime tracks accumulated token cost; on cap exceedance, the agent posts a partial-review comment naming what was reviewed and what was skipped, and the workflow exits cleanly. Never silently fails.
 - **Skip on draft PRs.** Already noted in D1.
 - **Skip on PRs labeled `skip-review`.** Manual escape hatch for the rare case (label-as-config, no schema change).
 - **Skip on PR-size limits when extreme.** If the diff exceeds 2000 lines (after `skip_paths` exclusions), the agent reviews only the highest-risk files (Node `.Abstractions/**`, `*.csproj` changes, anything touching `boundaries.md` or `invariants.md`) and posts a comment indicating coverage was capped.
-- **Sonnet by default.** Opus only when D7's high-risk-Node trigger fires. Model selection is the largest cost lever; defaulting to the cheaper model is non-negotiable.
+- **Sonnet by default.** Opus only when D8's high-risk-Node trigger fires. Model selection is the largest cost lever; defaulting to the cheaper model is non-negotiable.
 - **Cache context loads per workflow run.** Catalogs and invariants don't change within a single PR run; loaded once and reused across files in the diff.
 
 Expected monthly cost: $40–100 at current AI-PR cadence. Tracked in `business/context/` under review-tooling cost. Breaching $200/month for two consecutive months triggers an ADR amendment (revisit model selection, sampling rate, or cap).
 
-### D5 — Authorship classification
+### D6 — Authorship classification
 
 Every PR declares its authorship class in the PR body, in a single line: `Authorship: <class>`. Classes:
 
@@ -102,19 +128,19 @@ Every PR declares its authorship class in the PR body, in a single line: `Author
 
 A CI check (added to `pr-core.yml`) verifies the line is present and parseable; absence fails the check as required. Codex/Copilot/Claude-Code execution surfaces are amended in follow-up packets to emit the line automatically (a small change to each surface's commit/PR-creation template).
 
-Authorship class drives D6, D7, and D8.
+Authorship class drives D7, D8, and D9.
 
-### D6 — PR-size discipline for AI-authored changes
+### D7 — PR-size discipline for AI-authored changes
 
 Non-`human` PRs carry a soft size cap, enforced via a new `pr-size-check` job in `pr-core.yml`:
 
-- **≤ 400 changed lines** (excluding `skip_paths` from D3 and excluding test code) — normal review path.
+- **≤ 400 changed lines** (excluding `skip_paths` from D4 and excluding test code) — normal review path.
 - **> 400, ≤ 800 changed lines** — PR body must include a `Size justification:` block. A `large-pr` label is auto-applied. The cloud reviewer's verdict must explicitly address whether the size is justified given the packet.
 - **> 800 changed lines** — CI auto-comments requesting a split or a `refine` pass. The PR can still merge if the human overrides; the override is logged.
 
 This catches PR sprawl — the most common AI-authorship failure mode — before review effort is spent on it.
 
-### D7 — Multi-perspective review for high-risk-Node PRs
+### D8 — Multi-perspective review for high-risk-Node PRs
 
 A non-`human` PR that touches a high-risk Node requires **two independent LLM-review perspectives** before merge. High-risk Nodes:
 
@@ -136,7 +162,7 @@ Alternative escalation paths the human may invoke instead:
 
 The PR body records which path was used. Two same-agent passes is the default because it's cheapest and automatic; the alternatives exist for cases the human judges warrant deeper scrutiny.
 
-### D8 — Post-merge sampling audit
+### D9 — Post-merge sampling audit
 
 Every Nth agent-authored merged PR (starting N=10, tunable via the weekly briefing per ADR-0043) is selected for a deeper post-merge audit:
 
@@ -147,7 +173,7 @@ Every Nth agent-authored merged PR (starting N=10, tunable via the weekly briefi
 
 The audit measures **the review process's own quality**, not individual bugs (the code already shipped). Findings feed back into `.claude/agents/review.md` and this ADR. Without this loop, review-process drift would surface only as production incidents.
 
-### D9 — Relationship to ADR-0011
+### D10 — Relationship to ADR-0011
 
 This ADR **amends ADR-0011** at three points:
 
@@ -159,14 +185,14 @@ GitHub Copilot review remains enabled at the org level; its role is reduced to "
 
 ADR-0011's invariants 31–33 are preserved. This ADR adds two more (Consequences section).
 
-### D10 — Phased rollout
+### D11 — Phased rollout
 
 Phased to minimize blast radius and let v1 earn its keep before polish:
 
 - **Phase 1 (Week 1–2) — MVP on one pilot repo.** Build `job-review-agent.yml`. Enable on `HoneyDrunk.Architecture` only (lowest blast radius — architecture PRs are predominantly docs/catalogs). Verify cost model and output quality. No discipline changes yet.
-- **Phase 2 (Week 3–6) — Rollout to all 12 live Nodes.** Each repo opts in via `.honeydrunk-review.yaml` with `enabled: true`. Authorship classification (D5) becomes mandatory. PR-size discipline (D6) activates with warnings only.
-- **Phase 3 (Month 2) — Discipline tightening.** High-risk-Node multi-perspective (D7) activates once `review_risk_class` lands in `catalogs/grid-health.json`. PR-size discipline moves from warnings to auto-comments at the > 800 threshold.
-- **Phase 4 (Month 3+) — Sampling audit.** D8 activates. Polish features (per-path config overrides, learnings from prior reviews, output formatter improvements) land based on observed v1–v3 gaps. Each polish feature is its own follow-up packet, not part of this ADR.
+- **Phase 2 (Week 3–6) — Rollout to all 12 live Nodes.** Each repo opts in via `.honeydrunk-review.yaml` with `enabled: true`. Authorship classification (D6) becomes mandatory. PR-size discipline (D7) activates with warnings only.
+- **Phase 3 (Month 2) — Discipline tightening.** High-risk-Node multi-perspective (D8) activates once `review_risk_class` lands in `catalogs/grid-health.json`. PR-size discipline moves from warnings to auto-comments at the > 800 threshold.
+- **Phase 4 (Month 3+) — Sampling audit.** D9 activates. Polish features (per-path config overrides, learnings from prior reviews, output formatter improvements) land based on observed v1–v3 gaps. Each polish feature is its own follow-up packet, not part of this ADR.
 
 Each phase is a discrete go/no-go. Phase 1's exit criterion is "the cloud-wired agent's verdicts are at least as useful as the local agent's, at acceptable cost." If that bar is missed, Phase 2 doesn't start.
 
@@ -180,7 +206,7 @@ Each phase is a discrete go/no-go. Phase 1's exit criterion is "the cloud-wired 
 - **Every Grid repo (eventually)** — adds `.honeydrunk-review.yaml`, `large-pr` and `audit-sample` labels via the existing label-setup pattern, and the `Authorship:` line convention to PR templates.
 - **Codex execution surface** — amended in a follow-up packet to emit `Authorship: agent-codex` and the corresponding commit trailer (`Authorship:` and `Co-authored-by:`).
 - **Claude Code commit-template behavior** — amended to emit `Authorship: agent-claude-code`.
-- **`.claude/agents/review.md`** — no change required at v1; updates land in this file per ADR-0007's source-of-truth rule as the prompt evolves.
+- **`.claude/agents/review.md`** — gains the per-dimension checklists implementing D3's five dimensions (correctness/reliability, code quality, design hygiene, security/performance, Grid fit). Updates land in this file per ADR-0007's source-of-truth rule.
 
 ### Invariants
 
@@ -214,7 +240,8 @@ ADR-0011's invariants 31–33 are preserved. Numbering for these two new invaria
 - Add `review_risk_class` field to `catalogs/grid-health.json` schema; populate for current Nodes (deferred until Phase 3 activates).
 - Create `generated/post-merge-audits/` directory with a README.
 - Amend Codex execution surface to emit `Authorship:` + commit trailer.
-- Update `.claude/agents/review.md` with any clarifications needed for cloud-context execution (e.g., explicit handling of "context loaded from the architecture repo checkout").
+- Update `.claude/agents/review.md` with: (a) per-dimension checklists implementing D3's five dimensions; (b) any clarifications needed for cloud-context execution (e.g., explicit handling of "context loaded from the architecture repo checkout").
+- Verify `copilot/pr-review-rules.md` covers the severity taxonomy across all five D3 dimensions; expand where gaps exist.
 - Author the ADR-0011 amendment record (or supersession note) reflecting D9 reversals.
 
 ## Alternatives Considered
@@ -243,7 +270,7 @@ Rejected on the cumulative-vendor-surface argument and on the recognition that *
 
 ### Cloud-wire only for high-risk repos; keep local-only elsewhere
 
-Rejected. The discipline failure mode ("human forgets to invoke") applies equally to non-high-risk repos. The cost difference between "cloud-wire all 12 Nodes" and "cloud-wire 4 Nodes" is small ($40 vs $100/month order of magnitude); the simplicity benefit of one consistent policy is large. Phased rollout (D10) gets the same blast-radius safety without the permanent split-policy.
+Rejected. The discipline failure mode ("human forgets to invoke") applies equally to non-high-risk repos. The cost difference between "cloud-wire all 12 Nodes" and "cloud-wire 4 Nodes" is small ($40 vs $100/month order of magnitude); the simplicity benefit of one consistent policy is large. Phased rollout (D11) gets the same blast-radius safety without the permanent split-policy.
 
 ### Make the cloud reviewer a required blocking check
 
@@ -251,7 +278,7 @@ Rejected. Preserves ADR-0011 D5's advisory posture. Required check on a third-pa
 
 ### Use only Opus to maximize review quality
 
-Rejected on cost. Opus is ~5× the cost of Sonnet per token at current pricing. The marginal quality gain on routine PRs does not justify the cost; Opus belongs on high-risk-Node PRs (D7) where the failure cost is high enough to warrant the spend. Default-Sonnet, escalate-to-Opus is the standard cost-quality factoring for tiered LLM use.
+Rejected on cost. Opus is ~5× the cost of Sonnet per token at current pricing. The marginal quality gain on routine PRs does not justify the cost; Opus belongs on high-risk-Node PRs (D8) where the failure cost is high enough to warrant the spend. Default-Sonnet, escalate-to-Opus is the standard cost-quality factoring for tiered LLM use.
 
 ### Defer until first AI-authored production regression
 
