@@ -90,7 +90,7 @@ Before any work, load in this order:
 | file-issues | `generated/issue-packets/active/` dispatch plan, `copilot/issue-authoring-rules.md` |
 | hive-sync | `generated/issue-packets/filed-packets.json`, `catalogs/grid-health.json`, `catalogs/nodes.json`, `initiatives/`, `adrs/ADR-*.md` (frontmatter), GraphQL Hive board query results |
 | review | ADRs referenced in packet frontmatter, `constitution/invariants.md` |
-| node-audit | `catalogs/relationships.json`, `catalogs/nodes.json`, `catalogs/contracts.json`, `catalogs/compatibility.json`, `repos/{node}/overview.md`, `boundaries.md`, `invariants.md`, `active-work.md`, governing ADRs, repo code on disk |
+| node-audit | `catalogs/relationships.json`, `catalogs/nodes.json`, `catalogs/contracts.json`, `catalogs/compatibility.json`, `repos/{node}/overview.md`, `boundaries.md`, `invariants.md`, `initiatives/active-initiatives.md`, governing ADRs, repo code on disk |
 | refine | The draft being refined; its governing ADR/PDR if applicable |
 | site-sync | `routing/site-sync-rules.md`, `generated/site-sync-packets/` |
 

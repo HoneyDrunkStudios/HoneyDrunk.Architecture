@@ -1,6 +1,6 @@
 # Active Initiatives
 
-Tracked initiatives currently in progress or planned. Completed and cancelled initiatives live in [archived-initiatives.md](archived-initiatives.md).
+Tracked initiatives currently in progress or planned. Completed and cancelled initiatives live in [archived-initiatives.md](archived-initiatives.md). For the ranked priority order across all work, see [current-focus.md](current-focus.md).
 
 ## In Progress
 
