@@ -4,7 +4,7 @@ Tracked automatically by the hive-sync agent. ADRs/PDRs with all implementing
 issues closed are auto-flipped to Accepted on each run; the rest are listed
 here with progress.
 
-Last synced: 2026-05-18
+Last synced: 2026-05-21
 
 ## Awaiting (no `accepts:`-declaring packets yet)
 
@@ -16,43 +16,51 @@ and remain manually-flippable until rescoped.
 
 | ID | Title | Sector | Dated | Days in Proposed |
 |----|-------|--------|-------|------------------|
-| [ADR-0011](../adrs/ADR-0011-code-review-and-merge-flow.md) | Code Review and Merge Flow | Meta | 2026-04-12 | 36 |
-| [ADR-0012](../adrs/ADR-0012-grid-cicd-control-plane.md) | HoneyDrunk.Actions as the Grid CI/CD Control Plane | Meta | 2026-04-13 | 35 |
-| [ADR-0017](../adrs/ADR-0017-stand-up-honeydrunk-capabilities-node.md) | Stand Up the HoneyDrunk.Capabilities Node — Tool Registry and Dispatch Substrate for the AI Sector | AI | 2026-04-19 | 29 |
-| [ADR-0018](../adrs/ADR-0018-stand-up-honeydrunk-operator-node.md) | Stand Up the HoneyDrunk.Operator Node — Human-Policy Enforcement and Audit Substrate for the AI Sector | AI | 2026-04-19 | 29 |
-| [ADR-0020](../adrs/ADR-0020-stand-up-honeydrunk-agents-node.md) | Stand Up the HoneyDrunk.Agents Node — Agent Runtime Substrate for the AI Sector | AI | 2026-04-19 | 29 |
-| [ADR-0021](../adrs/ADR-0021-stand-up-honeydrunk-knowledge-node.md) | Stand Up the HoneyDrunk.Knowledge Node — External Knowledge Ingestion and Retrieval Substrate for the AI Sector | AI | 2026-04-19 | 29 |
-| [ADR-0022](../adrs/ADR-0022-stand-up-honeydrunk-memory-node.md) | Stand Up the HoneyDrunk.Memory Node — Agent-Memory Substrate for the AI Sector | AI | 2026-04-19 | 29 |
-| [ADR-0023](../adrs/ADR-0023-stand-up-honeydrunk-evals-node.md) | Stand Up the HoneyDrunk.Evals Node — Evaluation and Quality Substrate for the AI Sector | AI | 2026-04-19 | 29 |
-| [ADR-0024](../adrs/ADR-0024-stand-up-honeydrunk-flow-node.md) | Stand Up the HoneyDrunk.Flow Node — Workflow-Orchestration Substrate for the AI Sector | AI | 2026-04-19 | 29 |
-| [ADR-0025](../adrs/ADR-0025-stand-up-honeydrunk-sim-node.md) | Stand Up the HoneyDrunk.Sim Node — Simulation and Plan-Evaluation Substrate for the AI Sector | AI | 2026-04-19 | 29 |
-| [ADR-0027](../adrs/ADR-0027-stand-up-honeydrunk-notify-cloud-node.md) | Stand Up the HoneyDrunk.Notify.Cloud Node — Multi-Tenant Commercial Wrapper Above Notify | Ops | 2026-05-02 | 16 |
-| [ADR-0028](../adrs/ADR-0028-event-driven-architecture-and-messaging.md) | Event-Driven Architecture and Messaging — Use-Case-First Backing Selection | Core (Transport) · Ops (Communications, Notify, Pulse, Actions) · cross-cutting | 2026-05-04 | 14 |
-| [ADR-0029](../adrs/ADR-0029-cloudflare-dns-and-edge-platform.md) | Cloudflare as Registrar, Authoritative DNS, and Edge Platform | Infrastructure | 2026-05-08 | 10 |
-| [ADR-0031](../adrs/ADR-0031-stand-up-honeydrunk-audit-node.md) | Stand Up the HoneyDrunk.Audit Node — Grid-Wide Durable Security and Action Record | Core | 2026-05-16 | 2 |
-| [ADR-0032](../adrs/ADR-0032-pr-validation-policy-coverage-gate-and-nuget-flagging.md) | Grid-Wide PR Validation Policy — Coverage Gate and NuGet Update Flagging | Meta | 2026-05-17 | 1 |
-| [ADR-0033](../adrs/ADR-0033-environment-gated-deploy-trigger-model.md) | Environment-Gated Deploy-Trigger Model for Deployable Nodes | Ops | 2026-05-18 | 0 |
-| [PDR-0002](../pdrs/PDR-0002-notify-as-a-service-first-commercial-product.md) | HoneyDrunk Notify — First Commercial Product on the Grid | Ops (primary) · Meta (positioning) | 2026-05-02 | 16 |
-| [PDR-0003](../pdrs/PDR-0003-lately-currents-based-connection-app.md) | Lately — A Currents-Based Connection App for Regular Humans | Market / Core / Ops | 2026-05-05 | 13 |
-| [PDR-0005](../pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md) | Hearth — Personal Growth as a Living Town | Market / AI / Ops | 2026-05-05 | 13 |
-| [PDR-0006](../pdrs/PDR-0006-currents-social-suggestions-and-quests.md) | Currents — Social Suggestions and Lightweight Quests | Market / AI / Social | 2026-05-06 | 12 |
-| [PDR-0008](../pdrs/PDR-0008-curiosities-discovery-first-city-app.md) | Curiosities — Discovery-First City App | Market / Location / AI / Play | 2026-05-16 | 2 |
+| [ADR-0011](../adrs/ADR-0011-code-review-and-merge-flow.md) | ADR-0011: Code Review and Merge Flow | Meta | 2026-04-12 | 39 |
+| [ADR-0012](../adrs/ADR-0012-grid-cicd-control-plane.md) | ADR-0012: HoneyDrunk.Actions as the Grid CI/CD Control Plane | Meta | 2026-04-13 | 38 |
+| [ADR-0017](../adrs/ADR-0017-stand-up-honeydrunk-capabilities-node.md) | ADR-0017: Stand Up the HoneyDrunk.Capabilities Node — Tool Registry and Dispatch Substrate for the AI Sector | AI | 2026-04-19 | 32 |
+| [ADR-0029](../adrs/ADR-0029-cloudflare-dns-and-edge-platform.md) | ADR-0029: Cloudflare as Registrar, Authoritative DNS, and Edge Platform | Infrastructure | 2026-05-08 | 13 |
+| [ADR-0032](../adrs/ADR-0032-pr-validation-policy-coverage-gate-and-nuget-flagging.md) | ADR-0032: Grid-Wide PR Validation Policy — Coverage Gate and NuGet Update Flagging | Meta | 2026-05-17 | 4 |
+| [ADR-0033](../adrs/ADR-0033-environment-gated-deploy-trigger-model.md) | ADR-0033: Environment-Gated Deploy-Trigger Model for Deployable Nodes | Ops | 2026-05-18 | 3 |
+| [PDR-0002](../pdrs/PDR-0002-notify-as-a-service-first-commercial-product.md) | PDR-0002: HoneyDrunk Notify — First Commercial Product on the Grid | Ops (primary) · Meta (positioning) | 2026-05-02 | 19 |
+| [PDR-0003](../pdrs/PDR-0003-lately-currents-based-connection-app.md) | PDR-0003: Lately — A Currents-Based Connection App for Regular Humans | Market / Core / Ops | 2026-05-05 | 16 |
+| [PDR-0005](../pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md) | PDR-0005: Hearth — Personal Growth as a Living Town | Market / AI / Ops | 2026-05-05 | 16 |
+| [PDR-0006](../pdrs/PDR-0006-currents-social-suggestions-and-quests.md) | PDR-0006: Currents — Social Suggestions and Lightweight Quests | Market / AI / Social | 2026-05-06 | 15 |
+| [PDR-0008](../pdrs/PDR-0008-curiosities-discovery-first-city-app.md) | PDR-0008: Curiosities — Discovery-First City App | Market / Location / AI / Play | 2026-05-16 | 5 |
 
 ## In Progress (implementing packets filed; some issues still open)
 
-_None._
+| ID | Title | Progress | Open / Missing packets |
+|----|-------|----------|------------------------|
+| [ADR-0018](../adrs/ADR-0018-stand-up-honeydrunk-operator-node.md) | ADR-0018: Stand Up the HoneyDrunk.Operator Node — Human-Policy Enforcement and Audit Substrate for the AI Sector | 0/4 closed | [HoneyDrunk.Architecture#121](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/121) open<br>[HoneyDrunk.Architecture#122](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/122) open<br>[HoneyDrunk.Architecture#123](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/123) open<br>[HoneyDrunk.Operator#3](https://github.com/HoneyDrunkStudios/HoneyDrunk.Operator/issues/3) open |
+| [ADR-0020](../adrs/ADR-0020-stand-up-honeydrunk-agents-node.md) | ADR-0020: Stand Up the HoneyDrunk.Agents Node — Agent Runtime Substrate for the AI Sector | 0/4 closed | [HoneyDrunk.Architecture#125](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/125) open<br>[HoneyDrunk.Architecture#126](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/126) open<br>[HoneyDrunk.Architecture#127](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/127) open<br>[HoneyDrunk.Agents#2](https://github.com/HoneyDrunkStudios/HoneyDrunk.Agents/issues/2) open |
+| [ADR-0021](../adrs/ADR-0021-stand-up-honeydrunk-knowledge-node.md) | ADR-0021: Stand Up the HoneyDrunk.Knowledge Node — External Knowledge Ingestion and Retrieval Substrate for the AI Sector | 0/4 closed | [HoneyDrunk.Architecture#129](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/129) open<br>[HoneyDrunk.Architecture#130](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/130) open<br>[HoneyDrunk.Architecture#131](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/131) open<br>[HoneyDrunk.Knowledge#2](https://github.com/HoneyDrunkStudios/HoneyDrunk.Knowledge/issues/2) open |
+| [ADR-0022](../adrs/ADR-0022-stand-up-honeydrunk-memory-node.md) | ADR-0022: Stand Up the HoneyDrunk.Memory Node — Agent-Memory Substrate for the AI Sector | 0/4 closed | [HoneyDrunk.Architecture#134](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/134) open<br>[HoneyDrunk.Architecture#135](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/135) open<br>[HoneyDrunk.Architecture#136](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/136) open<br>[HoneyDrunk.Memory#2](https://github.com/HoneyDrunkStudios/HoneyDrunk.Memory/issues/2) open |
+| [ADR-0023](../adrs/ADR-0023-stand-up-honeydrunk-evals-node.md) | ADR-0023: Stand Up the HoneyDrunk.Evals Node — Evaluation and Quality Substrate for the AI Sector | 0/4 closed | [HoneyDrunk.Architecture#137](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/137) open<br>[HoneyDrunk.Architecture#138](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/138) open<br>[HoneyDrunk.Architecture#139](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/139) open<br>missing `generated/issue-packets/active/adr-0023-evals-standup/04-evals-node-scaffold.md` |
+| [ADR-0024](../adrs/ADR-0024-stand-up-honeydrunk-flow-node.md) | ADR-0024: Stand Up the HoneyDrunk.Flow Node — Workflow-Orchestration Substrate for the AI Sector | 0/4 closed | [HoneyDrunk.Architecture#141](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/141) open<br>[HoneyDrunk.Architecture#142](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/142) open<br>[HoneyDrunk.Architecture#143](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/143) open<br>[HoneyDrunk.Flow#2](https://github.com/HoneyDrunkStudios/HoneyDrunk.Flow/issues/2) open |
+| [ADR-0025](../adrs/ADR-0025-stand-up-honeydrunk-sim-node.md) | ADR-0025: Stand Up the HoneyDrunk.Sim Node — Simulation and Plan-Evaluation Substrate for the AI Sector | 0/4 closed | [HoneyDrunk.Architecture#145](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/145) open<br>[HoneyDrunk.Architecture#146](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/146) open<br>[HoneyDrunk.Architecture#147](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/147) open<br>missing `generated/issue-packets/active/adr-0025-sim-standup/04-sim-node-scaffold.md` |
+| [ADR-0027](../adrs/ADR-0027-stand-up-honeydrunk-notify-cloud-node.md) | ADR-0027: Stand Up the HoneyDrunk.Notify.Cloud Node — Multi-Tenant Commercial Wrapper Above Notify | 0/6 closed | [HoneyDrunk.Architecture#149](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/149) open<br>[HoneyDrunk.Architecture#150](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/150) open<br>[HoneyDrunk.Notify#21](https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/21) open<br>[HoneyDrunk.Communications#18](https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications/issues/18) open<br>[HoneyDrunk.Architecture#151](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/151) open<br>missing `generated/issue-packets/active/adr-0027-notify-cloud-standup/06-notify-cloud-node-scaffold.md` |
+| [ADR-0028](../adrs/ADR-0028-event-driven-architecture-and-messaging.md) | ADR-0028: Event-Driven Architecture and Messaging — Use-Case-First Backing Selection | 0/4 closed | [HoneyDrunk.Architecture#117](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/117) open<br>[HoneyDrunk.Architecture#118](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/118) open<br>[HoneyDrunk.Architecture#119](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/119) open<br>[HoneyDrunk.Communications#17](https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications/issues/17) open |
+| [ADR-0031](../adrs/ADR-0031-stand-up-honeydrunk-audit-node.md) | ADR-0031: Stand Up the HoneyDrunk.Audit Node — Grid-Wide Durable Security and Action Record | 0/4 closed | [HoneyDrunk.Architecture#153](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/153) open<br>[HoneyDrunk.Architecture#154](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/154) open<br>missing `generated/issue-packets/active/adr-0031-audit-node-standup/03-audit-node-scaffold.md`<br>missing `generated/issue-packets/active/adr-0031-audit-node-standup/04-auth-wire-first-emitter.md` |
 
 ## Pending Flip (qualified for auto-flip but exceeds MAX_FLIPS_PER_RUN this run)
 
 > Flip queue exceeds the per-run limit (3); the entries below will flip on subsequent runs.
 
-_None._
+| ID | Title | Sector | Date |
+|----|-------|--------|------|
+| _None._ |  |  |  |
 
 ## Anomalies
 
 Surface-only items. The agent does not act on these - the human/scope agent does.
 
-_None._
+| Item | Detail |
+|------|--------|
+| ADR-0023 | accepts packet(s) missing from filed-packets.json: generated/issue-packets/active/adr-0023-evals-standup/04-evals-node-scaffold.md |
+| ADR-0025 | accepts packet(s) missing from filed-packets.json: generated/issue-packets/active/adr-0025-sim-standup/04-sim-node-scaffold.md |
+| ADR-0027 | accepts packet(s) missing from filed-packets.json: generated/issue-packets/active/adr-0027-notify-cloud-standup/06-notify-cloud-node-scaffold.md |
+| ADR-0031 | accepts packet(s) missing from filed-packets.json: generated/issue-packets/active/adr-0031-audit-node-standup/03-audit-node-scaffold.md, generated/issue-packets/active/adr-0031-audit-node-standup/04-auth-wire-first-emitter.md |
 
 ## Flipped This Run
 
