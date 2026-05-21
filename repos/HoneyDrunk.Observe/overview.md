@@ -1,10 +1,10 @@
 # HoneyDrunk.Observe — Overview
 
-**Sector:** Ops  
-**Version:** TBD  
-**Framework:** .NET 10.0  
-**Repo:** `HoneyDrunkStudios/HoneyDrunk.Observe`  
-**Status:** Planned  
+**Sector:** Ops
+**Version:** 0.0.0
+**Framework:** .NET 10.0
+**Repo:** `HoneyDrunkStudios/HoneyDrunk.Observe`
+**Status:** Planned
 
 ## Purpose
 
