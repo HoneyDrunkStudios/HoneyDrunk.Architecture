@@ -12,8 +12,8 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 **Description:** Follow-up from the 2026-05-17 Kernel adoption audit. Align active .NET Nodes on canonical Kernel identity/context usage, remove avoidable runtime Kernel dependencies, enforce Grid/Operation context at HTTP/message/background entry points, clean up Notify queue-secret bootstrap drift, and reconcile Architecture compatibility metadata after repo PRs merge.
 
 **Tracking:**
-- [ ] Kernel#29: Align Kernel context bootstrap and well-known Node IDs (packet 01) — v0.7.0 released; issue still open in GitHub.
-- [ ] Transport#27: Drop Transport dependency on Kernel runtime (packet 02) — v0.6.0 released; issue still open in GitHub.
+- [x] Kernel#29: Align Kernel context bootstrap and well-known Node IDs (packet 01 — closed 2026-05-18)
+- [x] Transport#27: Drop Transport dependency on Kernel runtime (packet 02 — closed 2026-05-18)
 - [x] Vault#31: Align Vault to current Kernel packages (packet 03 — closed 2026-05-18)
 - [x] Auth#20: Align Auth to current Kernel packages (packet 04 — closed 2026-05-18)
 - [x] Web.Rest#17: Require Kernel context in Web.Rest request pipeline (packet 05 — closed 2026-05-18)
@@ -21,10 +21,10 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [x] Vault.Rotation#7: Establish Kernel context for rotation timer jobs (packet 07 — closed 2026-05-18)
 - [x] Notify#13: Align Notify Kernel identity and queue secret boundary (packet 08 — closed 2026-05-18)
 - [x] Pulse#15: Align Pulse to Kernel canonical identity (packet 09 — closed 2026-05-18)
-- [ ] Communications#14: Drop Communications runtime Kernel dependency (packet 10) — v0.2.0 released; issue still open in GitHub.
-- [ ] Architecture#111: Reconcile Kernel adoption catalogs and compatibility (packet 11)
+- [x] Communications#14: Drop Communications runtime Kernel dependency (packet 10 — closed 2026-05-18)
+- [x] Architecture#111: Reconcile Kernel adoption catalogs and compatibility (packet 11 — closed 2026-05-18)
 
-> **Sync (2026-05-18):** Core package reality is reconciled in Architecture metadata through Kernel 0.7.0 / Transport 0.6.0 / Vault 0.5.0 / Auth 0.4.0 / Web.Rest 0.5.0 / Data 0.6.0 / Notify 0.3.0 / Pulse 0.3.0 / Communications 0.2.0. Closed packets 03–09 moved to `completed/`; packets 01, 02, 10, and 11 remain active because their GitHub issues are still open.
+> **Sync (2026-05-21):** Kernel#29, Transport#27, Communications#14, and Architecture#111 are now closed; packets 01, 02, 10, and 11 moved to `completed/`. All 11 packet issues are closed; initiative is ready for exit-criteria review/archive.
 
 ### ADR-0010 Observation Layer & AI Routing — Phase 1
 **Status:** In Progress
@@ -39,7 +39,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [ ] Observe#2: Scaffold HoneyDrunk.Observe.Abstractions with IObservationTarget / IObservationConnector / IObservationEvent (packet 03)
 
 **Deferred (Phase 1 — AI routing contracts side):**
-- AI#1: Add IModelRouter / IRoutingPolicy / ModelCapabilityDeclaration to HoneyDrunk.AI.Abstractions (packet 04) — **parked pending HoneyDrunk.AI standup ADR**. The HoneyDrunk.AI repo exists but is empty; scaffolding choices (solution layout, M.E.AI alignment, package split, first provider, Pulse integration) deserve their own ADR. Provisional next step: draft `ADR-0016-stand-up-honeydrunk-ai-node`, accept it, run a scaffolding initiative, then file packet 04. Invariant 28's `(Proposed)` qualifier stays intact until packet 04 merges.
+- AI#1: Add IModelRouter / IRoutingPolicy / ModelCapabilityDeclaration to HoneyDrunk.AI.Abstractions (packet 04) — **parked pending manifest/issue cleanup**. HoneyDrunk.AI scaffold work has landed, but the original routing-contract packet path is missing from the manifest and a superseded packet exists as AI#3. Reconcile the duplicate/superseded issue before executing routing work. Invariant 28's `(Proposed)` qualifier stays intact until packet 04 merges.
 
 **Next (Phase 2 — not yet scoped):**
 - Implement `HoneyDrunk.Observe.Connectors.GitHub` — webhook receiver + repo health checks
@@ -62,8 +62,8 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 **Description:** Accept the capability/decision ADR for the Grid-wide durable, attributable security and action audit substrate homed in a new dedicated `HoneyDrunk.Audit` Node (Core sector). Registers the Node and its four new dependency edges across the catalogs, adds the Core-sector Audit row, flips the ADR index, verifies (does not modify) ADR-0018's pre-existing 2026-05-16 amendment (relocating `IAuditLog`/`AuditEntry` out of Operator, reclassifying Operator to consumer-not-owner), creates the `repos/HoneyDrunk.Audit/` context folder, and adds the constitutional audit-emission boundary invariant. The Node scaffold, the contract-shape canary, the Auth first-emitter wiring, and the Operator reconciliation are **all governed by the separate ADR-0031 standup** and are NOT in this initiative.
 
 **Tracking:**
-- [ ] Architecture#NN: Accept ADR-0030 — catalog registration, sectors row, ADR index flip, ADR-0018 amendment verification, repo context folder, trackers (packet 01)
-- [ ] Architecture#NN: Add the audit-emission boundary invariant to the constitution (packet 02)
+- [x] Architecture#108: Accept ADR-0030 — catalog registration, sectors row, ADR index flip, ADR-0018 amendment verification, repo context folder, trackers (packet 01 — closed 2026-05-18)
+- [x] Architecture#109: Add the audit-emission boundary invariant to the constitution (packet 02 — closed 2026-05-18)
 
 **Next (separate initiative — ADR-0031 standup, not yet scoped here):**
 - Stand up `HoneyDrunk.Audit` — public repo, `HoneyDrunk.Audit.Abstractions` + `HoneyDrunk.Audit.Data`, three frozen contracts, Data-backed append-only store, the Node's own managed identity, in-memory fixture, contract-shape canary
@@ -79,15 +79,15 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 **Description:** One PR Validation Policy owned by the Actions control plane, implemented once in the reusable workflows: (1) a blocking coverage gate — patch coverage threshold, no-regression vs. committed `.github/coverage-baseline.json`, flat absolute floor, skip-when-no-test-projects; (2) non-blocking NuGet flagging — outdated never blocks, surfaced as a PR-summary section and a single grouped `📦 Outdated Dependencies` issue per repo. Builds on ADR-0009 (outdated-vs-vulnerable split), ADR-0011 (`pr-core.yml` tier-1 gate), ADR-0012 (Actions as CI/CD control plane).
 
 **Tracking (Wave 1 — Actions control plane, parallel):**
-- [ ] Actions#NN: Coverage gate + ⚠️ outdated-packages PR-summary section (D1–D5) (packet 01)
-- [ ] Actions#NN: `nightly-deps` grouped per-repo `📦 Outdated Dependencies` tracking issue (D6) (packet 02)
+- [x] Actions#77: Coverage gate + ⚠️ outdated-packages PR-summary section (D1–D5) (packet 01 — closed 2026-05-19)
+- [x] Actions#78: `nightly-deps` grouped per-repo `📦 Outdated Dependencies` tracking issue (D6) (packet 02 — closed 2026-05-19)
 
 **Tracking (Wave 2 — per-repo coverage backfill to the absolute floor, hard-blocked by packet 01 only, fully parallel):**
-- [ ] Kernel / Transport / Vault / Vault.Rotation / Auth / Web.Rest / Data / Pulse / Notify / Communications — one backfill packet each (packets 03–12)
+- [x] Kernel#28 / Transport#26 / Vault#30 / Vault.Rotation#6 / Auth#19 / Web.Rest#16 / Data#20 / Pulse#14 / Notify#12 / Communications#13 — one backfill packet each (packets 03–12; closed 2026-05-19 through 2026-05-20)
 
 **Notes:**
 - New constitutional invariant (coverage gate at PR time) is added by the implementing packet; number assigned at acceptance, after the ADR-0030/0031 audit reservations (44–46) — see ADR-0032's New Invariant section.
-- **Scope trigger:** ADR-0032 Proposed 2026-05-17, scoped same day; packets land via the standard pipeline. Wave 2 unblocks when Wave 1 packet 01 merges.
+- **Sync (2026-05-21):** All 12 packet issues are closed and packets moved to `completed/`. ADR-0032 remains `Proposed` because these packets do not yet declare `accepts:` frontmatter, so hive-sync will not auto-flip it; human/scope follow-up needed if acceptance should be automated.
 
 ### Hive Sync Rollout (ADR-0014)
 **Status:** In Progress

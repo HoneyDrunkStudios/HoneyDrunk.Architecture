@@ -2,7 +2,7 @@
 
 What the team (human + agents) should prioritize right now.
 
-**Last Updated:** 2026-05-18
+**Last Updated:** 2026-05-21
 
 ## Primary Focus
 
@@ -18,15 +18,16 @@ Provision Azure infrastructure and get both services running in the development 
 
 **See:** `infrastructure/walkthroughs/azure-provisioning-guide.md` and `generated/issue-packets/active/adr-0015-container-apps-rollout/dispatch-plan.md`.
 
-### HoneyDrunk.AI Stand-Up
+### ADR-0010 Observe / AI Routing Cleanup
 
-Finish the initial HoneyDrunk.AI stand-up lane so ADR-0010's parked AI routing work can be unblocked deliberately.
+ADR-0010's Observe side and AI routing handoff still need deliberate cleanup now that the main HoneyDrunk.AI scaffold packet has closed.
 
-- `Architecture#72`: catalog registration packet open
-- `Architecture#73`: invariant packet open
-- `HoneyDrunk.AI#2`: solution/packages/contracts/CI/InMemory provider packet open
+- `Architecture#35`: ADR-0010 acceptance packet remains open.
+- `Observe#2`: Observe Abstractions scaffold remains open.
+- `Architecture#95`: human-only HoneyDrunk.AI repo verification remains open.
+- `HoneyDrunk.AI#1`: original routing-contract packet is still open, but its manifest path is missing and a superseded packet exists as `HoneyDrunk.AI#3`.
 
-**Why now:** ADR-0010 packet 04 is parked behind HoneyDrunk.AI stand-up. Keep this as an explicit focus item rather than slipping routing contracts into the empty repo without the ADR-0016 scaffold decisions.
+**Why now:** HoneyDrunk.AI scaffold work closed, but ADR-0010 still has manifest drift. Reconcile the duplicate/superseded AI routing issue before executing routing work.
 
 ## On Deck
 
@@ -46,13 +47,7 @@ Stand up the Agent Kit Node — agent execution runtime, tool abstraction, and m
 
 ### Kernel Adoption Alignment Cleanup
 
-The Core repo implementation pass is effectively complete and Architecture metadata now reflects the new baseline. Three implementation issues still need GitHub-state cleanup before the initiative can archive cleanly:
-
-- `Kernel#29`: v0.7.0 released, issue still open.
-- `Transport#27`: v0.6.0 released, issue still open.
-- `Communications#14`: runtime/abstractions v0.2.0 released, issue still open.
-
-After those issue states close, Hive Sync can move packets 01, 02, and 10 to `completed/`, then close/archive Architecture#111.
+Kernel Adoption Alignment is now 11/11 closed and its remaining packets moved to `completed/`. Human exit-criteria review/archive is the only remaining action.
 
 ### Canary Test Coverage
 
