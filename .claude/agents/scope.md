@@ -83,7 +83,15 @@ Work within the same wave can run in parallel. Across waves, sequencing is stric
 
 ## Phase 4: Generate Artifacts
 
-Per ADR-0008 D10, all generated artifacts live under `/generated/issue-packets/active/` and are grouped by initiative. Packets, dispatch plans, and handoffs are **co-located** inside their initiative folder — the prior sibling folders `/generated/dispatch-plans/` and `/generated/handoffs/` are deprecated and must not be written to.
+Per ADR-0008 D10 (and the 2026-05-21 slug naming amendment), all generated artifacts live under `/generated/issue-packets/active/` and are grouped by initiative. Packets, dispatch plans, and handoffs are **co-located** inside their initiative folder — the prior sibling folders `/generated/dispatch-plans/` and `/generated/handoffs/` are deprecated and must not be written to.
+
+**Initiative slug naming:**
+
+- ADR-driven initiative → `adr-NNNN-{descriptor}/` (e.g., `adr-0027-notify-cloud-standup/`)
+- PDR-driven or product-driven initiative → plain descriptor with no prefix (e.g., `notify-cloud-billing/`)
+- BDR-driven / business-driven initiative → plain descriptor (e.g., `mailbox-switch/`)
+
+The Hive's `Initiative` field carries the trace back to the governing PDR/BDR; the folder name itself stays human-readable.
 
 Layout:
 

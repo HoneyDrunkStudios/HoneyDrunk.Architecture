@@ -136,6 +136,20 @@ generated/issue-packets/
 
 **Deprecated:** The prior convention of sibling `generated/dispatch-plans/` and `generated/handoffs/` folders is retired. All three artifact types are co-located inside their initiative folder.
 
+## Amendment (2026-05-21) — Initiative Slug Naming
+
+D10's `{initiative-slug}` was always unconstrained text, but every initiative authored under ADR-0008 to date has been ADR-driven and used the form `adr-NNNN-{descriptor}/`. This amendment makes the slug convention explicit so PDR-driven and product-driven initiatives have a clear home.
+
+**Rule:**
+
+- **ADR-driven initiative** — slug is `adr-NNNN-{descriptor}/` (e.g., `adr-0027-notify-cloud-standup/`). Required when the work executes an Accepted ADR.
+- **PDR-driven or product-driven initiative** — slug is a plain descriptor with no prefix (e.g., `notify-cloud-billing/`, `notify-cloud-soft-launch/`). Used when the work executes a Product Decision Record or a sustained product push without a governing ADR. The `Initiative` field on The Hive carries the trace back to PDR-NNNN; the folder name stays human-readable.
+- **Business-driven initiative** — slug is a plain descriptor (e.g., `mailbox-switch/`). Used when a BDR (`business/decisions/`) governs the work.
+
+ADR-prefix and plain-slug initiatives are otherwise structurally identical — dispatch plan, numbered packets, archival as a unit, immutability under invariant 24 — and live under the same `active/` and `archive/` parents. The scope agent picks the form based on whether an ADR or a PDR/BDR is the governing decision.
+
+Not every Notify Cloud (or other product) work item belongs in an initiative. Single features, single bugs, and one-off chores still go to `active/standalone/` per D10. The initiative folder is only for multi-packet pushes with a dispatch plan.
+
 ## Consequences
 
 ### Process Consequences
@@ -171,39 +185,44 @@ These are known gaps in the ADR-0008 system that have been identified but not ye
 
 **Remaining action for D4:** Each sibling repo must add a caller workflow — see D5 below.
 
-### D5 Gap — Superseded by D6 for the Primary Flow
+### D5 Gap — RESOLVED via D6 for the Primary Flow
 
 **Portal approach — not viable.** GitHub Projects v2 auto-add workflow only allows single-repo selection in the portal UI; org-wide `repo:HoneyDrunkStudios/*` filter is not exposed. Rejected.
 
 **Why D5 is not the right solution for the primary path:**
 
-The primary flow is: issue packets are authored in Architecture repo → PR merged → a batch-filing action in `HoneyDrunk.Actions` reads packets and creates issues in target repos. If that action calls `hive-project-mirror.sh` immediately after each `gh issue create`, the issue lands on The Hive with all fields populated at filing time. No per-repo event triggers, no auto-add, no deferred sync needed.
+The primary flow is: issue packets are authored in Architecture repo → PR merged → a batch-filing action in `HoneyDrunk.Actions` reads packets and creates issues in target repos. That action calls `hive-project-mirror.sh` immediately after each `gh issue create`, so the issue lands on The Hive with all fields populated at filing time. No per-repo event triggers, no auto-add, no deferred sync needed.
 
-D6 (batch-filing action, see below) is the correct fix. When D6 exists and incorporates the mirror step, D5 is fully resolved for all issues filed through the official packet flow.
+D6 (batch-filing action — now operational, see below) is the correct fix. With D6 in production and incorporating the mirror step, D5 is fully resolved for all issues filed through the official packet flow.
 
 **Residual gap — out-of-band issues:** Issues filed manually (not through a packet) in any repo will not trigger the mirror. Options:
 - Accept the manual `gh project item-add` + `scripts/hive-backfill-issue.sh` pattern for occasional one-offs.
 - Optionally add a 10-line caller workflow to individual repos as they become active. Not required — this is purely defensive coverage for edge cases.
 
-### D6 Gap — Batch-Filing Action Not Yet Built
+### D6 Gap — RESOLVED (operational by 2026-05-20)
 
-**What was promised:** A script/action reads packets from `generated/issue-packets/active/` in the Architecture repo and creates GitHub Issues in the right target repos with correct labels.
+The batch-filing action shipped: `HoneyDrunk.Actions/scripts/file-packets.sh` invoked by `HoneyDrunk.Actions/.github/workflows/file-packets.yml`. Both are referenced as existing in standalone packet `2026-05-20-actions-file-packets-body-length-precheck.md`, and `generated/issue-packets/filed-packets.json` shows it has been operating across many initiatives (ADR-0010, 0011, 0012, 0015, 0016, 0017, 0029 and more) — each entry maps a packet path to the auto-filed GitHub issue URL.
 
-**Current state:** No action exists. The `file-issues` Claude agent can generate `gh issue create` commands, but bulk filing is still manual.
-
-**Impact until resolved:** Filing a wave of 10–15 packets requires manual `gh issue create` per packet, followed by a manual `hive-backfill-issue.sh` call per issue to get fields onto The Hive. This is the primary bottleneck for initiative launch speed.
-
-**What D6 must do when built** (this is also the fix for D5 in the primary flow):
+What the action does in practice:
 
 1. Triggered from Architecture repo on PR merge to `main` (or manually via `workflow_dispatch`)
-2. Checks out Architecture repo to find newly merged packets in `generated/issue-packets/active/`
-3. For each packet: reads frontmatter (`target_repo`, `labels`, `tier`, `wave`, `adrs`, `initiative`), runs `gh issue create` with correct labels in the target repo
-4. **Immediately calls `hive-project-mirror.sh`** for the new issue URL — adds it to The Hive and sets all fields from packet frontmatter
+2. Reads frontmatter from newly merged packets in `generated/issue-packets/active/` (target_repo, labels, tier, wave, adrs, initiative, dependencies)
+3. Runs `gh issue create` with correct labels in the target repo
+4. Calls `hive-project-mirror.sh` for the new issue URL — adds it to The Hive and sets all fields from frontmatter
 5. Sets issue `Status` to `Backlog` on The Hive
+6. Resolves the `dependencies:` frontmatter array into `addBlockedBy` GraphQL calls so blocking relationships surface natively
 
-This single action replaces the need for per-repo auto-add workflows (D5) and eliminates the manual backfill step entirely.
+This single action replaced manual `gh issue create` + `hive-backfill-issue.sh` per packet and eliminated the bottleneck described in the prior framing of this gap.
 
-**`HIVE_FIELD_MIRROR_TOKEN`** must be confirmed as an org secret before this action can run.
+`HIVE_FIELD_MIRROR_TOKEN` is configured as an org secret (without it the production runs in `filed-packets.json` would not have succeeded).
+
+**Residual hardening (tracked separately):**
+
+- **Standalone packet `2026-05-20-actions-file-packets-body-length-precheck.md`** — adds two structural fixes to `scripts/file-packets.sh`:
+  1. Pre-flight body-length check (fail fast before any `gh issue create` calls if any packet exceeds the 65k GitHub issue-body cap)
+  2. Continue-on-failure for per-packet creation (don't exit on first failure; report a summary)
+
+  Real-world driver: PR #152 (ADR-0031 standup) tripped this when packet 03 (86 KB body) was rejected and packet 04 never attempted. The standalone packet captures the fix; track its filing/execution on The Hive.
 
 ## Alternatives Considered
 

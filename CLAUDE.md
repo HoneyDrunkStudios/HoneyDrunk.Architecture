@@ -9,7 +9,7 @@ You are operating inside `HoneyDrunk.Architecture`, the command center (Agent HQ
 **Grid state as of 2026-04-12:**
 - **Live Nodes (8):** Kernel, Transport, Vault, Auth, Web.Rest, Data (all 0.4.0), Notify (undeployed), Actions
 - **Active initiatives:** ADR-0005/0006 Config+Secrets rollout (Wave 2 pending), ADR-0009 Package Scanning rollout, Vault.Rotation bring-up, Lore bring-up (on deck)
-- **Top open blockers:** D6 batch-filing action not built (primary bottleneck — filing 10+ packets still requires manual `gh issue create` + `hive-backfill-issue.sh` per packet; D6 will fix D5 too), Vault.Rotation repo not scaffolded
+- **Top open blockers:** *(this 2026-04-12 snapshot has drifted — ADR-0008 D6 batch-filing has shipped (`HoneyDrunk.Actions/scripts/file-packets.sh` + workflow), and Vault.Rotation has been scaffolded. See `initiatives/active-initiatives.md` for current initiative state; consider running `hive-sync` to refresh this section.)*
 - **AI sector:** 9 Nodes designed, 0 deployed — all Seed phase
 
 **Top ADRs to know:**
