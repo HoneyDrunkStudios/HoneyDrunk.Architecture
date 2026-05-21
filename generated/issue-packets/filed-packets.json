@@ -74,9 +74,12 @@
   "generated/issue-packets/active/adr-0029-cloudflare-dns-rollout/05b-architecture-migrate-honeyhub-app.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/103",
   "generated/issue-packets/active/adr-0031-audit-node-standup/01-architecture-audit-coupling-and-canary-invariants.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/153",
   "generated/issue-packets/active/adr-0031-audit-node-standup/02-architecture-create-audit-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/154",
+  "generated/issue-packets/active/adr-0031-audit-node-standup/03-audit-node-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Audit/issues/1",
+  "generated/issue-packets/active/adr-0031-audit-node-standup/04-auth-wire-first-emitter.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Auth/issues/23",
   "generated/issue-packets/active/adr-0033-deploy-trigger-model/01-notify-functions-deploy-trigger-model.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/19",
   "generated/issue-packets/active/adr-0033-deploy-trigger-model/02-notify-worker-deploy-trigger-model.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/20",
   "generated/issue-packets/active/adr-0033-deploy-trigger-model/03-pulse-collector-deploy-trigger-model.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/18",
+  "generated/issue-packets/active/standalone/2026-05-20-actions-file-packets-body-length-precheck.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/83",
   "generated/issue-packets/completed/adr-0005-0006-rollout/04-actions-oidc-and-secret-cleanup.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/20",
   "generated/issue-packets/completed/adr-0005-0006-rollout/06-vault-rotation-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Vault.Rotation/issues/3",
   "generated/issue-packets/completed/adr-0005-0006-rollout/07-auth-migrate-config-bootstrap.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Auth/issues/5",
@@ -145,6 +148,8 @@
   "generated/issue-packets/completed/kernel-adoption-alignment/09-pulse-align-kernel-identity-and-version.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/15",
   "generated/issue-packets/completed/kernel-adoption-alignment/10-communications-drop-kernel-runtime-dependency.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications/issues/14",
   "generated/issue-packets/completed/kernel-adoption-alignment/11-architecture-reconcile-kernel-adoption-catalogs.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/111",
+  "generated/issue-packets/completed/standalone/2026-04-12-actions-packet-filing-action.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/27",
+  "generated/issue-packets/completed/standalone/2026-04-12-architecture-file-packets-caller.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/17",
   "generated/issue-packets/completed/standalone/2026-04-26-actions-file-packets-hardening.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/57",
   "generated/issue-packets/completed/standalone/2026-04-28-actions-hive-field-mirror-app-auth.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/69",
   "generated/issue-packets/completed/standalone/2026-04-28-actions-hive-field-mirror-cache-and-rest.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/70",
@@ -161,4 +166,3 @@
   "generated/issue-packets/completed/standalone/2026-05-04-vault-rotation-consolidate-vault-rotation-placeholder-rotators.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Vault.Rotation/issues/5",
   "generated/issue-packets/completed/standalone/2026-05-04-web-rest-consolidate-web-rest-api-result-factories.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Web.Rest/issues/15"
 }
-
