@@ -136,6 +136,20 @@ generated/issue-packets/
 
 **Deprecated:** The prior convention of sibling `generated/dispatch-plans/` and `generated/handoffs/` folders is retired. All three artifact types are co-located inside their initiative folder.
 
+## Amendment (2026-05-21) — Initiative Slug Naming
+
+D10's `{initiative-slug}` was always unconstrained text, but every initiative authored under ADR-0008 to date has been ADR-driven and used the form `adr-NNNN-{descriptor}/`. This amendment makes the slug convention explicit so PDR-driven and product-driven initiatives have a clear home.
+
+**Rule:**
+
+- **ADR-driven initiative** — slug is `adr-NNNN-{descriptor}/` (e.g., `adr-0027-notify-cloud-standup/`). Required when the work executes an Accepted ADR.
+- **PDR-driven or product-driven initiative** — slug is a plain descriptor with no prefix (e.g., `notify-cloud-billing/`, `notify-cloud-soft-launch/`). Used when the work executes a Product Decision Record or a sustained product push without a governing ADR. The `Initiative` field on The Hive carries the trace back to PDR-NNNN; the folder name stays human-readable.
+- **Business-driven initiative** — slug is a plain descriptor (e.g., `mailbox-switch/`). Used when a BDR (`business/decisions/`) governs the work.
+
+ADR-prefix and plain-slug initiatives are otherwise structurally identical — dispatch plan, numbered packets, archival as a unit, immutability under invariant 24 — and live under the same `active/` and `archive/` parents. The scope agent picks the form based on whether an ADR or a PDR/BDR is the governing decision.
+
+Not every Notify Cloud (or other product) work item belongs in an initiative. Single features, single bugs, and one-off chores still go to `active/standalone/` per D10. The initiative folder is only for multi-packet pushes with a dispatch plan.
+
 ## Consequences
 
 ### Process Consequences
