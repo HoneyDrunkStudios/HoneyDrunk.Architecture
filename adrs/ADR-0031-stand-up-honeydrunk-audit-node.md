@@ -1,6 +1,6 @@
 # ADR-0031: Stand Up the HoneyDrunk.Audit Node — Grid-Wide Durable Security and Action Record
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-05-16
 **Deciders:** HoneyDrunk Studios
 **Sector:** Core
@@ -9,19 +9,19 @@
 
 Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
 
-- [ ] Create the `HoneyDrunk.Audit` GitHub repo as **public** (Grid default; no revenue/compliance/experiment carve-out applies — audit substrate is a reusable Core primitive)
-- [ ] Add `honeydrunk-audit` Node entry to `catalogs/nodes.json` (Core sector, `signal: "seed"`)
-- [ ] Add `honeydrunk-audit` entries and the new edges to `catalogs/relationships.json`: `honeydrunk-audit` → `honeydrunk-data` (consumes; `IRepository`, `IUnitOfWork`), `honeydrunk-audit` → `honeydrunk-kernel` (consumes; `IGridContext`, lifecycle, telemetry), `honeydrunk-auth` → `honeydrunk-audit` (consumes; `IAuditLog`), `honeydrunk-operator` → `honeydrunk-audit` (consumes; `IAuditLog`, `IAuditQuery` — reconciled per ADR-0030 D5), and a `consumed_by_planned` list on `honeydrunk-audit` seeded with Auth and Operator
-- [ ] Add `IAuditLog`, `IAuditQuery`, and `AuditEntry` entries to `catalogs/contracts.json` under `honeydrunk-audit`; mark the existing `honeydrunk-operator` `IAuditLog`/`AuditEntry` entries as relocated to `honeydrunk-audit`
-- [ ] Add the `honeydrunk-audit` row to `catalogs/grid-health.json` reflecting the stood-up contract surface and the contract-shape canary expectation
-- [ ] Add `honeydrunk-audit` entries to `catalogs/modules.json` for `HoneyDrunk.Audit.Abstractions` and `HoneyDrunk.Audit.Data`
-- [ ] Update `constitution/sectors.md` Core-sector table to add the **Audit** row (`Signal: Seed`, `Responsibility: Grid-wide durable, attributable security and action record`)
-- [ ] Append the additive amendment note to `adrs/ADR-0018-stand-up-honeydrunk-operator-node.md` per ADR-0030 D5 (additive only; do not change ADR-0018 Status or decision content)
-- [ ] Wire the contract-shape canary into Actions for the three frozen contracts (`IAuditLog`, `IAuditQuery`, `AuditEntry`)
-- [ ] Create `repos/HoneyDrunk.Audit/` context folder in the Architecture repo (`overview.md`, `boundaries.md`, `invariants.md`, `active-work.md`, `integration-points.md`) — matching the template used by `repos/HoneyDrunk.Operator/`
-- [ ] File the HoneyDrunk.Audit scaffold packet (solution structure, `HoneyDrunk.Standards` wiring, CI pipeline via HoneyDrunk.Actions shared workflows, Data-backed append-only store, the Node's own managed identity, in-memory `IAuditLog`/`IAuditQuery` test fixture)
-- [ ] Reference ADR-0030 (Grid-Wide Audit Substrate) as the driving decision — this stand-up does not flip Accepted until ADR-0030 is Accepted
-- [ ] Scope agent assigns final invariant numbers when flipping Status → Accepted
+- [x] Create the `HoneyDrunk.Audit` GitHub repo as **public** (Grid default; no revenue/compliance/experiment carve-out applies — audit substrate is a reusable Core primitive)
+- [x] Add `honeydrunk-audit` Node entry to `catalogs/nodes.json` (Core sector, `signal: "seed"`)
+- [x] Add `honeydrunk-audit` entries and the new edges to `catalogs/relationships.json`: `honeydrunk-audit` → `honeydrunk-data` (consumes; `IRepository`, `IUnitOfWork`), `honeydrunk-audit` → `honeydrunk-kernel` (consumes; `IGridContext`, lifecycle, telemetry), `honeydrunk-auth` → `honeydrunk-audit` (consumes; `IAuditLog`), `honeydrunk-operator` → `honeydrunk-audit` (consumes; `IAuditLog`, `IAuditQuery` — reconciled per ADR-0030 D5), and a `consumed_by_planned` list on `honeydrunk-audit` seeded with Auth and Operator
+- [x] Add `IAuditLog`, `IAuditQuery`, and `AuditEntry` entries to `catalogs/contracts.json` under `honeydrunk-audit`; mark the existing `honeydrunk-operator` `IAuditLog`/`AuditEntry` entries as relocated to `honeydrunk-audit`
+- [x] Add the `honeydrunk-audit` row to `catalogs/grid-health.json` reflecting the stood-up contract surface and the contract-shape canary expectation
+- [x] Add `honeydrunk-audit` entries to `catalogs/modules.json` for `HoneyDrunk.Audit.Abstractions` and `HoneyDrunk.Audit.Data`
+- [x] Update `constitution/sectors.md` Core-sector table to add the **Audit** row (`Signal: Seed`, `Responsibility: Grid-wide durable, attributable security and action record`)
+- [x] Append the additive amendment note to `adrs/ADR-0018-stand-up-honeydrunk-operator-node.md` per ADR-0030 D5 (additive only; do not change ADR-0018 Status or decision content)
+- [x] Wire the contract-shape canary into Actions for the three frozen contracts (`IAuditLog`, `IAuditQuery`, `AuditEntry`)
+- [x] Create `repos/HoneyDrunk.Audit/` context folder in the Architecture repo (`overview.md`, `boundaries.md`, `invariants.md`, `active-work.md`, `integration-points.md`) — matching the template used by `repos/HoneyDrunk.Operator/`
+- [x] File the HoneyDrunk.Audit scaffold packet (solution structure, `HoneyDrunk.Standards` wiring, CI pipeline via HoneyDrunk.Actions shared workflows, Data-backed append-only store, the Node's own managed identity, in-memory `IAuditLog`/`IAuditQuery` test fixture)
+- [x] Reference ADR-0030 (Grid-Wide Audit Substrate) as the driving decision — this stand-up does not flip Accepted until ADR-0030 is Accepted
+- [x] Scope agent assigns final invariant numbers when flipping Status → Accepted
 
 ## Context
 
@@ -139,21 +139,28 @@ The scaffold packet does **not** include: hash-chain / WORM tamper-evidence (def
 
 ## Consequences
 
+## ADR-0031 sync completion note (2026-05-21)
+
+- Architecture packets 01/02 closed: invariants 47/48/49 assigned, catalogs/context registered, and stale repo-creation scope reconciled.
+- `HoneyDrunk.Audit` packet 03 closed via Audit PR #2; `v0.1.0` packages were tagged, released, and published.
+- `HoneyDrunk.Auth` packet 04 closed via Auth PR #24; Auth now emits token-validation and authorization decisions through `HoneyDrunk.Audit.Abstractions` only.
+- Remaining downstream reconciliation is Operator as a future emitter/reader; that is follow-up work beyond the initial Audit stand-up and Auth first-emitter baseline.
+
 ### Implementation — Done When
 
 This ADR is "Done" when all of the following are true:
 
-- [ ] ADR-0030 (Grid-Wide Audit Substrate) is Accepted (driving decision; this stand-up does not flip Accepted before it).
-- [ ] `HoneyDrunk.Audit` public repo created with the structure described in D11.
-- [ ] `HoneyDrunk.Audit.Abstractions 0.1.0` published with the D3 public surface and supporting value types.
-- [ ] `HoneyDrunk.Audit.Data 0.1.0` ships with the Data-backed append-only composition and the in-memory test fixture.
-- [ ] Audit's CI includes the D8 contract-shape canary and it is green.
+- [x] ADR-0030 (Grid-Wide Audit Substrate) is Accepted (driving decision; this stand-up does not flip Accepted before it).
+- [x] `HoneyDrunk.Audit` public repo created with the structure described in D11.
+- [x] `HoneyDrunk.Audit.Abstractions 0.1.0` published with the D3 public surface and supporting value types.
+- [x] `HoneyDrunk.Audit.Data 0.1.0` ships with the Data-backed append-only composition and the in-memory test fixture.
+- [x] Audit's CI includes the D8 contract-shape canary and it is green.
 - [ ] The Node's own managed identity is provisioned per D5.
-- [ ] `repos/HoneyDrunk.Audit/` context folder exists in the Architecture repo with the standard five files.
-- [ ] `catalogs/nodes.json`, `catalogs/relationships.json`, `catalogs/contracts.json`, `catalogs/grid-health.json`, and `catalogs/modules.json` reflect the stand-up and the contract relocation.
-- [ ] `constitution/sectors.md` Core-sector table includes the Audit row.
-- [ ] ADR-0018 carries the additive amendment note per ADR-0030 D5.
-- [ ] Scope agent flips Status → Accepted and assigns final invariant numbers.
+- [x] `repos/HoneyDrunk.Audit/` context folder exists in the Architecture repo with the standard five files.
+- [x] `catalogs/nodes.json`, `catalogs/relationships.json`, `catalogs/contracts.json`, `catalogs/grid-health.json`, and `catalogs/modules.json` reflect the stand-up and the contract relocation.
+- [x] `constitution/sectors.md` Core-sector table includes the Audit row.
+- [x] ADR-0018 carries the additive amendment note per ADR-0030 D5.
+- [x] Scope agent flips Status → Accepted and assigns final invariant numbers.
 
 ### Unblocks
 
