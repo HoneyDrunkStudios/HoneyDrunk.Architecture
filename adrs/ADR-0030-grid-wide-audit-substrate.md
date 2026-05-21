@@ -144,11 +144,11 @@ Emitters and readers (Auth, Operator first; any Node recording a security, privi
 
 `IAuditLog` and `AuditEntry` move out of `HoneyDrunk.Operator.Abstractions` into `HoneyDrunk.Audit.Abstractions`. `catalogs/contracts.json` must reflect the relocation; ADR-0018 receives an additive amendment note. Operator's downstream consumers that referenced Operator's audit pair re-target the Audit package. These reconciliations are tracked in the follow-up checklist and detailed in ADR-0031.
 
-### New invariant (proposed for `constitution/invariants.md`)
+### New invariant (`constitution/invariants.md`)
 
-Numbering is tentative — scope agent finalizes at acceptance.
+Assigned invariant number: **47** (audit-emission boundary, ADR-0030 D1/D3/D6/D7/D9).
 
-- **Durable, attributable security, action, and data-change events (login attempts, authorization denials, privileged actions, record create/update/delete events) are emitted to the `HoneyDrunk.Audit` substrate via `IAuditLog`, on a durable channel separate from observability telemetry.** Auditable events routed only to sampled/retention-bounded observability (Pulse/Loki) are a boundary violation. Data-change details that include sensitive fields must be redacted before append. The audit channel and the telemetry channel are never merged. See D1, D3, D6.
+- **Durable, attributable security, action, and data-change events (login attempts, authorization denials, privileged actions, system/integration activity, and record create/update/delete events) are emitted to the `HoneyDrunk.Audit` substrate via `IAuditLog`, on a durable channel separate from observability telemetry.** Auditable events routed only to sampled/retention-bounded observability (Pulse/Loki) are a boundary violation. Data-change details that include sensitive fields must be redacted before append. The audit channel and the telemetry channel are never merged. Phase 1 is append-only-by-interface and explicitly not tamper-evident. See D1, D3, D6, D7, D9.
 
 ### Negative
 

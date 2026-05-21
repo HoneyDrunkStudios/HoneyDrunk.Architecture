@@ -15,17 +15,17 @@ node: honeydrunk-audit
 # Feature: Stand up the HoneyDrunk.Audit repo — solution, two packages, audit contracts, Data-backed append-only store, CI, in-memory fixture, smoke test
 
 ## Summary
-Bring the empty `HoneyDrunk.Audit` repo from zero to first-shippable state per ADR-0031 D11. Land the solution layout, the two package families (`HoneyDrunk.Audit.Abstractions` + `HoneyDrunk.Audit.Data`), the D3 public surface inside `Abstractions` (`IAuditLog`, `IAuditQuery`, `AuditEntry`, plus the supporting category/outcome/target/change/query value types), the Data-backed append-only `IAuditLog` writer and `IAuditQuery` reader over `HoneyDrunk.Data`'s `IRepository`/`IUnitOfWork` with the audit-class retention hook (App Config-sourced), the in-memory `IAuditLog`/`IAuditQuery` fixture (internal to the runtime package's test project — deliberately not a `Testing` package per ADR-0027 precedent), the end-to-end smoke test that writes through `IAuditLog` and reads back through `IAuditQuery` against the in-memory fixture, the standard CI pipeline (PR core + release + nightly deps + nightly security), and the contract-shape canary scoped to the full `HoneyDrunk.Audit.Abstractions` public surface per ADR-0031 D8 / invariant `{N-canary}`.
+Bring the empty `HoneyDrunk.Audit` repo from zero to first-shippable state per ADR-0031 D11. Land the solution layout, the two package families (`HoneyDrunk.Audit.Abstractions` + `HoneyDrunk.Audit.Data`), the D3 public surface inside `Abstractions` (`IAuditLog`, `IAuditQuery`, `AuditEntry`, plus the supporting category/outcome/target/change/query value types), the Data-backed append-only `IAuditLog` writer and `IAuditQuery` reader over `HoneyDrunk.Data`'s `IRepository`/`IUnitOfWork` with the audit-class retention hook (App Config-sourced), the in-memory `IAuditLog`/`IAuditQuery` fixture (internal to the runtime package's test project — deliberately not a `Testing` package per ADR-0027 precedent), the end-to-end smoke test that writes through `IAuditLog` and reads back through `IAuditQuery` against the in-memory fixture, the standard CI pipeline (PR core + release + nightly deps + nightly security), and the contract-shape canary scoped to the full `HoneyDrunk.Audit.Abstractions` public surface per ADR-0031 D8 / invariant `49`.
 
 This is the unblocker for `HoneyDrunk.Auth` (packet 04 of this initiative), future data-change emitters, and any future Node recording security, activity, system, integration, or privileged-action events. After this packet merges and `v0.1.0` tags, Auth can take a `HoneyDrunk.Audit.Abstractions 0.1.0` PackageReference and wire the first emitter.
 
-**Pre-filing invariant-number substitution required.** This packet's body uses `{N-coupling}` and `{N-canary}` placeholders for the two invariant numbers landed by packet 01 of this initiative (downstream coupling + contract-shape canary). After packet 01 merges and the actual assigned numbers are known, edit this file in place pre-push (invariant 24's pre-filing carve-out) to substitute the real numbers. Hardcoding 45/46 here is WRONG — those slots are occupied by ADR-0016 AI standup as of 2026-05-20.
+**Invariant numbers assigned.** Audit constitutional invariants are 47 (audit-emission boundary), 48 (downstream Abstractions-only coupling), and 49 (Audit contract-shape canary).
 
 ## Target Repo
 `HoneyDrunkStudios/HoneyDrunk.Audit`
 
 ## Motivation
-ADR-0031 D11 specifies the first-PR scaffold for HoneyDrunk.Audit. Packet 02 created the GitHub repo and cloned the local tree at `c:/Users/tatte/source/repos/HoneyDrunkStudios/HoneyDrunk.Audit/` (`.gitignore`, `LICENSE`, placeholder `README.md` only). Catalogs and Audit invariants (`{N-substrate}`, `{N-coupling}`, `{N-canary}`) are already in place. This packet ships the code and freezes a contract shape that supports both activity/security audit and data-change audit from v0.1.0.
+ADR-0031 D11 specifies the first-PR scaffold for HoneyDrunk.Audit. Packet 02 created the GitHub repo and cloned the local tree at `c:/Users/tatte/source/repos/HoneyDrunkStudios/HoneyDrunk.Audit/` (`.gitignore`, `LICENSE`, placeholder `README.md` only). Catalogs and Audit invariants (`47`, `48`, `49`) are already in place. This packet ships the code and freezes a contract shape that supports both activity/security audit and data-change audit from v0.1.0.
 
 Until this packet ships: Auth (packet 04) has no `HoneyDrunk.Audit.Abstractions 0.1.0` to reference; data-change emitters have no canonical target; the contract-shape canary has no baseline; the Phase-1 append-only-by-interface guarantee is unenforced; Operator's eventual reconciliation has nothing to consume. ADR-0031 D11 explicitly requires the D3 surface + round-trip proof in the first commit so the canary has a coherent baseline.
 
@@ -48,7 +48,7 @@ HoneyDrunk.Audit/
 │       ├── release.yml              (calls Actions/release.yml)
 │       ├── nightly-deps.yml         (calls Actions/nightly-deps.yml)
 │       ├── nightly-security.yml     (calls Actions/nightly-security.yml)
-│       └── api-compatibility.yml    (calls Actions/job-api-compatibility.yml — D8 / invariant {N-canary} canary)
+│       └── api-compatibility.yml    (calls Actions/job-api-compatibility.yml — D8 / invariant 49 canary)
 ├── src/
 │   ├── HoneyDrunk.Audit.Abstractions/
 │   │   ├── HoneyDrunk.Audit.Abstractions.csproj
@@ -398,7 +398,7 @@ Two `internal sealed` classes; not packaged at v0.1.0 (per D2 + ADR-0027 D3). Cu
 All five workflow files are thin callers of `HoneyDrunk.Actions` reusable workflows.
 
 - **`pr-core.yml`** — calls `pr-core.yml@main`, `dotnet-version: '10.0.x'`.
-- **`api-compatibility.yml`** (D8 / `{N-canary}`):
+- **`api-compatibility.yml`** (D8 / `49`):
 
 ```yaml
 name: API Compatibility (Abstractions)
@@ -496,7 +496,7 @@ Project reference: `HoneyDrunk.Audit.Abstractions`.
 - [x] `HoneyDrunk.Audit.Abstractions` carries exactly ONE `HoneyDrunk.*` ref: `HoneyDrunk.Kernel.Abstractions` (for `TenantId`). No Data/Vault/Pulse/Kernel-runtime refs.
 - [x] `HoneyDrunk.Audit.Data` references `Abstractions` (project), `Kernel.Abstractions`, `Data.Abstractions`, `Vault`. No `HoneyDrunk.Pulse` (telemetry is one-way per D7).
 - [x] No secrets in code; retention value is non-secret config read via `IConfigProvider`.
-- [x] `IAuditLog` exposes exactly `AppendAsync` — no update/replace/delete. Enforces `{N-substrate}` at interface surface.
+- [x] `IAuditLog` exposes exactly `AppendAsync` — no update/replace/delete. Enforces `47` at interface surface.
 - [x] Records/enums drop `I` (`AuditEntry`, `AuditQueryFilter`, `AuditTarget`, `AuditChange`, `AuditCategory`, `AuditOutcome`); interfaces keep it (`IAuditLog`, `IAuditQuery`).
 - [x] Fixtures `internal` to test project; not packaged.
 - [x] Scaffold does NOT include: hash-chain/WORM tamper-evidence (Phase-2), tenant-facing forensics Service (deferred), Auth emitter wiring (packet 04), Operator reconciliation (separate).
@@ -506,7 +506,7 @@ Project reference: `HoneyDrunk.Audit.Abstractions`.
 
 - [ ] `HoneyDrunk.Audit.slnx` builds clean from a fresh clone via `dotnet build` with no warnings (warnings-as-errors).
 - [ ] D3 public surface present in `HoneyDrunk.Audit.Abstractions` with XML documentation per invariant 13: `IAuditLog`, `IAuditQuery`, `AuditEntry`, `AuditEntryId`, `AuditQueryFilter`, `AuditCategory`, `AuditOutcome`, `AuditTarget`, and `AuditChange`. Records/enums drop the `I` prefix; interfaces keep it. The strong-typed identifier `AuditEntryId` is also a record-struct without `I` (Grid-wide naming rule).
-- [ ] `HoneyDrunk.Audit.Abstractions` has exactly ONE `HoneyDrunk.*` PackageReference: `HoneyDrunk.Kernel.Abstractions` (for `TenantId`). Per ADR-0031 D2's "zero runtime dependencies beyond `HoneyDrunk.Kernel` abstractions" allowance. No `HoneyDrunk.Kernel` runtime ref; no `HoneyDrunk.Data*` / `HoneyDrunk.Vault*` / `HoneyDrunk.Pulse*` refs. Constitutional invariants `{N-coupling}` and 1 (downstream Abstractions-only coupling; Abstractions stay near-minimal) are satisfied — the single Kernel-Abstractions reference is an intentional, ADR-permitted exception.
+- [ ] `HoneyDrunk.Audit.Abstractions` has exactly ONE `HoneyDrunk.*` PackageReference: `HoneyDrunk.Kernel.Abstractions` (for `TenantId`). Per ADR-0031 D2's "zero runtime dependencies beyond `HoneyDrunk.Kernel` abstractions" allowance. No `HoneyDrunk.Kernel` runtime ref; no `HoneyDrunk.Data*` / `HoneyDrunk.Vault*` / `HoneyDrunk.Pulse*` refs. Constitutional invariants `48` and 1 (downstream Abstractions-only coupling; Abstractions stay near-minimal) are satisfied — the single Kernel-Abstractions reference is an intentional, ADR-permitted exception.
 - [ ] `IAuditLog` exposes exactly one method, `AppendAsync(AuditEntry, CancellationToken)`. No `UpdateAsync`, no `ReplaceAsync`, no `DeleteAsync`, no `RemoveAsync`. The reflection test `AppendOnlyAtInterfaceTests.cs` asserts this and passes.
 - [ ] `HoneyDrunk.Audit.Data` exposes `AddHoneyDrunkAuditData()` extension; `IAuditLog` and `IAuditQuery` resolve from DI after registration.
 - [ ] `DataAuditLog.AppendAsync` persists via `IRepository<AuditEntry>.AddAsync` + `IUnitOfWork.SaveChangesAsync`. **No source-code call to `Update`/`Remove`/`UpdateRange`/`RemoveRange`** on `IRepository<AuditEntry>` — even though those methods exist on the inherited `IRepository<T>` interface (per `HoneyDrunk.Data.Abstractions/Repositories/IRepository.cs`), `DataAuditLog`'s source does not invoke any of them. Code review enforces this at v0.1.0; the README's Phase-1 honest limitation section explicitly names the storage-layer gap (`IAppendOnlyRepository<T>` carve-out is a Phase-2 hardening item).
@@ -540,7 +540,7 @@ Project reference: `HoneyDrunk.Audit.Abstractions`.
 ## Human Prerequisites
 
 - [ ] Packet 02 of this initiative complete — `HoneyDrunkStudios/HoneyDrunk.Audit` repo exists on GitHub with org-default branch protection, labels seeded, OIDC federated credential wired, and the local working tree cloned at `c:/Users/tatte/source/repos/HoneyDrunkStudios/HoneyDrunk.Audit/`.
-- [ ] Packet 01 of this initiative merged — the two new Audit invariants exist in `constitution/invariants.md` so this packet's acceptance criteria reference them by number. **This packet's source file uses `{N-coupling}`, `{N-canary}`, and `{N-substrate}` placeholders** for the three Audit-related invariant numbers; substitute the real numbers in place pre-push under invariant 24's pre-filing carve-out, **after** packet 01 merges and the assigned numbers are known. Hardcoding 45/46 is wrong — those slots are occupied by ADR-0016 AI standup at scoping time.
+- [ ] Packet 01 of this initiative merged — the two new Audit invariants exist in `constitution/invariants.md` so this packet's acceptance criteria reference them by number. **This packet's source file uses `48`, `49`, and `47` placeholders** for the three Audit-related invariant numbers; substitute the real numbers in place pre-push under invariant 24's pre-filing carve-out, **after** packet 01 merges and the assigned numbers are known. Hardcoding 45/46 is wrong — those slots are occupied by ADR-0016 AI standup at scoping time.
 - [ ] After this packet's PR merges, push tag `v0.1.0` from `main` to trigger the first NuGet publish. Tags are human-pushed per invariant 27.
 - [ ] **`NUGET_API_KEY` repository (or org-level) secret is available to the `HoneyDrunk.Audit` repo before `v0.1.0` is tagged.** The reusable `release.yml` in `HoneyDrunk.Actions` declares `nuget-api-key` as a named secret (no `secrets: inherit` pattern). If packet 02's repo-creation chore did not seed this secret, the first `release.yml` run will surface the missing-key failure clearly. Org-level `NUGET_API_KEY` (shared with other HoneyDrunk repos publishing to nuget.org) is the standard approach — verify it's bound to this repo before tagging. (Container-registry publish via OIDC does not need a secret.)
 - [ ] **Branch protection sequencing.** Branch protection on `main` was set by packet 02 requiring only `pr-core / core` for the initial scaffolding PR (the `api-compatibility / abstractions-shape` check reports `status: skipped` on the first PR — see acceptance criteria). After the throwaway breaking-change PR confirms the canary fires post-merge, add `api-compatibility / abstractions-shape` to required checks in a follow-up branch-protection update.
@@ -580,11 +580,11 @@ Project reference: `HoneyDrunk.Audit.Abstractions`.
 
 > **Invariant 27:** All projects in a solution share one version and move together. When a version bump is warranted, every `.csproj` in the solution (excluding test projects) is updated to the same new version in a single commit. — Both `src/*` ship at `0.1.0`.
 
-> **Invariant `{N-substrate}` (ADR-0030 packet 02):** Durable, attributable security and action events are emitted to the `HoneyDrunk.Audit` substrate via `IAuditLog`, on a durable channel separate from observability telemetry. Phase-1 audit integrity is append-only-by-interface (`IAuditLog` exposes no update and no delete method); it is explicitly **not** tamper-evident, and Phase 1 must not be documented or marketed as such. — This scaffold IS the substrate. `AppendOnlyAtInterfaceTests` enforces the interface shape; README's `## Phase-1 honest limitation` names the not-tamper-evident reality.
+> **Invariant `47` (ADR-0030 packet 02):** Durable, attributable security and action events are emitted to the `HoneyDrunk.Audit` substrate via `IAuditLog`, on a durable channel separate from observability telemetry. Phase-1 audit integrity is append-only-by-interface (`IAuditLog` exposes no update and no delete method); it is explicitly **not** tamper-evident, and Phase 1 must not be documented or marketed as such. — This scaffold IS the substrate. `AppendOnlyAtInterfaceTests` enforces the interface shape; README's `## Phase-1 honest limitation` names the not-tamper-evident reality.
 
-> **Invariant `{N-coupling}` (this initiative, packet 01):** Downstream Nodes take a runtime dependency only on `HoneyDrunk.Audit.Abstractions`. Composition against `HoneyDrunk.Audit.Data` is a host-time concern resolved at application startup from App Configuration. — `Abstractions` kept near-minimal (one Kernel.Abstractions ref).
+> **Invariant `48` (this initiative, packet 01):** Downstream Nodes take a runtime dependency only on `HoneyDrunk.Audit.Abstractions`. Composition against `HoneyDrunk.Audit.Data` is a host-time concern resolved at application startup from App Configuration. — `Abstractions` kept near-minimal (one Kernel.Abstractions ref).
 
-> **Invariant `{N-canary}` (this initiative, packet 01):** The HoneyDrunk.Audit Node CI must include a contract-shape canary for the `HoneyDrunk.Audit.Abstractions` public surface. Shape drift on `IAuditLog`, `IAuditQuery`, `AuditEntry`, or the supporting query/category/outcome/target/change value types is a build failure unless paired with an intentional version bump. — `api-compatibility.yml` covers this (whole-assembly diff over `Abstractions`).
+> **Invariant `49` (this initiative, packet 01):** The HoneyDrunk.Audit Node CI must include a contract-shape canary for the `HoneyDrunk.Audit.Abstractions` public surface. Shape drift on `IAuditLog`, `IAuditQuery`, `AuditEntry`, or the supporting query/category/outcome/target/change value types is a build failure unless paired with an intentional version bump. — `api-compatibility.yml` covers this (whole-assembly diff over `Abstractions`).
 
 ## Referenced ADR Decisions
 
@@ -609,7 +609,7 @@ Project reference: `HoneyDrunk.Audit.Abstractions`.
 
 ## Dependencies
 
-- `packet:01` — the two new Audit invariants (downstream coupling + contract-shape canary) must exist in `constitution/invariants.md` before this packet's acceptance criteria reference them by number. Substitute the assigned `{N-coupling}` and `{N-canary}` numbers in this packet's source file in place pre-push under invariant 24's pre-filing carve-out, **after** packet 01 merges.
+- `packet:01` — the two new Audit invariants (downstream coupling + contract-shape canary) must exist in `constitution/invariants.md` before this packet's acceptance criteria reference them by number. Substitute the assigned `48` and `49` numbers in this packet's source file in place pre-push under invariant 24's pre-filing carve-out, **after** packet 01 merges.
 - `packet:02` — the `HoneyDrunk.Audit` GitHub repo must exist with branch protection, labels, OIDC, and the local working tree cloned. The scaffolding agent has nowhere to author into without packet 02 done.
 
 ## Labels
@@ -624,7 +624,7 @@ Project reference: `HoneyDrunk.Audit.Abstractions`.
 
 **Context:**
 - Goal: Unblock HoneyDrunk.Auth (packet 04 of this initiative — first emitter), future data-change emitters, and any future Node that needs to record durable, attributable security, activity, system, integration, or privileged-action events. Establish the contract-shape canary baseline that protects the surface from drift.
-- Feature: ADR-0031 standup initiative — this is the substrate scaffold, the third packet of the initiative (after the two new Audit invariants `{N-coupling}` / `{N-canary}` in packet 01 and the repo creation in packet 02).
+- Feature: ADR-0031 standup initiative — this is the substrate scaffold, the third packet of the initiative (after the two new Audit invariants `48` / `49` in packet 01 and the repo creation in packet 02).
 - ADRs: ADR-0031 (sole governing standup ADR); ADR-0030 (the driving capability/decision ADR — Phase-1 honest limitation, contract relocation, retention regime, Operator reconciliation framing all come from there); ADR-0005 (App Config-via-Vault pattern that D4 builds on); ADR-0009 (no Dependabot config file).
 
 **Acceptance Criteria:** As listed above.
@@ -641,9 +641,9 @@ Project reference: `HoneyDrunk.Audit.Abstractions`.
 - **Invariant 13:** All public APIs have XML documentation. — Every public type/member in `HoneyDrunk.Audit.Abstractions` carries `///` summaries. StyleCop rules from `HoneyDrunk.Standards` enforce this.
 - **Invariant 26:** Packets for .NET code work must include `## NuGet Dependencies`. `HoneyDrunk.Standards` must be on every new .NET project. — Confirmed in the NuGet Dependencies section above.
 - **Invariant 27:** All projects in a solution share one version. — Both `src/*.csproj` ship at `0.1.0`. Test projects do not bump.
-- **Invariant `{N-substrate}` (substrate-level audit-emission boundary, ADR-0030 packet 02):** Durable, attributable security, action, and data-change events are emitted to the `HoneyDrunk.Audit` substrate via `IAuditLog`, on a durable channel separate from observability telemetry. Phase-1 audit integrity is append-only-by-interface (`IAuditLog` exposes no update and no delete method); it is explicitly **not** tamper-evident, and Phase 1 must not be documented or marketed as such. Data-change details that include sensitive fields must be redacted before append. — `IAuditLog` exposes exactly `AppendAsync`. The reflection test `AppendOnlyAtInterfaceTests` makes accidental future addition of an update/delete method a build failure. The README's "Phase-1 honest limitation" section names the not-tamper-evident reality.
-- **Invariant `{N-coupling}`:** Downstream Nodes take a runtime dependency only on `HoneyDrunk.Audit.Abstractions`. Composition against `HoneyDrunk.Audit.Data` is a host-time concern. — Reinforced by keeping `Abstractions` near-minimal (one `HoneyDrunk.Kernel.Abstractions` reference for `TenantId`).
-- **Invariant `{N-canary}`:** The HoneyDrunk.Audit Node CI must include a contract-shape canary for the `HoneyDrunk.Audit.Abstractions` public surface. Shape drift on `IAuditLog`, `IAuditQuery`, `AuditEntry`, or the supporting query/category/outcome/target/change value types is a build failure unless paired with an intentional version bump. — `api-compatibility.yml` covers this by scoping to `HoneyDrunk.Audit.Abstractions`.
+- **Invariant `47` (substrate-level audit-emission boundary, ADR-0030 packet 02):** Durable, attributable security, action, and data-change events are emitted to the `HoneyDrunk.Audit` substrate via `IAuditLog`, on a durable channel separate from observability telemetry. Phase-1 audit integrity is append-only-by-interface (`IAuditLog` exposes no update and no delete method); it is explicitly **not** tamper-evident, and Phase 1 must not be documented or marketed as such. Data-change details that include sensitive fields must be redacted before append. — `IAuditLog` exposes exactly `AppendAsync`. The reflection test `AppendOnlyAtInterfaceTests` makes accidental future addition of an update/delete method a build failure. The README's "Phase-1 honest limitation" section names the not-tamper-evident reality.
+- **Invariant `48`:** Downstream Nodes take a runtime dependency only on `HoneyDrunk.Audit.Abstractions`. Composition against `HoneyDrunk.Audit.Data` is a host-time concern. — Reinforced by keeping `Abstractions` near-minimal (one `HoneyDrunk.Kernel.Abstractions` reference for `TenantId`).
+- **Invariant `49`:** The HoneyDrunk.Audit Node CI must include a contract-shape canary for the `HoneyDrunk.Audit.Abstractions` public surface. Shape drift on `IAuditLog`, `IAuditQuery`, `AuditEntry`, or the supporting query/category/outcome/target/change value types is a build failure unless paired with an intentional version bump. — `api-compatibility.yml` covers this by scoping to `HoneyDrunk.Audit.Abstractions`.
 - **Canary on the scaffolding PR reports `status: skipped`, not fail.** First PR against near-empty repo: `git worktree add` against the baseline ref fails → `::warning::` + exit 0. Not a misconfiguration. Scaffold merge establishes baseline; verify post-merge via a throwaway breaking-change PR (revert after).
 - **Abstractions stance — exactly ONE `HoneyDrunk.*` ref**, `HoneyDrunk.Kernel.Abstractions` (for `TenantId` per ADR-0026). No `Kernel`-runtime, no `Data*`, no `Vault*`, no `Pulse*`. `CorrelationId` stays `string` until v0.2.0.
 - **Records drop `I`; interfaces keep it.**

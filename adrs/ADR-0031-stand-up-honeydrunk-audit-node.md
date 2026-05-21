@@ -164,14 +164,14 @@ Accepting this ADR — and landing the follow-up scaffold packet that produces a
 - **Any Node recording security, activity, system, integration, privileged-action, or data-change events** — has a durable, attributable target instead of a lossy log, sampled trace, or ad-hoc table.
 - **The future tenant-facing forensics Service** — has `IAuditQuery` to build against the moment its trigger fires (ADR-0030 D8b), with no extraction and no contract migration.
 
-### New invariant (proposed for `constitution/invariants.md`)
+### New invariant (`constitution/invariants.md`)
 
-Numbering is tentative — scope agent finalizes at acceptance. Proposed by ADR-0030 and restated here for the stand-up's contract-coupling rule:
+Assigned invariant numbers: **48** (downstream Abstractions-only coupling, ADR-0031 D9) and **49** (contract-shape canary, ADR-0031 D8). See `constitution/invariants.md`, `## Audit Invariants`. The substrate-level audit-emission boundary invariant is **47**, landed by ADR-0030.
 
 - **Downstream Nodes take a runtime dependency only on `HoneyDrunk.Audit.Abstractions`.** Composition against `HoneyDrunk.Audit.Data` is a host-time concern. See D9.
 - **The Audit Node CI must include a contract-shape canary for the `HoneyDrunk.Audit.Abstractions` public surface.** Shape drift on `IAuditLog`, `IAuditQuery`, `AuditEntry`, or the supporting query/category/outcome/target/change value types is a build failure, not a downstream discovery. See D8.
 
-(The audit-emission boundary invariant — auditable security, action, and data-change events must be emitted to the Audit substrate on a durable channel separate from observability — is proposed in ADR-0030's Consequences and is the substrate-level invariant; it is not restated here to avoid double-numbering. The scope agent assigns final numbers across both ADRs at acceptance.)
+(The audit-emission boundary invariant — auditable security, action, and data-change events must be emitted to the Audit substrate on a durable channel separate from observability — is invariant 47 from ADR-0030 and is not restated here to avoid double-numbering.)
 
 ### Contract-shape canary becomes a requirement
 

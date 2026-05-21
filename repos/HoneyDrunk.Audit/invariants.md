@@ -26,7 +26,7 @@ Audit-specific invariants (supplements `constitution/invariants.md`).
 8. **Sensitive data-change details are redacted before append.**
    `AuditChange` may carry before/after values, but emitters must redact secrets, credentials, tokens, regulated data, and sensitive PII before calling `IAuditLog`. Audit is durable and queryable; it is not a secret store.
 
-_Constitutional invariant 44 (the audit-emission boundary invariant, in `constitution/invariants.md`) is the Grid-level rule this Node exists to enforce. The Audit-specific downstream-coupling and contract-shape-canary invariants are introduced by the standup ADR and assigned their final constitutional numbers when that standup initiative lands._
+_Constitutional invariants 47 (audit-emission boundary), 48 (downstream Abstractions-only coupling), and 49 (Audit contract-shape canary) in `constitution/invariants.md` are the Grid-level rules this Node exists to enforce. 47 was landed by ADR-0030; 48 and 49 were landed by ADR-0031's stand-up initiative._
 
 ## Status
 
