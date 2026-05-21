@@ -58,29 +58,168 @@ ADR-0011 D4's coupling rule (review-agent context-loading must mirror scope-agen
 
 ### D3 — Review goals and rubric
 
-The cloud-wired reviewer (and the local one, since both consume `.claude/agents/review.md`) evaluates every PR against five dimensions. Each dimension carries a category of concerns. The detailed per-dimension checklist — what specifically to look for, what counts as a finding, what severity to apply — lives in `.claude/agents/review.md` per ADR-0007's source-of-truth rule and ADR-0011 D6/D7's binding precedent that responsibility-checklists live in the agent file, not in the ADR text. This ADR binds the **dimensions and their intent**; the agent file binds the **checklists that implement them**.
+The reviewer evaluates every PR against **twenty named categories**. The rubric is not the reviewer's private checklist — it is the **Grid's shared standard for any code change**, applied symmetrically by authors at authoring time and by the reviewer at evaluation time (see "Upstream awareness" below).
 
-**1. Correctness and reliability.** Does the code do what the packet says it should? Are bugs likely to be present — off-by-one, null dereference, incorrect boolean logic, race conditions in async paths, swallowed exceptions, incorrect error propagation? Are edge cases handled and error paths exercised? Does the change preserve the behavior of code it touches (no silent regressions)? Are the tests **actually exercising the new behavior** — no tautological assertions (`Assert.True(true)`, `Assert.Equal(x, x)`), no mocked-out system-under-test, no boilerplate that would pass regardless of the production change? Is there at least one negative-path assertion (wrong inputs produce wrong-shaped errors, not silent success)? Are tests in the correct test project (unit in `.Tests`, integration separated per ADR-0011 Gap 1)?
+This ADR binds the **categories and the questions within them**. The detailed per-category execution detail — exactly what to look for, what counts as a finding at each severity — lives in `.claude/agents/review.md` per ADR-0007's source-of-truth rule. Updates to the categories or their questions are amendments to this D3; updates to the answers/checklists are edits to the agent file.
 
-**2. Code quality.** Is the code maintainable, readable, and appropriately simple? Does it honor **DRY** — no copy-paste of logic that already exists in this file, this Node, or another Grid Node's published package? Does it honor **SOLID** where the abstractions justify the cost: single responsibility per class; open for extension, closed for modification; Liskov substitution preserved; interface segregation respected; dependencies inverted at boundaries? Does it follow the conventions in this Node and the Grid (naming, file layout, formatting beyond what analyzers catch, idiomatic patterns)? Does it use **established patterns** rather than inventing parallel ones? Is the result **enterprise-grade** — would a senior engineer at a larger shop ship this without rework?
+#### 1. Correctness and functional integrity
 
-**3. Design hygiene.** Does the change **extend or reuse existing code** rather than write parallel new code? Before writing a new method or class, was there a usable existing one in this file, this Node, or a referenced Node's package? Cross-Node copy-paste is forbidden and is a Block-grade finding (see also dimension 5). Is the resulting surface **testable** — dependencies injectable, side effects isolated, no static mutable state where avoidable, time and randomness abstracted where they affect behavior? Is it **extensible** at the seams that warrant it (open/closed where the cost is justified, **not** for hypothetical futures — per the project's "no premature abstraction" stance)? Is it **configurable** at the right boundaries (settings, environment, feature flags — not magic numbers, not hardcoded environment-specific values), **without over-engineering toward configurability for its own sake**?
+- **Core correctness.** Does the code work? Does it satisfy the requirement (packet adherence)? Are edge cases handled? Are null/empty/error states covered? Are calculations accurate (precision, rounding)? Are timezone, culture, and locale issues considered? Are async flows correct? Are retries safe?
+- **State correctness.** Does state mutate safely? Are transitions valid? Is eventual consistency handled where it applies? Are transactions atomic where required? Is partial failure handled?
+- **Behavioral consistency.** Does behavior match existing platform expectations? Does the change break existing workflows? Are API contracts preserved? Are side effects predictable?
 
-**4. Security and performance.**
-   - **Security.** Does the change introduce a regression — secret in logs (Invariant 8), PII in telemetry (ADR-0040 D9), missing tenant-scoping (ADR-0026), broken or bypassed authentication paths (ADR-0031), unvalidated input crossing a trust boundary, SQL/command injection surface, deserialization of untrusted data, secrets in source? Does it weaken an existing security boundary?
-   - **Performance.** Does the change introduce a regression in a hot path — synchronous I/O in a request handler, unbounded loops, allocation in tight loops, new HTTP or database round-trips per request, N+1 queries, blocking calls in async paths, missing pagination on potentially-large result sets, new outbound calls without timeouts?
-   - **Cost discipline.** ADR-0011 D6's named checklist (log volume, LLM cost caps, CI guards, Azure SKU justification) is part of this dimension, not a separate concern.
+#### 2. Architectural integrity
 
-**5. Grid fit.** This is the dimension only a Grid-aware reviewer can evaluate, and it is why this reviewer is built rather than bought.
-   - **Node-job adherence.** Is the change consistent with the Node's stated purpose in `repos/{node}/overview.md`? Does the Node continue to do its correct job — neither more (scope inflation) nor less (responsibility erosion)?
-   - **Boundary respect.** Does the change cross a Node boundary it shouldn't? Does it leak responsibility into a different Node's surface (per `repos/{node}/boundaries.md` and the sector-interaction rules in `constitution/sector-interaction-map.md`)?
-   - **Reuse-across-Nodes over reimplementation.** If logic the PR needs already exists in another Grid Node's published package, the PR **must consume that package**, not duplicate the logic. Cross-Node copy-paste is the single most expensive long-term failure mode and is a Block-grade finding.
-   - **Dependency hygiene.** When the PR needs functionality from another Node, does it take the dependency the **right way** — via the upstream Node's published `*.Abstractions` per ADR-0035, never via a reach-around into the backing implementation? Is the version pinned correctly?
-   - **Invariant preservation.** Every Grid-wide invariant (`constitution/invariants.md`) and every per-Node invariant (`repos/{node}/invariants.md`) is preserved. Walked explicitly per ADR-0011 D7.
-   - **Packet adherence.** The change does what the linked packet says — no more (scope creep, undocumented refactors riding along), no less (scope shortfall, declared work missing). Side effects not in the packet are flagged.
-   - **Contract preservation.** Public surfaces (`*.Abstractions`) follow ADR-0035 versioning rules; no silent ABI breaks at minor/patch versions; `PublicAPI.Unshipped.txt` updates match the declared bump.
+- **Boundary enforcement.** Is logic in the correct layer? Is domain logic leaking into transport, UI, or data layers? Is infrastructure leaking into business logic? Are abstractions respected?
+- **Node governance.** Does this belong in this Node (per `repos/{node}/overview.md`)? Is another Node already responsible? Is this creating hidden coupling? Is package ownership respected? Is functionality duplicated elsewhere in the Grid?
+- **Dependency hygiene.** Are dependencies necessary? Is dependency direction correct (per `catalogs/relationships.json`)? Are there circular references? Is the package graph still clean? Is the abstraction level appropriate (consuming `*.Abstractions` per ADR-0035, never reaching into backings)?
+- **Architectural drift.** Does this move the system away from established patterns? Is this introducing a "special case architecture"? Is temporary code pretending to be permanent?
 
-The verdict comments findings against these dimensions using the severity taxonomy in `copilot/pr-review-rules.md` (`Block` / `Request Changes` / `Suggest`). The taxonomy and the per-dimension checklist are the two things `.claude/agents/review.md` binds; updates land there, not in this ADR. The dimensions themselves change only via amendment to this D3.
+#### 3. Maintainability
+
+- **Complexity management.** Is the solution simpler than the problem? Can complexity be reduced? Are there too many abstractions? Is there unnecessary indirection? Is control flow understandable?
+- **Readability.** Is intent obvious? Are names meaningful? Is the code self-documenting? Is cognitive load reasonable?
+- **Evolvability.** Can this be extended safely? Will future modifications cause regressions? Is the design composable? Is this rigid or flexible at the right places?
+- **Technical debt.** Is debt being introduced intentionally or accidentally? Is debt documented (TODO/FIXME, follow-up packet, ADR amendment)? Is the debt acceptable for the business value?
+
+#### 4. Reuse and ecosystem cohesion
+
+- **Reuse.** Is existing functionality reused before creating new logic? Could this extend an existing service or module? Is this solving an already-solved problem?
+- **Shared contracts.** Are shared SDKs and contracts respected (per `catalogs/contracts.json`)? Is naming aligned across the ecosystem? Are standards consistent?
+- **Platform consistency.** Does this feel like HoneyDrunk code? Does it follow established patterns? Would another engineer immediately recognize the conventions?
+
+#### 5. SOLID and design principles
+
+- **SRP.** Does the class or module have one responsibility?
+- **OCP.** Can behavior be extended without modification (where the cost is justified — not for hypothetical futures)?
+- **LSP.** Are abstractions substitutable in practice?
+- **ISP.** Are interfaces appropriately scoped, not too broad?
+- **DIP.** Are high-level policies isolated from implementation details?
+- **Additional.** DRY (no copy-paste), KISS (simplest solution that works), YAGNI (no speculative features), composition over inheritance where the trade-off favors it, explicit over implicit, convention over configuration.
+
+#### 6. Performance and scalability
+
+- **Runtime performance.** Expensive allocations in hot paths? Blocking calls in async code? Inefficient loops? Over-fetching data? Serialization overhead?
+- **Database performance.** N+1 queries? Missing indexes? Table scans? Large payloads where pagination would help? Query explosion under realistic load?
+- **Scalability.** Will this work under 10× load? Is concurrency safe? Is backpressure handled? Is batching possible where it matters?
+- **Resource efficiency.** Memory pressure, connection exhaustion, cache abuse, thread starvation, queue flooding.
+
+#### 7. Reliability and resilience
+
+- **Fault tolerance.** What happens when dependencies fail? Is retry logic safe? Are retries idempotent (per ADR-0042)? Are timeouts defined? Are circuit breakers used where they belong?
+- **Recovery.** Can the system recover automatically? Is state recoverable per ADR-0036's DR posture? Is replay safe?
+- **Defensive programming.** Are assumptions validated at trust boundaries? Are invariants protected? Are dangerous operations guarded?
+- **Chaos resistance.** Does this fail gracefully? Are cascading failures possible? Are blast radii bounded?
+
+#### 8. Observability and diagnostics
+
+- **Logging.** Are logs actionable, not noise? Is context included? Are logs structured? Are log levels correct (no `Information`-level chatter in hot paths)?
+- **Metrics.** Are business metrics captured? Are operational metrics captured? Can SLOs be measured?
+- **Tracing.** Is distributed tracing propagated (per ADR-0010 and ADR-0040)? Are spans meaningful? Are cross-Node flows observable?
+- **Diagnostics.** Can support and debugging teams diagnose issues quickly? Is failure provenance clear? Are error messages useful to humans?
+
+#### 9. Security
+
+- **Input handling.** Validation at trust boundaries? Sanitization where the data is rendered? Injection risks (SQL, command, expression) closed?
+- **Authentication and authorization.** Proper auth boundaries (per ADR-0031)? Principle of least privilege? Tenant isolation (per ADR-0026)?
+- **Secret handling.** No hardcoded secrets (Invariant 8)? Secure config usage (per ADR-0005)? Rotation support (per ADR-0006)?
+- **Data protection.** PII handled appropriately (per ADR-0040 D9)? Encryption at rest and in transit where required? Audit trails complete (per ADR-0030)?
+- **Dependency security.** Vulnerable packages flagged (per ADR-0009)? Unsafe transitive dependencies caught? Supply chain risk bounded?
+
+#### 10. Enterprise readiness
+
+- **Operational maturity.** Deployable safely (per ADR-0033)? Rollback ready? Configurable per environment? Feature-flaggable where it matters?
+- **Supportability.** Easy to troubleshoot? Clear ownership in `repos/{node}/overview.md`? Safe defaults?
+- **Documentation.** Does this need an ADR or amendment? Runbooks needed (per ADR-0036)? Config docs updated?
+- **Compliance.** PCI, GDPR, SOC2 implications? Retention rules (per ADR-0036 D7)? Audit requirements (per ADR-0030)?
+
+#### 11. Testing quality
+
+- **Coverage quality.** Happy paths tested? Failure paths tested? Edge cases tested? Concurrency cases tested?
+- **Test architecture.** Are tests maintainable? Are tests brittle (testing internals)? Are tests meaningful (not tautological assertions like `Assert.True(true)`)?
+- **Verification depth.** Unit tests in the right project? Integration tests for cross-Node seams (per ADR-0011 Gap 1)? Contract tests for `*.Abstractions` surfaces? End-to-end tests where they earn their keep (per ADR-0011 Gap 3)?
+- **Anti-patterns.** No testing implementation details. No excessive mocking that mocks the system under test. No non-deterministic tests (no real time, real randomness, real network in unit tests).
+
+#### 12. API and contract design
+
+- **API ergonomics.** Is the API intuitive? Is naming consistent? Are responses predictable?
+- **Versioning.** Breaking changes labeled and gated per ADR-0035? Deprecation path documented? Backward compatibility honored at the published version?
+- **Consumer safety.** Are defaults safe? Are contracts explicit (no silent assumptions)?
+
+#### 13. Data and persistence integrity
+
+- **Data correctness.** Referential integrity preserved? Precision and rounding handled correctly (financial, time)? Idempotency where writes can repeat (per ADR-0042)?
+- **Migration safety.** Backfill strategy clear? Rollback strategy clear? Zero-downtime where the table is hot?
+- **Multi-tenant integrity.** Isolation guarantees (per ADR-0026)? Cross-tenant leakage prevented in queries, caches, and any in-memory state?
+
+#### 14. Distributed systems concerns
+
+- **Messaging.** Duplicate delivery handled (per ADR-0042)? Ordering assumptions explicit? Poison message handling defined?
+- **Event architecture.** Event versioning planned? Contract evolution path clear? Outbox pattern where it belongs?
+- **Consistency models.** Strong vs eventual consistency awareness — is the chosen model right for the use case and communicated to consumers?
+
+#### 15. CI/CD and delivery
+
+- **Pipeline quality.** Build reproducibility? Deterministic outputs (per ADR-0034 D4)? Artifact traceability?
+- **Release safety.** Safe rollout path (per ADR-0033)? Canary support where it earns its keep? Environment parity between dev/staging/prod?
+- **Automation.** Is manual work avoidable? Is operational toil reduced rather than added?
+
+#### 16. Developer experience (DX)
+
+- **Ease of use.** Is the abstraction pleasant to consume? Is onboarding easy for the next reader?
+- **Discoverability.** Can developers find the right extension points? Are conventions self-evident?
+- **Tooling integration.** IntelliSense, XML docs, examples? Analyzer support where mistakes are catchable?
+
+#### 17. Product and business alignment
+
+- **Business fit.** Is this solving the right problem? Is the implementation over-engineered for the actual requirement?
+- **Cost awareness.** Infra cost impact (per ADR-0011 D6's cost discipline)? Operational burden added? Vendor lock-in introduced?
+- **Strategic alignment.** Does this align with Grid direction (constitution and roadmap)? Does it strengthen platform leverage or fragment it?
+
+#### 18. AI and agent-specific concerns
+
+This category is load-bearing as the Grid leans further into agent-authored code and agent-executed workflows.
+
+- **Agent safety.** Prompt injection resistance at trust boundaries? Tool permission scoping (per ADR-0017 capabilities)? Output validation before it leaves the agent's surface?
+- **Memory integrity.** Is agent memory scoped correctly (per ADR-0022's scope hierarchy)? Is context leakage possible across agents or tenants?
+- **Human override.** Can operators intervene (per ADR-0018 `IApprovalGate`)? Is the agent's behavior auditable (per ADR-0030)?
+- **Agent observability.** Decision tracing — can we reconstruct why the agent did what it did? Tool usage tracing? Token and cost tracking (per ADR-0011 D6 and ADR-0041 cost profile)?
+
+#### 19. Anti-entropy and long-term system health
+
+This is the category most organizations never formalize, and the one that determines whether the system is still legible in three years. Load-bearing for the Grid's long-term cohesion.
+
+- **Entropy detection.** Is this increasing fragmentation? Is naming diverging across Nodes? Is inconsistency creeping in where consistency used to hold?
+- **Pattern erosion.** Are teams (including AI agents) bypassing standards? Is this "one-off syndrome" — a single justified exception that will be cited as precedent for ten unjustified ones?
+- **Ecosystem sustainability.** Will this still make sense in 3 years? Does this increase architectural gravity (load-bearing dependencies) in a way that constrains future moves?
+
+#### 20. Human factors
+
+- **Team comprehension.** Would another engineer (or another agent on a different prompt) understand this quickly?
+- **Bus factor.** Is knowledge being concentrated where only one person (or one agent run) holds it? Is the change reversible by someone who didn't make it?
+- **Communication quality.** Is intent documented (PR body, packet adherence, ADR if scope warrants)? Are trade-offs explained, not just decisions stated?
+
+#### Upstream awareness — the rubric is shared across authoring and review
+
+**The categories above are not the reviewer's checklist alone.** They are the Grid's standard for what makes a change defensible, and they apply symmetrically to every agent that **authors** code or scoped work — not only to the reviewer that evaluates the result. An author who applies the rubric upstream prevents the problem; a reviewer who applies it downstream catches what slipped through. Both layers exist; the upstream layer is the load-bearing one for long-term system health, because catching a problem at review costs a review cycle, while catching it at authoring time costs nothing.
+
+The rubric therefore binds the following authoring surfaces, each via a section in its agent definition file referencing this D3:
+
+- **`scope`** — when decomposing a packet, evaluates which categories apply to the work and ensures the packet captures their implications. What's the failure mode (Reliability)? What observability is required (Observability)? What's the security blast radius (Security)? What's the testing strategy (Testing)? What anti-entropy risk does this carry (Anti-Entropy)? Packets that omit relevant categories produce changes that miss them at execution time.
+- **`adr-composer`** — when proposing an ADR, reasons about the decision against the categories that apply. Does this introduce architectural drift (Architectural Integrity)? Cost implications (Performance / Cost / Product alignment)? Long-term entropy (Anti-Entropy)? Security or compliance implications (Security / Enterprise Readiness)? AI/agent implications where relevant (Category 18)?
+- **`pdr-composer`** — same as `adr-composer`, with extra weight on Category 17 (Product / Business Alignment) and Category 19 (Anti-Entropy and Long-Term Health). PDRs that pass the rubric are likelier to age well.
+- **`refine`** — when challenging scoped work, evaluates whether the packet has accounted for the categories the work touches. A packet that ignores Reliability or Observability or Anti-Entropy on a change where those clearly apply surfaces as a `refine` finding.
+- **Execution agents** (Codex via packet, Copilot in-IDE, Claude Code in authoring mode) — write code mindful of the categories. Each execution surface's prompt or system instructions references this D3 as the **authoring discipline** the agent must consider before producing a diff. The categories most load-bearing at code-writing time (Correctness, Code Quality, SOLID, Reuse, Security, Performance, Testing, AI/Agent-Specific, Human Factors) are surfaced as a brief authoring checklist; the rest are by reference.
+- **`review`** (this reviewer) — applies the full rubric as the evaluation gate.
+- **`node-audit`** — when auditing a Node's health (per ADR-0043's Tactical source), walks the rubric to identify systemic gaps that span PRs rather than living in any single one. Findings flow to packets per ADR-0043.
+
+The shared rubric is the **single most important structural decision** in this ADR. A reviewer that catches only what authors missed is useful but expensive. A whole ecosystem of agents reasoning against the same rubric — at scope, at decision, at authoring, at refinement, at review, at audit — is what keeps a 13-Node Grid coherent under solo-developer-plus-AI throughput.
+
+The mechanical change: each agent definition file (`scope.md`, `adr-composer.md`, `pdr-composer.md`, `refine.md`, `review.md`, `node-audit.md`, and the execution-surface prompts) gains a section referencing this D3 and the relevant subset of categories with severity expectations. Updates to the rubric are amendments to this D3 and propagate via agent-file updates per ADR-0007's source-of-truth rule. Drift between this D3 and any agent file is an anti-pattern; `hive-sync` (per ADR-0014) reconciles.
+
+#### Severity and the agent-file binding
+
+The reviewer's verdict comments findings against these categories using the severity taxonomy in `copilot/pr-review-rules.md` (`Block` / `Request Changes` / `Suggest`). The taxonomy, the per-category execution detail, and the per-agent authoring discipline all live in their respective agent files. This D3 binds the **categories, their questions, and the shared-upstream principle**; everything downstream of those bindings evolves in agent files without ADR ceremony.
 
 ### D4 — Per-repo configuration via `.honeydrunk-review.yaml`
 
@@ -206,7 +345,9 @@ Each phase is a discrete go/no-go. Phase 1's exit criterion is "the cloud-wired 
 - **Every Grid repo (eventually)** — adds `.honeydrunk-review.yaml`, `large-pr` and `audit-sample` labels via the existing label-setup pattern, and the `Authorship:` line convention to PR templates.
 - **Codex execution surface** — amended in a follow-up packet to emit `Authorship: agent-codex` and the corresponding commit trailer (`Authorship:` and `Co-authored-by:`).
 - **Claude Code commit-template behavior** — amended to emit `Authorship: agent-claude-code`.
-- **`.claude/agents/review.md`** — gains the per-dimension checklists implementing D3's five dimensions (correctness/reliability, code quality, design hygiene, security/performance, Grid fit). Updates land in this file per ADR-0007's source-of-truth rule.
+- **`.claude/agents/review.md`** — gains the per-category execution detail implementing D3's twenty categories.
+- **`.claude/agents/scope.md`, `adr-composer.md`, `pdr-composer.md`, `refine.md`, `node-audit.md`** — each gains a section referencing D3 and the subset of categories relevant to its authoring surface, per D3's upstream-awareness clause. Updates land per ADR-0007's source-of-truth rule.
+- **Execution-surface prompts** (Codex packet-execution prompt, Copilot in-IDE custom instructions, Claude Code authoring-mode system instructions) — each surfaces the load-bearing authoring categories (Correctness, Code Quality, SOLID, Reuse, Security, Performance, Testing, AI-specific, Human Factors) per D3's upstream-awareness clause.
 
 ### Invariants
 
@@ -240,8 +381,14 @@ ADR-0011's invariants 31–33 are preserved. Numbering for these two new invaria
 - Add `review_risk_class` field to `catalogs/grid-health.json` schema; populate for current Nodes (deferred until Phase 3 activates).
 - Create `generated/post-merge-audits/` directory with a README.
 - Amend Codex execution surface to emit `Authorship:` + commit trailer.
-- Update `.claude/agents/review.md` with: (a) per-dimension checklists implementing D3's five dimensions; (b) any clarifications needed for cloud-context execution (e.g., explicit handling of "context loaded from the architecture repo checkout").
-- Verify `copilot/pr-review-rules.md` covers the severity taxonomy across all five D3 dimensions; expand where gaps exist.
+- Update `.claude/agents/review.md` with: (a) per-category execution detail implementing D3's twenty categories; (b) any clarifications needed for cloud-context execution (e.g., explicit handling of "context loaded from the architecture repo checkout").
+- Update `.claude/agents/scope.md` with a section referencing D3 and the categories relevant to scoping (Correctness scope adherence, Reliability, Observability requirements, Security blast radius, Testing strategy, Anti-Entropy risk, AI/agent implications).
+- Update `.claude/agents/adr-composer.md` and `.claude/agents/pdr-composer.md` with sections referencing D3 and the categories relevant to architectural and product decisions (Architectural Integrity, Cost, Anti-Entropy, Security/Compliance, AI/agent implications; PDR adds extra weight on Product / Business Alignment).
+- Update `.claude/agents/refine.md` with a section referencing D3 and the rubric-completeness check it must perform on packets and dispatch plans.
+- Update `.claude/agents/node-audit.md` with a section referencing D3 as the systemic-health rubric.
+- Update execution-surface prompts (Codex packet-execution prompt, Copilot in-IDE custom instructions, Claude Code authoring-mode system instructions) to surface the load-bearing authoring categories.
+- Verify `copilot/pr-review-rules.md` covers the severity taxonomy across all twenty D3 categories; expand where gaps exist.
+- Wire `hive-sync` to detect drift between D3 and any agent file's referenced category list, per ADR-0014's reconciliation mandate.
 - Author the ADR-0011 amendment record (or supersession note) reflecting D9 reversals.
 
 ## Alternatives Considered
