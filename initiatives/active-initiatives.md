@@ -27,32 +27,33 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 > **Sync (2026-05-21):** Kernel#29, Transport#27, Communications#14, and Architecture#111 are now closed; packets 01, 02, 10, and 11 moved to `completed/`. All 11 packet issues are closed; initiative is ready for exit-criteria review/archive.
 
 ### ADR-0010 Observation Layer & AI Routing — Phase 1
-**Status:** In Progress
+**Status:** Phase 1 Observe-side complete; AI routing contracts satisfied by ADR-0016
 **Scope:** Architecture, Observe (new), AI
 **Initiative:** `adr-0010-observe-ai-routing-phase-1`
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
-**Description:** Accept ADR-0010 and ship Phase 1 (contracts + stubs). Catalog registration for HoneyDrunk.Observe, new Observe repo scaffold with Abstractions package, and routing contracts in HoneyDrunk.AI.Abstractions. Phase 2 (first GitHub connector + cost-first routing policy) and Phase 3 (HoneyHub integration, blocked on HoneyHub Phase 1 being live) are tracked below so they do not get lost.
+**Description:** ADR-0010 is accepted, HoneyDrunk.Observe is registered in Architecture catalogs/context, and the Observe repo now has the Phase 1 `HoneyDrunk.Observe.Abstractions` contract surface. The AI routing contracts originally tracked as packet 04 were superseded by ADR-0016 and shipped with the HoneyDrunk.AI standup scaffold. Phase 2 (first useful Observe connector + cost-first AI routing policy) and Phase 3 (HoneyHub integration, blocked on HoneyHub Phase 1 being live) remain future scope.
 
 **Tracking (Phase 1 — Observe side):**
-- [ ] Architecture#35: Accept ADR-0010 — catalog, context folder, sectors, invariant 29-30 text, ADR index flip, initiative/roadmap trackers (packet 01 — PR in progress)
-- [x] Architecture#36: Create HoneyDrunk.Observe GitHub repo (human-only chore — packet 02)
-- [ ] Observe#2: Scaffold HoneyDrunk.Observe.Abstractions with IObservationTarget / IObservationConnector / IObservationEvent (packet 03)
+- [x] Architecture#35: Accept ADR-0010 — catalog, context folder, sectors, invariant 29-30 text, ADR index flip, initiative/roadmap trackers (packet 01 — closed 2026-05-21 via PR #157)
+- [x] Architecture#36: Create HoneyDrunk.Observe GitHub repo (human-only chore — packet 02; closed 2026-04-18)
+- [x] Observe#2: Scaffold HoneyDrunk.Observe.Abstractions with IObservationTarget / IObservationConnector / IObservationEvent (packet 03 — closed 2026-05-21 via Observe PR #3)
 
-**Deferred (Phase 1 — AI routing contracts side):**
-- AI#1: Add IModelRouter / IRoutingPolicy / ModelCapabilityDeclaration to HoneyDrunk.AI.Abstractions (packet 04) — **parked pending manifest/issue cleanup**. HoneyDrunk.AI scaffold work has landed, but the original routing-contract packet path is missing from the manifest and a superseded packet exists as AI#3. Reconcile the duplicate/superseded issue before executing routing work. Invariant 28's `(Proposed)` qualifier stays intact until packet 04 merges.
+**Tracking (Phase 1 — AI routing contracts side):**
+- [x] AI#2 / ADR-0016: HoneyDrunk.AI standup scaffold shipped `IModelRouter`, `IRoutingPolicy`, `ModelCapabilityDeclaration`, and related routing/cost contracts in `HoneyDrunk.AI.Abstractions` (closed 2026-05-20 via AI PR #5)
+- [x] AI#1 / AI#3: duplicate ADR-0010 packet-04 issues superseded by ADR-0016; retained only for traceability and closed during reconciliation
 
 **Next (Phase 2 — not yet scoped):**
+- Implement `HoneyDrunk.Observe` runtime composition and observation-state handling
 - Implement `HoneyDrunk.Observe.Connectors.GitHub` — webhook receiver + repo health checks
-- Implement cost-first `IRoutingPolicy` in HoneyDrunk.AI runtime (gated on HoneyDrunk.AI standup)
-- Wire routing policies to Azure App Configuration (per ADR-0005 three-tier config split)
-- **Scope trigger:** Phase 1 Observe packets merged + a concrete external-project observation need exists + HoneyDrunk.AI standup ADR landed
+- Implement cost-first `IRoutingPolicy` in HoneyDrunk.AI runtime and load routing policies from Azure App Configuration (per ADR-0005 three-tier config split)
+- **Scope trigger:** Phase 1 contract surfaces are now present; begin Phase 2 only when there is a concrete external-project observation need and a live application-code caller for cost-first routing.
 
 **Deferred (Phase 3 — blocked on HoneyHub Phase 1):**
 - Route normalized `IObservationEvent` instances into HoneyHub's knowledge graph
 - Allow HoneyHub to read routing-policy outcomes as plan-adjustment signals
 - **Scope trigger:** HoneyHub Phase 1 domain model + graph API live
 
-> **Sync (2026-05-21):** Architecture#36 remains closed. Architecture#35 acceptance cleanup is in progress on `chore/adr-0010-architecture-acceptance`; once merged, only Observe#2 remains on the Observe-side Phase 1 path. AI routing remains parked/gated as documented.
+> **Sync (2026-05-21):** Architecture#35/#36 and Observe#2 are closed. HoneyDrunk.AI is no longer empty; ADR-0016 AI#2/PR#5 shipped the routing contracts packet 04 was waiting for. ADR-0010 Phase 1 contract/catalog work is complete; remaining work should be scoped as Phase 2 implementation, not more Phase 1 scaffold.
 
 ### ADR-0030 Grid-Wide Audit Substrate — Capability Acceptance
 **Status:** In Progress

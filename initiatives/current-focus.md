@@ -18,16 +18,14 @@ Provision Azure infrastructure and get both services running in the development 
 
 **See:** `infrastructure/walkthroughs/azure-provisioning-guide.md` and `generated/issue-packets/active/adr-0015-container-apps-rollout/dispatch-plan.md`.
 
-### ADR-0010 Observe / AI Routing Cleanup
+### ADR-0010 Phase 2 Scoping Watch
 
-ADR-0010's Observe side and AI routing handoff still need deliberate cleanup now that the main HoneyDrunk.AI scaffold packet has closed.
+ADR-0010 Phase 1 contract/catalog cleanup is complete: Architecture#35/#36 and Observe#2 are closed, and the duplicate/superseded AI routing issues are closed in favor of ADR-0016's HoneyDrunk.AI standup work.
 
-- `Architecture#35`: ADR-0010 acceptance packet remains open.
-- `Observe#2`: Observe Abstractions scaffold remains open.
-- `Architecture#95`: human-only HoneyDrunk.AI repo verification remains open.
-- `HoneyDrunk.AI#1`: original routing-contract packet is still open, but its manifest path is missing and a superseded packet exists as `HoneyDrunk.AI#3`.
+- `Architecture#95`: human-only HoneyDrunk.AI repo settings verification remains open, but it is no longer a Phase 1 contract blocker.
+- Next implementation scope should be Phase 2 only: `HoneyDrunk.Observe` runtime composition, `HoneyDrunk.Observe.Connectors.GitHub`, and cost-first `IRoutingPolicy` runtime behavior.
 
-**Why now:** HoneyDrunk.AI scaffold work closed, but ADR-0010 still has manifest drift. Reconcile the duplicate/superseded AI routing issue before executing routing work.
+**Why not primary:** Phase 2 should start only when there is a concrete external-project observation need and a live application-code caller for cost-first routing.
 
 ## On Deck
 
