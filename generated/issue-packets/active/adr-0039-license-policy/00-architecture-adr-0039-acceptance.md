@@ -8,14 +8,14 @@ dependencies: []
 adrs: ["ADR-0039", "ADR-0027", "ADR-0034"]
 accepts: ["ADR-0039"]
 wave: 1
-initiative: adr-0039-grid-open-source-license-policy
+initiative: adr-0039-license-policy
 node: honeydrunk-architecture
 ---
 
 # Accept ADR-0039 — flip status, add the two license invariants, register the license-policy initiative
 
 ## Summary
-Flip ADR-0039 (Grid Open Source License Policy) from Proposed to Accepted: update the ADR header, update the ADR index row in `adrs/README.md`, add the two new license invariants ADR-0039 commits in its Consequences section to `constitution/invariants.md`, and register the `adr-0039-grid-open-source-license-policy` initiative in `initiatives/active-initiatives.md`.
+Flip ADR-0039 (Grid Open Source License Policy) from Proposed to Accepted: update the ADR header, update the ADR index row in `adrs/README.md`, add the two new license invariants ADR-0039 commits in its Consequences section to `constitution/invariants.md`, and register the `adr-0039-license-policy` initiative in `initiatives/active-initiatives.md`.
 
 ## Context
 ADR-0039 records the Grid's first Grid-level license decision: MIT as the default for every Node (D1); FSL-1.1-MIT for revenue Nodes, formalizing the one-off ADR-0027 precedent (D2); MIT for client SDKs even when the engine is FSL (D3); proprietary copyright-reservation for private Nodes (D4); DCO not CLA for contributions (D5); no per-file license headers (D6); CC-BY-4.0 for documentation/content (D7); a `license` field added to `catalogs/nodes.json` (D8); and a heavyweight ADR-amendment procedure for any future license change (D9).
@@ -28,7 +28,7 @@ This is a docs/governance-only packet. No code, no workflow, no .NET project.
 - `adrs/ADR-0039-grid-open-source-license-policy.md` — flip `**Status:** Proposed` to `**Status:** Accepted`.
 - `adrs/README.md` — update the ADR-0039 row Status column to Accepted.
 - `constitution/invariants.md` — add the two new license invariants ADR-0039 commits (see Proposed Implementation for exact text). ADR-0039's reserved invariant block is **67 and 68**. The current highest invariant in `constitution/invariants.md` is 51 (verified); numbers 67-68 are pre-reserved as part of a 12-ADR batch, leaving a deliberate gap above 51. If any invariant above 51 lands from outside this batch before merge, shift this block upward — never reuse a number.
-- `initiatives/active-initiatives.md` — register the `adr-0039-grid-open-source-license-policy` initiative with the packet checklist for this folder.
+- `initiatives/active-initiatives.md` — register the `adr-0039-license-policy` initiative with the packet checklist for this folder.
 
 ## Proposed Implementation
 1. Edit the ADR-0039 header: `**Status:** Proposed` → `**Status:** Accepted`.
@@ -56,7 +56,7 @@ None. This packet touches only Markdown governance files; no .NET project is cre
 - [ ] ADR-0039 header reads `**Status:** Accepted`
 - [ ] The ADR-0039 row in `adrs/README.md` reflects Accepted
 - [ ] `constitution/invariants.md` carries the two new license invariants (license-field-matches-LICENSE-file; SDKs do not inherit the engine's restrictive license), numbered 67 and 68, each citing ADR-0039
-- [ ] `initiatives/active-initiatives.md` registers the `adr-0039-grid-open-source-license-policy` initiative with a packet checklist
+- [ ] `initiatives/active-initiatives.md` registers the `adr-0039-license-policy` initiative with a packet checklist
 - [ ] No catalog schema change in this packet (the `license` field is added to `catalogs/nodes.json` in packet 01)
 
 ## Human Prerequisites

@@ -8,7 +8,7 @@ dependencies: ["packet:00"]
 adrs: ["ADR-0039", "ADR-0011"]
 accepts: ["ADR-0039"]
 wave: 2
-initiative: adr-0039-grid-open-source-license-policy
+initiative: adr-0039-license-policy
 node: honeydrunk-actions
 ---
 

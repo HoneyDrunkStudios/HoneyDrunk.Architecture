@@ -141,7 +141,7 @@ Verify a wave landed by checking The Hive for the new items + their blocked-by c
 
 ## Archival
 
-Per ADR-0008 D10, when every filed and in-scope packet in this initiative reaches `Done` on the org Project board and the wave exit criteria are met, the entire `active/adr-0039-grid-open-source-license-policy/` folder moves to `archive/adr-0039-grid-open-source-license-policy/` in a single commit. Partial archival is forbidden.
+Per ADR-0008 D10, when every filed and in-scope packet in this initiative reaches `Done` on the org Project board and the wave exit criteria are met, the entire `active/adr-0039-license-policy/` folder moves to `archive/adr-0039-license-policy/` in a single commit. Partial archival is forbidden.
 
 ## Revision history
 
