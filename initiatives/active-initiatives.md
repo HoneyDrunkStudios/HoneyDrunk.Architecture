@@ -9,7 +9,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 **Scope:** Architecture, Standards, Actions, Data, Kernel, Studios, and every Node repo with test projects
 **Initiative:** `adr-0047-testing-patterns-and-tooling`
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
-**Description:** Accept ADR-0047 and roll out the Grid testing stack: xUnit v2 + NSubstitute + AwesomeAssertions + coverlet for unit tests; WebApplicationFactory and Testcontainers for integration tiers; Playwright (.NET) for web E2E; Maestro for future mobile E2E; BenchmarkDotNet / Azure Load Testing for performance. Closes ADR-0011 Gap 1 and Gap 3 once accepted.
+**Description:** Roll out the ADR-0047 Grid testing stack: xUnit v2 + NSubstitute + AwesomeAssertions + coverlet for unit tests; WebApplicationFactory and Testcontainers for integration tiers; Playwright (.NET) for web E2E; Maestro for future mobile E2E; BenchmarkDotNet / Azure Load Testing for performance. Closes ADR-0011 Gap 1 and Gap 3.
 
 **Tracking (Wave 1 — Phase 1: unit-test stack + migrations + coverage gates):**
 - [ ] Architecture#187: Accept ADR-0047 — flip status, close ADR-0011 Gap 1 and Gap 3, register the testing-patterns initiative (packet 00)
