@@ -8,14 +8,14 @@ dependencies: []
 adrs: ["ADR-0040"]
 accepts: ["ADR-0040"]
 wave: 1
-initiative: adr-0040-telemetry-backend-and-retention
+initiative: adr-0040-telemetry-backend
 node: honeydrunk-architecture
 ---
 
 # Accept ADR-0040 — flip status, add the three telemetry invariants, register the initiative
 
 ## Summary
-Flip ADR-0040 (Telemetry Backend and Retention) from Proposed to Accepted: update the ADR header, update the ADR index row in `adrs/README.md`, add the three new telemetry invariants ADR-0040 commits in its Consequences/Invariants section to `constitution/invariants.md`, and register the `adr-0040-telemetry-backend-and-retention` initiative in `initiatives/active-initiatives.md`.
+Flip ADR-0040 (Telemetry Backend and Retention) from Proposed to Accepted: update the ADR header, update the ADR index row in `adrs/README.md`, add the three new telemetry invariants ADR-0040 commits in its Consequences/Invariants section to `constitution/invariants.md`, and register the `adr-0040-telemetry-backend` initiative in `initiatives/active-initiatives.md`.
 
 ## Context
 ADR-0040 selects the Grid's telemetry backend and retention policy. It was authored 2026-05-21 in a batch of cross-cutting Grid-gap ADRs and revised in PR #164 to pivot from a Grafana Cloud + Sentry framing to **Azure Monitor + Application Insights** as the v1 backend. The ADR decides:
@@ -42,7 +42,7 @@ This is a docs/governance-only packet. No code, no workflow, no .NET project.
 - `adrs/ADR-0040-telemetry-backend-and-retention.md` — flip `**Status:** Proposed` to `**Status:** Accepted`.
 - `adrs/README.md` — update the ADR-0040 row Status column to Accepted.
 - `constitution/invariants.md` — add the three new telemetry invariants ADR-0040 commits (see Proposed Implementation for exact text) as **invariants 69, 70, 71** — the pre-reserved block for this ADR.
-- `initiatives/active-initiatives.md` — register the `adr-0040-telemetry-backend-and-retention` initiative with the packet checklist for this folder.
+- `initiatives/active-initiatives.md` — register the `adr-0040-telemetry-backend` initiative with the packet checklist for this folder.
 
 ## Proposed Implementation
 1. Edit the ADR-0040 header: `**Status:** Proposed` → `**Status:** Accepted`.
@@ -72,7 +72,7 @@ None. This packet touches only Markdown governance files; no .NET project is cre
 - [ ] ADR-0040 header reads `**Status:** Accepted`
 - [ ] The ADR-0040 row in `adrs/README.md` reflects Accepted
 - [ ] `constitution/invariants.md` carries the three new telemetry invariants as **invariants 69, 70, 71** (no Node references a backend directly; high-cardinality ids on traces/logs not metrics; prompt/completion content only behind `evals.sensitive=true`), each citing ADR-0040
-- [ ] `initiatives/active-initiatives.md` registers the `adr-0040-telemetry-backend-and-retention` initiative with a packet checklist
+- [ ] `initiatives/active-initiatives.md` registers the `adr-0040-telemetry-backend` initiative with a packet checklist
 - [ ] No catalog schema change in this packet (catalog updates land in packet 01)
 
 ## Human Prerequisites

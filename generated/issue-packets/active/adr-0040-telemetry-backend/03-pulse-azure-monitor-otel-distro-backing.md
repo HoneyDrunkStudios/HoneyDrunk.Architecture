@@ -8,7 +8,7 @@ dependencies: ["packet:00", "packet:02"]
 adrs: ["ADR-0040", "ADR-0028", "ADR-0005"]
 accepts: ["ADR-0040"]
 wave: 2
-initiative: adr-0040-telemetry-backend-and-retention
+initiative: adr-0040-telemetry-backend
 node: honeydrunk-pulse
 ---
 

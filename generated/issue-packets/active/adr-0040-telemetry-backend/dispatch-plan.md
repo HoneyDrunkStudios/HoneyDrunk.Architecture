@@ -1,6 +1,6 @@
 # Dispatch Plan — ADR-0040: Telemetry Backend and Retention
 
-**Initiative:** `adr-0040-telemetry-backend-and-retention`
+**Initiative:** `adr-0040-telemetry-backend`
 **ADR:** ADR-0040 (Proposed → Accepted via packet 00)
 **Sector:** Ops / cross-cutting
 **Created:** 2026-05-22
