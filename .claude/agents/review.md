@@ -103,11 +103,56 @@ Severity: **Request Changes** if downstream impact not documented.
 - Are HoneyDrunk.Standards analyzers likely to pass? (No obvious violations)
 - Primary constructors used where appropriate?
 - Nullable reference types respected? Any `!` suppressions added without justification?
-- Are there tests for new behavior?
 - Is CHANGELOG.md updated?
 - If new packages/projects are introduced, do they include CHANGELOG.md and README.md?
 
-Severity: **Request Changes** for missing tests. **Suggest** for style issues.
+#### Testing Quality
+
+Apply this checklist to every PR that adds or changes code, test projects, CI test workflows, or public contracts. ADR-0047 makes these the concrete standards behind ADR-0044 D3 category 11.
+
+**Coverage quality:**
+- New behavior has tests for the happy path, failure paths, edge cases, and relevant concurrency/idempotency behavior. Do not accept tests that only prove the happy path when the packet changes validation, retry, security, persistence, messaging, or boundary behavior.
+- Coverage thresholds are tiered by DR criticality: Tier 0 requires **85% line / 80% branch**, Tier 1 requires **75% line / 70% branch**, and Tier 2 requires **60% line / 55% branch**. Treat threshold misses according to the rollout state: advisory during the documented grace period, otherwise a required fix.
+
+**Required test tiers and project naming:**
+- Every Node has a `*.Tests.Unit` project.
+- Every deployable Node has a `*.Tests.Integration` project for Tier 2a integration tests.
+- Every HTTP-fronted Node has a `*.Tests.E2E` project, or the absence is explicitly tracked in a packet during rollout.
+- Tier 2a projects are named `HoneyDrunk.<Node>.Tests.Integration`.
+- Tier 2b container-backed projects are named `HoneyDrunk.<Node>.Tests.Integration.Containers`.
+- E2E projects are named `HoneyDrunk.<Node>.Tests.E2E`.
+- Flag a PR that adds test projects outside these names unless the packet explicitly authorizes an exception.
+
+**Verification depth:**
+- Unit tests cover isolated logic with in-memory fakes.
+- Tier 2a integration tests use `Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactory<TEntryPoint>` for HTTP-fronted Nodes, or a test-host/bootstrapper pattern for non-HTTP Nodes.
+- Tier 2a external seams use in-process fakes such as `InMemorySecretStore`, `InMemoryBroker`, and `InMemoryQueue`.
+- Tier 2b tests use Testcontainers.NET only when the real dependency behavior is what is being verified. Containers start through `IAsyncLifetime`, share state only when deterministic, and tear down deterministically.
+- Contract tests for `*.Abstractions` packages live under `Contracts/` in the Tier 2a integration project. A new abstraction or backing implementation should include a reusable contract test suite that every backing implementation must pass. Missing contract tests for a new abstraction/backing are **Request Changes**.
+
+**Test architecture and data:**
+- Prefer AutoFixture for don't-care data.
+- Prefer hand-written Builders for shape-significant domain data.
+- Use Bogus only where realistic generated seed data matters.
+- Tests should validate observable behavior, not private implementation details.
+- Excessive mocking is a smell; prefer contract-compatible fakes or real in-process composition when testing a boundary.
+
+**Naming and structure:**
+- Test classes use `<ClassUnderTest>Tests`.
+- Test methods use `MethodName_Scenario_ExpectedOutcome`.
+- Use `[Fact]` for single cases.
+- Use `[Theory]` with `[InlineData]` or `[MemberData]` for parameterized cases.
+- Do **not** use `[ClassData]`; it hides test data away from the test body.
+- Use Arrange / Act / Assert, with one Act per test and one logical assertion per test. Grouped assertions are acceptable only when they describe one outcome.
+- Async tests return `Task` or `ValueTask`. Flag `async void`, `.Result`, and `.Wait()`.
+- Flag any `Thread.Sleep` in test code. Test code must wait via `await`, polling primitives with explicit timeouts, or synchronously-completing fakes.
+
+**Framework and package regressions:**
+- Unit and integration tests use xUnit v2.x, NSubstitute, AwesomeAssertions, coverlet, and Microsoft.NET.Test.Sdk via the shared test-stack props when available.
+- Flag new or reintroduced `Moq` package references/usages. NSubstitute is the Grid standard.
+- Flag new or reintroduced `FluentAssertions` package references/usages. AwesomeAssertions is the Grid standard.
+
+Severity: **Request Changes** for missing tests, missing required test tiers, missing contract tests, test-project naming drift, `Moq`/`FluentAssertions` reintroduction, `async void`, `.Result`, `.Wait()`, or `Thread.Sleep` in tests. **Suggest** for style issues.
 
 ### 7. Context Propagation
 
