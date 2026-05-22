@@ -8,14 +8,14 @@ dependencies: []
 adrs: ["ADR-0038"]
 accepts: ["ADR-0038"]
 wave: 1
-initiative: adr-0038-outbound-sender-identity-and-deliverability
+initiative: adr-0038-sender-identity
 node: honeydrunk-architecture
 ---
 
 # Accept ADR-0038 — flip status, add the two deliverability invariants, register the initiative
 
 ## Summary
-Flip ADR-0038 (Outbound Sender Identity and Deliverability) from Proposed to Accepted: update the ADR header, update the ADR index row in `adrs/README.md`, add the two new deliverability invariants ADR-0038 commits in its Consequences/Invariants section to `constitution/invariants.md`, and register the `adr-0038-outbound-sender-identity-and-deliverability` initiative in `initiatives/active-initiatives.md`.
+Flip ADR-0038 (Outbound Sender Identity and Deliverability) from Proposed to Accepted: update the ADR header, update the ADR index row in `adrs/README.md`, add the two new deliverability invariants ADR-0038 commits in its Consequences/Invariants section to `constitution/invariants.md`, and register the `adr-0038-sender-identity` initiative in `initiatives/active-initiatives.md`.
 
 ## Context
 ADR-0038 sets the Grid-wide outbound sender-identity and deliverability policy: a sending-domain subdomain split for reputation isolation — `mail.honeydrunkstudios.com` for Studio transactional, `notify.honeydrunkstudios.com` for Notify Cloud platform sends, tenant-delegated DKIM for tenants bringing their own domain (D1); full SPF + DKIM + DMARC at staged-strict policy on every sending subdomain (D2); one primary ESP + one cold fallback, subaccount-per-tenant capable, vendor pick deferred to an implementation note (D3); 10DLC for US tenant SMS plus a single Studio toll-free number for transactional (D4); the two tenant identity options — platform send vs delegated DKIM (D5); bounce/complaint/unsubscribe handling as a Notify primitive via `IDeliverabilityFeedbackSink` (D6); a staged warmup posture (D7); a reporting and feedback-loop inbox (D8); PII-safe outbound headers (D9); and the explicit deferral of push/in-app/webhook channels (D10).
@@ -30,7 +30,7 @@ This is a docs/governance-only packet. No code, no workflow, no .NET project.
 - `adrs/ADR-0038-outbound-sender-identity-and-deliverability.md` — flip `**Status:** Proposed` to `**Status:** Accepted`.
 - `adrs/README.md` — update the ADR-0038 row Status column to Accepted.
 - `constitution/invariants.md` — add the two new deliverability invariants ADR-0038 commits (see Proposed Implementation for exact text). Add them as invariants **65** and **66** — the pre-reserved block for ADR-0038 (see Constraints).
-- `initiatives/active-initiatives.md` — register the `adr-0038-outbound-sender-identity-and-deliverability` initiative with the packet checklist for this folder.
+- `initiatives/active-initiatives.md` — register the `adr-0038-sender-identity` initiative with the packet checklist for this folder.
 
 ## Proposed Implementation
 1. Edit the ADR-0038 header: `**Status:** Proposed` → `**Status:** Accepted`.
@@ -59,7 +59,7 @@ None. This packet touches only Markdown governance files; no .NET project is cre
 - [ ] ADR-0038 header reads `**Status:** Accepted`
 - [ ] The ADR-0038 row in `adrs/README.md` reflects Accepted
 - [ ] `constitution/invariants.md` carries the two new deliverability invariants (every sending subdomain has SPF + DKIM + DMARC with DMARC ≥ `p=quarantine`; bulk and platform sends emit RFC 8058 one-click List-Unsubscribe), numbered **65** and **66**, each citing ADR-0038
-- [ ] `initiatives/active-initiatives.md` registers the `adr-0038-outbound-sender-identity-and-deliverability` initiative with a packet checklist
+- [ ] `initiatives/active-initiatives.md` registers the `adr-0038-sender-identity` initiative with a packet checklist
 - [ ] No catalog schema change in this packet (the `sender_reputation_status` field is added in packet 01)
 
 ## Human Prerequisites

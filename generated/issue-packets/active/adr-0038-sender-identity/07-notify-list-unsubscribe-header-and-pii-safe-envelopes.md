@@ -8,7 +8,7 @@ dependencies: ["packet:05"]
 adrs: ["ADR-0038"]
 accepts: ["ADR-0038"]
 wave: 3
-initiative: adr-0038-outbound-sender-identity-and-deliverability
+initiative: adr-0038-sender-identity
 node: honeydrunk-notify
 ---
 

@@ -138,7 +138,7 @@ Verify a wave landed by checking The Hive for the new items + their blocked-by c
 
 ## Archival
 
-Per ADR-0008 D10, when every **filed and in-scope** packet in this initiative reaches `Done` on the org Project board and the wave exit criteria are met, the entire `active/adr-0038-outbound-sender-identity-and-deliverability/` folder moves to `archive/adr-0038-outbound-sender-identity-and-deliverability/` in a single commit. Partial archival is forbidden.
+Per ADR-0008 D10, when every **filed and in-scope** packet in this initiative reaches `Done` on the org Project board and the wave exit criteria are met, the entire `active/adr-0038-sender-identity/` folder moves to `archive/adr-0038-sender-identity/` in a single commit. Partial archival is forbidden.
 
 The three `Actor=Human` packets (03, 04, 09) are in-scope and NOT exempt from the archival gate — they have a concrete completion path (publish the records, configure the inbox, provision the accounts). The initiative's archival waits for them to be `Done`.
 
