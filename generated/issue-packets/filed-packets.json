@@ -255,5 +255,11 @@
   "generated/issue-packets/active/adr-0040-telemetry-backend/05-pulse-pii-processors-and-volume-discipline-canary.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/22",
   "generated/issue-packets/active/adr-0040-telemetry-backend/06-architecture-log-analytics-retention-and-audit-table.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/244",
   "generated/issue-packets/active/adr-0040-telemetry-backend/07-pulse-derived-metric-stream.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/23",
-  "generated/issue-packets/active/adr-0040-telemetry-backend/08-architecture-azure-monitor-alerts-and-operator-channel.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/245"
+  "generated/issue-packets/active/adr-0040-telemetry-backend/08-architecture-azure-monitor-alerts-and-operator-channel.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/245",
+  "generated/issue-packets/active/adr-0041-model-registry/00-architecture-adr-0041-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/246",
+  "generated/issue-packets/active/adr-0041-model-registry/01-architecture-model-registry-catalog-and-contracts.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/247",
+  "generated/issue-packets/active/adr-0041-model-registry/02-ai-model-registry-contracts-and-loader.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/6",
+  "generated/issue-packets/active/adr-0041-model-registry/03-ai-capability-canary-harness-and-model-lineup.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/7",
+  "generated/issue-packets/active/adr-0041-model-registry/04-ai-cost-aware-routing-and-per-call-ceiling.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/8",
+  "generated/issue-packets/active/adr-0041-model-registry/05-ai-dispatch-audit-emit-and-cost-guard-intersection.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/9"
 }
