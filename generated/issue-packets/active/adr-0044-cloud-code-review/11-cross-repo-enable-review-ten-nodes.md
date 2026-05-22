@@ -2,6 +2,7 @@
 name: Cross-Repo Change
 type: cross-repo-change
 tier: 2
+target_repo: HoneyDrunkStudios/HoneyDrunk.Architecture
 target_repos: ["HoneyDrunk.Kernel", "HoneyDrunk.Transport", "HoneyDrunk.Vault", "HoneyDrunk.Auth", "HoneyDrunk.Web.Rest", "HoneyDrunk.Data", "HoneyDrunk.Notify", "HoneyDrunk.Communications", "HoneyDrunk.Pulse", "HoneyDrunk.Actions"]
 labels: ["ci", "tier-2", "core", "ops", "coordination", "adr-0044", "wave-2"]
 dependencies: ["packet:06", "packet:07", "packet:08", "packet:09", "packet:10"]
