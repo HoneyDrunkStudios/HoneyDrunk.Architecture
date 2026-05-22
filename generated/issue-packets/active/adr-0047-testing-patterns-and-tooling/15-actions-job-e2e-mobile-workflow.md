@@ -4,7 +4,7 @@ type: ci-change
 tier: 2
 target_repo: HoneyDrunkStudios/HoneyDrunk.Actions
 labels: ["feature", "tier-2", "ci-cd", "ops", "adr-0047", "wave-5"]
-dependencies: ["packet:12"]
+dependencies: ["packet:13"]
 adrs: ["ADR-0047"]
 accepts: ["ADR-0047"]
 wave: 5
@@ -99,7 +99,7 @@ None. Maestro is a standalone CLI; the flows are YAML, not a .NET project (ADR-0
 **Acceptance Criteria:** As listed above.
 
 **Dependencies:**
-- packet:12 — `job-e2e-web.yml` establishes the E2E reusable-workflow pattern (trigger guard, failure-artifact upload) this mirrors.
+- packet:13 — `job-e2e-web.yml` establishes the E2E reusable-workflow pattern (trigger guard, failure-artifact upload) this mirrors.
 
 **Constraints:**
 - PARKED — not filed until the first mobile app exists (ADR-0047 D14 Phase 5).
@@ -108,7 +108,7 @@ None. Maestro is a standalone CLI; the flows are YAML, not a .NET project (ADR-0
 
 **Key Files:**
 - `.github/workflows/job-e2e-mobile.yml` (new)
-- `.github/workflows/job-e2e-web.yml` (packet 12 — style + trigger-guard reference)
+- `.github/workflows/job-e2e-web.yml` (packet 13 — style + trigger-guard reference)
 - `docs/CHANGELOG.md`, `docs/consumer-usage.md`, `README.md`
 
 **Contracts:** None changed.

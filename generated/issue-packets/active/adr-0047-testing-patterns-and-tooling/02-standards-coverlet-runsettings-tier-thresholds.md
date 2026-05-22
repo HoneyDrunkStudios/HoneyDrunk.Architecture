@@ -9,7 +9,7 @@ adrs: ["ADR-0047", "ADR-0036", "ADR-0032"]
 accepts: ["ADR-0047"]
 wave: 1
 initiative: adr-0047-testing-patterns-and-tooling
-node: honeydrunk-architecture
+node: honeydrunk-standards
 ---
 
 # Author shared `coverlet.runsettings` templates encoding the D3 per-tier coverage thresholds
@@ -42,11 +42,13 @@ Approach:
 4. Document the **30-day grace period** (ADR-0047 Consequences): on first adoption per Node the threshold is advisory; the CI job flips it to blocking after the grace window. The templates carry a header comment explaining this and pointing the reader at the CI job that owns the grace-window flip (packet 06, `job-integration-tests.yml` reuses the same coverage-gate logic — note the grace flip is a CI-job concern).
 5. Document in the repo `README.md` which template each Node tier uses and how a Node consumes it (`dotnet test --settings coverlet.runsettings`).
 
+**Forward-declared tiers.** The D3 tier table names Nodes that are not yet scaffolded — Notify Cloud (Tier 0), Memory and Knowledge (Tier 1), Flow and Evals (Tier 2). This packet authors the templates for every tier regardless; the templates are tier-keyed, not Node-keyed, so a Node simply copies the template matching its tier when it is stood up. No template is blocked on a Node existing. The README's tier→template mapping should note that the Notify Cloud / Memory / Knowledge / Flow / Evals tier assignments are forward-declared and become live the moment each Node is scaffolded.
+
 ## Affected Packages
 - `HoneyDrunk.Standards` — gains the `coverlet.runsettings` template set.
 
 ## NuGet Dependencies
-None new. The `coverlet.collector` package that reads these settings is already declared by the shared test-stack props fragment from packet 01. This packet ships static `.runsettings` content, not a `.csproj` change. If `HoneyDrunk.Standards` gains a new project to host the templates as packaged content, that project must reference `HoneyDrunk.Standards` analyzers with `PrivateAssets: all` per invariant 26.
+None new. The `coverlet.collector` package that reads these settings is already declared by the shared test-stack props fragment from packet 01. This packet ships static `.runsettings` content as additional build-asset content in the **same** `HoneyDrunk.Standards` build-assets package that carries packet 01's props fragment — no new `.csproj` and no new analyzer reference. Only if the repo's packaging cannot carry the templates as content should a new build-assets project be added, in which case it references `HoneyDrunk.Standards` analyzers with `PrivateAssets: all` per invariant 26.
 
 ## Boundary Check
 - [x] Shared build-tooling defaults belong in `HoneyDrunk.Standards` (same rationale as packet 01).

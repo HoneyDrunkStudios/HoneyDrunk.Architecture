@@ -9,7 +9,7 @@ adrs: ["ADR-0047"]
 accepts: ["ADR-0047"]
 wave: 1
 initiative: adr-0047-testing-patterns-and-tooling
-node: honeydrunk-architecture
+node: honeydrunk-standards
 ---
 
 # Author the shared unit-test stack `Directory.Build.props` defaults for test projects
@@ -51,7 +51,7 @@ This packet authors a props fragment that **declares** the following `PackageRef
 - `AwesomeAssertions` — current stable (the MIT fork of FluentAssertions v7).
 - `coverlet.collector` — current stable.
 
-`HoneyDrunk.Standards` itself, if it gains a new project to host the fragment as build assets, must list `HoneyDrunk.Standards` analyzers on that project with `PrivateAssets: all` per invariant 26. If the fragment is shipped as static MSBuild content in an existing `HoneyDrunk.Standards` package, no new `.csproj` is created and no new analyzer reference is needed — the implementing agent picks whichever matches the current `HoneyDrunk.Standards` structure and records the choice in the PR.
+`HoneyDrunk.Standards` is modeled in `repos/HoneyDrunk.Standards/` (overview + boundaries) and `catalogs/nodes.json` (id `honeydrunk-standards`) as the Grid's shared analyzer / EditorConfig / build-tooling repo — a library-only, no-vault Meta Node whose packages are consumed at compile time with `PrivateAssets: all` (invariant 26). It already ships at least one analyzer package (the StyleCop + EditorConfig set referenced Grid-wide); the test-stack props fragment is the same class of artifact — a packaged MSBuild build asset, not a runtime project. Preferred mechanism: ship the fragment as static MSBuild `build/` content inside the **existing** `HoneyDrunk.Standards` build-assets package, so no new `.csproj` is created and no new analyzer reference is needed. Only if the repo's current packaging cannot carry an additional build asset should a new build-assets `.csproj` be added — and that project must then reference the `HoneyDrunk.Standards` analyzers with `PrivateAssets: all` per invariant 26. Record the chosen mechanism in the PR.
 
 ## Boundary Check
 - [x] Shared build-tooling defaults belong in `HoneyDrunk.Standards` — it already owns the Grid-wide analyzer + EditorConfig set consumed by every .NET repo (invariant 26).

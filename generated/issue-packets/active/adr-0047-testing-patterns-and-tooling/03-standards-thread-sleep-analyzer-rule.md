@@ -9,7 +9,7 @@ adrs: ["ADR-0047"]
 accepts: ["ADR-0047"]
 wave: 1
 initiative: adr-0047-testing-patterns-and-tooling
-node: honeydrunk-architecture
+node: honeydrunk-standards
 ---
 
 # Add the analyzer rule that fails the build on `Thread.Sleep` in test projects
@@ -24,11 +24,13 @@ Add an analyzer rule to `HoneyDrunk.Standards` that flags any use of `System.Thr
 ADR-0047 D10 states "No `Thread.Sleep`. … `Thread.Sleep` is a CI flakiness multiplier." The ADR Consequences section names "Add the analyzer rule that fails on `Thread.Sleep` in test projects" as explicit follow-up work, and invariant 51 (already landed, commit 120f39d) makes it a CI gate: "Enforced by an analyzer rule on test projects." `HoneyDrunk.Standards` already owns the Grid-wide analyzer set (invariant 26 — "StyleCop + EditorConfig analyzers"), so the rule belongs there. Without it, invariant 51 is a rule with no enforcement, and the review agent's Testing Quality checklist (ADR-0044 D3 category 11 / ADR-0047 D13) would carry the burden manually.
 
 ## Proposed Implementation
-Two viable mechanisms — the implementing agent picks whichever matches the current `HoneyDrunk.Standards` structure and records the choice in the PR:
+`HoneyDrunk.Standards` is the Grid's modeled analyzer home (`repos/HoneyDrunk.Standards/`, `catalogs/nodes.json` id `honeydrunk-standards`) — it already ships the StyleCop + EditorConfig analyzer set referenced Grid-wide (invariant 26, invariant 58). The `Thread.Sleep` rule is the same class of artifact and belongs in the same analyzer package.
 
-**Option A — Roslyn analyzer.** Add a `DiagnosticAnalyzer` to the `HoneyDrunk.Standards` analyzer assembly that reports a diagnostic (e.g. `HD0051`) on any invocation of `Thread.Sleep` (and `Thread.Sleep(TimeSpan)`). Scope it to test projects: the analyzer keys off the `IsTestProject` MSBuild property (set by packet 01's props fragment) surfaced via a `.editorconfig`/`build_property` analyzer-config value, OR the diagnostic is registered with default severity `none` and the test-stack props fragment from packet 01 raises it to `error` for `*.Tests.*` projects. The diagnostic severity must be `error` in test projects so it fails the build.
+Two viable enforcement mechanisms — both ship from the existing `HoneyDrunk.Standards` analyzer package. The implementing agent picks based on whether the package already consumes the banned-API analyzer, and records the choice in the PR:
 
-**Option B — Banned API analyzer.** If `HoneyDrunk.Standards` already consumes `Microsoft.CodeAnalysis.BannedApiAnalyzers`, add `T:System.Threading.Thread; M:System.Threading.Thread.Sleep` entries to a `BannedSymbols.txt` that ships only to `*.Tests.*` projects via the test-stack props fragment (packet 01). This is the lower-effort option if the banned-API analyzer is already in the stack.
+**Option A — Roslyn analyzer (preferred when no banned-API analyzer is present).** Add a `DiagnosticAnalyzer` to the existing `HoneyDrunk.Standards` analyzer assembly that reports a diagnostic (e.g. `HD0051`) on any invocation of `Thread.Sleep` (and `Thread.Sleep(TimeSpan)`). Scope it to test projects: the analyzer keys off the `IsTestProject` MSBuild property (set by packet 01's props fragment) surfaced via a `build_property` analyzer-config value, OR the diagnostic is registered with default severity `none` and the test-stack props fragment from packet 01 raises it to `error` for `*.Tests.*` projects. The diagnostic severity must be `error` in test projects so it fails the build.
+
+**Option B — Banned API analyzer (preferred when `Microsoft.CodeAnalysis.BannedApiAnalyzers` is already in the `HoneyDrunk.Standards` analyzer stack).** Add `T:System.Threading.Thread; M:System.Threading.Thread.Sleep` entries to a `BannedSymbols.txt` that ships only to `*.Tests.*` projects via the test-stack props fragment (packet 01). This is the lower-effort option when the banned-API analyzer is already present — check the `HoneyDrunk.Standards` analyzer package's existing `PackageReference` set first.
 
 Either way:
 1. The rule must fire only on test projects — runtime code may legitimately use `Thread.Sleep` and must not be flagged.

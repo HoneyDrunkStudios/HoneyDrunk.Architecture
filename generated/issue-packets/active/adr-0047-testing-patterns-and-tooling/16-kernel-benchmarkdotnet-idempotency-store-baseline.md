@@ -4,7 +4,8 @@ type: repo-feature
 tier: 2
 target_repo: HoneyDrunkStudios/HoneyDrunk.Kernel
 labels: ["feature", "tier-2", "core", "adr-0047", "wave-6"]
-dependencies: ["packet:01", "packet:11"]
+dependencies: ["packet:01"]
+soft_dependencies: ["packet:11"]
 adrs: ["ADR-0047", "ADR-0042"]
 accepts: ["ADR-0047"]
 wave: 6
@@ -95,7 +96,7 @@ New project `HoneyDrunk.Kernel.Tests.Benchmarks` `PackageReference` set:
 
 **Dependencies:**
 - packet:01 — the shared test-stack props fragment (for analyzer settings; confirm it does not force xUnit onto a benchmark console app).
-- packet:11 — the `IIdempotencyStore` Tier 2b work establishes the contract-test surface; the benchmark targets the same abstraction. Sequence after 11.
+- packet:11 — **soft only.** Packet 11 stands up the `IIdempotencyStore` Tier 2a contract test against `InMemoryIdempotencyStore`. This benchmark targets the same abstraction and the same `InMemoryIdempotencyStore` backing, but it depends only on that backing existing in the Kernel repo — not on packet 11's test project. Sequencing after 11 is preferred for narrative coherence (the contract test proves correctness, the benchmark then measures latency on the proven backing), but it is not a hard block: if `InMemoryIdempotencyStore` exists, this packet can proceed.
 
 **Constraints:**
 - On-demand only — never wired into CI (ADR-0047 D9).

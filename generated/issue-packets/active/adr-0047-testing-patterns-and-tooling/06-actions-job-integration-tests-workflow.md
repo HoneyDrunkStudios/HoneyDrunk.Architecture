@@ -33,7 +33,7 @@ Create `.github/workflows/job-integration-tests.yml` following the structure of 
 - Steps: checkout, `actions/setup-dotnet`, restore, build `--configuration Release`, then:
   - `dotnet test --filter "FullyQualifiedName~Tests.Integration&FullyQualifiedName!~Tests.Integration.Containers" --configuration Release` — the filter selects Tier 2a (`*.Tests.Integration`) and **excludes** Tier 2b (`*.Tests.Integration.Containers`), which has its own workflow (packet 09).
   - The job uses `coverlet` collection via the packet-02 `coverlet.runsettings` if present at the repo root (`--settings coverlet.runsettings`); coverage is informational for Tier 2a (the hard coverage gate is Tier 1's, per ADR-0047 D3 — do not add a second gate here).
-- **Auto-discovery / no-op behavior:** if the repo has zero `*.Tests.Integration` projects, the filtered `dotnet test` finds no matching tests and the job succeeds as a no-op. The job must not fail a repo that has not yet opted in. Verify the `dotnet test` exit code for "no tests matched" is treated as success (use `--filter` against the solution; if `dotnet test` returns non-zero for an empty filter on the runtime in use, add an explicit guard step that detects the absence of `*.Tests.Integration` projects and skips).
+- **Auto-discovery / no-op guard — MANDATORY explicit step.** This is the single highest-blast-radius element of the packet: `job-integration-tests.yml` is wired into `pr-core.yml` Grid-wide, so an unguarded empty `--filter` that exits non-zero would block **every PR in every repo** that has not yet added a `*.Tests.Integration` project — which today is most of the Grid. The no-op path must NOT be left as conditional prose ("if `dotnet test` returns non-zero … add a guard"). The workflow MUST contain an explicit, always-present guard step that runs **before** `dotnet test`: a discovery step that detects whether the repo (or the resolved `project-path`) contains any `*.Tests.Integration` project, and either (a) skips the `dotnet test` step entirely when none is found, or (b) sets a job-output flag the `dotnet test` step gates on. The `dotnet test` invocation never runs against an empty filter. Treat the .NET SDK's "no test matched the filter" exit behavior as undefined-for-our-purposes and do not rely on it — the guard, not the SDK's exit code, is the contract.
 - Runtime budget per ADR-0047 D1: Tier 2a suite target `< 5min`. No special runner needed (in-process fakes, no Docker).
 - Header comment block documents the tier, the filter contract, and the no-op-on-no-opt-in behavior.
 
@@ -58,8 +58,9 @@ None. The workflow invokes `dotnet test`; no project-level `<PackageReference>` 
 ## Acceptance Criteria
 - [ ] `.github/workflows/job-integration-tests.yml` exists, `workflow_call`-exposed, with the inputs and steps above
 - [ ] The `dotnet test` filter selects `*.Tests.Integration` and **excludes** `*.Tests.Integration.Containers`
-- [ ] The job is a passing no-op in a repo with zero `*.Tests.Integration` projects (verified)
-- [ ] `pr-core.yml` invokes `job-integration-tests.yml` as a tier-2 job, parallel with existing tier-2 jobs
+- [ ] The workflow contains a MANDATORY explicit discovery/guard step that runs before `dotnet test` and detects the presence of `*.Tests.Integration` projects; `dotnet test` is skipped (or gated off) when none exist — the empty-filter path is never reached
+- [ ] **The no-op path is verified against an empty repo BEFORE the `pr-core.yml` wiring lands.** The PR demonstrates (via a dry-run, a workflow-dispatch against a repo with no `*.Tests.Integration` project, or an equivalent fixture) that the job succeeds as a clean no-op with zero integration projects present. The Grid-wide `pr-core.yml` wiring must not be merged until this no-op verification is shown — an unguarded empty filter could block every PR in every repo
+- [ ] `pr-core.yml` invokes `job-integration-tests.yml` as a tier-2 job, parallel with existing tier-2 jobs, only after the no-op path is verified
 - [ ] The job uses `coverlet.runsettings` if present but does NOT add a second coverage gate (Tier 1 owns the gate per ADR-0047 D3)
 - [ ] Header comment documents the tier, the filter contract, and the no-op behavior
 - [ ] `docs/CHANGELOG.md` updated; `docs/consumer-usage.md` updated to document the auto-discovery contract
@@ -80,7 +81,7 @@ None. (No portal step — Tier 2a runs on standard `ubuntu-latest` runners with 
 
 ## Constraints
 - **Exclude Tier 2b.** The filter must exclude `*.Tests.Integration.Containers` — that tier has its own workflow (packet 09) with Docker requirements. A naive `~Tests.Integration` filter would catch both.
-- **No-op-safe.** The job must pass cleanly in repos with no `*.Tests.Integration` project — wiring it into `pr-core.yml` Grid-wide depends on this.
+- **No-op-safe via a MANDATORY explicit guard step — not conditional prose.** The job must pass cleanly in repos with no `*.Tests.Integration` project. This is enforced by an always-present discovery/guard step that runs before `dotnet test`, never by relying on the SDK's empty-filter exit code. Wiring this into `pr-core.yml` Grid-wide blocks every PR in every repo if the guard is wrong — verify the no-op path against an empty repo before the wiring lands.
 - **Do not add a second coverage gate.** Tier 1 owns the hard coverage gate per ADR-0047 D3; Tier 2a coverage is informational.
 - **Reusable workflows live in HoneyDrunk.Actions** per ADR-0012 — do not inline this into consumer repos.
 

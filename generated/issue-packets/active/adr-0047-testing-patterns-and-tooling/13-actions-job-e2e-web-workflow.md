@@ -23,7 +23,7 @@ Add a new reusable workflow `job-e2e-web.yml` in `HoneyDrunk.Actions` that runs 
 ## Motivation
 ADR-0047 D11 commits E2E web to "`dotnet test` in `job-e2e-web.yml`; runs nightly on `dev` and on `staging` tag deploy", and D14 Phase 4 schedules it: "Author `job-e2e-web.yml`. Pilot against `HoneyDrunk.Studios.Tests.E2E`. Wire nightly schedule against `dev`." ADR-0047 D12 confirms this fills ADR-0011 Gap 3 (E2E web). D5 commits the Playwright .NET binding.
 
-This packet ships the workflow only. The Studios pilot (packet 13) authors the actual E2E tests and wires the nightly schedule. Per ADR-0047 D5, E2E is **not** a per-PR check — it runs nightly and on tag deploy for cost discipline, so this workflow is never wired into `pr-core.yml`.
+This packet ships the workflow only. The Studios pilot (packet 14) authors the actual E2E tests and wires the nightly schedule. Per ADR-0047 D5, E2E is **not** a per-PR check — it runs nightly and on tag deploy for cost discipline, so this workflow is never wired into `pr-core.yml`.
 
 ## Proposed Change
 Create `.github/workflows/job-e2e-web.yml` following the `job-*.yml` reusable-workflow conventions.
@@ -40,10 +40,10 @@ Create `.github/workflows/job-e2e-web.yml` following the `job-*.yml` reusable-wo
 - Header comment block documents the E2E tier, the trigger contract (nightly `dev` / `staging` tag deploy only), the browser-cache step, and the trace-retention step.
 
 ### Wiring
-Do **not** wire this into `pr-core.yml`. The Studios pilot (packet 13) adds the nightly-schedule caller workflow in the Studios repo.
+Do **not** wire this into `pr-core.yml`. The Studios pilot (packet 14) adds the nightly-schedule caller workflow in the Studios repo.
 
 ## Consumer Impact
-- No consumer impact until a web-surface repo adds a `*.Tests.E2E` project and a nightly-schedule caller workflow (pilot: packet 13, Studios).
+- No consumer impact until a web-surface repo adds a `*.Tests.E2E` project and a nightly-schedule caller workflow (pilot: packet 14, Studios).
 
 ## Breaking Change?
 - [x] No — new workflow, opt-in per web surface, never on the PR path.

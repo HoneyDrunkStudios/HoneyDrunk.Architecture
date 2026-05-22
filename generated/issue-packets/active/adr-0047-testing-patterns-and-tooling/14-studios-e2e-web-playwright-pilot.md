@@ -4,7 +4,7 @@ type: repo-feature
 tier: 2
 target_repo: HoneyDrunkStudios/HoneyDrunk.Studios
 labels: ["feature", "tier-2", "meta", "adr-0047", "wave-4"]
-dependencies: ["packet:01", "packet:12"]
+dependencies: ["packet:01", "packet:13"]
 adrs: ["ADR-0047", "ADR-0029"]
 accepts: ["ADR-0047"]
 wave: 4
@@ -15,7 +15,7 @@ node: honeydrunk-studios
 # Pilot E2E web on Studios — `HoneyDrunk.Studios.Tests.E2E` with Playwright (.NET) and nightly schedule
 
 ## Summary
-Stand up the Grid's first E2E web test project — `HoneyDrunk.Studios.Tests.E2E` — using the Playwright .NET binding to drive a browser against the deployed Studios marketing site, covering the critical paths (home, key landing pages, blog index, navigation), and add the nightly-schedule caller workflow that invokes `job-e2e-web.yml` (packet 12) against the `dev` environment.
+Stand up the Grid's first E2E web test project — `HoneyDrunk.Studios.Tests.E2E` — using the Playwright .NET binding to drive a browser against the deployed Studios marketing site, covering the critical paths (home, key landing pages, blog index, navigation), and add the nightly-schedule caller workflow that invokes `job-e2e-web.yml` (packet 13) against the `dev` environment.
 
 ## Target Repo
 `HoneyDrunkStudios/HoneyDrunk.Studios`
@@ -23,8 +23,18 @@ Stand up the Grid's first E2E web test project — `HoneyDrunk.Studios.Tests.E2E
 ## Motivation
 ADR-0047 D14 Phase 4: "Author `job-e2e-web.yml`. Pilot against `HoneyDrunk.Studios.Tests.E2E` (lowest-risk first surface). Wire nightly schedule against `dev`." ADR-0047 D5 names Studios as the first E2E surface: "HoneyDrunk.Studios.Tests.E2E — marketing site (per ADR-0029)." Studios is the lowest-risk first surface — a marketing site with no tenant data, no auth-critical paths — so it is the right place to prove the Playwright pattern before the higher-stakes surfaces (HoneyHub UI, Notify Cloud portal) land.
 
+## Studios is a Next.js repo with no .NET solution — concrete layout decision
+`HoneyDrunk.Studios` is a Next.js 16 marketing site (`catalogs/nodes.json` id `honeydrunk-studios`, sector Meta — "Public website & Grid visualizer"). It has **no existing .NET solution**. ADR-0047 D5 nonetheless commits the E2E tests to a .NET project (`Microsoft.Playwright`, the .NET binding) for language-consistency with the rest of the testing pyramid. This packet therefore includes a **scaffold sub-step** — it does not hand the executing agent an open "figure out where the .NET project goes" question.
+
+Concrete layout, committed by this packet:
+
+- **E2E project location:** `tests/HoneyDrunk.Studios.Tests.E2E/HoneyDrunk.Studios.Tests.E2E.csproj` at the repo root, alongside (not inside) the Next.js `app/`/`src/` tree. The `tests/` directory is new.
+- **Solution file:** create a minimal `HoneyDrunk.Studios.E2E.sln` at the repo root containing only the one E2E project. Studios needs no full .NET solution — just enough for `dotnet build`/`dotnet test` to resolve the E2E project. Do not add a .NET solution that pulls in the Next.js app.
+- **Build invocation in CI:** `job-e2e-web.yml` (packet 13) is given `project-path` pointing at `HoneyDrunk.Studios.E2E.sln` (or the `.csproj`); the workflow runs `dotnet test` against that path. The Next.js build is untouched and unrelated.
+- **`.gitignore`:** add .NET `bin/`/`obj/` ignore entries scoped to `tests/` — the Next.js repo's existing `.gitignore` does not cover them.
+
 ## Proposed Implementation
-1. Create `tests/HoneyDrunk.Studios.Tests.E2E/` per the ADR-0047 D10 project layout (note: Studios is a Next.js repo, but the E2E tests are a .NET project per ADR-0047 D5's language-consistency decision — the test project sits alongside the site source).
+1. **Scaffold the .NET E2E project and its minimal solution.** Create `tests/HoneyDrunk.Studios.Tests.E2E/HoneyDrunk.Studios.Tests.E2E.csproj` per the ADR-0047 D10 project layout, plus a minimal repo-root `HoneyDrunk.Studios.E2E.sln` containing only that project (see the layout decision above). The E2E project is a standalone .NET project — it does not reference, and is not referenced by, the Next.js app. Add `bin/`/`obj/` ignore entries.
 2. Adopt the shared test-stack props fragment from packet 01 (xUnit runner + AwesomeAssertions — D5: "reuses the same test runner (xUnit) and assertion library (AwesomeAssertions) as the rest of the pyramid").
 3. Add `Microsoft.Playwright` (the .NET binding).
 4. Author the pilot critical-path E2E suite — keep it small (ADR-0047 D5 cost discipline; the `prod` smoke subset is "5-10 critical-path tests"). Cover:
@@ -33,8 +43,8 @@ ADR-0047 D14 Phase 4: "Author `job-e2e-web.yml`. Pilot against `HoneyDrunk.Studi
    - The blog index loads and lists posts.
    - Primary navigation works (clicking nav links reaches the expected pages).
    - No console errors / no 404s on the critical paths.
-5. Test fixtures read the target URL from an environment variable (the `base-url` the `job-e2e-web.yml` workflow passes — packet 12), so the same suite runs against `dev`, `staging`, or `prod`.
-6. Add a **nightly-schedule caller workflow** in `HoneyDrunk.Studios` (`.github/workflows/e2e-nightly.yml` or repo-convention name) that invokes `job-e2e-web.yml` (packet 12) on a `schedule` cron against the `dev` Studios URL. Per ADR-0047 D11 the nightly `dev` run is **advisory** (not blocking). Optionally also wire a `staging`-tag-deploy trigger where the nightly run is blocking on `staging` — include it if Studios already has a `staging` tag-deploy flow; otherwise scope this packet to the nightly `dev` schedule and note the `staging` wiring as deferred.
+5. Test fixtures read the target URL from an environment variable (the `base-url` the `job-e2e-web.yml` workflow passes — packet 13), so the same suite runs against `dev`, `staging`, or `prod`.
+6. Add a **nightly-schedule caller workflow** in `HoneyDrunk.Studios` (`.github/workflows/e2e-nightly.yml` or repo-convention name) that invokes `job-e2e-web.yml` (packet 13) on a `schedule` cron against the `dev` Studios URL. Per ADR-0047 D11 the nightly `dev` run is **advisory** (not blocking). Optionally also wire a `staging`-tag-deploy trigger where the nightly run is blocking on `staging` — include it if Studios already has a `staging` tag-deploy flow; otherwise scope this packet to the nightly `dev` schedule and note the `staging` wiring as deferred.
 7. Use the packet-07 integration-test scaffold conventions for naming/structure (the D10 conventions apply to E2E projects too).
 
 ## Affected Packages
@@ -46,7 +56,7 @@ New test project `HoneyDrunk.Studios.Tests.E2E` `PackageReference` set:
 - `Microsoft.Playwright` — current stable (the .NET Playwright binding).
 - `HoneyDrunk.Standards` — analyzers, `PrivateAssets: all` (invariant 26 — mandatory on every new .NET project).
 
-No runtime `.csproj` is touched. If `HoneyDrunk.Studios` (a Next.js repo) has no existing .NET solution, the E2E project is a standalone .NET project — the agent records in the PR how it is built in CI (the `job-e2e-web.yml` workflow's `project-path` input points at it).
+No runtime `.csproj` is touched (Studios has no .NET runtime project — it is a Next.js app). The E2E project is a standalone .NET project under a new minimal `HoneyDrunk.Studios.E2E.sln`; `job-e2e-web.yml`'s `project-path` input points at that solution. The Next.js build is entirely separate and unaffected.
 
 ## Boundary Check
 - [x] The Studios marketing site is `HoneyDrunk.Studios`'s own surface (routing keyword map: "website, Studios, Next.js, pages, blog → HoneyDrunk.Studios").
@@ -54,11 +64,12 @@ No runtime `.csproj` is touched. If `HoneyDrunk.Studios` (a Next.js repo) has no
 - [x] No new cross-Node runtime dependency — Playwright is a test-time dependency (invariant 16).
 
 ## Acceptance Criteria
-- [ ] `tests/HoneyDrunk.Studios.Tests.E2E/` exists, named per ADR-0047 D10
+- [ ] `tests/HoneyDrunk.Studios.Tests.E2E/HoneyDrunk.Studios.Tests.E2E.csproj` exists, named per ADR-0047 D10, plus a minimal repo-root `HoneyDrunk.Studios.E2E.sln` containing only that project; `bin/`/`obj/` ignore entries added to `.gitignore`
+- [ ] The E2E project is standalone — it does not reference and is not referenced by the Next.js app; `job-e2e-web.yml`'s `project-path` resolves to the new `.sln`/`.csproj`
 - [ ] The project consumes the packet-01 test-stack props fragment and references `Microsoft.Playwright`
 - [ ] A small critical-path E2E suite covers home page, key landing pages, blog index, primary navigation, and console-error/404 checks
 - [ ] Test fixtures read the target URL from an environment variable so the suite runs against `dev` / `staging` / `prod`
-- [ ] A nightly-schedule caller workflow invokes `job-e2e-web.yml` (packet 12) against the `dev` Studios URL on a cron; the nightly `dev` run is advisory per ADR-0047 D11
+- [ ] A nightly-schedule caller workflow invokes `job-e2e-web.yml` (packet 13) against the `dev` Studios URL on a cron; the nightly `dev` run is advisory per ADR-0047 D11
 - [ ] (If Studios has a `staging` tag-deploy flow) a `staging`-tag trigger invokes the E2E suite as a blocking check; otherwise the `staging` wiring is explicitly noted as deferred in the PR
 - [ ] No `Thread.Sleep` in the E2E test code (invariant 51) — use Playwright's built-in auto-waiting and explicit `await` for navigation/locator readiness
 - [ ] `HoneyDrunk.Standards` analyzers referenced on the new project with `PrivateAssets: all` (invariant 26)
@@ -112,7 +123,7 @@ No runtime `.csproj` is touched. If `HoneyDrunk.Studios` (a Next.js repo) has no
 
 **Dependencies:**
 - packet:01 — the shared test-stack props fragment.
-- packet:12 — `job-e2e-web.yml` must exist to be invoked by Studios' nightly caller workflow.
+- packet:13 — `job-e2e-web.yml` must exist to be invoked by Studios' nightly caller workflow.
 
 **Constraints:**
 - Keep the suite small (E2E cost discipline) — ~5-10 critical-path tests.
