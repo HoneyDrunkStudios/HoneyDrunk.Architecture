@@ -11,37 +11,39 @@ ADR-0011 (Proposed) established the Grid's code review pipeline with the Grid-aw
 
 Both decisions were correct in April 2026. Both are stale today:
 
-- **AI-authored PR volume has scaled.** Wave-style rollouts routinely produce 5–15 agent PRs in a window. The AI-sector standup wave (ADR-0016 through ADR-0025) adds nine Nodes' worth of scaffold packets. ADR-0043's Strategic and Tactical sources will mechanically generate agent PRs on cadence once running. "Human remembers to invoke the review agent" is no longer a viable discipline.
+- **AI-authored PR volume has scaled.** Wave-style rollouts routinely produce 5-15 agent PRs in a window. The AI-sector standup wave (ADR-0016 through ADR-0025) adds nine Nodes' worth of scaffold packets. ADR-0043's Strategic and Tactical sources will mechanically generate agent PRs on cadence once running. "Human remembers to invoke the review agent" is no longer a viable discipline.
 - **Copilot's automatic review has not earned its slot.** Its PR-time signal is generic (style nits, occasional null-check suggestions) and not Grid-aware. It does not load `constitution/invariants.md`, cannot read a packet via PR-body link, and has no knowledge of which ADRs govern a change. It fills a slot in name only.
 - **CodeRabbit was reconsidered** in the conversation that produced this ADR. Its rule system via `.coderabbit.yaml` is genuinely strong for prose-shaped rules, but its hard limit is that it cannot actively load Grid catalogs (`relationships.json`, `contracts.json`, `grid-health.json`) at review time, walk invariants, or reason against a linked packet's stated scope. The "make sense with the Grid and our ADRs" requirement is the one thing no third-party tool can do, because no third-party tool knows the Grid.
 
-The conclusion: **the slot that needs filling is not "automatic LLM reviewer" generically — it's "automatic Grid-aware LLM reviewer."** That slot is empty. Filling it means cloud-wiring the existing local `review` agent, not adopting an external service that fills the slot only by name.
+The conclusion: **the slot that needs filling is not "automatic LLM reviewer" generically - it's "automatic Grid-aware LLM reviewer."** That slot is empty. Filling it means automatic invocation of the existing local `review` agent, not adopting an external service that fills the slot only by name.
 
-The build is small. The prompt logic exists in `.claude/agents/review.md`. The context-loading contract is defined in ADR-0011 D4. The workflow host exists in HoneyDrunk.Actions. The Claude Agent SDK provides the runtime. The MVP is a 1–2 day engineering project — wire the existing agent into a GitHub Action, post the verdict as a PR comment. Polish (per-path config, learnings, output formatter) is bounded follow-up.
+The build is small, but the runtime placement matters. The prompt logic exists in `.claude/agents/review.md`. The context-loading contract is defined in ADR-0011 D4. The workflow host exists in HoneyDrunk.Actions, but GitHub Actions should be the cheap trigger/visibility rail, not the reasoning brain. The default v1 runtime is an OpenClaw-hosted Grid Review Runner using Codex through the Studio's existing subscription/session. GitHub Actions emits/validates review requests and exposes advisory status; OpenClaw performs the Grid-aware review and posts the verdict back to the PR.
 
-The cost calculus has also shifted. The April 2026 ADR-0011 D10 rejection was per-PR cloud LLM cost against a low PR volume; at today's volume (~20–50 agent PRs/month) and current Sonnet pricing, expected monthly cost is ~$40–100. Comparable to CodeRabbit private-tier; cheaper than running `/ultrareview` on every PR; smaller than the cost of a single late-caught production regression.
+The cost calculus has also shifted. The April 2026 ADR-0011 D10 rejection was per-PR cloud LLM cost against a low PR volume; at today's volume (~20-50 agent PRs/month), an Anthropic/API-backed GitHub Action makes AI review a recurring variable bill and sends private repo diffs to an external model API by default. The Studio already runs OpenClaw/Codex locally. The cheapest and most controllable v1 is therefore: use GitHub/webhooks/cron to request reviews automatically, run the review in OpenClaw/Codex, track the reviewed head SHA, and comment back only when the PR changed.
 
-This ADR amends ADR-0011 to **reverse the local-only stance**, **reverse the CodeRabbit rejection as moot** (we're not adopting an alternative), and add **AI-authored PR discipline** that the cloud-wired reviewer makes practical to enforce.
+This ADR amends ADR-0011 to **reverse the human-invoked-only stance**, **reverse the CodeRabbit rejection as moot** (we're not adopting an alternative), and add **AI-authored PR discipline** that the automatic Grid Review Runner makes practical to enforce.
 
 ## Decision
 
-The decision has two intertwined halves: the **build** (D1–D5) makes the **discipline** (D6–D9) practical. Neither half stands alone.
+The decision has two intertwined halves: the **build** (D1-D5) makes the **discipline** (D6-D9) practical. Neither half stands alone.
 
-### D1 — Build the cloud-wired reviewer as `job-review-agent.yml` in HoneyDrunk.Actions
+### D1 - Build the automatic Grid Review Runner with GitHub Actions as the trigger rail
 
-The Grid builds, owns, and operates its own cloud-wired Grid-aware code reviewer. Implementation:
+The Grid builds, owns, and operates its own automatic Grid-aware code reviewer. Implementation:
 
-- A new reusable workflow, `HoneyDrunk.Actions/.github/workflows/job-review-agent.yml`, follows the existing `pr-core.yml` factoring (per ADR-0012).
+- A new reusable workflow, `HoneyDrunk.Actions/.github/workflows/job-review-request.yml`, follows the existing `pr-core.yml` factoring (per ADR-0012) and validates whether a PR should request review.
 - Triggered on `pull_request` events: `opened`, `synchronize`, `ready_for_review`. Not on `draft` PRs (cost discipline; draft is by definition WIP).
-- Invokes the Claude Agent SDK against the `.claude/agents/review.md` definition (per ADR-0007's source-of-truth rule).
-- Posts the verdict as a PR comment using the format already defined in `.claude/agents/review.md`.
-- Sets a **non-required** check run (advisory, per ADR-0011 D5's posture — preserved by this ADR).
+- Emits a review request payload containing the repo, PR number, head SHA, author class, changed-file summary, packet link, and `.honeydrunk-review.yaml` settings.
+- Delivers the request to OpenClaw through the configured webhook path, or leaves a machine-readable artifact/comment for an OpenClaw cron job to pick up when webhooks are unavailable.
+- OpenClaw runs the Grid Review Runner using Codex and `.claude/agents/review.md` as the canonical prompt source (per ADR-0007's source-of-truth rule).
+- The runner posts the verdict as a PR comment using the format already defined in `.claude/agents/review.md` and records the reviewed head SHA to avoid re-reviewing unchanged diffs.
+- The workflow/check surface remains **non-required** and advisory, per ADR-0011 D5's posture - preserved by this ADR.
 
-The agent definition itself does not change. The same prompt that runs locally via Claude Code runs in the cloud workflow. Drift between the two execution surfaces is forbidden — both consume `.claude/agents/review.md` directly.
+The agent definition itself does not change. The same prompt that runs locally runs through the automatic runner. Drift between execution surfaces is forbidden - all surfaces consume `.claude/agents/review.md` directly.
 
-### D2 — Context loading is identical to the local invocation
+### D2 - Context loading is identical to the local invocation
 
-The cloud-wired reviewer loads exactly the context ADR-0011 D4 already mandates:
+The Grid Review Runner loads exactly the context ADR-0011 D4 already mandates:
 
 1. `constitution/invariants.md`
 2. Governing ADRs referenced in the packet frontmatter
@@ -52,15 +54,15 @@ The cloud-wired reviewer loads exactly the context ADR-0011 D4 already mandates:
 7. The packet file (via PR-body link)
 8. The PR diff
 
-The workflow checks out both the target repo and `HoneyDrunkStudios/HoneyDrunk.Architecture` (using a GitHub App token scoped to read on the architecture repo) so the context above is locally readable by the agent. This mirrors the local Claude Code workspace layout exactly.
+The runner checks out/updates both the target repo and `HoneyDrunkStudios/HoneyDrunk.Architecture` using local `gh` authentication or a narrowly scoped GitHub App token, so the context above is locally readable by the agent. This mirrors the local OpenClaw workspace layout exactly.
 
-ADR-0011 D4's coupling rule (review-agent context-loading must mirror scope-agent context-loading) is preserved. Updates land in `.claude/agents/review.md`, the workflow re-runs without code change.
+ADR-0011 D4's coupling rule (review-agent context-loading must mirror scope-agent context-loading) is preserved. Updates land in `.claude/agents/review.md`; the next runner invocation picks them up without workflow changes.
 
-### D3 — Review goals and rubric
+### D3 - Review goals and rubric
 
-The reviewer evaluates every PR against **twenty named categories**. The rubric is not the reviewer's private checklist — it is the **Grid's shared standard for any code change**, applied symmetrically by authors at authoring time and by the reviewer at evaluation time (see "Upstream awareness" below).
+The reviewer evaluates every PR against **twenty named categories**. The rubric is not the reviewer's private checklist - it is the **Grid's shared standard for any code change**, applied symmetrically by authors at authoring time and by the reviewer at evaluation time (see "Upstream awareness" below).
 
-This ADR binds the **categories and the questions within them**. The detailed per-category execution detail — exactly what to look for, what counts as a finding at each severity — lives in `.claude/agents/review.md` per ADR-0007's source-of-truth rule. Updates to the categories or their questions are amendments to this D3; updates to the answers/checklists are edits to the agent file.
+This ADR binds the **categories and the questions within them**. The detailed per-category execution detail - exactly what to look for, what counts as a finding at each severity - lives in `.claude/agents/review.md` per ADR-0007's source-of-truth rule. Updates to the categories or their questions are amendments to this D3; updates to the answers/checklists are edits to the agent file.
 
 #### 1. Correctness and functional integrity
 
@@ -91,7 +93,7 @@ This ADR binds the **categories and the questions within them**. The detailed pe
 #### 5. SOLID and design principles
 
 - **SRP.** Does the class or module have one responsibility?
-- **OCP.** Can behavior be extended without modification (where the cost is justified — not for hypothetical futures)?
+- **OCP.** Can behavior be extended without modification (where the cost is justified - not for hypothetical futures)?
 - **LSP.** Are abstractions substitutable in practice?
 - **ISP.** Are interfaces appropriately scoped, not too broad?
 - **DIP.** Are high-level policies isolated from implementation details?
@@ -156,7 +158,7 @@ This ADR binds the **categories and the questions within them**. The detailed pe
 
 - **Messaging.** Duplicate delivery handled (per ADR-0042)? Ordering assumptions explicit? Poison message handling defined?
 - **Event architecture.** Event versioning planned? Contract evolution path clear? Outbox pattern where it belongs?
-- **Consistency models.** Strong vs eventual consistency awareness — is the chosen model right for the use case and communicated to consumers?
+- **Consistency models.** Strong vs eventual consistency awareness - is the chosen model right for the use case and communicated to consumers?
 
 #### 15. CI/CD and delivery
 
@@ -183,14 +185,14 @@ This category is load-bearing as the Grid leans further into agent-authored code
 - **Agent safety.** Prompt injection resistance at trust boundaries? Tool permission scoping (per ADR-0017 capabilities)? Output validation before it leaves the agent's surface?
 - **Memory integrity.** Is agent memory scoped correctly (per ADR-0022's scope hierarchy)? Is context leakage possible across agents or tenants?
 - **Human override.** Can operators intervene (per ADR-0018 `IApprovalGate`)? Is the agent's behavior auditable (per ADR-0030)?
-- **Agent observability.** Decision tracing — can we reconstruct why the agent did what it did? Tool usage tracing? Token and cost tracking (per ADR-0011 D6 and ADR-0041 cost profile)?
+- **Agent observability.** Decision tracing - can we reconstruct why the agent did what it did? Tool usage tracing? Token and cost tracking (per ADR-0011 D6 and ADR-0041 cost profile)?
 
 #### 19. Anti-entropy and long-term system health
 
 This is the category most organizations never formalize, and the one that determines whether the system is still legible in three years. Load-bearing for the Grid's long-term cohesion.
 
 - **Entropy detection.** Is this increasing fragmentation? Is naming diverging across Nodes? Is inconsistency creeping in where consistency used to hold?
-- **Pattern erosion.** Are teams (including AI agents) bypassing standards? Is this "one-off syndrome" — a single justified exception that will be cited as precedent for ten unjustified ones?
+- **Pattern erosion.** Are teams (including AI agents) bypassing standards? Is this "one-off syndrome" - a single justified exception that will be cited as precedent for ten unjustified ones?
 - **Ecosystem sustainability.** Will this still make sense in 3 years? Does this increase architectural gravity (load-bearing dependencies) in a way that constrains future moves?
 
 #### 20. Human factors
@@ -199,21 +201,21 @@ This is the category most organizations never formalize, and the one that determ
 - **Bus factor.** Is knowledge being concentrated where only one person (or one agent run) holds it? Is the change reversible by someone who didn't make it?
 - **Communication quality.** Is intent documented (PR body, packet adherence, ADR if scope warrants)? Are trade-offs explained, not just decisions stated?
 
-#### Upstream awareness — the rubric is shared across authoring and review
+#### Upstream awareness - the rubric is shared across authoring and review
 
-**The categories above are not the reviewer's checklist alone.** They are the Grid's standard for what makes a change defensible, and they apply symmetrically to every agent that **authors** code or scoped work — not only to the reviewer that evaluates the result. An author who applies the rubric upstream prevents the problem; a reviewer who applies it downstream catches what slipped through. Both layers exist; the upstream layer is the load-bearing one for long-term system health, because catching a problem at review costs a review cycle, while catching it at authoring time costs nothing.
+**The categories above are not the reviewer's checklist alone.** They are the Grid's standard for what makes a change defensible, and they apply symmetrically to every agent that **authors** code or scoped work - not only to the reviewer that evaluates the result. An author who applies the rubric upstream prevents the problem; a reviewer who applies it downstream catches what slipped through. Both layers exist; the upstream layer is the load-bearing one for long-term system health, because catching a problem at review costs a review cycle, while catching it at authoring time costs nothing.
 
 The rubric therefore binds the following authoring surfaces, each via a section in its agent definition file referencing this D3:
 
-- **`scope`** — when decomposing a packet, evaluates which categories apply to the work and ensures the packet captures their implications. What's the failure mode (Reliability)? What observability is required (Observability)? What's the security blast radius (Security)? What's the testing strategy (Testing)? What anti-entropy risk does this carry (Anti-Entropy)? Packets that omit relevant categories produce changes that miss them at execution time.
-- **`adr-composer`** — when proposing an ADR, reasons about the decision against the categories that apply. Does this introduce architectural drift (Architectural Integrity)? Cost implications (Performance / Cost / Product alignment)? Long-term entropy (Anti-Entropy)? Security or compliance implications (Security / Enterprise Readiness)? AI/agent implications where relevant (Category 18)?
-- **`pdr-composer`** — same as `adr-composer`, with extra weight on Category 17 (Product / Business Alignment) and Category 19 (Anti-Entropy and Long-Term Health). PDRs that pass the rubric are likelier to age well.
-- **`refine`** — when challenging scoped work, evaluates whether the packet has accounted for the categories the work touches. A packet that ignores Reliability or Observability or Anti-Entropy on a change where those clearly apply surfaces as a `refine` finding.
-- **Execution agents** (Codex via packet, Copilot in-IDE, Claude Code in authoring mode) — write code mindful of the categories. Each execution surface's prompt or system instructions references this D3 as the **authoring discipline** the agent must consider before producing a diff. The categories most load-bearing at code-writing time (Correctness, Code Quality, SOLID, Reuse, Security, Performance, Testing, AI/Agent-Specific, Human Factors) are surfaced as a brief authoring checklist; the rest are by reference.
-- **`review`** (this reviewer) — applies the full rubric as the evaluation gate.
-- **`node-audit`** — when auditing a Node's health (per ADR-0043's Tactical source), walks the rubric to identify systemic gaps that span PRs rather than living in any single one. Findings flow to packets per ADR-0043.
+- **`scope`** - when decomposing a packet, evaluates which categories apply to the work and ensures the packet captures their implications. What's the failure mode (Reliability)? What observability is required (Observability)? What's the security blast radius (Security)? What's the testing strategy (Testing)? What anti-entropy risk does this carry (Anti-Entropy)? Packets that omit relevant categories produce changes that miss them at execution time.
+- **`adr-composer`** - when proposing an ADR, reasons about the decision against the categories that apply. Does this introduce architectural drift (Architectural Integrity)? Cost implications (Performance / Cost / Product alignment)? Long-term entropy (Anti-Entropy)? Security or compliance implications (Security / Enterprise Readiness)? AI/agent implications where relevant (Category 18)?
+- **`pdr-composer`** - same as `adr-composer`, with extra weight on Category 17 (Product / Business Alignment) and Category 19 (Anti-Entropy and Long-Term Health). PDRs that pass the rubric are likelier to age well.
+- **`refine`** - when challenging scoped work, evaluates whether the packet has accounted for the categories the work touches. A packet that ignores Reliability or Observability or Anti-Entropy on a change where those clearly apply surfaces as a `refine` finding.
+- **Execution agents** (Codex via packet, Copilot in-IDE, Claude Code in authoring mode) - write code mindful of the categories. Each execution surface's prompt or system instructions references this D3 as the **authoring discipline** the agent must consider before producing a diff. The categories most load-bearing at code-writing time (Correctness, Code Quality, SOLID, Reuse, Security, Performance, Testing, AI/Agent-Specific, Human Factors) are surfaced as a brief authoring checklist; the rest are by reference.
+- **`review`** (this reviewer) - applies the full rubric as the evaluation gate.
+- **`node-audit`** - when auditing a Node's health (per ADR-0043's Tactical source), walks the rubric to identify systemic gaps that span PRs rather than living in any single one. Findings flow to packets per ADR-0043.
 
-The shared rubric is the **single most important structural decision** in this ADR. A reviewer that catches only what authors missed is useful but expensive. A whole ecosystem of agents reasoning against the same rubric — at scope, at decision, at authoring, at refinement, at review, at audit — is what keeps a 13-Node Grid coherent under solo-developer-plus-AI throughput.
+The shared rubric is the **single most important structural decision** in this ADR. A reviewer that catches only what authors missed is useful but expensive. A whole ecosystem of agents reasoning against the same rubric - at scope, at decision, at authoring, at refinement, at review, at audit - is what keeps a 13-Node Grid coherent under solo-developer-plus-AI throughput.
 
 The mechanical change: each agent definition file (`scope.md`, `adr-composer.md`, `pdr-composer.md`, `refine.md`, `review.md`, `node-audit.md`, and the execution-surface prompts) gains a section referencing this D3 and the relevant subset of categories with severity expectations. Updates to the rubric are amendments to this D3 and propagate via agent-file updates per ADR-0007's source-of-truth rule. Drift between this D3 and any agent file is an anti-pattern; `hive-sync` (per ADR-0014) reconciles.
 
@@ -221,7 +223,7 @@ The mechanical change: each agent definition file (`scope.md`, `adr-composer.md`
 
 The reviewer's verdict comments findings against these categories using the severity taxonomy in `copilot/pr-review-rules.md` (`Block` / `Request Changes` / `Suggest`). The taxonomy, the per-category execution detail, and the per-agent authoring discipline all live in their respective agent files. This D3 binds the **categories, their questions, and the shared-upstream principle**; everything downstream of those bindings evolves in agent files without ADR ceremony.
 
-### D4 — Per-repo configuration via `.honeydrunk-review.yaml`
+### D4 - Per-repo configuration via `.honeydrunk-review.yaml`
 
 Each repo carries an optional `.honeydrunk-review.yaml` at the repo root. The v1 schema is deliberately minimal; the file's primary purpose is the **enabled/disabled gate** during phased rollout. Additional knobs land as later amendments.
 
@@ -234,74 +236,75 @@ skip_paths:                  # globs excluded from review
   - "**/*.Designer.cs"
   - "**/*.g.cs"
   - "**/generated/**"
-model: sonnet                # sonnet | opus; default sonnet, opus for high-risk-Node touches per D8
-cost_cap_per_pr_usd: 5.00    # hard ceiling; agent aborts if exceeded mid-review and posts a partial-review comment
+runner: openclaw-codex       # openclaw-codex | api-ci; default OpenClaw/Codex runner
+cost_cap_per_pr_usd: 0.00    # v1 subscription-backed default; API-backed fallback must set an explicit cap
 ```
 
 Per-path review-instruction overrides (the `path_instructions`-style surface CodeRabbit offers) are **explicitly deferred to a polish phase** (D11). v1 relies on the agent's built-in context loading and the prompt definition in `.claude/agents/review.md`. If per-path overrides earn their keep based on observed v1 gaps, they land in v2 with a documented schema; until then the configuration surface stays small.
 
 Repos without a `.honeydrunk-review.yaml` are treated as `enabled: false` during v1 phased rollout. This is the opt-in gate.
 
-### D5 — Cost guardrails are part of the build
+### D5 - Cost guardrails are part of the build
 
-The workflow ships with the following cost guardrails as default behavior (not configurable):
+The runner ships with the following cost guardrails as default behavior (not configurable):
 
-- **Hard per-PR ceiling** (`cost_cap_per_pr_usd` from D4, default $5). The agent's runtime tracks accumulated token cost; on cap exceedance, the agent posts a partial-review comment naming what was reviewed and what was skipped, and the workflow exits cleanly. Never silently fails.
+- **Subscription-backed default.** v1 uses OpenClaw/Codex through the Studio's existing subscription/session, avoiding a new per-token Anthropic/OpenAI API bill for routine PR review.
+- **API fallback is explicit.** Any future `api-ci` fallback must set a non-zero `cost_cap_per_pr_usd`, name the provider/model, and preserve the advisory posture. It is not the v1 default.
 - **Skip on draft PRs.** Already noted in D1.
 - **Skip on PRs labeled `skip-review`.** Manual escape hatch for the rare case (label-as-config, no schema change).
+- **Skip on unchanged head SHAs.** If the runner already reviewed the current PR head SHA, it does not re-run.
 - **Skip on PR-size limits when extreme.** If the diff exceeds 2000 lines (after `skip_paths` exclusions), the agent reviews only the highest-risk files (Node `.Abstractions/**`, `*.csproj` changes, anything touching `boundaries.md` or `invariants.md`) and posts a comment indicating coverage was capped.
-- **Sonnet by default.** Opus only when D8's high-risk-Node trigger fires. Model selection is the largest cost lever; defaulting to the cheaper model is non-negotiable.
-- **Cache context loads per workflow run.** Catalogs and invariants don't change within a single PR run; loaded once and reused across files in the diff.
+- **Cache context loads per runner invocation.** Catalogs and invariants don't change within a single review run; loaded once and reused across files in the diff.
 
-Expected monthly cost: $40–100 at current AI-PR cadence. Tracked in `business/context/` under review-tooling cost. Breaching $200/month for two consecutive months triggers an ADR amendment (revisit model selection, sampling rate, or cap).
+Expected incremental monthly model cost for v1 is approximately $0 beyond the existing Codex subscription/session. If API-backed fallback becomes necessary, review-tooling spend is tracked in `business/context/`; breaching $200/month for two consecutive months triggers an ADR amendment (revisit provider selection, sampling rate, or cap).
 
-### D6 — Authorship classification
+### D6 - Authorship classification
 
 Every PR declares its authorship class in the PR body, in a single line: `Authorship: <class>`. Classes:
 
-- **`human`** — written by the solo developer by hand. Default for any PR that doesn't declare otherwise.
-- **`agent-codex`** — written by Codex against a packet spec.
-- **`agent-copilot`** — written via GitHub Copilot in-IDE, accepted by the human.
-- **`agent-claude-code`** — written by Claude Code (this surface).
-- **`mixed`** — substantial contribution from both human and agent.
+- **`human`** - written by the solo developer by hand. Default for any PR that doesn't declare otherwise.
+- **`agent-codex`** - written by Codex against a packet spec.
+- **`agent-copilot`** - written via GitHub Copilot in-IDE, accepted by the human.
+- **`agent-claude-code`** - written by Claude Code (this surface).
+- **`mixed`** - substantial contribution from both human and agent.
 
 A CI check (added to `pr-core.yml`) verifies the line is present and parseable; absence fails the check as required. Codex/Copilot/Claude-Code execution surfaces are amended in follow-up packets to emit the line automatically (a small change to each surface's commit/PR-creation template).
 
 Authorship class drives D7, D8, and D9.
 
-### D7 — PR-size discipline for AI-authored changes
+### D7 - PR-size discipline for AI-authored changes
 
 Non-`human` PRs carry a soft size cap, enforced via a new `pr-size-check` job in `pr-core.yml`:
 
-- **≤ 400 changed lines** (excluding `skip_paths` from D4 and excluding test code) — normal review path.
-- **> 400, ≤ 800 changed lines** — PR body must include a `Size justification:` block. A `large-pr` label is auto-applied. The cloud reviewer's verdict must explicitly address whether the size is justified given the packet.
-- **> 800 changed lines** — CI auto-comments requesting a split or a `refine` pass. The PR can still merge if the human overrides; the override is logged.
+- **≤ 400 changed lines** (excluding `skip_paths` from D4 and excluding test code) - normal review path.
+- **> 400, ≤ 800 changed lines** — PR body must include a `Size justification:` block. A `large-pr` label is auto-applied. The Grid Review Runner's verdict must explicitly address whether the size is justified given the packet.
+- **> 800 changed lines** - CI auto-comments requesting a split or a `refine` pass. The PR can still merge if the human overrides; the override is logged.
 
-This catches PR sprawl — the most common AI-authorship failure mode — before review effort is spent on it.
+This catches PR sprawl - the most common AI-authorship failure mode - before review effort is spent on it.
 
-### D8 — Multi-perspective review for high-risk-Node PRs
+### D8 - Multi-perspective review for high-risk-Node PRs
 
 A non-`human` PR that touches a high-risk Node requires **two independent LLM-review perspectives** before merge. High-risk Nodes:
 
-- **HoneyDrunk.Kernel** — any change to `*.Abstractions` (per ADR-0035 ABI cascade rules).
-- **HoneyDrunk.Vault** — any change to secret handling, bootstrap, or rotation.
-- **HoneyDrunk.Auth** — any change to token validation, principal resolution, or the Audit emit boundary (ADR-0031).
-- **HoneyDrunk.Audit** — any change to the append-only-by-interface guarantee (ADR-0030 Phase 1).
-- **HoneyDrunk.Billing** (when standup lands per ADR-0037) — any change.
-- **Any `.Cloud` revenue Node** (per ADR-0027 D2) — any change.
+- **HoneyDrunk.Kernel** - any change to `*.Abstractions` (per ADR-0035 ABI cascade rules).
+- **HoneyDrunk.Vault** - any change to secret handling, bootstrap, or rotation.
+- **HoneyDrunk.Auth** - any change to token validation, principal resolution, or the Audit emit boundary (ADR-0031).
+- **HoneyDrunk.Audit** - any change to the append-only-by-interface guarantee (ADR-0030 Phase 1).
+- **HoneyDrunk.Billing** (when standup lands per ADR-0037) - any change.
+- **Any `.Cloud` revenue Node** (per ADR-0027 D2) - any change.
 
-The catalog of high-risk Nodes lives in `catalogs/grid-health.json` under a new field, `review_risk_class`, so the list evolves with the Grid without amending this ADR. The cloud workflow auto-detects high-risk touches and:
+The catalog of high-risk Nodes lives in `catalogs/grid-health.json` under a new field, `review_risk_class`, so the list evolves with the Grid without amending this ADR. The Grid Review Runner auto-detects high-risk touches and:
 
-- Switches the model to Opus for the first pass.
+- Switches to the highest-quality locally available Codex review profile for the first pass.
 - Triggers a second pass automatically using a deliberately contrarian prompt ("identify ways the first reviewer was wrong"). The two passes are independent sessions, posted as separate comments.
 
 Alternative escalation paths the human may invoke instead:
-- `/ultrareview` — multi-agent cloud review (billed separately).
+- `/ultrareview` - multi-agent cloud review (billed separately).
 - `refine` agent against the PR's packet + diff (skeptical-senior-dev archetype).
 
-The PR body records which path was used. Two same-agent passes is the default because it's cheapest and automatic; the alternatives exist for cases the human judges warrant deeper scrutiny.
+The PR body records which path was used. Two same-runner passes is the default because it is cheapest and automatic under the OpenClaw/Codex setup; the alternatives exist for cases the human judges warrant deeper scrutiny.
 
-### D9 — Post-merge sampling audit
+### D9 - Post-merge sampling audit
 
 Every Nth agent-authored merged PR (starting N=10, tunable via the weekly briefing per ADR-0043) is selected for a deeper post-merge audit:
 
@@ -312,76 +315,77 @@ Every Nth agent-authored merged PR (starting N=10, tunable via the weekly briefi
 
 The audit measures **the review process's own quality**, not individual bugs (the code already shipped). Findings feed back into `.claude/agents/review.md` and this ADR. Without this loop, review-process drift would surface only as production incidents.
 
-### D10 — Relationship to ADR-0011
+### D10 - Relationship to ADR-0011
 
 This ADR **amends ADR-0011** at three points:
 
-- **ADR-0011 D5 (review agent is advisory)** — preserved. The cloud-wired reviewer is also advisory; it posts a comment and a non-required check, never a blocking gate. ADR-0011's advisory rationale (agent outages don't halt merges, cost discipline on trivial PRs, symmetry with `refine`) all still apply.
-- **ADR-0011 D10 (local-only, human-invoked)** — **reversed.** The Grid-aware `review` agent now runs automatically in the cloud on every non-draft, non-`skip-review`-labeled, `enabled: true`-config'd PR. The local invocation path via Claude Code remains available (and is the right tool for offline review, ad-hoc deep dives, and pre-PR feedback), but is no longer the only invocation path.
-- **ADR-0011 D11 (rejected CodeRabbit)** — **rendered moot.** The original rationale (Copilot fills the automatic slot; the local agent fills the deeper slot) is superseded by the recognition that "automatic Grid-aware reviewer" is a distinct slot that neither Copilot nor CodeRabbit can fill. This ADR fills that slot by building, not by buying.
+- **ADR-0011 D5 (review agent is advisory)** - preserved. The automatic Grid Review Runner is also advisory; it posts a comment/status and never becomes a blocking gate. ADR-0011's advisory rationale (agent outages don't halt merges, cost discipline on trivial PRs, symmetry with `refine`) all still apply.
+- **ADR-0011 D10 (local-only, human-invoked)** - **reversed.** The Grid-aware `review` agent now runs automatically via the OpenClaw/Codex Grid Review Runner on every non-draft, non-`skip-review`-labeled, `enabled: true`-config'd PR. The local/manual invocation path remains available (and is the right tool for offline review, ad-hoc deep dives, and pre-PR feedback), but is no longer the only invocation path.
+- **ADR-0011 D11 (rejected CodeRabbit)** - **rendered moot.** The original rationale (Copilot fills the automatic slot; the local agent fills the deeper slot) is superseded by the recognition that "automatic Grid-aware reviewer" is a distinct slot that neither Copilot nor CodeRabbit can fill. This ADR fills that slot by building, not by buying.
 
 GitHub Copilot review remains enabled at the org level; its role is reduced to "generic LLM second opinion" with no specific responsibility in the pipeline. It costs nothing additional (existing subscription) and its occasional useful comment is upside, not a contract.
 
-ADR-0011's invariants 31–33 are preserved. This ADR adds two more (Consequences section).
+ADR-0011's invariants 31-33 are preserved. This ADR adds two more (Consequences section).
 
-### D11 — Phased rollout
+### D11 - Phased rollout
 
 Phased to minimize blast radius and let v1 earn its keep before polish:
 
-- **Phase 1 (Week 1–2) — MVP on one pilot repo.** Build `job-review-agent.yml`. Enable on `HoneyDrunk.Architecture` only (lowest blast radius — architecture PRs are predominantly docs/catalogs). Verify cost model and output quality. No discipline changes yet.
-- **Phase 2 (Week 3–6) — Rollout to all 12 live Nodes.** Each repo opts in via `.honeydrunk-review.yaml` with `enabled: true`. Authorship classification (D6) becomes mandatory. PR-size discipline (D7) activates with warnings only.
-- **Phase 3 (Month 2) — Discipline tightening.** High-risk-Node multi-perspective (D8) activates once `review_risk_class` lands in `catalogs/grid-health.json`. PR-size discipline moves from warnings to auto-comments at the > 800 threshold.
-- **Phase 4 (Month 3+) — Sampling audit.** D9 activates. Polish features (per-path config overrides, learnings from prior reviews, output formatter improvements) land based on observed v1–v3 gaps. Each polish feature is its own follow-up packet, not part of this ADR.
+- **Phase 1 (Week 1-2) - MVP on one pilot repo.** Build `job-review-request.yml` and the OpenClaw/Codex Grid Review Runner. Enable on `HoneyDrunk.Architecture` only (lowest blast radius - architecture PRs are predominantly docs/catalogs). Verify trigger reliability, reviewed-head-SHA tracking, output quality, and cost model. No discipline changes yet.
+- **Phase 2 (Week 3-6) - Rollout to all 12 live Nodes.** Each repo opts in via `.honeydrunk-review.yaml` with `enabled: true`. Authorship classification (D6) becomes mandatory. PR-size discipline (D7) activates with warnings only.
+- **Phase 3 (Month 2) - Discipline tightening.** High-risk-Node multi-perspective (D8) activates once `review_risk_class` lands in `catalogs/grid-health.json`. PR-size discipline moves from warnings to auto-comments at the > 800 threshold.
+- **Phase 4 (Month 3+) - Sampling audit.** D9 activates. Polish features (per-path config overrides, learnings from prior reviews, output formatter improvements) land based on observed v1-v3 gaps. Each polish feature is its own follow-up packet, not part of this ADR.
 
-Each phase is a discrete go/no-go. Phase 1's exit criterion is "the cloud-wired agent's verdicts are at least as useful as the local agent's, at acceptable cost." If that bar is missed, Phase 2 doesn't start.
+Each phase is a discrete go/no-go. Phase 1's exit criterion is "the automatic runner's verdicts are at least as useful as the local/manual agent's, the trigger path is reliable, and incremental model cost stays near zero under the subscription-backed default." If that bar is missed, Phase 2 doesn't start.
 
 ## Consequences
 
 ### Affected Nodes
 
-- **HoneyDrunk.Actions** — primary affected Node; new reusable workflow `job-review-agent.yml`; new jobs `pr-size-check` and `authorship-check` added to `pr-core.yml`; post-merge `audit-sample` labeling job added.
-- **HoneyDrunk.Architecture** (this repo) — pilot for Phase 1; new directory `generated/post-merge-audits/`; new field `review_risk_class` in `catalogs/grid-health.json`; `.honeydrunk-review.yaml` authored as the v1 reference.
-- **HoneyDrunk.Vault** — stores the Anthropic API key used by `job-review-agent.yml` (per ADR-0005); GitHub App credentials for the architecture-repo checkout token (also per ADR-0005).
-- **Every Grid repo (eventually)** — adds `.honeydrunk-review.yaml`, `large-pr` and `audit-sample` labels via the existing label-setup pattern, and the `Authorship:` line convention to PR templates.
-- **Codex execution surface** — amended in a follow-up packet to emit `Authorship: agent-codex` and the corresponding commit trailer (`Authorship:` and `Co-authored-by:`).
-- **Claude Code commit-template behavior** — amended to emit `Authorship: agent-claude-code`.
-- **`.claude/agents/review.md`** — gains the per-category execution detail implementing D3's twenty categories.
-- **`.claude/agents/scope.md`, `adr-composer.md`, `pdr-composer.md`, `refine.md`, `node-audit.md`** — each gains a section referencing D3 and the subset of categories relevant to its authoring surface, per D3's upstream-awareness clause. Updates land per ADR-0007's source-of-truth rule.
-- **Execution-surface prompts** (Codex packet-execution prompt, Copilot in-IDE custom instructions, Claude Code authoring-mode system instructions) — each surfaces the load-bearing authoring categories (Correctness, Code Quality, SOLID, Reuse, Security, Performance, Testing, AI-specific, Human Factors) per D3's upstream-awareness clause.
+- **HoneyDrunk.Actions** - primary affected Node; new reusable workflow `job-review-request.yml`; new jobs `pr-size-check` and `authorship-check` added to `pr-core.yml`; post-merge `audit-sample` labeling job added.
+- **HoneyDrunk.Architecture** (this repo) - pilot for Phase 1; OpenClaw runner configuration/runbook; new directory `generated/post-merge-audits/`; new field `review_risk_class` in `catalogs/grid-health.json`; `.honeydrunk-review.yaml` authored as the v1 reference.
+- **OpenClaw workspace/runtime** - hosts the Grid Review Runner, tracks reviewed PR head SHAs, loads local target/Architecture repos, runs Codex, and posts review comments via `gh`.
+- **HoneyDrunk.Vault** - no Anthropic API key is required for v1. It may store future GitHub App/webhook credentials if the webhook path is used; local `gh` auth is acceptable for the OpenClaw-hosted runner.
+- **Every Grid repo (eventually)** - adds `.honeydrunk-review.yaml`, `large-pr` and `audit-sample` labels via the existing label-setup pattern, and the `Authorship:` line convention to PR templates.
+- **Codex execution surface** - amended in a follow-up packet to emit `Authorship: agent-codex` and the corresponding commit trailer (`Authorship:` and `Co-authored-by:`).
+- **Claude Code commit-template behavior** - amended to emit `Authorship: agent-claude-code`.
+- **`.claude/agents/review.md`** - gains the per-category execution detail implementing D3's twenty categories.
+- **`.claude/agents/scope.md`, `adr-composer.md`, `pdr-composer.md`, `refine.md`, `node-audit.md`** - each gains a section referencing D3 and the subset of categories relevant to its authoring surface, per D3's upstream-awareness clause. Updates land per ADR-0007's source-of-truth rule.
+- **Execution-surface prompts** (Codex packet-execution prompt, Copilot in-IDE custom instructions, Claude Code authoring-mode system instructions) - each surfaces the load-bearing authoring categories (Correctness, Code Quality, SOLID, Reuse, Security, Performance, Testing, AI-specific, Human Factors) per D3's upstream-awareness clause.
 
 ### Invariants
 
 Adds two:
 
-- **Invariant: every non-draft PR on an `enabled` repo runs the cloud-wired `review` agent.** Skip is via the `skip-review` label or `enabled: false` config — both explicit, both visible.
+- **Invariant: every non-draft PR on an `enabled` repo requests an automatic Grid Review Runner pass.** Skip is via the `skip-review` label or `enabled: false` config - both explicit, both visible. Runner unavailability is surfaced as advisory/pending, not hidden.
 - **Invariant: agent-authored PRs touching a high-risk Node receive two independent LLM-review perspectives before merge.** The catalog of high-risk Nodes lives in `catalogs/grid-health.json`.
 
-ADR-0011's invariants 31–33 are preserved. Final invariant numbers for the two new invariants are assigned when the implementing work updates `constitution/invariants.md`; this ADR deliberately does not reserve specific numbers because the existing 34+ range is already contested between ADR-0012's CI/CD invariants (34–38) and ADR-0015's hosting invariants (34–36). `hive-sync` reconciles the final assignments at landing time.
+ADR-0011's invariants 31-33 are preserved. Final invariant numbers for the two new invariants are assigned when the implementing work updates `constitution/invariants.md`; this ADR deliberately does not reserve specific numbers because the existing 34+ range is already contested between ADR-0012's CI/CD invariants (34-38) and ADR-0015's hosting invariants (34-36). `hive-sync` reconciles the final assignments at landing time.
 
 ### Operational Consequences
 
-- **Per-PR cloud LLM cost is now non-zero by design.** Tracked monthly; ceiling is $200/month for two consecutive months before reconsideration. The build saves money relative to running `/ultrareview` per PR or paying CodeRabbit private-tier, but it is not free.
-- **Anthropic API key becomes load-bearing CI infrastructure.** Outage halts the cloud reviewer (workflow fails gracefully and posts a comment; PR can still merge — advisory posture). Rotation per ADR-0006.
-- **GitHub App for cross-repo checkout** — a new GitHub App scoped to read `HoneyDrunk.Architecture` is created; its installation token is fetched per workflow run. Credentials in Vault.
-- **PR diffs are sent to the Anthropic API.** Code is not customer data in any sense relevant to ADR-0036 (no tenant data is in repo diffs); the egress is acceptable and is documented here so it isn't relitigated. Private revenue Nodes (per ADR-0027 D2) are explicitly **excluded from the default v1 rollout** and require an explicit opt-in via `.honeydrunk-review.yaml`.
-- **The local Claude Code review invocation remains available** and is the right tool for offline review or pre-PR feedback. The cloud workflow does not replace it; it makes the routine case automatic.
+- **Per-PR cloud LLM API cost is avoided in v1 by design.** The default runner uses the existing OpenClaw/Codex subscription/session. API-backed execution remains a future fallback only, with explicit caps and provider choice.
+- **OpenClaw availability becomes part of the advisory review surface.** If the local runner is offline, the workflow/request path marks the review pending or unavailable and posts/records that state; PRs remain mergeable because the reviewer is advisory.
+- **GitHub App/webhook credentials are optional v1 infrastructure.** The webhook path may use a narrowly scoped GitHub App or secret; the cron/artifact path can rely on local `gh` authentication. Do not provision Anthropic API credentials for v1.
+- **PR diffs stay in the local OpenClaw/Codex path by default.** They are not sent to Anthropic API as part of v1. Any future external API fallback must be documented and explicitly enabled. Private revenue Nodes (per ADR-0027 D2) are explicitly **excluded from the default v1 rollout** and require an explicit opt-in via `.honeydrunk-review.yaml`.
+- **The manual review invocation remains available** and is the right tool for offline review or pre-PR feedback. The automatic runner does not replace it; it makes the routine case automatic.
 - **Copilot's role diminishes.** It remains enabled (zero marginal cost from the existing subscription) but no longer carries a specific responsibility in the pipeline.
 - **The `Authorship:` declaration adds friction.** For agent surfaces, one-time template change. For humans, one line per PR.
-- **Phase 1's pilot repo (Architecture)** will generate the first real cost data and the first review-quality signal. Phases 2+ are gated on that signal.
+- **Phase 1's pilot repo (Architecture)** will generate the first reliability signal, reviewed-SHA behavior, and review-quality signal. Phases 2+ are gated on that signal.
 
 ### Follow-up Work
 
-- Author `job-review-agent.yml` in HoneyDrunk.Actions (Phase 1 MVP).
+- Author `job-review-request.yml` in HoneyDrunk.Actions (Phase 1 trigger rail).
+- Author the OpenClaw/Codex Grid Review Runner runbook/config in Architecture.
 - Author `authorship-check` and `pr-size-check` jobs in `pr-core.yml`.
 - Author the `audit-sample` post-merge labeling job.
-- Create the GitHub App for cross-repo checkout; store credentials in Vault.
-- Provision the Anthropic API key in Vault; configure rotation per ADR-0006.
+- If using webhook delivery, create the narrowly scoped GitHub App/webhook credential and store it per ADR-0005/0006. Do not provision an Anthropic API key for v1.
 - Author `.honeydrunk-review.yaml` v1 schema doc in this repo (`copilot/review-config-schema.md` or similar).
 - Enable on the Architecture repo (Phase 1).
 - Add `review_risk_class` field to `catalogs/grid-health.json` schema; populate for current Nodes (deferred until Phase 3 activates).
 - Create `generated/post-merge-audits/` directory with a README.
 - Amend Codex execution surface to emit `Authorship:` + commit trailer.
-- Update `.claude/agents/review.md` with: (a) per-category execution detail implementing D3's twenty categories; (b) any clarifications needed for cloud-context execution (e.g., explicit handling of "context loaded from the architecture repo checkout").
+- Update `.claude/agents/review.md` with: (a) per-category execution detail implementing D3's twenty categories; (b) any clarifications needed for OpenClaw runner execution (e.g., explicit handling of "context loaded from the architecture repo checkout").
 - Update `.claude/agents/scope.md` with a section referencing D3 and the categories relevant to scoping (Correctness scope adherence, Reliability, Observability requirements, Security blast radius, Testing strategy, Anti-Entropy risk, AI/agent implications).
 - Update `.claude/agents/adr-composer.md` and `.claude/agents/pdr-composer.md` with sections referencing D3 and the categories relevant to architectural and product decisions (Architectural Integrity, Cost, Anti-Entropy, Security/Compliance, AI/agent implications; PDR adds extra weight on Product / Business Alignment).
 - Update `.claude/agents/refine.md` with a section referencing D3 and the rubric-completeness check it must perform on packets and dispatch plans.
@@ -397,9 +401,9 @@ ADR-0011's invariants 31–33 are preserved. Final invariant numbers for the two
 
 Considered seriously. CodeRabbit's `.coderabbit.yaml` rule system is genuinely strong for prose-shaped rules and `path_instructions` (per-glob review guidance). Free for public repos; paid for private. Zero engineering to adopt.
 
-Rejected because the requirement is **Grid awareness in the active sense** — reading `catalogs/contracts.json` at review time, walking `relationships.json` to assess downstream impact, resolving the packet via PR-body link, checking the diff against the packet's stated scope. CodeRabbit cannot do any of these; its rules are text-bound. Inlining the Grid context into `.coderabbit.yaml` is possible up to a point but degrades as the Grid grows and produces a maintenance surface (drift between the YAML inline copy and the canonical catalog files).
+Rejected because the requirement is **Grid awareness in the active sense** - reading `catalogs/contracts.json` at review time, walking `relationships.json` to assess downstream impact, resolving the packet via PR-body link, checking the diff against the packet's stated scope. CodeRabbit cannot do any of these; its rules are text-bound. Inlining the Grid context into `.coderabbit.yaml` is possible up to a point but degrades as the Grid grows and produces a maintenance surface (drift between the YAML inline copy and the canonical catalog files).
 
-The build path costs 1–2 days of engineering and $40–100/month in API spend, in exchange for a reviewer that is structurally capable of doing the job. The buy path costs $0 in engineering and $0–30/month, in exchange for a reviewer that is structurally incapable of the most important slot. The build wins on capability.
+The build path costs 1-2 days of engineering and near-zero incremental model cost under the existing OpenClaw/Codex subscription/session, in exchange for a reviewer that is structurally capable of doing the job. The buy path costs $0 in engineering and $0-30/month, in exchange for a reviewer that is structurally incapable of the most important slot. The build wins on capability.
 
 ### Continue ADR-0011 D10's local-only posture
 
@@ -413,19 +417,19 @@ Rejected. Polish before observation is over-engineering. v1's job is to prove th
 
 Considered. The argument: CodeRabbit's free public tier covers security/conventions/bugs/performance; our build covers Grid fit; total cost roughly the same; two perspectives.
 
-Rejected on the cumulative-vendor-surface argument and on the recognition that **our review agent's prompt already covers security/conventions/bugs/performance** — Grid fit is the addition, not the substitute. Building two reviewers when one with the right prompt does both is duplication. If gaps appear in v1 against the non-Grid surfaces, adding CodeRabbit later as a complementary signal is a small follow-up amendment; presuming the gap up front is decision-under-uncertainty.
+Rejected on the cumulative-vendor-surface argument and on the recognition that **our review agent's prompt already covers security/conventions/bugs/performance** - Grid fit is the addition, not the substitute. Building two reviewers when one with the right prompt does both is duplication. If gaps appear in v1 against the non-Grid surfaces, adding CodeRabbit later as a complementary signal is a small follow-up amendment; presuming the gap up front is decision-under-uncertainty.
 
-### Cloud-wire only for high-risk repos; keep local-only elsewhere
+### Automate only for high-risk repos; keep manual-only elsewhere
 
-Rejected. The discipline failure mode ("human forgets to invoke") applies equally to non-high-risk repos. The cost difference between "cloud-wire all 12 Nodes" and "cloud-wire 4 Nodes" is small ($40 vs $100/month order of magnitude); the simplicity benefit of one consistent policy is large. Phased rollout (D11) gets the same blast-radius safety without the permanent split-policy.
+Rejected. The discipline failure mode ("human forgets to invoke") applies equally to non-high-risk repos. The incremental model cost difference between "request reviews for all enabled Nodes" and "request reviews for only high-risk Nodes" is near-zero under the subscription-backed OpenClaw/Codex runner, and the simplicity benefit of one consistent policy is large. Phased rollout (D11) gets the same blast-radius safety without the permanent split-policy.
 
-### Make the cloud reviewer a required blocking check
+### Make the automatic reviewer a required blocking check
 
-Rejected. Preserves ADR-0011 D5's advisory posture. Required check on a third-party-runtime service (Anthropic API) bakes a single vendor into branch protection and strands merges on every API outage. Advisory plus weekly-briefing visibility (per ADR-0043 D5 of the briefing surfacing skipped reviews — though with auto-invocation, "skipped" is now near-zero) achieves observability without the lockout risk.
+Rejected. Preserves ADR-0011 D5's advisory posture. Required check on any AI runtime — local OpenClaw or third-party API — strands merges on runner outage, auth expiry, webhook failure, or provider outage. Advisory plus weekly-briefing visibility (per ADR-0043 D5 of the briefing surfacing skipped reviews - though with auto-invocation, "skipped" should be near-zero) achieves observability without the lockout risk.
 
-### Use only Opus to maximize review quality
+### Use only API-hosted frontier review to maximize review quality
 
-Rejected on cost. Opus is ~5× the cost of Sonnet per token at current pricing. The marginal quality gain on routine PRs does not justify the cost; Opus belongs on high-risk-Node PRs (D8) where the failure cost is high enough to warrant the spend. Default-Sonnet, escalate-to-Opus is the standard cost-quality factoring for tiered LLM use.
+Rejected on cost and operational coupling. The marginal quality gain on routine PRs does not justify turning every PR into external API spend and provider dependency. High-risk-Node PRs get a second independent pass under D8; routine PRs use the OpenClaw/Codex subscription-backed runner by default.
 
 ### Defer until first AI-authored production regression
 
