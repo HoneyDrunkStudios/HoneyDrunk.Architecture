@@ -163,5 +163,15 @@
   "generated/issue-packets/completed/standalone/2026-05-04-web-rest-consolidate-web-rest-api-result-factories.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Web.Rest/issues/15",
   "generated/issue-packets/completed/adr-0010-observe-ai-routing-phase-1/01-architecture-adr-0010-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/35",
   "generated/issue-packets/completed/adr-0010-observe-ai-routing-phase-1/03-observe-abstractions-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Observe/issues/2",
-  "generated/issue-packets/completed/adr-0010-observe-ai-routing-phase-1/04-ai-add-routing-contracts.superseded.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/3"
+  "generated/issue-packets/completed/adr-0010-observe-ai-routing-phase-1/04-ai-add-routing-contracts.superseded.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/3",
+  "generated/issue-packets/active/adr-0044-cloud-code-review/01-architecture-adr-0044-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/170",
+  "generated/issue-packets/active/adr-0044-cloud-code-review/02-architecture-create-review-agent-github-app.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/171",
+  "generated/issue-packets/active/adr-0044-cloud-code-review/03-actions-job-review-agent-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/84",
+  "generated/issue-packets/active/adr-0044-cloud-code-review/04-architecture-review-md-twenty-category-rubric.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/172",
+  "generated/issue-packets/active/adr-0044-cloud-code-review/05-architecture-review-config-schema-doc.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/173",
+  "generated/issue-packets/active/adr-0044-cloud-code-review/06-architecture-enable-review-phase-1-pilot.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/174",
+  "generated/issue-packets/active/adr-0044-cloud-code-review/07-actions-authorship-and-pr-size-checks.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/85",
+  "generated/issue-packets/active/adr-0044-cloud-code-review/08-actions-seed-review-labels-grid-wide.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/86",
+  "generated/issue-packets/active/adr-0044-cloud-code-review/09-architecture-d3-rubric-upstream-agent-rollout.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/175",
+  "generated/issue-packets/active/adr-0044-cloud-code-review/10-architecture-execution-surface-authorship-and-rubric.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/176"
 }
