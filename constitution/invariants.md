@@ -62,11 +62,17 @@ Rules that must never be violated across the HoneyDrunk Grid. Canary tests enfor
 14. **Canary tests validate cross-Node boundaries.**
     Each Node that depends on another has a `.Canary` project verifying integration assumptions.
 
-15. **Tests never depend on external services.**
-    Use InMemory providers (`InMemorySecretStore`, `InMemoryBroker`, `InMemoryQueue`) for isolation.
+15. **Unit tests and in-process integration tests never depend on external services.**
+    Use InMemory providers (`InMemorySecretStore`, `InMemoryBroker`, `InMemoryQueue`) for isolation. Container-based integration tests (Tier 2b per ADR-0047) are the scoped exception, allowed because they are local, ephemeral, and deterministic. See ADR-0047 D4.
 
 16. **No test code in runtime packages.**
     Tests live in dedicated `.Tests` or `.Canary` projects only.
+
+50. **Every Node has a `*.Tests.Unit` project; deployable Nodes also have a `*.Tests.Integration` project; HTTP-fronted Nodes also have a `*.Tests.E2E` project.**
+    A missing required test tier is a CI gate failure. See ADR-0047 D1, D11 (Proposed — this invariant takes effect when ADR-0047 is accepted).
+
+51. **Test code contains no `Thread.Sleep`.**
+    Async work waits via `await`, polling primitives with explicit timeouts, or synchronously-completing fakes. `Thread.Sleep` is a CI flakiness multiplier. Enforced by an analyzer rule on test projects. See ADR-0047 D10 (Proposed — this invariant takes effect when ADR-0047 is accepted).
 
 ## Infrastructure & Configuration Invariants
 
