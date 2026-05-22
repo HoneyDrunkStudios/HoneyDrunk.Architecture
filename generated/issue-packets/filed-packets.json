@@ -200,5 +200,11 @@
   "generated/issue-packets/active/adr-0047-testing-patterns-and-tooling/12-kernel-tier-2b-idempotency-store-cosmos-binding.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Kernel/issues/36",
   "generated/issue-packets/active/adr-0047-testing-patterns-and-tooling/13-actions-job-e2e-web-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/92",
   "generated/issue-packets/active/adr-0047-testing-patterns-and-tooling/15-actions-job-e2e-mobile-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/93",
-  "generated/issue-packets/active/adr-0047-testing-patterns-and-tooling/16-kernel-benchmarkdotnet-idempotency-store-baseline.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Kernel/issues/37"
+  "generated/issue-packets/active/adr-0047-testing-patterns-and-tooling/16-kernel-benchmarkdotnet-idempotency-store-baseline.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Kernel/issues/37",
+  "generated/issue-packets/active/adr-0034-public-package-distribution/00-architecture-adr-0034-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/208",
+  "generated/issue-packets/active/adr-0034-public-package-distribution/01-architecture-package-feeds-catalog.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/209",
+  "generated/issue-packets/active/adr-0034-public-package-distribution/02-standards-packaging-metadata-props-fragment.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Standards/issues/40",
+  "generated/issue-packets/active/adr-0034-public-package-distribution/03-actions-job-publish-nuget-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/94",
+  "generated/issue-packets/active/adr-0034-public-package-distribution/04-vault-signing-certificate-procurement.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Vault/issues/34",
+  "generated/issue-packets/active/adr-0034-public-package-distribution/05-cross-repo-adopt-packaging-metadata-and-publish-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/210"
 }
