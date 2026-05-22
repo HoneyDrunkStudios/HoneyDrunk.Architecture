@@ -615,6 +615,50 @@
     "cooldown_days": 14
   },
   {
+    "id": "honeydrunk-standards",
+    "type": "node",
+    "name": "HoneyDrunk.Standards",
+    "public_name": "HoneyDrunk.Standards",
+    "short": "Shared analyzers, EditorConfig & build tooling",
+    "description": "The Grid-wide home for shared code-quality tooling — StyleCop + EditorConfig analyzers, the test-stack Directory.Build.props defaults, coverlet.runsettings coverage templates, and build-time analyzer rules referenced by invariants 26, 27, and 58. Library-only, no deployable, no vault.",
+    "sector": "Meta",
+    "signal": "Live",
+    "cluster": "governance",
+    "energy": 0,
+    "priority": 60,
+    "flow": 30,
+    "tags": ["analyzers", "stylecop", "editorconfig", "build-tooling", "coverage", "standards", "msbuild"],
+    "links": {
+      "repo": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Standards"
+    },
+    "long_description": {
+      "overview": "HoneyDrunk.Standards is the Grid's shared build-and-quality tooling repo. It packages the StyleCop and EditorConfig analyzer set that every .NET project in the Grid references (invariant 26), the canonical solution-version conventions (invariant 27), and — per ADR-0047 — the shared test-stack Directory.Build.props fragment, the per-tier coverlet.runsettings coverage templates, and the build-time analyzer rule that fails test projects containing Thread.Sleep (invariant 51). It contains no runtime behavior, no service, and no secrets; it ships analyzer and MSBuild build-asset packages consumed at compile time by every other Node.",
+      "why_it_exists": "Without one shared tooling home, code-quality settings, analyzer versions, and test-stack defaults drift independently in every repo. Standards exists so analyzer rules, EditorConfig, and the committed test stack are defined once and consumed everywhere.",
+      "primary_audience": "Every Node repo's build — Standards is referenced by all .NET projects in the Grid for analyzers and shared build defaults.",
+      "value_props": [
+        "One canonical StyleCop + EditorConfig analyzer set referenced Grid-wide (invariant 26)",
+        "Shared test-stack Directory.Build.props defaults (xUnit + NSubstitute + AwesomeAssertions + coverlet) per ADR-0047 D2",
+        "Per-tier coverlet.runsettings coverage-threshold templates per ADR-0047 D3",
+        "Build-time analyzer rules enforcing constitution invariants (e.g. no Thread.Sleep in test code, invariant 51)",
+        "Consumed at compile time only — no runtime dependency, no deployable, no vault"
+      ],
+      "monetization_signal": "Internal tooling infrastructure.",
+      "roadmap_focus": "Host the ADR-0047 test-stack props fragment, coverage templates, and the Thread.Sleep analyzer rule. Keep the analyzer set and EditorConfig aligned with the constitution.",
+      "grid_relationship": "Referenced by every .NET Node project as a compile-time analyzer/build-assets dependency (PrivateAssets: all). No runtime dependencies; no Node depends on Standards at runtime.",
+      "integration_depth": "shallow",
+      "demo_path": "Reference HoneyDrunk.Standards analyzers on a new project → observe StyleCop + EditorConfig enforcement → add a Thread.Sleep to a test project → observe the build fail.",
+      "signal_quote": "One standard, every repo.",
+      "stability_tier": "stable",
+      "impact_vector": "code quality"
+    },
+    "foundational": false,
+    "strategy_base": 12,
+    "tier": "none",
+    "time_pressure": 0,
+    "done": true,
+    "cooldown_days": 14
+  },
+  {
     "id": "honeydrunk-studios",
     "type": "node",
     "name": "HoneyDrunk.Studios",

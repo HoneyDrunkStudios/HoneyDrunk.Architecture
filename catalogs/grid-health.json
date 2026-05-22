@@ -185,6 +185,17 @@
       "notes": "Command center. Grid-health.json, contracts.json, sector-interaction-map.md added 2026-04-12."
     },
     {
+      "id": "honeydrunk-standards",
+      "name": "HoneyDrunk.Standards",
+      "sector": "Meta",
+      "signal": "Live",
+      "version": "TBD",
+      "canary_status": "none",
+      "last_release": null,
+      "active_blockers": [],
+      "notes": "Shared analyzers, EditorConfig, and build tooling referenced Grid-wide (invariants 26, 27, 58). ADR-0047 adds the test-stack Directory.Build.props fragment, coverlet.runsettings tier templates, and the Thread.Sleep analyzer rule."
+    },
+    {
       "id": "honeydrunk-studios",
       "name": "HoneyDrunk.Studios",
       "sector": "Meta",
@@ -315,11 +326,11 @@
     }
   ],
   "summary": {
-    "total_nodes": 25,
-    "live": 12,
+    "total_nodes": 26,
+    "live": 13,
     "seed": 13,
     "canary_passing": 13,
-    "canary_none": 12,
+    "canary_none": 13,
     "canary_failing": 0,
     "blocked_nodes": [
       "honeydrunk-vault-rotation",

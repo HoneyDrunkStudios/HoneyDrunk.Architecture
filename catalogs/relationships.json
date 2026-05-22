@@ -200,6 +200,18 @@
       "consumes_detail": {}
     },
     {
+      "id": "honeydrunk-standards",
+      "consumes": [],
+      "consumed_by": [],
+      "consumed_by_planned": [],
+      "blocked_by": [],
+      "exposes": {
+        "contracts": [],
+        "packages": ["HoneyDrunk.Standards"]
+      },
+      "consumes_detail": {}
+    },
+    {
       "id": "honeydrunk-studios",
       "consumes": [],
       "consumed_by": [],
