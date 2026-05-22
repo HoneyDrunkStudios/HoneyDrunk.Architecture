@@ -227,5 +227,16 @@
   "generated/issue-packets/active/adr-0037-payment-billing/01-architecture-billing-node-catalog-and-context.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/223",
   "generated/issue-packets/active/adr-0037-payment-billing/02-architecture-provision-stripe-accounts.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/224",
   "generated/issue-packets/active/adr-0037-payment-billing/03-architecture-configure-stripe-tax-and-tier-products.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/225",
-  "generated/issue-packets/active/adr-0037-payment-billing/04-architecture-billing-node-standup-adr.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/226"
+  "generated/issue-packets/active/adr-0037-payment-billing/04-architecture-billing-node-standup-adr.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/226",
+  "generated/issue-packets/active/adr-0038-sender-identity/00-architecture-adr-0038-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/227",
+  "generated/issue-packets/active/adr-0038-sender-identity/01-architecture-sender-reputation-status-catalog-field.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/228",
+  "generated/issue-packets/active/adr-0038-sender-identity/02-architecture-esp-and-sms-provider-implementation-note.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/229",
+  "generated/issue-packets/active/adr-0038-sender-identity/03-architecture-cloudflare-sender-identity-dns-walkthrough.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/230",
+  "generated/issue-packets/active/adr-0038-sender-identity/04-architecture-reporting-inbox-and-feedback-loops.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/231",
+  "generated/issue-packets/active/adr-0038-sender-identity/05-notify-deliverability-feedback-sink-contract.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/23",
+  "generated/issue-packets/active/adr-0038-sender-identity/06-notify-default-feedback-sink-backing-and-suppression.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/24",
+  "generated/issue-packets/active/adr-0038-sender-identity/07-notify-list-unsubscribe-header-and-pii-safe-envelopes.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/25",
+  "generated/issue-packets/active/adr-0038-sender-identity/08-architecture-notify-cloud-onboarding-deliverability-doc.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/232",
+  "generated/issue-packets/active/adr-0038-sender-identity/09-architecture-esp-and-sms-provisioning-and-dkim-keys.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/233",
+  "generated/issue-packets/active/adr-0038-sender-identity/10-architecture-hive-sync-sender-reputation-drift.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/234"
 }
