@@ -8,14 +8,14 @@ dependencies: []
 adrs: ["ADR-0036"]
 accepts: ["ADR-0036"]
 wave: 1
-initiative: adr-0036-disaster-recovery-and-backup-policy
+initiative: adr-0036-disaster-recovery
 node: honeydrunk-architecture
 ---
 
 # Accept ADR-0036 — flip status, add the two DR invariants, register the initiative
 
 ## Summary
-Flip ADR-0036 (Disaster Recovery and Backup Policy) from Proposed to Accepted: update the ADR header, update the ADR index row, add the two new DR invariants ADR-0036 commits in its Consequences section to `constitution/invariants.md`, and register the `adr-0036-disaster-recovery-and-backup-policy` initiative in `initiatives/active-initiatives.md`.
+Flip ADR-0036 (Disaster Recovery and Backup Policy) from Proposed to Accepted: update the ADR header, update the ADR index row, add the two new DR invariants ADR-0036 commits in its Consequences section to `constitution/invariants.md`, and register the `adr-0036-disaster-recovery` initiative in `initiatives/active-initiatives.md`.
 
 ## Context
 ADR-0036 sets the Grid-wide disaster-recovery and backup policy: three durability tiers (T0/T1/T2) with explicit RPO/RTO targets, geo posture, and restore-drill cadence (D1); concrete Azure backup mechanics per backing slot (D2); restore drills as proof (D3); manual cross-region failover with documented runbooks (D4); tenant-scoped restore for multi-tenant Nodes (D5); a Vault bootstrap-recovery procedure that must exist before any other T0 drill (D6); backup-vs-data-subject-deletion handling (D7); a cost ceiling that makes tier promotion an ADR amendment (D8); and the documentation surface — per-Node `dr-runbook.md`, a `dr_tier` field in `catalogs/grid-health.json`, and `generated/restore-drills/` (D9).
@@ -28,7 +28,7 @@ This is a docs/governance-only packet. No code, no workflow, no .NET project.
 - `adrs/ADR-0036-disaster-recovery-and-backup-policy.md` — flip `**Status:** Proposed` to `**Status:** Accepted`.
 - `adrs/README.md` — update the ADR-0036 row Status column to Accepted.
 - `constitution/invariants.md` — add the two new DR invariants ADR-0036 commits (see Proposed Implementation for exact text) as invariants **60** and **61** (pre-reserved numbers — see Constraints).
-- `initiatives/active-initiatives.md` — register the `adr-0036-disaster-recovery-and-backup-policy` initiative with the packet checklist for this folder.
+- `initiatives/active-initiatives.md` — register the `adr-0036-disaster-recovery` initiative with the packet checklist for this folder.
 
 ## Proposed Implementation
 1. Edit the ADR-0036 header: `**Status:** Proposed` → `**Status:** Accepted`.
@@ -57,7 +57,7 @@ None. This packet touches only Markdown governance files; no .NET project is cre
 - [ ] ADR-0036 header reads `**Status:** Accepted`
 - [ ] The ADR-0036 row in `adrs/README.md` reflects Accepted
 - [ ] `constitution/invariants.md` carries the two new DR invariants (`dr_tier` assignment is mandatory; missed drill freezes tier-affecting onboarding), numbered **60** and **61**, each citing ADR-0036
-- [ ] `initiatives/active-initiatives.md` registers the `adr-0036-disaster-recovery-and-backup-policy` initiative with a packet checklist
+- [ ] `initiatives/active-initiatives.md` registers the `adr-0036-disaster-recovery` initiative with a packet checklist
 - [ ] No catalog schema change in this packet (`grid-health.json`'s `dr_tier` field is added in packet 01)
 
 ## Human Prerequisites

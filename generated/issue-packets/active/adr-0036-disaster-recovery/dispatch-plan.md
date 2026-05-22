@@ -142,7 +142,7 @@ Verify a wave landed by checking The Hive for the new items + their blocked-by c
 
 ## Archival
 
-Per ADR-0008 D10, when every **filed and in-scope** packet in this initiative reaches `Done` on the org Project board and the wave exit criteria are met, the entire `active/adr-0036-disaster-recovery-and-backup-policy/` folder moves to `archive/adr-0036-disaster-recovery-and-backup-policy/` in a single commit. Partial archival is forbidden.
+Per ADR-0008 D10, when every **filed and in-scope** packet in this initiative reaches `Done` on the org Project board and the wave exit criteria are met, the entire `active/adr-0036-disaster-recovery/` folder moves to `archive/adr-0036-disaster-recovery/` in a single commit. Partial archival is forbidden.
 
 The `Actor=Human` packets (04, 05, 07a, 07b) are in-scope and NOT exempt from the archival gate — they have a concrete completion path (ADR-0036's 90-day first-drill mandate). The initiative's archival waits for them to be `Done`.
 

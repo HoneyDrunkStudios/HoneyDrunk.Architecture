@@ -8,7 +8,7 @@ dependencies: ["packet:06"]
 adrs: ["ADR-0036", "ADR-0031"]
 accepts: ["ADR-0036"]
 wave: 3
-initiative: adr-0036-disaster-recovery-and-backup-policy
+initiative: adr-0036-disaster-recovery
 node: honeydrunk-audit
 ---
 
