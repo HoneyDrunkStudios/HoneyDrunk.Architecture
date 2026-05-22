@@ -317,6 +317,15 @@ These are known gaps in the ADR-0011 pipeline that have been identified but not 
 
 **Impact until resolved:** private repos receive only tier-1 static analysis (HoneyDrunk.Standards analyzers) plus the review agent's architectural review. Quantitative metrics (cognitive complexity, duplication) are not measured on private repos. Acceptable as long as private repos remain a small exception and are primarily exercised by the solo dev rather than agents.
 
+## Amended by ADR-0047
+
+ADR-0047 (Testing Patterns and Tooling) closes two of this ADR's unresolved testing gaps:
+
+- **Gap 1 - Integration tests:** closed by ADR-0047 D4 and D11. D4 commits the WebApplicationFactory + Testcontainers split (Tier 2a in-process integration tests and Tier 2b container-backed real-dependency tests); D11 commits the reusable CI jobs that run those tiers.
+- **Gap 3 - E2E tests:** closed by ADR-0047 D5, D6, and D11. D5 commits Playwright (.NET binding) for web E2E; D6 commits Maestro for mobile E2E; D11 commits the reusable CI jobs.
+
+ADR-0011's **Gap 2** (SonarCloud wiring), **Gap 4** (quantitative cost-discipline tooling), and **Gap 5** (SonarCloud coverage on private repos) remain open. ADR-0047 does not change ADR-0011's status.
+
 ## Alternatives Considered
 
 ### Ad-hoc review without formalization

@@ -69,10 +69,10 @@ Rules that must never be violated across the HoneyDrunk Grid. Canary tests enfor
     Tests live in dedicated `.Tests` or `.Canary` projects only.
 
 50. **Every Node has a `*.Tests.Unit` project; deployable Nodes also have a `*.Tests.Integration` project; HTTP-fronted Nodes also have a `*.Tests.E2E` project.**
-    A missing required test tier is a CI gate failure. See ADR-0047 D1, D11 (Proposed — this invariant takes effect when ADR-0047 is accepted).
+    A missing required test tier is a CI gate failure. See ADR-0047 D1, D11.
 
 51. **Test code contains no `Thread.Sleep`.**
-    Async work waits via `await`, polling primitives with explicit timeouts, or synchronously-completing fakes. `Thread.Sleep` is a CI flakiness multiplier. Enforced by an analyzer rule on test projects. See ADR-0047 D10 (Proposed — this invariant takes effect when ADR-0047 is accepted).
+    Async work waits via `await`, polling primitives with explicit timeouts, or synchronously-completing fakes. `Thread.Sleep` is a CI flakiness multiplier. Enforced by an analyzer rule on test projects. See ADR-0047 D10.
 
 ## Infrastructure & Configuration Invariants
 
