@@ -15,10 +15,10 @@ node: honeydrunk-architecture
 # Add the review_risk_class field to catalogs/grid-health.json
 
 ## Summary
-Add a new `review_risk_class` field to the per-Node entries in `catalogs/grid-health.json` and populate it, so the cloud reviewer can auto-detect high-risk-Node touches and trigger D8's multi-perspective review without amending the ADR each time the high-risk list changes.
+Add a new `review_risk_class` field to the per-Node entries in `catalogs/grid-health.json` and populate it, so the Grid Review Runner can auto-detect high-risk-Node touches and trigger D8's multi-perspective review without amending the ADR each time the high-risk list changes.
 
 ## Context
-ADR-0044 D8 requires a non-`human` PR touching a high-risk Node to receive two independent LLM-review perspectives before merge. The ADR deliberately keeps the catalog of high-risk Nodes in `catalogs/grid-health.json` under a new `review_risk_class` field "so the list evolves with the Grid without amending this ADR." This is the data dependency Phase 3 (D8 activation, packet 14) is gated on — `job-review-agent.yml` reads this field to decide whether to escalate to Opus + a contrarian second pass. This packet adds and populates the field; packet 14 wires the workflow to consume it.
+ADR-0044 D8 requires a non-`human` PR touching a high-risk Node to receive two independent LLM-review perspectives before merge. The ADR deliberately keeps the catalog of high-risk Nodes in `catalogs/grid-health.json` under a new `review_risk_class` field "so the list evolves with the Grid without amending this ADR." This is the data dependency Phase 3 (D8 activation, packet 14) is gated on — the Grid Review Runner reads this field to decide whether to run a higher-attention first pass plus a contrarian second pass. This packet adds and populates the field; packet 14 wires the workflow to consume it.
 
 ## Scope
 - `catalogs/grid-health.json` — add `review_risk_class` to every Node entry and populate.
@@ -80,7 +80,7 @@ None. Pure Architecture-repo catalog edit.
 
 ## Referenced ADR Decisions
 
-**ADR-0044 D8** — High-risk Nodes (Kernel `*.Abstractions`, Vault secret handling, Auth token/principal/Audit-boundary, Audit append-only guarantee, Billing any change, any `.Cloud` revenue Node any change). The catalog of high-risk Nodes lives in `catalogs/grid-health.json` under `review_risk_class` so the list evolves without amending the ADR. The workflow auto-detects high-risk touches and escalates to Opus + a contrarian second pass.
+**ADR-0044 D8** — High-risk Nodes (Kernel `*.Abstractions`, Vault secret handling, Auth token/principal/Audit-boundary, Audit append-only guarantee, Billing any change, any `.Cloud` revenue Node any change). The catalog of high-risk Nodes lives in `catalogs/grid-health.json` under `review_risk_class` so the list evolves without amending the ADR. The runner auto-detects high-risk touches and escalates to a higher-attention first pass plus a contrarian second pass.
 **ADR-0030** — Audit append-only-by-interface guarantee (Phase 1).
 **ADR-0031** — Auth/Audit emit boundary.
 **ADR-0035** — `*.Abstractions` ABI cascade rules.
@@ -101,7 +101,7 @@ None. Pure Architecture-repo catalog edit.
 **Target:** `HoneyDrunk.Architecture`, branch from `main`.
 
 **Context:**
-- Goal: Provide the data the cloud reviewer reads to decide D8 multi-perspective escalation. Phase 3 (packet 14) is gated on this field.
+- Goal: Provide the data the Grid Review Runner reads to decide D8 multi-perspective escalation. Phase 3 (packet 14) is gated on this field.
 - Feature: ADR-0044 Cloud Code Review rollout, Phase 3.
 - ADRs: ADR-0044 (D8), ADR-0030, ADR-0031, ADR-0035, ADR-0037.
 
@@ -116,4 +116,4 @@ None. Pure Architecture-repo catalog edit.
 **Key Files:**
 - `catalogs/grid-health.json`
 
-**Contracts:** Defines the `review_risk_class` field consumed by `job-review-agent.yml` (packet 14).
+**Contracts:** Defines the `review_risk_class` field consumed by the Grid Review Runner / `job-review-request.yml` path (packet 14).
