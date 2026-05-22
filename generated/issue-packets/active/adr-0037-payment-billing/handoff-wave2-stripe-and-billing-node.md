@@ -11,7 +11,7 @@ Packet 00 merged. As a result:
   1. **Card data never enters the Grid.** All card capture is Stripe-hosted (Checkout / Elements); the Grid stores only Stripe identifiers and `payment_method_id`. PCI SAQ A scope. Custom card-handling UI is forbidden.
   2. **No Node subscribes to Stripe webhooks directly.** Webhooks land in a single `HoneyDrunk.Billing.Webhooks` endpoint per environment; domain events flow on the Service Bus default topic per ADR-0028.
   3. **Stripe test-mode keys never reach production.** Test-mode keys bind to `dev`/`staging` only; a hard CI gate on the Vault key-environment binding.
-- The `adr-0037-payment-and-billing-integration` initiative is registered in `initiatives/active-initiatives.md`.
+- The `adr-0037-payment-billing` initiative is registered in `initiatives/active-initiatives.md`.
 
 ## Wave 2 — two packets, parallel, independent
 

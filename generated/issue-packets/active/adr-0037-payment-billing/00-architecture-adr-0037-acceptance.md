@@ -8,14 +8,14 @@ dependencies: []
 adrs: ["ADR-0037"]
 accepts: ["ADR-0037"]
 wave: 1
-initiative: adr-0037-payment-and-billing-integration
+initiative: adr-0037-payment-billing
 node: honeydrunk-architecture
 ---
 
 # Accept ADR-0037 — flip status, add the three billing invariants, register the initiative
 
 ## Summary
-Flip ADR-0037 (Payment and Billing Integration) from Proposed to Accepted: update the ADR header, update the ADR index row in `adrs/README.md`, add the three new billing invariants ADR-0037 commits in its Consequences/Invariants section to `constitution/invariants.md`, and register the `adr-0037-payment-and-billing-integration` initiative in `initiatives/active-initiatives.md`.
+Flip ADR-0037 (Payment and Billing Integration) from Proposed to Accepted: update the ADR header, update the ADR index row in `adrs/README.md`, add the three new billing invariants ADR-0037 commits in its Consequences/Invariants section to `constitution/invariants.md`, and register the `adr-0037-payment-billing` initiative in `initiatives/active-initiatives.md`.
 
 ## Context
 ADR-0037 sets the Grid-wide payment-and-billing policy: Stripe as the sole processor for every product, B2B and B2C, covering Billing, Tax, Checkout, and Customer Portal with no Stripe Connect (D1); the billing-event flow `IBillingEventEmitter` → append-only buffer Node → Stripe Meter Events, idempotent end-to-end per ADR-0042 (D2); the subscription model — Notify Cloud Free/Pro/Scale tiers with usage overage, single monthly/annual prices per consumer app, no free trials at v1 (D3); a single Stripe webhook endpoint per environment in `HoneyDrunk.Billing.Webhooks` emitting domain events onto the Service Bus default topic per ADR-0028 (D4); the Stripe-customer ↔ Grid-tenant/principal identity binding (D5); Stripe Tax on from day one with nexus tracking and no hardcoded rates (D6); PCI scope minimized to SAQ A by never letting a card number enter the Grid (D7); the mobile in-app-purchase carve-out — platform IAP for app-store-mandated flows, Stripe for web (D8); the `HoneyDrunk.Billing` Node placement in the Ops sector with its package families (D9); and test-mode / synthetic-tenant handling (D10).
@@ -30,7 +30,7 @@ This is a docs/governance-only packet. No code, no workflow, no .NET project.
 - `adrs/ADR-0037-payment-and-billing-integration.md` — flip `**Status:** Proposed` to `**Status:** Accepted`.
 - `adrs/README.md` — update the ADR-0037 row Status column to Accepted.
 - `constitution/invariants.md` — add the three new billing invariants ADR-0037 commits (see Proposed Implementation for exact text). They take the pre-reserved numbers **62, 63, 64**.
-- `initiatives/active-initiatives.md` — register the `adr-0037-payment-and-billing-integration` initiative with the packet checklist for this folder.
+- `initiatives/active-initiatives.md` — register the `adr-0037-payment-billing` initiative with the packet checklist for this folder.
 
 ## Proposed Implementation
 1. Edit the ADR-0037 header: `**Status:** Proposed` → `**Status:** Accepted`.
@@ -60,7 +60,7 @@ None. This packet touches only Markdown governance files; no .NET project is cre
 - [ ] ADR-0037 header reads `**Status:** Accepted`
 - [ ] The ADR-0037 row in `adrs/README.md` reflects Accepted
 - [ ] `constitution/invariants.md` carries the three new billing invariants (card data never enters the Grid; no Node subscribes to Stripe webhooks directly; Stripe test-mode keys never reach production), numbered 62, 63, 64, each citing ADR-0037
-- [ ] `initiatives/active-initiatives.md` registers the `adr-0037-payment-and-billing-integration` initiative with a packet checklist
+- [ ] `initiatives/active-initiatives.md` registers the `adr-0037-payment-billing` initiative with a packet checklist
 - [ ] No catalog schema change in this packet (the `HoneyDrunk.Billing` Node catalog stubs are added in packet 01)
 
 ## Human Prerequisites

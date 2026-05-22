@@ -7,7 +7,7 @@ labels: ["chore", "tier-2", "ops", "infrastructure", "human-only", "adr-0037", "
 dependencies: ["packet:02"]
 adrs: ["ADR-0037"]
 wave: 3
-initiative: adr-0037-payment-and-billing-integration
+initiative: adr-0037-payment-billing
 node: honeydrunk-architecture
 ---
 

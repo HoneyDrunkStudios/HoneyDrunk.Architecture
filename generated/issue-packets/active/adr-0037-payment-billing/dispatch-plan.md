@@ -117,7 +117,7 @@ Verify a wave landed by checking The Hive for the new items + their blocked-by c
 
 ## Archival
 
-Per ADR-0008 D10, when every filed and in-scope packet in this initiative reaches `Done` on the org Project board and the wave exit criteria are met, the entire `active/adr-0037-payment-and-billing-integration/` folder moves to `archive/adr-0037-payment-and-billing-integration/` in a single commit. Partial archival is forbidden.
+Per ADR-0008 D10, when every filed and in-scope packet in this initiative reaches `Done` on the org Project board and the wave exit criteria are met, the entire `active/adr-0037-payment-billing/` folder moves to `archive/adr-0037-payment-billing/` in a single commit. Partial archival is forbidden.
 
 The two `Actor=Human` Stripe packets (02, 03) are in-scope and not exempt from the archival gate. Note that packet 02 may legitimately sit in a not-yet-started state for an extended period if the operator elects to wait for BDR-0001 — the initiative's archival waits for it.
 
