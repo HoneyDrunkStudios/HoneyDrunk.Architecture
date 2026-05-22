@@ -206,5 +206,10 @@
   "generated/issue-packets/active/adr-0034-public-package-distribution/02-standards-packaging-metadata-props-fragment.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Standards/issues/40",
   "generated/issue-packets/active/adr-0034-public-package-distribution/03-actions-job-publish-nuget-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/94",
   "generated/issue-packets/active/adr-0034-public-package-distribution/04-vault-signing-certificate-procurement.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Vault/issues/34",
-  "generated/issue-packets/active/adr-0034-public-package-distribution/05-cross-repo-adopt-packaging-metadata-and-publish-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/210"
+  "generated/issue-packets/active/adr-0034-public-package-distribution/05-cross-repo-adopt-packaging-metadata-and-publish-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/210",
+  "generated/issue-packets/active/adr-0035-abstractions-versioning/00-architecture-adr-0035-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/211",
+  "generated/issue-packets/active/adr-0035-abstractions-versioning/01-standards-public-api-analyzers-props-fragment.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Standards/issues/42",
+  "generated/issue-packets/active/adr-0035-abstractions-versioning/02-architecture-abstractions-cascade-initiative-template.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/212",
+  "generated/issue-packets/active/adr-0035-abstractions-versioning/03-actions-job-api-diff-and-obsolete-audit-workflows.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/95",
+  "generated/issue-packets/active/adr-0035-abstractions-versioning/04-cross-repo-public-api-baseline-and-api-diff-wiring.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/213"
 }
