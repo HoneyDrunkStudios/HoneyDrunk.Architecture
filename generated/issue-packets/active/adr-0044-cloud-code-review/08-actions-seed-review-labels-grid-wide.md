@@ -22,14 +22,14 @@ Add the `large-pr`, `audit-sample`, and `skip-review` labels to the labels-as-co
 **Family:** manual / labels-as-code
 
 ## Motivation
-ADR-0044's discipline machinery references three labels that must exist on every repo before the corresponding checks can apply them: `large-pr` (D7, auto-applied to PRs > 400 lines), `audit-sample` (D9, auto-applied to the Nth merged agent PR), and `skip-review` (D5, the manual escape hatch the cloud reviewer honors). The ADR-0011 rollout already established a labels-as-code config and a `seed-labels-fanout.yml` fan-out workflow with a scoped PAT — this packet extends that config and re-runs the fan-out. Without the labels in place, `pr-size-check` (packet 07) and the `audit-sample` job (packet 18) auto-apply labels that do not exist.
+ADR-0044's discipline machinery references three labels that must exist on every repo before the corresponding checks can apply them: `large-pr` (D7, auto-applied to PRs > 400 lines), `audit-sample` (D9, auto-applied to the Nth merged agent PR), and `skip-review` (D5, the manual escape hatch the cloud reviewer honors). The ADR-0011 rollout already established a labels-as-code config and a `seed-labels-fanout.yml` fan-out workflow with a scoped PAT — this packet extends that config and re-runs the fan-out. Without the labels in place, `pr-size-check` (packet 07) and the `audit-sample` job (packet 16) auto-apply labels that do not exist.
 
 ## Proposed Change
 - Add three label definitions to the labels-as-code config:
   - `large-pr` — applied to non-`human` PRs of 400-800 changed lines (D7).
   - `audit-sample` — applied at merge time to the Nth agent-authored PR selected for post-merge audit (D9).
   - `skip-review` — manual escape hatch; the cloud reviewer skips PRs carrying it (D5).
-- Re-run `seed-labels-fanout.yml` to apply the three labels across every Grid repo (the same repo set the ADR-0011 fan-out used; include all 12 live Nodes plus Architecture).
+- Re-run `seed-labels-fanout.yml` to apply the three labels across every Grid repo (the same repo set the ADR-0011 fan-out used — all 12 live Nodes, which already includes Architecture and Studios).
 - Pick colors/descriptions consistent with the existing label palette.
 
 ## Consumer Impact

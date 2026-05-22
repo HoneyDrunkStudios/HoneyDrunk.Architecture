@@ -47,7 +47,9 @@ Because some triggers are *path-scoped* (Kernel only on `*.Abstractions`, Vault 
   "rationale": "ADR-0035 ABI cascade — Abstractions changes ripple Grid-wide"
 }
 ```
-For Nodes that are high-risk on *any* change, use `"trigger": "any"` and omit `high_risk_paths`. For standard Nodes, `"class": "standard"`. Confirm the exact shape against the existing `grid-health.json` conventions before authoring — keep it consistent with the file's existing field style.
+For Nodes that are high-risk on *any* change, use `"trigger": "any"` and omit `high_risk_paths`. For standard Nodes, `"class": "standard"`.
+
+**Schema-alignment check (verified at scoping time, 2026-05-22).** A real `catalogs/grid-health.json` Node entry currently carries flat scalar fields (`id`, `name`, `sector`, `signal`, `version`, `canary_status`, `last_release`, `notes`) plus one array field (`active_blockers`). The file has `schema_version: "1.0"` in its `_meta` block and uses `snake_case` keys throughout. The `review_risk_class` object proposed here is consistent with that style: `snake_case` keys, additive, sitting alongside the existing per-Node fields. It is the **first nested-object field** in a per-Node entry, so the execution agent must (a) bump `_meta.schema_version` (e.g. to `1.1`) since a structural field is added, and (b) confirm no `grid-health.json`-reading tooling assumes a flat-only Node shape before landing. Keep the key style `snake_case` and the object minimal; do not restructure existing fields.
 
 ## Affected Files
 - `catalogs/grid-health.json`
@@ -65,7 +67,8 @@ None. This packet edits a JSON catalog; no .NET project is created or modified.
 - [ ] The six high-risk Nodes from ADR-0044 D8 are marked appropriately, with path-scoped triggers where the ADR specifies them (Kernel `*.Abstractions`, Vault secret-handling, Auth token/principal/Audit-boundary)
 - [ ] Nodes that are high-risk on any change use `"trigger": "any"`; standard Nodes use `"class": "standard"`
 - [ ] HoneyDrunk.Billing is noted as a forward high-risk entry without fabricating a Node row (it is not yet in `nodes.json`)
-- [ ] The field shape is consistent with the existing `grid-health.json` conventions
+- [ ] The field shape is consistent with the existing `grid-health.json` conventions (`snake_case` keys; additive; existing fields untouched)
+- [ ] `_meta.schema_version` is bumped (it is currently `1.0`) since a nested-object field is structurally new
 - [ ] The schema doc/README documents the new field if such a doc exists
 - [ ] The change is additive — no existing field altered
 

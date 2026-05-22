@@ -2,11 +2,11 @@
 
 **Date:** 2026-05-22 (initial scope).
 **Trigger:** ADR-0044 (Grid-Aware Cloud Code Review and AI-Authored PR Discipline) — Proposed 2026-05-21; scoped 2026-05-22 ahead of formal acceptance (priority #3 on `current-focus.md`).
-**Type:** Multi-repo (HoneyDrunk.Architecture + HoneyDrunk.Actions + the 12 live Nodes).
+**Type:** Multi-repo (HoneyDrunk.Architecture + HoneyDrunk.Actions + the 10 remaining live .NET Nodes via packet 11's fan-out).
 **Sector:** Meta (governance + agent definitions) + Ops (CI workflows in HoneyDrunk.Actions).
 **Status:** **Draft — pending ADR-0044 acceptance.** These packets are NOT to be filed as GitHub Issues until ADR-0044 is Accepted (packet 01 is the mechanically-coupled acceptance flip). Filing is the `file-issues` agent's job, post-acceptance.
 **Site sync required:** No. ADR-0044 produces CI tooling and governance docs; nothing public-facing on the Studios site today.
-**Rollback plan:** Every Architecture-repo packet (01, 02, 04, 05, 06, 09, 10, 12, 13, 15, 17) is docs/catalog/YAML and reverts cleanly via `git revert`. The Actions-repo workflow packets (03, 07, 08, 14, 16) are additive — `job-review-agent.yml`, `job-audit-sample.yml`, and the new `pr-core.yml` jobs are reverted by removing them; the `.honeydrunk-review.yaml` enabled gate means the reviewer goes silent the moment a repo's config is reverted to `enabled: false`. The phased rollout (D11) is itself the blast-radius control — each phase is a discrete go/no-go.
+**Rollback plan:** Every Architecture-repo packet (01, 02, 04, 05, 06, 09, 10, 12, 13, 15, 17) is docs/catalog/YAML and reverts cleanly via `git revert`. The Actions-repo workflow packets (03, 07, 08, 14, 16) are additive — `job-review-agent.yml`, `job-audit-sample.yml`, and the new `pr-core.yml` jobs are reverted by removing them. Packet 11 (the 10-Node cross-repo fan-out) reverts per repo: setting a Node's `.honeydrunk-review.yaml` to `enabled: false` (or removing it) makes the reviewer go silent on that repo immediately — the enabled gate is the per-repo kill switch. The phased rollout (D11) is itself the blast-radius control — each phase is a discrete go/no-go.
 
 ## Summary
 
@@ -38,7 +38,7 @@ Packet 01 first (the acceptance flip). Then 02-05 in parallel; 06 after 03/04/05
 
 **Wave 1 exit criterion (Phase 1 go/no-go):** the cloud-wired reviewer's verdicts on real Architecture-repo PRs are at least as useful as the local `review` agent's, at acceptable cost ($40-100/month Grid-wide projection holding). **If this bar is missed, Wave 2 does not start.**
 
-### Wave 2 — Phase 2: Rollout to the 12 live Nodes + discipline foundations
+### Wave 2 — Phase 2: Rollout to the 10 remaining live .NET Nodes + discipline foundations
 
 Runs after the Phase-1 go decision. Packets 07-12.
 
@@ -50,12 +50,12 @@ Runs after the Phase-1 go decision. Packets 07-12.
   - Blocked by: `packet:04` (**hard** — same category names/numbering).
 - [ ] `HoneyDrunk.Architecture`: Amend execution-surface prompts — emit `Authorship:` line + surface the D3 authoring checklist — [`10-architecture-execution-surface-authorship-and-rubric.md`](10-architecture-execution-surface-authorship-and-rubric.md)
   - Blocked by: `packet:04` (hard), `packet:07` (soft).
-- [ ] 12 live Nodes: Enable the cloud reviewer on the 12 live Nodes — [`11-cross-repo-enable-review-twelve-nodes.md`](11-cross-repo-enable-review-twelve-nodes.md)
-  - Blocked by: `packet:06` (**hard** — Phase-1 go), `packet:07` (hard), `packet:08` (hard), `packet:10` (soft).
+- [ ] 10 live .NET Nodes (cross-repo, tracked from `HoneyDrunk.Architecture`): Enable the cloud reviewer on the 10 remaining live .NET Nodes — [`11-cross-repo-enable-review-ten-nodes.md`](11-cross-repo-enable-review-ten-nodes.md)
+  - Blocked by: `packet:06` (**hard** — Phase-1 go), `packet:07` (hard), `packet:08` (hard), `packet:09` (soft), `packet:10` (soft).
 - [ ] `HoneyDrunk.Architecture`: Verify `pr-review-rules.md` severity coverage across all twenty D3 categories — [`12-architecture-pr-review-rules-severity-coverage.md`](12-architecture-pr-review-rules-severity-coverage.md)
   - Blocked by: `packet:04` (hard).
 
-**Wave 2 exit criterion (Phase 2 go/no-go):** all 12 live Nodes enabled (private revenue Nodes excluded); authorship classification mandatory and passing across the Grid; PR-size discipline visible (warnings-only); the D3 rubric present in all seven agent files; Phase-2 review quality reviewed before Phase 3.
+**Wave 2 exit criterion (Phase 2 go/no-go):** all 10 fan-out Nodes enabled (Architecture already piloted; Studios and Observe excluded; private revenue Nodes excluded); authorship classification mandatory and passing across the Grid; PR-size discipline visible (warnings-only); the D3 rubric present in all seven agent files; Phase-2 review quality reviewed before Phase 3.
 
 ### Wave 3 — Phase 3: Discipline tightening
 
@@ -113,7 +113,7 @@ gh issue create --repo HoneyDrunkStudios/HoneyDrunk.Actions --title "Add authors
 gh issue create --repo HoneyDrunkStudios/HoneyDrunk.Actions --title "Seed large-pr, audit-sample, skip-review labels Grid-wide" --body-file $PACKETS/08-actions-seed-review-labels-grid-wide.md --label "chore,tier-1,ops,adr-0044,wave-2"
 gh issue create --repo HoneyDrunkStudios/HoneyDrunk.Architecture --title "Roll the D3 rubric into the upstream authoring agents" --body-file $PACKETS/09-architecture-d3-rubric-upstream-agent-rollout.md --label "docs,tier-2,meta,adr-0044,wave-2"
 gh issue create --repo HoneyDrunkStudios/HoneyDrunk.Architecture --title "Amend execution-surface prompts — Authorship line + D3 authoring checklist" --body-file $PACKETS/10-architecture-execution-surface-authorship-and-rubric.md --label "docs,tier-2,meta,adr-0044,wave-2"
-# Packet 11 is a multi-repo unit — file as 12 sibling issues or one tracking issue with 12 sub-tasks (dispatch decides).
+# Packet 11 is a multi-repo unit — file as a tracking issue in HoneyDrunk.Architecture with 10 child issues (one per .NET Node in its target_repos), or as 10 sibling issues (dispatch decides). Observe/Architecture/Studios are NOT in the fan-out.
 gh issue create --repo HoneyDrunkStudios/HoneyDrunk.Architecture --title "Verify pr-review-rules.md severity coverage across all twenty D3 categories" --body-file $PACKETS/12-architecture-pr-review-rules-severity-coverage.md --label "docs,tier-1,meta,adr-0044,wave-2"
 
 # Wave 3 — Phase 3
@@ -130,7 +130,7 @@ gh issue create --repo HoneyDrunkStudios/HoneyDrunk.Architecture --title "Wire h
 
 For each issue: `gh project item-add 4 --owner HoneyDrunkStudios --url <ISSUE_URL>`, then set Status, Wave (1-4), Initiative=`adr-0044-cloud-code-review`, Node, Tier, Actor. **Actor=Human** for packet 02 only (it carries the `human-only` label); every other packet is `Actor=Agent` (packets with substantial Human Prerequisites — 03, 06, 11, 16 — keep `Actor=Agent` because the code/doc critical path is delegable).
 
-Blocking relationships to wire via `addBlockedBy` (16 edges; packet 11's 12-repo filing wires its own four blockers per child issue):
+Blocking relationships to wire via `addBlockedBy` (30 edges across packets 02-17; packet 11's five blockers are wired on its tracking issue, and each of its 10 child issues inherits them):
 
 - `02` ← `01` (soft)
 - `03` ← `01` (soft), `03` ← `02` (hard)
@@ -141,12 +141,12 @@ Blocking relationships to wire via `addBlockedBy` (16 edges; packet 11's 12-repo
 - `08` ← `07` (soft)
 - `09` ← `04` (hard)
 - `10` ← `04` (hard), `10` ← `07` (soft)
-- `11` ← `06` (hard), `11` ← `07` (hard), `11` ← `08` (hard), `11` ← `10` (soft)
+- `11` ← `06` (hard), `11` ← `07` (hard), `11` ← `08` (hard), `11` ← `09` (soft), `11` ← `10` (soft)
 - `12` ← `04` (hard)
 - `13` ← `01` (soft)
 - `14` ← `03` (hard), `14` ← `13` (hard)
 - `15` ← `01` (soft)
-- `16` ← `03` (soft), `16` ← `08` (hard), `16` ← `15` (hard)
+- `16` ← `02` (hard), `16` ← `03` (soft), `16` ← `08` (hard), `16` ← `15` (hard)
 - `17` ← `04` (hard), `17` ← `09` (hard)
 
 ## Notes
@@ -154,8 +154,9 @@ Blocking relationships to wire via `addBlockedBy` (16 edges; packet 11's 12-repo
 - **Acceptance precedes flip.** ADR-0044 stays Proposed until packet 01's PR merges. These packets are draft/pending-acceptance — not filed as Issues until then.
 - **Phases are go/no-go gates.** Per ADR-0044 D11, each wave's exit criterion gates the next. Phase 1's miss stops the rollout — packet 06 carries the Phase-1 decision.
 - **D8 is data-gated.** D8 multi-perspective review (packet 14) cannot activate until `review_risk_class` lands (packet 13). The dispatch order reflects this hard dependency.
-- **Packet 11 is a 12-repo unit.** It is the one multi-repo packet; file as 12 sibling issues or a tracking issue with sub-tasks. Each per-Node work unit is small and identical.
-- **GitHub App permission widening.** Packet 02 provisions the App with Contents: Read on Architecture. Packet 16's audit-commit step needs Contents: Write — flagged in packet 16's Human Prerequisites.
+- **Packet 11 is a 10-repo unit.** It is the one multi-repo packet, filed as a coordination/tracking issue in `HoneyDrunk.Architecture` with 10 child issues (or 10 sibling issues). In scope: the 10 .NET Node repos in its `target_repos` frontmatter. Explicitly OUT: `HoneyDrunk.Observe` (Seed, not a live Node), `HoneyDrunk.Architecture` (already enabled in Phase 1), `HoneyDrunk.Studios` (TypeScript, onboarded separately). The Grid has 12 live Nodes; this fan-out is those 12 minus the two already-handled/excluded. Each per-Node work unit is small and identical.
+- **GitHub App permission.** Packet 02 provisions the review-agent GitHub App with **Contents: Write** on `HoneyDrunk.Architecture` from the start (a developer decision, recorded in packet 02). The write scope serves packet 16's post-merge audit-commit step; provisioning it up front avoids a second mid-rollout portal pass. Packet 16 therefore takes a hard `packet:02` dependency. The scope is confined to the single architecture repo.
+- **`current-focus.md` priorities #3 and #7** are discharged by this initiative (see the priority-#7 correspondence section above and packet 01's `current-focus.md` bookkeeping note). When all 17 packets reach `Done` and all four phase exit criteria are met, both priorities should be marked complete and dropped from the ranked list at the next ADR-0043 weekly briefing.
 - **The dispatch plan is the one exception to packet immutability** (ADR-0008 D7). It is updated at wave boundaries (especially after each phase's go/no-go) as the historical record.
 
 ## Archival

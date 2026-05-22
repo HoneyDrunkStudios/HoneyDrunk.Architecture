@@ -22,8 +22,10 @@ ADR-0044 D2 requires the cloud-wired reviewer to check out both the target repo 
 
 This is the credential-and-infrastructure prerequisite for the `job-review-agent.yml` build (packet 03). It is portal-heavy: GitHub App creation, private key generation, Azure Key Vault writes, and rotation configuration are all manual. Marked `Actor=Human` because the entire work item is portal/manual provisioning with no delegable code artifact.
 
+**Permission scope decision (developer call, 2026-05-22):** ADR-0044 D2 describes the App's checkout role as "scoped to read on the architecture repo." That covers `job-review-agent.yml`'s context-checkout need. However, packet 16's D9 post-merge audit job *commits* audit reports back into `HoneyDrunk.Architecture/generated/post-merge-audits/`, which requires `Contents: Write`. Rather than provision `Read` now and widen the App permission later (a second mid-rollout portal pass), the developer's decision is to provision **`Contents: Write` on `HoneyDrunk.Architecture` up front**. The write scope is confined to the single architecture repo; it does not reach any other repo. This packet therefore provisions one App with `Contents: Write` that serves both the read-only checkout (packets 03/06/11) and the write-back audit-commit (packet 16).
+
 ## Scope
-- A new GitHub App `honeydrunk-review-checkout` (or similar) created under the HoneyDrunkStudios org, with **Contents: Read** on `HoneyDrunk.Architecture` only.
+- A new GitHub App `honeydrunk-review-checkout` (or similar) created under the HoneyDrunkStudios org, with **Contents: Write** on `HoneyDrunk.Architecture` only.
 - The Anthropic API key obtained from the Anthropic console.
 - HoneyDrunk.Vault (the Azure Key Vault for the Actions/CI surface) receives: the GitHub App ID, the GitHub App private key, the GitHub App installation ID, and the Anthropic API key.
 - A new walkthrough doc, `infrastructure/review-agent-credentials-setup.md`, recording every portal step.
@@ -32,7 +34,7 @@ This is the credential-and-infrastructure prerequisite for the `job-review-agent
 
 ### GitHub App
 1. Create a GitHub App under HoneyDrunkStudios: **Settings → Developer settings → GitHub Apps → New GitHub App**.
-2. Permissions: **Repository → Contents: Read-only**. No write permissions. No webhook needed (the App is used only for installation-token minting).
+2. Permissions: **Repository → Contents: Read and write** on `HoneyDrunk.Architecture` only. No webhook needed (the App is used only for installation-token minting). The write scope is provisioned up front because the D9 post-merge audit job (packet 16) commits audit reports into `HoneyDrunk.Architecture/generated/post-merge-audits/`; provisioning `Read` now and widening later would mean a second portal pass mid-rollout. The token is still scoped to a single repo, so the blast radius of `Write` is one repo (the architecture repo itself).
 3. Generate a private key (`.pem`). Note the App ID.
 4. Install the App on `HoneyDrunkStudios/HoneyDrunk.Architecture` only ("Only select repositories"). Note the installation ID.
 
@@ -65,9 +67,10 @@ None. This packet creates infrastructure and a Markdown doc; no .NET project is 
 - [x] The doc lives in `HoneyDrunk.Architecture` (`infrastructure/` walkthrough docs already live here per the ADR-0011 SonarCloud-org-setup precedent).
 - [x] The GitHub App and Anthropic key are org/external resources, not repo code.
 - [x] Vault is the secret store per invariant 9 — no secret is committed to any repo.
+- [x] `Contents: Write` is scoped to the single `HoneyDrunk.Architecture` repo — no cross-repo write reach.
 
 ## Acceptance Criteria
-- [ ] A GitHub App exists under HoneyDrunkStudios with **Contents: Read** on `HoneyDrunk.Architecture` only, no write permissions
+- [ ] A GitHub App exists under HoneyDrunkStudios with **Contents: Write** on `HoneyDrunk.Architecture` only, scoped to that single repo
 - [ ] The App is installed on `HoneyDrunk.Architecture` only ("Only select repositories")
 - [ ] The Anthropic API key is obtained under a CI-dedicated workspace for separable cost tracking
 - [ ] All four secrets are stored in the CI-surface Key Vault with the exact names listed above
@@ -100,7 +103,7 @@ None. This packet creates infrastructure and a Markdown doc; no .NET project is 
 
 > **Invariant 20:** No secret may exceed its tier's rotation SLA without an active exception. Tier 2 (third-party): ≤ 90 days. Exceptions must be logged in Log Analytics.
 
-- **GitHub App permissions stay minimal** — Contents: Read on the architecture repo only. No write, no webhook, no other repo.
+- **GitHub App permissions stay minimal** — Contents: Write on the architecture repo only. No webhook, no other repo, no other permission scope. The write scope is required for packet 16's post-merge audit-commit step; it is provisioned now to avoid a second portal pass mid-rollout.
 - **Do not commit any secret.** Secret values live in Vault; CI resolves them via the GitHub Actions secrets surface.
 
 ## Labels
@@ -123,7 +126,7 @@ None. This packet creates infrastructure and a Markdown doc; no .NET project is 
 - `packet:01` — ADR-0044 acceptance (soft).
 
 **Constraints:**
-- GitHub App permissions minimal: Contents: Read on `HoneyDrunk.Architecture` only.
+- GitHub App permissions minimal: Contents: Write on `HoneyDrunk.Architecture` only (write is needed for packet 16's audit-commit; scoped to the single repo).
 - Vault is the only secret store (invariant 9); no secret committed anywhere (invariant 8).
 - Anthropic key rotation SLA ≤ 90 days or a logged exception (invariant 20).
 

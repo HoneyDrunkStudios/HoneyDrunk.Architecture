@@ -13,7 +13,7 @@ If that bar is missed, **stop** — do not file Wave 2. Re-scope `job-review-age
 ## What Wave 1 delivered (upstream changes Wave 2 builds on)
 
 - **ADR-0044 is Accepted** (packet 01). Its two new invariants are live in `constitution/invariants.md`; the ADR-0011 amendment note is recorded. D1-D11 are now binding rules, not proposals.
-- **The cross-repo-checkout GitHub App and the Anthropic API key exist in Vault** (packet 02). Secret names: `review-agent-github-app-id`, `review-agent-github-app-private-key`, `review-agent-github-app-installation-id`, `review-agent-anthropic-api-key`. The App has **Contents: Read** on `HoneyDrunk.Architecture` only.
+- **The cross-repo-checkout GitHub App and the Anthropic API key exist in Vault** (packet 02). Secret names: `review-agent-github-app-id`, `review-agent-github-app-private-key`, `review-agent-github-app-installation-id`, `review-agent-anthropic-api-key`. The App has **Contents: Write** on `HoneyDrunk.Architecture` only (write scope provisioned up front for packet 16's post-merge audit-commit; scoped to the single architecture repo). For Wave 2's read-only context checkout, the same App's token is used read-only.
 - **`job-review-agent.yml` exists in HoneyDrunk.Actions** (packet 03) — a reusable `workflow_call` workflow that checks out the target repo + `HoneyDrunk.Architecture`, runs `.claude/agents/review.md` via the Claude Agent SDK, posts an advisory PR comment, and honors the D5 cost guardrails. It exits without API spend when a repo has no `.honeydrunk-review.yaml` or `enabled: false`.
 - **`.claude/agents/review.md` carries the full D3 twenty-category rubric** (packet 04) with per-category execution detail and severity mappings.
 - **The `.honeydrunk-review.yaml` v1 schema doc exists** at `copilot/review-config-schema.md` (packet 05).
@@ -22,7 +22,7 @@ If that bar is missed, **stop** — do not file Wave 2. Re-scope `job-review-age
 ## Contracts Wave 2 consumes
 
 - **`job-review-agent.yml`** — callable via `workflow_call` at a pinned ref. Wave 2's per-Node `pr-review.yml` callers invoke it. Confirm the pinned ref before filing packet 11.
-- **`.honeydrunk-review.yaml` v1 schema** — `enabled` (required), `severity_floor`, `skip_paths`, `model`, `cost_cap_per_pr_usd`. Documented in `copilot/review-config-schema.md`. Each Node authors one in packet 11.
+- **`.honeydrunk-review.yaml` v1 schema** — `enabled` (required), `severity_floor`, `skip_paths`, `model`, `cost_cap_per_pr_usd`. Documented in `copilot/review-config-schema.md`. Each of the 10 fan-out Nodes authors one in packet 11.
 - **The five D6 authorship classes** — `human`, `agent-codex`, `agent-copilot`, `agent-claude-code`, `mixed`. `authorship-check` (packet 07) validates the `Authorship:` line against exactly these.
 - **The twenty D3 category names/numbering** as authored in `review.md` — packets 09, 10, 12 must reuse them verbatim. Divergence is the anti-pattern D3 warns against.
 
@@ -32,7 +32,7 @@ If that bar is missed, **stop** — do not file Wave 2. Re-scope `job-review-age
 2. **Seed `large-pr`, `audit-sample`, `skip-review` labels Grid-wide** (packet 08) via the existing labels-as-code fan-out.
 3. **Roll the D3 rubric into the upstream authoring agents** (packet 09) — `scope`, `adr-composer`, `pdr-composer`, `refine`, `node-audit`. With packet 04, this discharges `current-focus.md` priority #7.
 4. **Amend the execution-surface prompts** (packet 10) — Codex/Copilot/Claude Code emit the `Authorship:` line + commit trailer and surface the brief D3 authoring checklist.
-5. **Enable the cloud reviewer on the 12 live Nodes** (packet 11) — `.honeydrunk-review.yaml` (`enabled: true`) + `pr-review.yml` caller per repo. **Private revenue (`.Cloud`) Nodes are excluded from the default rollout** — confirm the exclusion list against `catalogs/nodes.json` / ADR-0027 D2.
+5. **Enable the cloud reviewer on the 10 remaining live .NET Nodes** (packet 11) — `.honeydrunk-review.yaml` (`enabled: true`) + `pr-review.yml` caller per repo. The fan-out is exactly the 10 .NET Node repos in packet 11's `target_repos`: Kernel, Transport, Vault, Auth, Web.Rest, Data, Notify, Communications, Pulse, Actions. **`HoneyDrunk.Observe` is OUT** (Seed, not a live Node); `HoneyDrunk.Architecture` is OUT (already enabled in Phase 1); `HoneyDrunk.Studios` is OUT (TypeScript, onboarded separately). **Private revenue (`.Cloud`) Nodes are excluded from the default rollout** — confirm the exclusion list against `catalogs/nodes.json` / ADR-0027 D2.
 6. **Verify `pr-review-rules.md` severity coverage** across all twenty D3 categories (packet 12).
 
 ## Constraints carried into Wave 2
@@ -50,4 +50,4 @@ If that bar is missed, **stop** — do not file Wave 2. Re-scope `job-review-age
 
 ## Acceptance signal for Wave 2 → Wave 3
 
-All 12 live Nodes enabled (private revenue Nodes excluded); authorship classification mandatory and green Grid-wide; PR-size discipline visible; the D3 rubric present in all seven agent files (`review.md` + the six upstream); `pr-review-rules.md` covers all twenty categories. Then make the Phase-2 → Phase-3 go decision before filing Wave 3 (packets 13-14). Note: Wave 3's packet 14 (D8 activation) is hard-gated on packet 13 (`review_risk_class`) — that data dependency cannot be short-circuited.
+All 10 fan-out Nodes enabled (Observe/Architecture/Studios excluded; private revenue Nodes excluded); authorship classification mandatory and green Grid-wide; PR-size discipline visible; the D3 rubric present in all seven agent files (`review.md` + the six upstream); `pr-review-rules.md` covers all twenty categories. Then make the Phase-2 → Phase-3 go decision before filing Wave 3 (packets 13-14). Note: Wave 3's packet 14 (D8 activation) is hard-gated on packet 13 (`review_risk_class`) — that data dependency cannot be short-circuited.

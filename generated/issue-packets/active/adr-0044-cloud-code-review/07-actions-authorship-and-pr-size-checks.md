@@ -33,21 +33,25 @@ ADR-0044 D6 requires every PR to declare an authorship class (`human`, `agent-co
 - The parsed authorship class is exported as a job output so `pr-size-check` can consume it.
 
 ### `pr-size-check` job (D7)
-Consumes the authorship class from `authorship-check`. For **non-`human`** PRs, computes changed lines excluding `skip_paths` (from `.honeydrunk-review.yaml`) and excluding test code:
+Consumes the authorship class from `authorship-check`. For **non-`human`** PRs, computes changed lines excluding `skip_paths` (from `.honeydrunk-review.yaml`) and excluding test code.
+
+**Config-absent fallback (required).** `pr-core.yml` runs Grid-wide, including on repos that have not yet onboarded the cloud reviewer and therefore have **no `.honeydrunk-review.yaml`** (and on repos where the file exists but omits `skip_paths`). `pr-size-check` must **not error or fail** when the config file or the `skip_paths` key is absent: treat a missing file or missing `skip_paths` as **`skip_paths` = empty list** — the line count then simply excludes nothing extra (test code is still excluded; that exclusion is built into the job, not config-driven). The job degrades to "count all non-test changed lines" on un-onboarded repos, which is the correct conservative behavior. Only an explicit, present `skip_paths` list narrows the count. The job logs (at most) an informational note that no review config was found; it never treats config absence as a failure.
+
+Line-count thresholds:
 - **≤ 400 changed lines** — normal path, no action.
 - **> 400, ≤ 800** — the PR body must include a `Size justification:` block; the job auto-applies the `large-pr` label. If the block is missing, the job posts a comment requesting it (warnings-only — does not fail at Phase 2).
-- **> 800** — the job auto-comments requesting a split or a `refine` pass. **Phase 2: warnings-only — the comment posts but the check does not fail.** (Phase 3 moves the `> 800` threshold from warning to a harder posture per packet 16; this packet must leave a clear, single-line toggle/comment so packet 16's change is surgical.)
+- **> 800** — the job auto-comments requesting a split or a `refine` pass. **Phase 2: warnings-only — the comment posts but the check does not fail.** (Phase 3 moves the `> 800` threshold from warning to a harder posture per packet 14; this packet must leave a clear, single-line toggle/comment so packet 14's change is surgical.)
 - For `human` PRs, `pr-size-check` is a no-op.
 
 ### Phasing note
-Both jobs are added in Phase 2. `authorship-check` is enforcing from the start (D6 says absence fails). `pr-size-check` is warnings-only in Phase 2 (D11). Document the Phase-3 tightening point inline so packet 16 is a one-line change.
+Both jobs are added in Phase 2. `authorship-check` is enforcing from the start (D6 says absence fails). `pr-size-check` is warnings-only in Phase 2 (D11). Document the Phase-3 tightening point inline so packet 14 is a one-line change.
 
 ## Consumer Impact
-- Every repo that calls `pr-core.yml` inherits both jobs. This is Grid-wide once Phase 2 rolls out — the per-repo onboarding packets (09-14) do not need to wire these jobs; they come for free via `pr-core.yml`.
-- `authorship-check` will fail PRs that lack the `Authorship:` line. The execution-surface amendments (packet 11 for Codex, packet 12 for Claude Code) emit the line automatically; human PRs need the line added manually (one line, documented in the PR template).
+- Every repo that calls `pr-core.yml` inherits both jobs. This is Grid-wide once Phase 2 rolls out — the per-repo onboarding packet (packet 11) does not need to wire these jobs; they come for free via `pr-core.yml`.
+- `authorship-check` will fail PRs that lack the `Authorship:` line. The execution-surface amendments (packet 10 — Codex, Copilot, and Claude Code emitters) add the line automatically; human PRs need the line added manually (one line, documented in the PR template).
 
 ## Breaking Change?
-- [x] Yes — `authorship-check` fails PRs without an `Authorship:` line. Consumers must update PR templates and execution surfaces (packets 11, 12) before or alongside this landing.
+- [x] Yes — `authorship-check` fails PRs without an `Authorship:` line. Consumers must update PR templates and execution surfaces (packet 10) before or alongside this landing.
 - [ ] No
 
 ## Acceptance Criteria
@@ -55,6 +59,7 @@ Both jobs are added in Phase 2. `authorship-check` is enforcing from the start (
 - [ ] `authorship-check` exports the parsed class as a job output
 - [ ] `pr-core.yml` has a `pr-size-check` job consuming the authorship class; no-op for `human` PRs
 - [ ] `pr-size-check` excludes `skip_paths` and test code from the line count
+- [ ] `pr-size-check` does not error when `.honeydrunk-review.yaml` is absent or omits `skip_paths` — it treats `skip_paths` as an empty list and counts all non-test changed lines (verified against an un-onboarded repo with no config file)
 - [ ] `> 400, ≤ 800` auto-applies `large-pr` and requires/requests a `Size justification:` block
 - [ ] `> 800` auto-comments requesting a split or `refine` pass; **Phase-2 warnings-only — does not fail the check** — with an inline-documented single-point toggle for Phase 3
 - [ ] `docs/CHANGELOG.md` updated; `docs/consumer-usage.md` notes the new required `Authorship:` line and the warnings-only size discipline
@@ -72,13 +77,14 @@ Both jobs are added in Phase 2. `authorship-check` is enforcing from the start (
 **ADR-0044 D6** — Every PR declares `Authorship: <class>` in the body; classes are `human`, `agent-codex`, `agent-copilot`, `agent-claude-code`, `mixed`; a `pr-core.yml` CI check verifies presence and parseability, absence fails.
 **ADR-0044 D7** — Non-`human` PRs carry a soft size cap via `pr-size-check`: ≤ 400 normal; > 400 ≤ 800 needs a `Size justification:` block + `large-pr` label; > 800 auto-comments requesting a split/refine.
 **ADR-0044 D11 Phase 2** — Authorship classification becomes mandatory; PR-size discipline activates with warnings only.
-**ADR-0044 D11 Phase 3** — PR-size discipline moves from warnings to auto-comments at the > 800 threshold (packet 16).
+**ADR-0044 D11 Phase 3** — PR-size discipline moves from warnings to auto-comments at the > 800 threshold (packet 14).
 
 ## Constraints
 > **Invariant 31:** Every PR traverses the tier-1 gate before merge. `authorship-check` becomes part of that gate; `pr-size-check` is warnings-only in Phase 2 and does not gate.
 
-- **Warnings-only for `> 800` in Phase 2.** Per D11, the harder posture is Phase 3. Leave a surgical single-point toggle for packet 16.
+- **Warnings-only for `> 800` in Phase 2.** Per D11, the harder posture is Phase 3. Leave a surgical single-point toggle for packet 14.
 - **`authorship-check` does not assume `human`.** The line must be present; absence fails.
+- **`pr-size-check` must tolerate missing config.** `pr-core.yml` runs Grid-wide before most repos carry `.honeydrunk-review.yaml`; an absent file or absent `skip_paths` key means `skip_paths` = empty list, never an error.
 - Follow the existing `pr-core.yml` job factoring (ADR-0012).
 
 ## Labels
@@ -101,7 +107,7 @@ Both jobs are added in Phase 2. `authorship-check` is enforcing from the start (
 - `packet:01` — ADR-0044 acceptance (soft).
 
 **Constraints:**
-- `> 800` is warnings-only in Phase 2; leave a one-point toggle for Phase 3 (packet 16).
+- `> 800` is warnings-only in Phase 2; leave a one-point toggle for Phase 3 (packet 14).
 - `authorship-check` requires the line present; never assumes `human`.
 
 **Key Files:**

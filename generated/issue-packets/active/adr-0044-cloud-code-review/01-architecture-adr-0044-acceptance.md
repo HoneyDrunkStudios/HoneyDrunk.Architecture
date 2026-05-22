@@ -30,10 +30,16 @@ This is a docs/governance-only packet. No code, no workflow, no .NET project. It
 - `initiatives/active-initiatives.md` — register the `adr-0044-cloud-code-review` initiative.
 - `initiatives/proposed-adrs.md` — ADR-0044 moves from "Awaiting" to "In Progress" once packets are filed (the `hive-sync` agent maintains this; this packet only needs to ensure the initiative is registered).
 
+**`current-focus.md` priority bookkeeping.** ADR-0044 is `current-focus.md` priority #3 ("Land ADR-0044 — Cloud Code Review") and priority #7 ("ADR-0044 D3 rubric rollout", gated on #3). This acceptance packet flipping ADR-0044 to Accepted satisfies the "ADR-0044 Accepted" half of priority #3's exit signal; the `job-review-agent.yml` MVP half is satisfied by packets 03+06. Priority #7's exit signal is satisfied by packets 04 and 09. When the initiative reaches completion (all 17 packets `Done`, all four phase exit criteria met — see the dispatch plan's Archival section), priorities #3 and #7 should be marked complete and dropped from the ranked list at the next ADR-0043 weekly briefing. This packet does not edit `current-focus.md` priority status itself (the briefing owns that surface); it is noted here and in the dispatch plan so the bookkeeping is not lost.
+
 ## Proposed Implementation
 
 ### The two new invariants
-ADR-0044's Consequences/Invariants section adds exactly two. The ADR deliberately does not reserve numbers because the 34+ range is contested between ADR-0012 (34-38) and ADR-0015 (34-36). Assign the next free numbers after the highest currently-used invariant in `constitution/invariants.md` (currently 51 per ADR-0047's D10 invariant). The `hive-sync` agent reconciles final numbering; if ADR-0047's invariants 50/51 have not yet landed at flip time, use 52/53 or the next free pair and note the assignment in the PR body.
+ADR-0044's Consequences/Invariants section adds exactly two. The ADR deliberately does not reserve numbers because the 34+ range is contested between ADR-0012 (34-38) and ADR-0015 (34-36).
+
+**How to find the next free numbers — read carefully.** `constitution/invariants.md` is **topic-grouped and NOT contiguously numbered**. Its *physical tail* is invariant 49 (the Audit Invariants section), but the *highest invariant number* in the file is **51** — invariants 50 and 51 were added by ADR-0047 and sit mid-file in the Testing Invariants section, not at the end. The execution agent must **scan the entire file for the highest invariant number anywhere in it** — never assume the last invariant physically in the file is the maximum. Concretely: `grep` every `^NN.` invariant heading across the whole file, sort numerically, take the max (51 as of 2026-05-22), and assign the next free pair.
+
+So ADR-0044's two new invariants are **52 and 53** (51 is the current max; 50/51 from ADR-0047 are already landed). If a later edit to `invariants.md` has pushed the max higher by flip time, assign the next free pair after whatever the true max is and note the assignment in the PR body. The `hive-sync` agent reconciles final numbering.
 
 Invariant text to add (verbatim intent from ADR-0044 Consequences):
 
@@ -69,10 +75,10 @@ None. This packet touches only Markdown governance files; no .NET project is cre
 - [ ] ADR-0011 carries an "Amended by ADR-0044" note recording the D5/D10/D11 dispositions; ADR-0011's own Status is unchanged
 - [ ] `initiatives/active-initiatives.md` registers the `adr-0044-cloud-code-review` initiative with a packet checklist
 - [ ] The PR body records which invariant numbers were assigned and notes the `hive-sync` reconciliation expectation
-- [ ] No catalog schema change in this packet (`review_risk_class` lands in packet 17, the `generated/post-merge-audits/` directory in packet 18)
+- [ ] No catalog schema change in this packet (`review_risk_class` lands in packet 13, the `generated/post-merge-audits/` directory in packet 15)
 
 ## Human Prerequisites
-- [ ] Confirm the final invariant numbers before merge — the 34+ range is contested between ADR-0012 and ADR-0015; the human should sanity-check the assigned pair against the current `constitution/invariants.md` tail.
+- [ ] Confirm the final invariant numbers before merge — the human should sanity-check the assigned pair (expected 52/53) against the **highest invariant number anywhere in `constitution/invariants.md`**, not against the file's physical tail. The file is topic-grouped: its tail is invariant 49 but its max number is 51 (ADR-0047's 50/51 sit mid-file in the Testing Invariants section).
 
 ## Dependencies
 None. This is the first packet in the initiative.
@@ -81,7 +87,7 @@ None. This is the first packet in the initiative.
 
 **ADR-0044 D1** — Build `job-review-agent.yml` in HoneyDrunk.Actions as a reusable workflow following `pr-core.yml` factoring; advisory non-required check.
 **ADR-0044 D10** — Amends ADR-0011: D5 preserved (advisory), D10 reversed (no longer local-only), D11 moot (build not buy).
-**ADR-0044 D11** — Four-phase rollout: Phase 1 MVP on Architecture repo only; Phase 2 rollout to 12 Nodes; Phase 3 discipline tightening; Phase 4 sampling audit + polish.
+**ADR-0044 D11** — Four-phase rollout: Phase 1 MVP on Architecture repo only; Phase 2 rollout to the live Nodes (D11 says "all 12 live Nodes"; in practice the Phase-2 fan-out is the 10 not already piloted — Architecture is Phase 1, Studios is TypeScript and onboarded separately); Phase 3 discipline tightening; Phase 4 sampling audit + polish.
 
 ## Constraints
 - **Acceptance precedes flip.** ADR-0044 stays Proposed until this packet's PR merges. Do not flip the ADR in any other packet.

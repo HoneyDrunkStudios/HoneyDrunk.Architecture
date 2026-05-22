@@ -65,8 +65,11 @@ The workflow reads `.honeydrunk-review.yaml` from the target repo root. If the f
 - Anthropic API outage → the workflow fails gracefully and posts a comment stating the reviewer could not run; the PR still merges (advisory posture).
 - The architecture-repo checkout failing → same: post a comment, exit cleanly.
 
+### Claude Agent SDK version pin (decision recorded here)
+The Claude Agent SDK is the workflow's runtime dependency. **It must be pinned to an exact version** — never a floating `latest` — so review behavior is reproducible and an upstream SDK release cannot silently change verdicts mid-rollout. This packet is the canonical place the pin is **recorded**: the chosen exact SDK version is written into `job-review-agent.yml` (as the installed package version) **and** restated in `docs/consumer-usage.md` (this repo, HoneyDrunk.Actions) under a "Claude Agent SDK version pin" heading, so there is one human-readable record of the decided pin in the same repo as the workflows that consume it. Any later SDK bump is a deliberate, reviewed change to `job-review-agent.yml` — and packet 16's `job-audit-sample.yml` (also in HoneyDrunk.Actions), which reuses the same SDK runtime, must read the pin from this recorded value rather than choosing its own. The exact version number is the human's call at build time (see Human Prerequisites); once chosen it is recorded, not re-decided per consumer.
+
 ## Consumer Impact
-- No consumer repo is affected until it adds a caller job and a `.honeydrunk-review.yaml` with `enabled: true`. Packet 04 wires the first consumer (Architecture repo, Phase 1). Phase 2 (packets 09-14) rolls it out to the 12 live Nodes.
+- No consumer repo is affected until it adds a caller job and a `.honeydrunk-review.yaml` with `enabled: true`. Packet 06 wires the first consumer (Architecture repo, Phase 1). Phase 2 (packet 11) rolls it out to the 10 remaining live .NET Nodes.
 - The workflow is purely additive — existing `pr-core.yml` consumers are untouched.
 
 ## Breaking Change?
@@ -82,13 +85,14 @@ The workflow reads `.honeydrunk-review.yaml` from the target repo root. If the f
 - [ ] Cost guardrails present: per-PR cost cap with partial-review comment on exceedance, draft skip, `skip-review` label skip, 2000-line high-risk-only cap, Sonnet default with model field read from config
 - [ ] The workflow reads `.honeydrunk-review.yaml` and exits without API spend when the file is absent or `enabled: false`
 - [ ] Anthropic API outage and architecture-checkout failure both degrade gracefully (comment + clean exit, no merge block)
+- [ ] The Claude Agent SDK is pinned to an exact version in `job-review-agent.yml` (no floating `latest`); the same exact version is recorded under a "Claude Agent SDK version pin" heading in `docs/consumer-usage.md` so the pin has one human-readable record packet 16 can reference
 - [ ] `docs/CHANGELOG.md` updated with a new entry for the `job-review-agent.yml` reusable workflow
 - [ ] `docs/consumer-usage.md` updated with the caller snippet and the `.honeydrunk-review.yaml` requirement
 - [ ] README.md updated to list `job-review-agent.yml` among the reusable workflows
 
 ## Human Prerequisites
 - [ ] Packet 02 must be complete — the GitHub App and Anthropic API key must exist in Vault and be wired into the HoneyDrunk.Actions secrets surface before this workflow can run end-to-end
-- [ ] Confirm the Claude Agent SDK version pin to use in the workflow (coordinate with the human; the SDK is the runtime dependency)
+- [ ] Decide the exact Claude Agent SDK version to pin (the human's call). Once chosen, the agent records it in `job-review-agent.yml` and in `docs/consumer-usage.md` per the "Claude Agent SDK version pin" section above — it is recorded once and reused by packet 16, not re-decided per workflow.
 
 ## Dependencies
 - `packet:01` — ADR-0044 acceptance (soft; references ADR-0044 decisions as live rules).

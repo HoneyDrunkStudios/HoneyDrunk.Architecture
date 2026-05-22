@@ -20,12 +20,16 @@ Amend the execution-surface prompts (Codex packet-execution prompt, Copilot in-I
 ## Context
 ADR-0044 D6 says the Codex/Copilot/Claude-Code execution surfaces are amended in follow-up packets to emit the `Authorship:` line automatically — a small change to each surface's commit/PR-creation template — so the `authorship-check` job (packet 07) does not fail agent PRs. D3's upstream-awareness clause additionally requires each execution surface to surface the load-bearing authoring categories (Correctness, Code Quality, SOLID, Reuse, Security, Performance, Testing, AI/agent-specific, Human Factors) as a brief authoring checklist, with the remaining categories by reference. This packet is the prompt-side amendment; the `authorship-check` CI enforcement is packet 07.
 
-This packet covers the prompt/instruction text that lives in `HoneyDrunk.Architecture` (`.claude/agents/` execution-surface definitions and any Codex/Copilot prompt artifacts checked in here). Where an execution surface's instructions live outside this repo (e.g. a Codex cloud-config artifact in HoneyDrunk.Actions), this packet documents the required change and the dispatch plan notes the follow-up; the canonical authoring discipline still originates from D3.
+**All three execution-surface artifacts live in `HoneyDrunk.Architecture` — confirmed at scoping time, no cross-repo edit and no follow-up Actions packet is required:**
+
+- **Copilot in-IDE custom instructions** → `.github/copilot-instructions.md` (exists in this repo).
+- **Claude Code authoring-mode instructions** → `copilot/global-instructions.md`, the Grid-wide all-agents instruction file (exists in this repo). The per-repo `CLAUDE.md` files are out of scope here — the canonical authoring discipline belongs in the shared `global-instructions.md` so every repo's Claude Code session inherits it.
+- **Codex packet-execution discipline** → Codex has **no dedicated prompt artifact**; it executes against issue packets and handoff prompts whose format is defined in `routing/sdlc.md` (the "Handoff Protocol: Claude Code → Codex" section) and `copilot/issue-authoring-rules.md`. The Codex authoring discipline is therefore added to `routing/sdlc.md`'s handoff-protocol section and reflected in the issue-packet Agent Handoff template, not to a separate Codex config. The `Authorship: agent-codex` emission is a commit/PR-trailer convention recorded in `routing/sdlc.md` and `copilot/global-instructions.md` (the section covering all agents' commit conventions).
 
 ## Scope
-- The Claude Code authoring-mode system instructions (per ADR-0007, in `.claude/`).
-- The Codex packet-execution prompt artifact (wherever it is checked in — `.claude/agents/` or a Codex-config doc in this repo; if it lives in HoneyDrunk.Actions, document the required change here and flag for a follow-up Actions packet).
-- The Copilot in-IDE custom instructions artifact (`.github/copilot-instructions.md` or the equivalent checked into this repo's tooling docs).
+- `copilot/global-instructions.md` — the Claude Code (and shared all-agent) authoring-mode instructions: add the `Authorship:` emission convention and the brief D3 authoring checklist.
+- `.github/copilot-instructions.md` — the Copilot in-IDE custom instructions: add the human-declares-`agent-copilot` guidance and the brief D3 authoring checklist.
+- `routing/sdlc.md` — the "Handoff Protocol: Claude Code → Codex" section: add the `Authorship: agent-codex` emission requirement and a reference to the D3 authoring checklist as the discipline Codex applies before producing a diff.
 
 ## Proposed Implementation
 
@@ -42,27 +46,27 @@ Each execution surface's prompt/instructions gains a brief authoring checklist s
 The instruction must state that this is the **authoring discipline** — the agent applies the rubric upstream so the reviewer catches less downstream.
 
 ## Affected Files
-- The Claude Code authoring-mode system-instruction file
-- The Codex packet-execution prompt artifact (or a documented follow-up if it lives outside this repo)
-- The Copilot in-IDE custom-instructions artifact
+- `copilot/global-instructions.md` (Claude Code / shared all-agent authoring-mode instructions)
+- `.github/copilot-instructions.md` (Copilot in-IDE custom instructions)
+- `routing/sdlc.md` (Codex handoff-protocol section — Codex's `Authorship:` emission + D3 authoring discipline)
 
 ## NuGet Dependencies
 None. This packet edits prompt/instruction Markdown; no .NET project is created or modified.
 
 ## Boundary Check
-- [x] Execution-surface prompts that live in `HoneyDrunk.Architecture` are edited here. Any artifact outside this repo is documented as a follow-up, not edited cross-repo.
+- [x] All three execution-surface artifacts (`copilot/global-instructions.md`, `.github/copilot-instructions.md`, `routing/sdlc.md`) live in `HoneyDrunk.Architecture` — all edits are in-repo, no cross-repo edit and no follow-up Actions packet needed.
 - [x] No code change in any repo.
 
 ## Acceptance Criteria
-- [ ] The Claude Code authoring-mode instructions emit `Authorship: agent-claude-code` (PR body + commit trailer)
-- [ ] The Codex packet-execution prompt emits `Authorship: agent-codex` (PR body + commit trailer); if the artifact lives outside this repo, the required change is documented and a follow-up Actions packet is flagged
-- [ ] The Copilot in-IDE custom instructions direct the human to declare `agent-copilot` (or `mixed`) on accepted PRs
-- [ ] Each execution surface's instructions carry the brief D3 authoring checklist (the nine load-bearing categories) with the remainder by reference
-- [ ] Each instruction states this is the upstream authoring discipline per ADR-0044 D3
+- [ ] `copilot/global-instructions.md` instructs Claude Code to emit `Authorship: agent-claude-code` (PR body + commit trailer)
+- [ ] `routing/sdlc.md`'s Codex handoff-protocol section requires Codex PRs to emit `Authorship: agent-codex` (PR body + commit trailer)
+- [ ] `.github/copilot-instructions.md` directs the human to declare `agent-copilot` (or `mixed`) on Copilot-assisted accepted PRs
+- [ ] Each of the three artifacts carries the brief D3 authoring checklist (the nine load-bearing categories) with the remainder by reference
+- [ ] Each artifact states this is the upstream authoring discipline per ADR-0044 D3
 - [ ] The classes emitted exactly match the five D6 classes; no new class invented
 
 ## Human Prerequisites
-- [ ] If any execution-surface prompt artifact lives outside `HoneyDrunk.Architecture` (e.g. a Codex cloud-config in HoneyDrunk.Actions), confirm its location and either route that change to a follow-up Actions packet or apply it manually
+None. All three execution-surface artifacts (`copilot/global-instructions.md`, `.github/copilot-instructions.md`, `routing/sdlc.md`) live in `HoneyDrunk.Architecture` and are edited directly by this packet — no portal step, no cross-repo coordination.
 
 ## Dependencies
 - `packet:04` — `review.md` rubric (**hard** — the authoring checklist must use the same category names as the rubric).
@@ -77,7 +81,7 @@ None. This packet edits prompt/instruction Markdown; no .NET project is created 
 ## Constraints
 - **Exactly the five D6 classes.** Do not invent authorship classes.
 - **Keep the checklist brief.** Nine load-bearing categories inline; the rest by reference. A long checklist is not read.
-- **No cross-repo edits.** Document, do not edit, any artifact outside `HoneyDrunk.Architecture`.
+- **All three artifacts are in-repo.** `copilot/global-instructions.md`, `.github/copilot-instructions.md`, and `routing/sdlc.md` all live in `HoneyDrunk.Architecture` — edit them directly; there is no cross-repo artifact and no follow-up packet to flag.
 
 ## Labels
 `docs`, `tier-2`, `meta`, `adr-0044`, `wave-2`
@@ -100,9 +104,9 @@ None. This packet edits prompt/instruction Markdown; no .NET project is created 
 - `packet:07` — `authorship-check` (soft).
 
 **Constraints:**
-- Exactly the five D6 classes; brief checklist; no cross-repo edits.
+- Exactly the five D6 classes; brief checklist; all three artifacts are in-repo (no cross-repo edit, no follow-up packet).
 
 **Key Files:**
-- Claude Code authoring-mode instructions; Codex packet-execution prompt; Copilot custom instructions.
+- `copilot/global-instructions.md`, `.github/copilot-instructions.md`, `routing/sdlc.md`.
 
 **Contracts:** Emits the `Authorship:` line consumed by `authorship-check` (packet 07).
