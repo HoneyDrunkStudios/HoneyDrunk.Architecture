@@ -1,6 +1,6 @@
 # ADR-0047: Testing Patterns and Tooling
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-05-21
 **Deciders:** HoneyDrunk Studios
 **Sector:** Meta / cross-cutting

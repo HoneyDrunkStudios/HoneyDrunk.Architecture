@@ -4,6 +4,44 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 ## In Progress
 
+### ADR-0047 Testing Patterns and Tooling
+**Status:** In Progress
+**Scope:** Architecture, Standards, Actions, Data, Kernel, Studios, and every Node repo with test projects
+**Initiative:** `adr-0047-testing-patterns-and-tooling`
+**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
+**Description:** Roll out the ADR-0047 Grid testing stack: xUnit v2 + NSubstitute + AwesomeAssertions + coverlet for unit tests; WebApplicationFactory and Testcontainers for integration tiers; Playwright (.NET) for web E2E; Maestro for future mobile E2E; BenchmarkDotNet / Azure Load Testing for performance. Closes ADR-0011 Gap 1 and Gap 3.
+
+**Tracking (Wave 1 — Phase 1: unit-test stack + migrations + coverage gates):**
+- [ ] Architecture#187: Accept ADR-0047 — flip status, close ADR-0011 Gap 1 and Gap 3, register the testing-patterns initiative (packet 00)
+- [ ] Standards: Author shared unit-test-stack `Directory.Build.props` fragment (packet 01)
+- [ ] Standards: Author `coverlet.runsettings` templates for D3 per-tier thresholds (packet 02)
+- [ ] Standards: Add the `Thread.Sleep` analyzer rule for test projects (packet 03)
+- [ ] Architecture#188 / per-Node fan-out: Migrate FluentAssertions → AwesomeAssertions (packet 04)
+- [ ] Architecture#189 / per-Node fan-out: Migrate Moq → NSubstitute (packet 05)
+
+**Tracking (Wave 2 — Phase 2: Tier 2a integration tests):**
+- [ ] Actions: Author `job-integration-tests.yml` and wire it into `pr-core.yml` (packet 06)
+- [ ] Architecture#190: Author the integration-test scaffold template for the `scope` agent (packet 07)
+- [ ] Architecture#191: Update `.claude/agents/review.md` Testing Quality checklist per ADR-0047 D13 (packet 08)
+
+**Tracking (Wave 3 — Phase 3: Tier 2b container-backed integration tests):**
+- [ ] Actions: Author `job-integration-tests-containers.yml` (packet 09)
+- [ ] Data: Pilot Tier 2b `Data.Tests.Integration.Containers` with Testcontainers Postgres (packet 10)
+- [ ] Kernel: Pilot Tier 2a `IIdempotencyStore` reusable contract test + InMemory binding (packet 11)
+- [ ] Kernel: Bind `IIdempotencyStore` contract test to Cosmos backing in Tier 2b (packet 12 — parked until ADR-0042 is Accepted and Cosmos backing exists)
+
+**Tracking (Wave 4 — Phase 4: E2E web):**
+- [ ] Actions: Author `job-e2e-web.yml` reusable workflow for Playwright (.NET) E2E (packet 13)
+- [ ] Studios: Pilot `Studios.Tests.E2E` with Playwright and nightly schedule (packet 14)
+
+**Tracking (Wave 5 — Phase 5: E2E mobile):**
+- [ ] Actions: Author `job-e2e-mobile.yml` for Maestro (packet 15 — parked until first mobile app ships)
+
+**Tracking (Wave 6 — Phase 6: performance):**
+- [ ] Kernel: Add `Kernel.Tests.Benchmarks` with BenchmarkDotNet idempotency-store baseline (packet 16)
+
+**Exit criteria:** ADR-0047 is Accepted; Standards ships the shared test stack, coverage templates, and analyzer; no Node test project retains Moq or FluentAssertions; Tier 2a/Tier 2b/E2E workflows and pilots land per D14; parked mobile/Cosmos work is either completed or explicitly re-homed when its trigger fires.
+
 ### Kernel Adoption Alignment
 **Status:** In Progress
 **Scope:** Kernel, Transport, Vault, Auth, Web.Rest, Data, Vault.Rotation, Notify, Pulse, Communications, Architecture
