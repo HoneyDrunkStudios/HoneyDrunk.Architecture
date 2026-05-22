@@ -5,6 +5,8 @@
 **Deciders:** HoneyDrunk Studios
 **Sector:** Ops / cross-cutting
 
+> **Amendment 2026-05-22:** The original draft assigned outbound-telemetry export and the new exporter/sampler packages to `HoneyDrunk.Observe`. This was corrected to `HoneyDrunk.Pulse` to match the `HoneyDrunk.Observe` and `HoneyDrunk.Pulse` boundary documents — Observe is the *inbound* observation layer for external systems; Pulse owns *outbound* telemetry routing to sinks (`ITraceSink`/`ILogSink`/`IMetricsSink` and the `HoneyDrunk.Telemetry.Sink.*` provider family, which already includes a `HoneyDrunk.Telemetry.Sink.AzureMonitor` provider). All D2/D4/Follow-up-Work references and package names below reflect the correction. Status is unchanged (Proposed).
+
 ## Context
 
 ADR-0010 (Accepted) established `HoneyDrunk.Observe` (Ops) as the observation layer with provider-slot connectors; ADR-0028 (Proposed) named OTLP as the telemetry shape on the event/messaging matrix. Neither named a **backend** — a concrete destination for traces, metrics, and logs. Today the Grid emits OTLP through the Observe layer to nowhere, which means:
@@ -13,7 +15,7 @@ ADR-0010 (Accepted) established `HoneyDrunk.Observe` (Ops) as the observation la
 - The AI-sector standup wave (9 Seed Nodes) will emit substantial volumes of traces (LLM provider spans, tool-call spans, agent-run spans, eval runs) starting at standup; no decision exists on where these land or for how long.
 - Pulse signals (per ADR-0028 explicitly "not domain events") have a separate durability question that intersects this ADR.
 
-The forcing function is the AI-sector standup pattern (ADR-0016 onward). Every AI Node emits trace events as a contract-shape canary; an Observe layer with no sink fails the canary by definition. The secondary forcing function is Notify Cloud GA: a paying tenant's "show me my last hour of API errors" question requires retained, queryable signals — not just live telemetry.
+The forcing function is the AI-sector standup pattern (ADR-0016 onward). Every AI Node emits trace events as a contract-shape canary; a Pulse sink layer with no concrete backend fails the canary by definition. The secondary forcing function is Notify Cloud GA: a paying tenant's "show me my last hour of API errors" question requires retained, queryable signals — not just live telemetry.
 
 This ADR decides:
 
@@ -21,7 +23,7 @@ This ADR decides:
 - Per-signal retention windows.
 - Sampling policy.
 - Tenant-scoped vs. Studio-scoped views.
-- The contract between Observe and the backend (so backend choice remains reversible).
+- The contract between the Pulse sink layer and the backend (so backend choice remains reversible).
 
 ## Decision
 
@@ -40,13 +42,13 @@ The unified-view surface is the **Application Insights resource in the Azure Por
 
 The cross-signal navigation is native: same `operation_id` (≈ `trace_id`) flows automatically across blades. Click a Failures-blade error → see the failed trace → see surrounding logs → see metrics around that time window. The unified-view property is delivered by the storage model, not by configured cross-links.
 
-Per-environment App Insights resources (`hd-dev`, `hd-staging`, `hd-prod`) keep dev noise out of prod dashboards. Resources are provisioned via Bicep/ARM; instrumentation keys live in Vault per ADR-0005.
+Per-environment App Insights resources (`hd-dev`, `hd-staging`, `hd-prod`) keep dev noise out of prod dashboards. Resources are provisioned via the Azure Portal; connection strings live in Vault per ADR-0005. (Azure has retired classic instrumentation keys — the connection string is the modern credential.)
 
-### D2 — Observe is the OTLP-only boundary; Azure Monitor Exporter is the connector
+### D2 — Pulse is the OTLP-only telemetry boundary; the Azure Monitor sink is the connector
 
-`HoneyDrunk.Observe` exposes only the OTLP-shaped surface (per ADR-0010 and ADR-0028). The **Azure Monitor OpenTelemetry Distro** (the Microsoft-maintained Azure Monitor Exporter for OpenTelemetry) is the connector behind that boundary — Nodes emit OTLP, the exporter translates to App Insights' wire protocol and ships to the Azure Monitor backend. The exporter sits inside the Observe Node's runtime, never in the consuming Node.
+`HoneyDrunk.Pulse` exposes only the OTLP-shaped sink surface (`ITraceSink`/`ILogSink`/`IMetricsSink`, per ADR-0028). The **Azure Monitor OpenTelemetry Distro** (the Microsoft-maintained Azure Monitor Exporter for OpenTelemetry) is the connector behind that boundary — Nodes emit OTLP, the existing `HoneyDrunk.Telemetry.Sink.AzureMonitor` provider translates to App Insights' wire protocol and ships to the Azure Monitor backend. The exporter sits inside the Pulse Node's runtime, never in the consuming Node.
 
-This is the load-bearing reversibility property. Switching backends (to Grafana Cloud + Sentry per D11, or to Datadog, or to any future option) is a configuration change at the Observe Node only — zero Node-level changes elsewhere. Same property ADR-0010's provider-slot pattern was designed to deliver.
+This is the load-bearing reversibility property. Switching backends (to Grafana Cloud + Sentry per D11, or to Datadog, or to any future option) is a configuration change at the Pulse Node only — zero Node-level changes elsewhere. Pulse already ships a `HoneyDrunk.Telemetry.Sink.*` provider family (Loki, Mimir, Tempo, Sentry, PostHog, AzureMonitor) precisely to deliver this property.
 
 ### D3 — Three signal types, three retention windows
 
@@ -66,7 +68,7 @@ App Insights' native retention is meaningfully longer than Grafana Cloud's free 
 
 Consistent with D2's OTLP-only-boundary commitment, sampling is configured via **OpenTelemetry primitives** — a custom `Sampler` composed into the `TracerProvider` and `SpanProcessor` filters wired alongside. The Azure Monitor OpenTelemetry Distro respects whatever sampler the OTel SDK is configured with; the Azure Monitor exporter sends the sampled output onward to App Insights without rewriting the sampling decision. This is the OTel-native path; classic App Insights SDK constructs like `ITelemetryProcessor` are not used (they'd undercut the reversibility property D2 buys).
 
-Default sampler: **`ParentBased(TraceIdRatioBased)`** targeting ~5 items/second per host (matching App Insights' default expectation), implemented as a small custom sampler that wraps `TraceIdRatioBased` with dynamic-rate behavior. Lives in `HoneyDrunk.Observe.Sampling`.
+Default sampler: **`ParentBased(TraceIdRatioBased)`** targeting ~5 items/second per host (matching App Insights' default expectation), implemented as a small custom sampler that wraps `TraceIdRatioBased` with dynamic-rate behavior. Lives in a new `HoneyDrunk.Telemetry.Sampling` package in the Pulse solution.
 
 Rules layered on top of the base sampler (implemented as a chained `Sampler` or a `SpanProcessor` filter, depending on whether the decision must influence downstream span attribute drops):
 
@@ -76,7 +78,7 @@ Rules layered on top of the base sampler (implemented as a chained `Sampler` or 
 - **100% sampling** during canary runs.
 - **Lower-rate sampling** for high-volume background workloads (Pulse collector, Knowledge ingestion batch jobs) — composed as a stricter `TraceIdRatioBased` under a `ParentBased` boundary keyed on the workload's `service.name`.
 
-The composition lives in `HoneyDrunk.Observe.AzureMonitor`. The Azure Monitor exporter is the connector behind the OTel SDK; the sampling decisions are made by the OTel SDK, not by the exporter or by App Insights post-ingest.
+The composition is wired into the Pulse telemetry pipeline alongside the `HoneyDrunk.Telemetry.Sink.AzureMonitor` provider. The Azure Monitor exporter is the connector behind the OTel SDK; the sampling decisions are made by the OTel SDK, not by the exporter or by App Insights post-ingest.
 
 Metrics and logs are **not sampled** at ingestion (same principle as the original ADR — sampling logs/metrics for cost is a false economy; either keep them or don't, and at our volume keeping is cheap). Metric views and log filters, if any, are also OTel-native (`View`s for metrics; `LogRecordProcessor`s for logs).
 
@@ -92,18 +94,18 @@ App Insights bills primarily by **data volume** (GB ingested + GB retained beyon
 
 - **`user.id`, `message.id`, `request.id`** belong on **traces** (where cardinality drives no extra cost in App Insights, since they're per-event), not duplicated into every log line as redundant context.
 - **High-frequency events** in tight loops are forbidden as `Information`-level emissions — they multiply ingest volume without information gain. Telemetry inside loops requires explicit sampling or aggregation.
-- A canary in `HoneyDrunk.Observe.Tests` walks Node-level telemetry emission and asserts no `Information`-level events inside identified hot paths (heuristic — flagged for review, not auto-blocked).
+- A canary in the `HoneyDrunk.Pulse` test surface walks Node-level telemetry emission and asserts no `Information`-level events inside identified hot paths (heuristic — flagged for review, not auto-blocked).
 
 The original cardinality-as-billing-factor concern is named here so it doesn't get re-introduced if the backend ever switches back to a Prometheus-class store (D11 escalation path).
 
-### D7 — Pulse intersection
+### D7 — Pulse derived-metric stream
 
-Pulse signals are explicitly "not domain events" per ADR-0028. The Pulse Collector emits to its own durable store (Tier 2 per ADR-0036) and **also** emits a derived metric stream into Observe → App Insights. The two are not the same:
+Pulse signals are explicitly "not domain events" per ADR-0028. The Pulse Collector emits to its own durable store (Tier 2 per ADR-0036) and **also** emits a derived metric stream through the Pulse Azure Monitor sink into App Insights. The two are not the same:
 
 - **Pulse's own store** is the source of truth for historical signal values.
 - **The App Insights metric stream** is the operational dashboard / alerting surface, retained 93 days.
 
-This is a deliberate dual-write because Pulse signal values (e.g., "API latency p99 over 24h") need a longer-form analytical surface than App Insights metrics provide; meanwhile, the alerting surface lives where dashboards live.
+This is a deliberate dual-write because Pulse signal values (e.g., "API latency p99 over 24h") need a longer-form analytical surface than App Insights metrics provide; meanwhile, the alerting surface lives where dashboards live. Because Pulse owns the Azure Monitor sink (D2), this is an intra-Pulse change — no Node boundary is crossed.
 
 ### D8 — Alerting
 
@@ -146,7 +148,7 @@ Azure Monitor + App Insights is the v1 default chosen on cost discipline and exi
 | Move logs to Grafana Cloud Loki | Loki-specific features (e.g., LogQL ergonomics, log streaming) materially improve operator workflow | Grafana Cloud | Multi-tool logs; +$0–50/month |
 | Full switch to Grafana Cloud + Sentry | Two or more of the above fire within the same quarter | Both | Two managed-vendor relationships; $50–150/month combined |
 
-The escalation is preserved by the Observe-substrate boundary (D2). Switching any signal type's backing is a single Observe-side configuration change — no Node-level work, no breaking change to consumers.
+The escalation is preserved by the Pulse sink boundary (D2). Switching any signal type's backing is a single Pulse-side configuration change — no Node-level work, no breaking change to consumers.
 
 This is the discipline the v1 cost-conservative choice is asking for: **commit to the cheaper, already-paid option now, observe whether its UX/feature gaps actually hurt, and escalate signal-by-signal with concrete evidence.** Speculative escalation up-front is rejected (the original Grafana Cloud + Sentry framing in the first draft of this ADR).
 
@@ -154,27 +156,27 @@ This is the discipline the v1 cost-conservative choice is asking for: **commit t
 
 ### Affected Nodes
 
-- **HoneyDrunk.Observe** — primary affected Node; gains the OTLP-to-App-Insights configuration via the Azure Monitor OpenTelemetry Distro, the adaptive-sampling + rules processor (D4), the volume-discipline canary (D6), and the PII filter processor (D9).
-- **HoneyDrunk.Pulse** — gains the derived-metric stream emit per D7.
+- **HoneyDrunk.Pulse** — primary affected Node; extends its existing `HoneyDrunk.Telemetry.Sink.AzureMonitor` provider with the OTLP-to-App-Insights configuration via the Azure Monitor OpenTelemetry Distro, gains the new `HoneyDrunk.Telemetry.Sampling` package for the adaptive-sampling + rules processor (D4), the volume-discipline canary (D6), the PII filter processor (D9), and the derived-metric stream emit (D7).
+- **HoneyDrunk.Observe** — not affected by this ADR. Observe is the *inbound* observation layer for external systems; outbound telemetry export is Pulse's boundary.
 - **HoneyDrunk.Evals** (Seed) — at standup, wires the `evals.sensitive=true` dimension and the dedicated Log Analytics table per D9.
 - **HoneyDrunk.Audit** — emits to the Audit-tagged Log Analytics table with 730-day retention per D3.
-- **HoneyDrunk.Vault** — stores App Insights instrumentation keys per environment.
+- **HoneyDrunk.Vault** — stores App Insights connection strings per environment.
 - **HoneyDrunk.Architecture** — `catalogs/grid-health.json` is the readout surface; alert routing list lives in `business/context/`.
 
 ### Invariants
 
-Adds three:
+Adds three. Numbers **69, 70, 71** are pre-reserved for this ADR as part of a 12-ADR batch; the current highest invariant in `constitution/invariants.md` is 51.
 
-- **Invariant: no Node references App Insights (or any backend) directly.** All telemetry routes through Observe; backend changes (including escalations per D11) are a single Observe configuration change.
-- **Invariant: high-cardinality identifiers belong on traces and logs, not duplicated as custom dimensions on metrics where they'd inflate volume.** Specifically `user.id`, `message.id`, `request.id` are trace/log dimensions, never metric dimensions.
-- **Invariant: prompt/completion text appears in telemetry only behind the `evals.sensitive=true` dimension and the dedicated Log Analytics table.** Default-deny for content; explicit opt-in for evals.
+- **Invariant 69: no Node references App Insights (or any backend) directly.** All telemetry routes through the `HoneyDrunk.Pulse` sink surface; backend changes (including escalations per D11) are a single Pulse configuration change.
+- **Invariant 70: high-cardinality identifiers belong on traces and logs, not duplicated as custom dimensions on metrics where they'd inflate volume.** Specifically `user.id`, `message.id`, `request.id` are trace/log dimensions, never metric dimensions.
+- **Invariant 71: prompt/completion text appears in telemetry only behind the `evals.sensitive=true` dimension and the dedicated Log Analytics table.** Default-deny for content; explicit opt-in for evals.
 
 ### Operational Consequences
 
 - App Insights is part of the existing Azure footprint; no new vendor relationship, no new billing line beyond the Azure subscription.
-- The App Insights resources need provisioning per environment (Bicep/ARM); a one-time setup, then Vault-stored instrumentation keys.
+- The App Insights resources need provisioning per environment (Azure Portal); a one-time setup, then Vault-stored connection strings.
 - Realistic v1 cost is $0–30/month. The $100/month ceiling is the trigger for reconsideration, not the expected steady-state.
-- Switching any signal-type backend (D11) is a configuration change at Observe; dashboards land in the new tool's format and migrate via export/import. App Insights Workbooks and Grafana dashboards both support JSON-as-code, so dashboard migration is bounded.
+- Switching any signal-type backend (D11) is a configuration change at Pulse; dashboards land in the new tool's format and migrate via export/import. App Insights Workbooks and Grafana dashboards both support JSON-as-code, so dashboard migration is bounded.
 - 90-day standard retention is meaningfully longer than Grafana Cloud's free tier (14 days for metrics); this is one of the practical advantages of the Azure Monitor path.
 - The Azure Portal UI is the operator's primary surface. Workbook construction is required if a single-page combined view is desired (the App Insights default blades are signal-type-specialized).
 - KQL has a learning curve compared to PromQL/LogQL; the trade-off is recorded as part of the v1 commitment.
@@ -183,10 +185,10 @@ Adds three:
 ### Follow-up Work
 
 - Provision App Insights resources for `dev`/`staging`/`prod` (the staging/prod environments are still in flight per ADR-0033).
-- Implement `HoneyDrunk.Observe.AzureMonitor` with the Azure Monitor OpenTelemetry Distro wired through `IObservabilityBackend` (or equivalent existing Observe abstraction).
-- Implement the OpenTelemetry samplers (in `HoneyDrunk.Observe.Sampling`) and PII `SpanProcessor` / `LogRecordProcessor`s; wire into the OTel `TracerProvider` and `LoggerProvider` builders in `HoneyDrunk.Observe.AzureMonitor`.
+- Extend the existing `HoneyDrunk.Telemetry.Sink.AzureMonitor` provider in the Pulse solution with the Azure Monitor OpenTelemetry Distro wired through the Pulse sink contracts (`ITraceSink`/`ILogSink`/`IMetricsSink`).
+- Implement the OpenTelemetry samplers (in a new `HoneyDrunk.Telemetry.Sampling` package in the Pulse solution) and PII `SpanProcessor` / `LogRecordProcessor`s; wire into the OTel `TracerProvider` and `LoggerProvider` builders in the Pulse telemetry pipeline.
 - Implement the volume-discipline canary.
-- Author Workbooks-as-code under `repos/HoneyDrunk.Observe/workbooks/` for the most common operational views.
+- Author Workbooks-as-code under `repos/HoneyDrunk.Pulse/workbooks/` for the most common operational views.
 - Configure per-table Log Analytics retention for the Audit table (730 days).
 - Author the tenant-facing Notify Cloud telemetry feature (deferred, D5/D8) as a future ADR.
 - Wire the Studio operator alert channel; record the channel id in `business/context/`.
