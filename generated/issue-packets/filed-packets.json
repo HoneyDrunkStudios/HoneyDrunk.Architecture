@@ -246,5 +246,14 @@
   "generated/issue-packets/active/adr-0039-license-policy/04-actions-dco-signoff-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/97",
   "generated/issue-packets/active/adr-0039-license-policy/05-cross-repo-license-fanout-contributing-and-dco.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/238",
   "generated/issue-packets/active/adr-0039-license-policy/06-architecture-hive-sync-license-drift.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/239",
-  "generated/issue-packets/active/adr-0039-license-policy/07-architecture-license-change-procedure-amendment-template.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/240"
+  "generated/issue-packets/active/adr-0039-license-policy/07-architecture-license-change-procedure-amendment-template.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/240",
+  "generated/issue-packets/active/adr-0040-telemetry-backend/00-architecture-adr-0040-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/241",
+  "generated/issue-packets/active/adr-0040-telemetry-backend/01-architecture-telemetry-catalog-and-grid-health-readout.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/242",
+  "generated/issue-packets/active/adr-0040-telemetry-backend/02-architecture-application-insights-provisioning-walkthrough.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/243",
+  "generated/issue-packets/active/adr-0040-telemetry-backend/03-pulse-azure-monitor-otel-distro-backing.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/20",
+  "generated/issue-packets/active/adr-0040-telemetry-backend/04-pulse-sampling-package-and-rules.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/21",
+  "generated/issue-packets/active/adr-0040-telemetry-backend/05-pulse-pii-processors-and-volume-discipline-canary.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/22",
+  "generated/issue-packets/active/adr-0040-telemetry-backend/06-architecture-log-analytics-retention-and-audit-table.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/244",
+  "generated/issue-packets/active/adr-0040-telemetry-backend/07-pulse-derived-metric-stream.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/23",
+  "generated/issue-packets/active/adr-0040-telemetry-backend/08-architecture-azure-monitor-alerts-and-operator-channel.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/245"
 }
