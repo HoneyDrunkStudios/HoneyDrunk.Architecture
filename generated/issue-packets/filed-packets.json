@@ -211,5 +211,16 @@
   "generated/issue-packets/active/adr-0035-abstractions-versioning/01-standards-public-api-analyzers-props-fragment.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Standards/issues/42",
   "generated/issue-packets/active/adr-0035-abstractions-versioning/02-architecture-abstractions-cascade-initiative-template.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/212",
   "generated/issue-packets/active/adr-0035-abstractions-versioning/03-actions-job-api-diff-and-obsolete-audit-workflows.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/95",
-  "generated/issue-packets/active/adr-0035-abstractions-versioning/04-cross-repo-public-api-baseline-and-api-diff-wiring.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/213"
+  "generated/issue-packets/active/adr-0035-abstractions-versioning/04-cross-repo-public-api-baseline-and-api-diff-wiring.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/213",
+  "generated/issue-packets/active/adr-0036-disaster-recovery/00-architecture-adr-0036-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/215",
+  "generated/issue-packets/active/adr-0036-disaster-recovery/01-architecture-dr-tier-catalog-field-and-backfill.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/216",
+  "generated/issue-packets/active/adr-0036-disaster-recovery/02-architecture-dr-runbook-template-and-restore-drills-directory.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/217",
+  "generated/issue-packets/active/adr-0036-disaster-recovery/03-vault-dr-runbook-and-bootstrap-recovery-doc.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/218",
+  "generated/issue-packets/active/adr-0036-disaster-recovery/04-vault-t0-backup-config-and-offline-recovery-artifact.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Vault/issues/35",
+  "generated/issue-packets/active/adr-0036-disaster-recovery/05-vault-first-restore-drill.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Vault/issues/36",
+  "generated/issue-packets/active/adr-0036-disaster-recovery/06-audit-dr-runbook.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/219",
+  "generated/issue-packets/active/adr-0036-disaster-recovery/07a-audit-data-t0-backup-config.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Audit/issues/3",
+  "generated/issue-packets/active/adr-0036-disaster-recovery/07b-audit-first-restore-drill.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Audit/issues/4",
+  "generated/issue-packets/active/adr-0036-disaster-recovery/08-notify-dr-runbook-t1.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/220",
+  "generated/issue-packets/active/adr-0036-disaster-recovery/09-architecture-hive-sync-dr-drift-detection.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/221"
 }
