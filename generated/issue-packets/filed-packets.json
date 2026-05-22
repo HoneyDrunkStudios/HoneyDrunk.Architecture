@@ -222,5 +222,10 @@
   "generated/issue-packets/active/adr-0036-disaster-recovery/07a-audit-data-t0-backup-config.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Audit/issues/3",
   "generated/issue-packets/active/adr-0036-disaster-recovery/07b-audit-first-restore-drill.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Audit/issues/4",
   "generated/issue-packets/active/adr-0036-disaster-recovery/08-notify-dr-runbook-t1.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/220",
-  "generated/issue-packets/active/adr-0036-disaster-recovery/09-architecture-hive-sync-dr-drift-detection.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/221"
+  "generated/issue-packets/active/adr-0036-disaster-recovery/09-architecture-hive-sync-dr-drift-detection.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/221",
+  "generated/issue-packets/active/adr-0037-payment-billing/00-architecture-adr-0037-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/222",
+  "generated/issue-packets/active/adr-0037-payment-billing/01-architecture-billing-node-catalog-and-context.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/223",
+  "generated/issue-packets/active/adr-0037-payment-billing/02-architecture-provision-stripe-accounts.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/224",
+  "generated/issue-packets/active/adr-0037-payment-billing/03-architecture-configure-stripe-tax-and-tier-products.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/225",
+  "generated/issue-packets/active/adr-0037-payment-billing/04-architecture-billing-node-standup-adr.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/226"
 }
