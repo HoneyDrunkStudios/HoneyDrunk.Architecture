@@ -238,5 +238,13 @@
   "generated/issue-packets/active/adr-0038-sender-identity/07-notify-list-unsubscribe-header-and-pii-safe-envelopes.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/25",
   "generated/issue-packets/active/adr-0038-sender-identity/08-architecture-notify-cloud-onboarding-deliverability-doc.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/232",
   "generated/issue-packets/active/adr-0038-sender-identity/09-architecture-esp-and-sms-provisioning-and-dkim-keys.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/233",
-  "generated/issue-packets/active/adr-0038-sender-identity/10-architecture-hive-sync-sender-reputation-drift.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/234"
+  "generated/issue-packets/active/adr-0038-sender-identity/10-architecture-hive-sync-sender-reputation-drift.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/234",
+  "generated/issue-packets/active/adr-0039-license-policy/00-architecture-adr-0039-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/235",
+  "generated/issue-packets/active/adr-0039-license-policy/01-architecture-nodes-license-field.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/236",
+  "generated/issue-packets/active/adr-0039-license-policy/02-standards-license-expression-props-default.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Standards/issues/43",
+  "generated/issue-packets/active/adr-0039-license-policy/03-cross-repo-fsl-conversion-notify-communications.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/237",
+  "generated/issue-packets/active/adr-0039-license-policy/04-actions-dco-signoff-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/97",
+  "generated/issue-packets/active/adr-0039-license-policy/05-cross-repo-license-fanout-contributing-and-dco.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/238",
+  "generated/issue-packets/active/adr-0039-license-policy/06-architecture-hive-sync-license-drift.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/239",
+  "generated/issue-packets/active/adr-0039-license-policy/07-architecture-license-change-procedure-amendment-template.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/240"
 }
