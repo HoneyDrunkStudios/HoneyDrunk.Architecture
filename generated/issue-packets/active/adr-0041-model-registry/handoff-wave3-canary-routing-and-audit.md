@@ -1,6 +1,6 @@
 # Handoff — Waves 3 & 4: Canary, Routing, and Audit Build-out
 
-**Initiative:** `adr-0041-ai-model-registry-and-approval-workflow`
+**Initiative:** `adr-0041-model-registry`
 **Wave transition:** Wave 2 (registry foundation) → Wave 3 (canary + routing) → Wave 4 (audit + cost-guard)
 **Read once at the wave boundary. Immutable per invariant 24.**
 

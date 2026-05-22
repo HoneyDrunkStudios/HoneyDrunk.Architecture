@@ -8,7 +8,7 @@ dependencies: ["packet:02"]
 adrs: ["ADR-0041"]
 accepts: ["ADR-0041"]
 wave: 3
-initiative: adr-0041-ai-model-registry-and-approval-workflow
+initiative: adr-0041-model-registry
 node: honeydrunk-ai
 ---
 

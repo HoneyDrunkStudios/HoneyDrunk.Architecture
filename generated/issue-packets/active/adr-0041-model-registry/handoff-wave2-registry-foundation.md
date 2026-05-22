@@ -1,6 +1,6 @@
 # Handoff — Wave 2: Registry Foundation
 
-**Initiative:** `adr-0041-ai-model-registry-and-approval-workflow`
+**Initiative:** `adr-0041-model-registry`
 **Wave transition:** Wave 1 (governance + catalog) → Wave 2 (registry foundation)
 **Read once at the wave boundary. Immutable per invariant 24.**
 

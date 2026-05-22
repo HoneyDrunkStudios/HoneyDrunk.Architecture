@@ -8,14 +8,14 @@ dependencies: []
 adrs: ["ADR-0041"]
 accepts: ["ADR-0041"]
 wave: 1
-initiative: adr-0041-ai-model-registry-and-approval-workflow
+initiative: adr-0041-model-registry
 node: honeydrunk-architecture
 ---
 
 # Accept ADR-0041 — flip status, add the three AI-registry invariants, register the initiative
 
 ## Summary
-Flip ADR-0041 (AI Model Registry and Approval Workflow) from Proposed to Accepted: update the ADR header, update the ADR index row in `adrs/README.md`, add the three new AI-registry invariants ADR-0041 commits in its Consequences/Invariants section to `constitution/invariants.md` as the pre-reserved invariants **72, 73, 74**, correct one stale sentence in ADR-0041's Context, and register the `adr-0041-ai-model-registry-and-approval-workflow` initiative in `initiatives/active-initiatives.md`.
+Flip ADR-0041 (AI Model Registry and Approval Workflow) from Proposed to Accepted: update the ADR header, update the ADR index row in `adrs/README.md`, add the three new AI-registry invariants ADR-0041 commits in its Consequences/Invariants section to `constitution/invariants.md` as the pre-reserved invariants **72, 73, 74**, correct one stale sentence in ADR-0041's Context, and register the `adr-0041-model-registry` initiative in `initiatives/active-initiatives.md`.
 
 ## Context
 ADR-0041 decides the shape of the Grid's AI model registry, who owns it, the approval workflow for new models, the capability-declaration validation step, and how cost guardrails attach to the registry. It was authored 2026-05-21 in a batch of cross-cutting Grid-gap ADRs and has had no scope until now.
@@ -40,7 +40,7 @@ This is a docs/governance-only packet. No code, no workflow, no .NET project.
 - `adrs/ADR-0041-ai-model-registry-and-approval-workflow.md` — flip `**Status:** Proposed` to `**Status:** Accepted`; correct the stale Context sentence (see Proposed Implementation step 5).
 - `adrs/README.md` — update the ADR-0041 row Status column to Accepted.
 - `constitution/invariants.md` — add the three new AI-registry invariants (see Proposed Implementation for exact text) as the pre-reserved invariants **72, 73, 74**.
-- `initiatives/active-initiatives.md` — register the `adr-0041-ai-model-registry-and-approval-workflow` initiative with the packet checklist for this folder.
+- `initiatives/active-initiatives.md` — register the `adr-0041-model-registry` initiative with the packet checklist for this folder.
 
 ## Proposed Implementation
 1. Edit the ADR-0041 header: `**Status:** Proposed` → `**Status:** Accepted`.
@@ -72,7 +72,7 @@ None. This packet touches only Markdown governance files; no .NET project is cre
 - [ ] The ADR-0041 row in `adrs/README.md` reflects Accepted
 - [ ] ADR-0041's stale Context sentence (the "first scaffold packets ... are still open" line) is corrected to reflect that the AI-Node scaffold has landed and `HoneyDrunk.AI` is live at v0.1.0
 - [ ] `constitution/invariants.md` carries the three new AI-registry invariants as invariants **72, 73, 74** (no dispatch against an unregistered model; every approved model has a passing 24h canary; every dispatch emits an Audit entry), under the `## AI Invariants` section, each citing ADR-0041
-- [ ] `initiatives/active-initiatives.md` registers the `adr-0041-ai-model-registry-and-approval-workflow` initiative with a packet checklist
+- [ ] `initiatives/active-initiatives.md` registers the `adr-0041-model-registry` initiative with a packet checklist
 - [ ] No catalog schema change in this packet (catalog updates land in packet 01)
 
 ## Human Prerequisites

@@ -1,6 +1,6 @@
 # Dispatch Plan — ADR-0041: AI Model Registry and Approval Workflow
 
-**Initiative:** `adr-0041-ai-model-registry-and-approval-workflow`
+**Initiative:** `adr-0041-model-registry`
 **ADR:** ADR-0041 (Proposed → Accepted via packet 00)
 **Sector:** AI
 **Created:** 2026-05-22
