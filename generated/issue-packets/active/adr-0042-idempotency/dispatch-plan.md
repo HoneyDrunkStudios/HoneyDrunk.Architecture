@@ -1,6 +1,6 @@
 # Dispatch Plan — ADR-0042: Idempotency Contract for Async Boundaries
 
-**Initiative:** `adr-0042-idempotency-contract-for-async-boundaries`
+**Initiative:** `adr-0042-idempotency`
 **ADR:** ADR-0042 (Proposed → Accepted via packet 00)
 **Sector:** Core / cross-cutting
 **Created:** 2026-05-22

@@ -1,6 +1,6 @@
 # Handoff — Wave 2: Contract Foundation
 
-**Initiative:** `adr-0042-idempotency-contract-for-async-boundaries`
+**Initiative:** `adr-0042-idempotency`
 **Wave transition:** Wave 1 (governance + catalog) → Wave 2 (contract foundation)
 **Read once at the wave boundary. Immutable per invariant 24.**
 

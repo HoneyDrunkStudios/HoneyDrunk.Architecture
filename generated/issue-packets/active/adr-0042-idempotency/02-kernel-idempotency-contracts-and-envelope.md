@@ -7,7 +7,7 @@ labels: ["feature", "tier-2", "core", "adr-0042", "wave-2"]
 dependencies: ["packet:00"]
 adrs: ["ADR-0042"]
 wave: 2
-initiative: adr-0042-idempotency-contract-for-async-boundaries
+initiative: adr-0042-idempotency
 node: honeydrunk-kernel
 ---
 

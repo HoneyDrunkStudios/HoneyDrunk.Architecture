@@ -1,6 +1,6 @@
 # Handoff — Wave 4: Producer Rollout
 
-**Initiative:** `adr-0042-idempotency-contract-for-async-boundaries`
+**Initiative:** `adr-0042-idempotency`
 **Wave transition:** Wave 3 (backing + runtime) → Wave 4 (producer rollout)
 **Read once at the wave boundary. Immutable per invariant 24.**
 

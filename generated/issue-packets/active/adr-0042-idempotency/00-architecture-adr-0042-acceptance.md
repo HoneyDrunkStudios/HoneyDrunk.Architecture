@@ -8,14 +8,14 @@ dependencies: []
 adrs: ["ADR-0042"]
 accepts: ["ADR-0042"]
 wave: 1
-initiative: adr-0042-idempotency-contract-for-async-boundaries
+initiative: adr-0042-idempotency
 node: honeydrunk-architecture
 ---
 
 # Accept ADR-0042 — flip status, add the three idempotency invariants, register the initiative
 
 ## Summary
-Flip ADR-0042 (Idempotency Contract for Async Boundaries) from Proposed to Accepted: update the ADR header, update the ADR index row in `adrs/README.md`, add the three new idempotency invariants ADR-0042 commits in its Consequences/Invariants section to `constitution/invariants.md`, and register the `adr-0042-idempotency-contract-for-async-boundaries` initiative in `initiatives/active-initiatives.md`.
+Flip ADR-0042 (Idempotency Contract for Async Boundaries) from Proposed to Accepted: update the ADR header, update the ADR index row in `adrs/README.md`, add the three new idempotency invariants ADR-0042 commits in its Consequences/Invariants section to `constitution/invariants.md`, and register the `adr-0042-idempotency` initiative in `initiatives/active-initiatives.md`.
 
 ## Context
 ADR-0042 decides the Grid's response to Azure Service Bus's at-least-once delivery semantics: a Grid-wide idempotency contract for every async domain-event boundary. It decides the idempotency key shape, where dedup state lives, the dedup-state retention window, the producer/consumer responsibilities, and the canary that enforces the contract. It was authored 2026-05-21 in a batch of cross-cutting Grid-gap ADRs and has had no scope until now.
@@ -40,7 +40,7 @@ This is a docs/governance-only packet. No code, no workflow, no .NET project.
 - `adrs/ADR-0042-idempotency-contract-for-async-boundaries.md` — flip `**Status:** Proposed` to `**Status:** Accepted`.
 - `adrs/README.md` — update the ADR-0042 row Status column to Accepted.
 - `constitution/invariants.md` — add the three new idempotency invariants (see Proposed Implementation for exact text), numbered **75, 76, 77** (pre-reserved for ADR-0042; see Constraints).
-- `initiatives/active-initiatives.md` — register the `adr-0042-idempotency-contract-for-async-boundaries` initiative with the packet checklist for this folder.
+- `initiatives/active-initiatives.md` — register the `adr-0042-idempotency` initiative with the packet checklist for this folder.
 
 ## Proposed Implementation
 1. Edit the ADR-0042 header: `**Status:** Proposed` → `**Status:** Accepted`.
@@ -70,7 +70,7 @@ None. This packet touches only Markdown governance files; no .NET project is cre
 - [ ] ADR-0042 header reads `**Status:** Accepted`
 - [ ] The ADR-0042 row in `adrs/README.md` reflects Accepted
 - [ ] `constitution/invariants.md` carries the three new idempotency invariants (every async domain-event message carries an `IdempotencyKey`; dedup state lives per consumer-group with a TTL; downstream message keys are deterministically derived from the originating key), numbered **75, 76, 77** under a new `## Idempotency Invariants` section, each citing ADR-0042
-- [ ] `initiatives/active-initiatives.md` registers the `adr-0042-idempotency-contract-for-async-boundaries` initiative with a packet checklist
+- [ ] `initiatives/active-initiatives.md` registers the `adr-0042-idempotency` initiative with a packet checklist
 - [ ] No catalog schema change in this packet (catalog updates land in packet 01)
 
 ## Human Prerequisites

@@ -7,7 +7,7 @@ labels: ["feature", "tier-2", "ops", "adr-0042", "wave-4"]
 dependencies: ["packet:04"]
 adrs: ["ADR-0042"]
 wave: 4
-initiative: adr-0042-idempotency-contract-for-async-boundaries
+initiative: adr-0042-idempotency
 node: honeydrunk-communications
 ---
 
