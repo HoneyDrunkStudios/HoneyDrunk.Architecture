@@ -9,6 +9,8 @@ Last synced: 2026-05-21
 > **Manual addition (2026-05-23):** ADRs 0048–0057 added below by hand on the `claude/adr-review-dFtgC` branch. Hive-sync will reconcile on its next scheduled run; the entries below should be a no-op match.
 >
 > **Manual addition (2026-05-23):** ADRs 0058–0069 added below by the adr-composer agent. Hive-sync will reconcile on its next scheduled run.
+>
+> **Manual addition (2026-05-23):** ADRs 0070-0079 added by the adr-composer agent on the `claude/adr-nodes-architecture-Lbg7F` branch. Hive-sync will reconcile on its next scheduled run.
 
 ## Awaiting (no `accepts:`-declaring packets yet)
 
@@ -62,6 +64,16 @@ and remain manually-flippable until rescoped.
 | [ADR-0067](../adrs/ADR-0067-inbound-rate-limiting-and-quota-enforcement.md) | ADR-0067: Inbound Rate Limiting and Quota Enforcement | Core / cross-cutting | 2026-05-23 | 0 |
 | [ADR-0068](../adrs/ADR-0068-background-job-and-recurring-work-substrate.md) | ADR-0068: Background Job and Recurring Work Substrate | Core / Ops · cross-cutting | 2026-05-23 | 0 |
 | [ADR-0069](../adrs/ADR-0069-currency-handling-and-money-representation.md) | ADR-0069: Currency Handling and Money Representation | Core (Kernel.Abstractions) · Ops (first consumers: Billing, Notify Cloud) · cross-cutting | 2026-05-23 | 0 |
+| [ADR-0070](../adrs/ADR-0070-frontend-platform-stack.md) | ADR-0070: Frontend Platform Stack — React for Web, Blazor for Simple Admin, React Native + Expo for Mobile | Creator / cross-cutting | 2026-05-23 | 0 |
+| [ADR-0071](../adrs/ADR-0071-stand-up-honeydrunk-web-ui-node.md) | ADR-0071: Stand Up the HoneyDrunk.Web.UI Node — Shared Frontend Design System | Creator | 2026-05-23 | 0 |
+| [ADR-0072](../adrs/ADR-0072-data-access-stance-ef-core-default-dapper-hot-path.md) | ADR-0072: Data Access Stance — EF Core Default, Dapper for Hot-Path Reads | Core / cross-cutting | 2026-05-23 | 0 |
+| [ADR-0073](../adrs/ADR-0073-notify-default-providers.md) | ADR-0073: Notify Default Providers — Resend (Email), Twilio (SMS), Expo (Push) | Ops | 2026-05-23 | 0 |
+| [ADR-0074](../adrs/ADR-0074-testing-library-stack.md) | ADR-0074: Testing Library Stack — xUnit + NSubstitute + AwesomeAssertions | Meta / cross-cutting | 2026-05-23 | 0 |
+| [ADR-0075](../adrs/ADR-0075-documentation-tooling.md) | ADR-0075: Documentation Tooling — Scalar (In-Product OpenAPI) and Docusaurus (Public Docs) | Meta / cross-cutting | 2026-05-23 | 0 |
+| [ADR-0076](../adrs/ADR-0076-cache-backing-azure-cache-for-redis.md) | ADR-0076: Cache Backing — Azure Cache for Redis with Cost-Aware Sizing | Core / cross-cutting | 2026-05-23 | 0 |
+| [ADR-0077](../adrs/ADR-0077-infrastructure-as-code-bicep.md) | ADR-0077: Infrastructure-as-Code — Bicep (Azure-native) | Ops / cross-cutting | 2026-05-23 | 0 |
+| [ADR-0078](../adrs/ADR-0078-end-user-identity-entra-external-id.md) | ADR-0078: End-User Identity — Microsoft Entra External ID | Core | 2026-05-23 | 0 |
+| [ADR-0079](../adrs/ADR-0079-multi-perspective-pr-review-stack.md) | ADR-0079: Multi-Perspective PR Review Stack — Copilot + CodeRabbit + Grid-Aware Agent (Codex + Claude) | Meta | 2026-05-23 | 0 |
 | [PDR-0002](../pdrs/PDR-0002-notify-as-a-service-first-commercial-product.md) | PDR-0002: HoneyDrunk Notify — First Commercial Product on the Grid | Ops (primary) · Meta (positioning) | 2026-05-02 | 19 |
 | [PDR-0003](../pdrs/PDR-0003-lately-currents-based-connection-app.md) | PDR-0003: Lately — A Currents-Based Connection App for Regular Humans | Market / Core / Ops | 2026-05-05 | 16 |
 | [PDR-0005](../pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md) | PDR-0005: Hearth — Personal Growth as a Living Town | Market / AI / Ops | 2026-05-05 | 16 |
