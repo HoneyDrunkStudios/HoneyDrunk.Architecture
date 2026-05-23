@@ -19,7 +19,7 @@ The conclusion: **the slot that needs filling is not "automatic LLM reviewer" ge
 
 The build is small, but the runtime placement matters. The prompt logic exists in `.claude/agents/review.md`. The context-loading contract is defined in ADR-0011 D4. The workflow host exists in HoneyDrunk.Actions, but GitHub Actions should be the cheap trigger/visibility rail, not the reasoning brain. The default v1 runtime is an OpenClaw-hosted Grid Review Runner using Codex through the Studio's existing subscription/session. GitHub Actions emits/validates review requests and exposes advisory status; OpenClaw performs the Grid-aware review and posts the verdict back to the PR.
 
-The cost calculus has also shifted. The April 2026 ADR-0011 D10 rejection was per-PR cloud LLM cost against a low PR volume; at today's volume (~20-50 agent PRs/month), an Anthropic/API-backed GitHub Action makes AI review a recurring variable bill and sends private repo diffs to an external model API by default. The Studio already runs OpenClaw/Codex locally. The cheapest and most controllable v1 is therefore: use GitHub/webhooks/cron to request reviews automatically, run the review in OpenClaw/Codex, track the reviewed head SHA, and comment back only when the PR changed.
+The cost calculus has also shifted. The April 2026 ADR-0011 D10 rejection was per-PR cloud LLM cost against a low PR volume; at today's volume (~20-50 agent PRs/month), an Anthropic/API-backed GitHub Action makes AI review a recurring variable bill and sends private repo diffs to an external model API by default. The Studio already runs OpenClaw/Codex locally. The cheapest and most controllable v1 is therefore: use a signed GitHub-to-OpenClaw webhook as the primary request path, keep a poll/replay fallback for outages, run the review in OpenClaw/Codex, track the reviewed head SHA, and comment back only when the PR changed.
 
 This ADR amends ADR-0011 to **reverse the human-invoked-only stance**, **reverse the CodeRabbit rejection as moot** (we're not adopting an alternative), and add **AI-authored PR discipline** that the automatic Grid Review Runner makes practical to enforce.
 
@@ -34,9 +34,10 @@ The Grid builds, owns, and operates its own automatic Grid-aware code reviewer. 
 - A new reusable workflow, `HoneyDrunk.Actions/.github/workflows/job-review-request.yml`, follows the existing `pr-core.yml` factoring (per ADR-0012) and validates whether a PR should request review.
 - Triggered on `pull_request` events: `opened`, `synchronize`, `ready_for_review`. Not on `draft` PRs (cost discipline; draft is by definition WIP).
 - Emits a review request payload containing the repo, PR number, head SHA, author class, changed-file summary, packet link, and `.honeydrunk-review.yaml` settings.
-- Delivers the request to OpenClaw through the configured webhook path, or leaves a machine-readable artifact/comment for an OpenClaw cron job to pick up when webhooks are unavailable.
+- Delivers the request to OpenClaw through a signed webhook path as the Phase-1 primary transport. The webhook receiver verifies HMAC signature, timestamp/replay window, request size, and idempotency before enqueueing work.
+- Uses a durable poll/replay fallback when webhook delivery is unavailable: the workflow leaves a machine-readable artifact/comment that OpenClaw can discover later, using the same request payload and idempotency key. The fallback is not a second review path; it is the backup transport for the same runner contract.
 - OpenClaw runs the Grid Review Runner using Codex and `.claude/agents/review.md` as the canonical prompt source (per ADR-0007's source-of-truth rule).
-- The runner posts the verdict as a PR comment using the format already defined in `.claude/agents/review.md` and records the reviewed head SHA to avoid re-reviewing unchanged diffs.
+- The runner posts the verdict as a PR comment using the format already defined in `.claude/agents/review.md` and records the reviewed head SHA to avoid re-reviewing unchanged diffs. The idempotency key is `owner/repo#pr@headSha`; webhook retries, duplicate GitHub events, and manual replays must converge on the same queued/reviewed request instead of producing duplicate comments.
 - The workflow/check surface remains **non-required** and advisory, per ADR-0011 D5's posture - preserved by this ADR.
 
 The agent definition itself does not change. The same prompt that runs locally runs through the automatic runner. Drift between execution surfaces is forbidden - all surfaces consume `.claude/agents/review.md` directly.
@@ -366,7 +367,7 @@ ADR-0011's invariants 31-33 are preserved. Final invariant numbers for the two n
 
 - **Per-PR cloud LLM API cost is avoided in v1 by design.** The default runner uses the existing OpenClaw/Codex subscription/session. API-backed execution remains a future fallback only, with explicit caps and provider choice.
 - **OpenClaw availability becomes part of the advisory review surface.** If the local runner is offline, the workflow/request path marks the review pending or unavailable and posts/records that state; PRs remain mergeable because the reviewer is advisory.
-- **GitHub App/webhook credentials are optional v1 infrastructure.** The webhook path may use a narrowly scoped GitHub App or secret; the cron/artifact path can rely on local `gh` authentication. Do not provision Anthropic API credentials for v1.
+- **Webhook credentials are required v1 infrastructure for the primary path.** Phase 1 uses a signed GitHub-to-OpenClaw webhook with a shared secret or narrowly scoped GitHub App/webhook credential. The poll/artifact path remains as a fallback and manual replay surface, not the default. Do not provision Anthropic API credentials for v1.
 - **PR diffs stay in the local OpenClaw/Codex path by default.** They are not sent to Anthropic API as part of v1. Any future external API fallback must be documented and explicitly enabled. Private revenue Nodes (per ADR-0027 D2) are explicitly **excluded from the default v1 rollout** and require an explicit opt-in via `.honeydrunk-review.yaml`.
 - **The manual review invocation remains available** and is the right tool for offline review or pre-PR feedback. The automatic runner does not replace it; it makes the routine case automatic.
 - **Copilot's role diminishes.** It remains enabled (zero marginal cost from the existing subscription) but no longer carries a specific responsibility in the pipeline.
@@ -379,7 +380,7 @@ ADR-0011's invariants 31-33 are preserved. Final invariant numbers for the two n
 - Author the OpenClaw/Codex Grid Review Runner runbook/config in Architecture.
 - Author `authorship-check` and `pr-size-check` jobs in `pr-core.yml`.
 - Author the `audit-sample` post-merge labeling job.
-- If using webhook delivery, create the narrowly scoped GitHub App/webhook credential and store it per ADR-0005/0006. Do not provision an Anthropic API key for v1.
+- Create the narrowly scoped GitHub-to-OpenClaw webhook credential and store it per ADR-0005/0006. Do not provision an Anthropic API key for v1.
 - Author `.honeydrunk-review.yaml` v1 schema doc in this repo (`copilot/review-config-schema.md` or similar).
 - Enable on the Architecture repo (Phase 1).
 - Add `review_risk_class` field to `catalogs/grid-health.json` schema; populate for current Nodes (deferred until Phase 3 activates).
