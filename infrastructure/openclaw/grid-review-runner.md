@@ -1,8 +1,24 @@
 # OpenClaw Grid Review Runner
 
-**Status:** Draft / ADR-0044 Phase 1
+**Status:** ADR-0044 Phase 1 runtime contract
 **Owner:** HoneyDrunk.Architecture
 **Related:** ADR-0044, ADR-0011, ADR-0012, ADR-0005, ADR-0006
+**Tracking:** Architecture#179
+
+## Packet 02b acceptance mapping
+
+This document satisfies ADR-0044 packet 02b by defining:
+
+- the OpenClaw/Codex runner runtime contract;
+- `.claude/agents/review.md` as the canonical prompt source;
+- the signed webhook receiver contract, including HMAC/timestamp verification, replay window, size cap, response codes, and secret storage;
+- the review request payload schema;
+- durable request state, idempotency, and reviewed-head-SHA behavior;
+- webhook-primary delivery plus cron/poll replay fallback;
+- advisory failure behavior when OpenClaw is offline; and
+- the v1 rule that no Anthropic/OpenAI model API key is required.
+
+The concrete webhook URL and signing-secret value are intentionally not recorded here. They are deployment secrets required before wiring `job-review-request.yml` in HoneyDrunk.Actions.
 
 ## Goal
 
