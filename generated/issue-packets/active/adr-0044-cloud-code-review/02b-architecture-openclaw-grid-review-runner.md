@@ -23,12 +23,13 @@ ADR-0044 now chooses a subscription-backed OpenClaw/Codex runtime for v1 instead
 
 ## Scope
 - Add Architecture documentation/config for the Grid Review Runner, e.g. `infrastructure/openclaw/grid-review-runner.md`.
-- Define the review request payload consumed by the runner: repo, PR number, head SHA, authorship class, changed-file summary, packet link, and `.honeydrunk-review.yaml` settings.
-- Define reviewed-head-SHA state storage under the OpenClaw workspace or Architecture-managed state file.
+- Define the signed webhook receiver contract consumed by the runner: endpoint path, HMAC/timestamp headers, replay window, request size cap, response codes, and advisory failure behavior.
+- Define the review request payload consumed by the runner: repo, PR number, head SHA, authorship class, changed-file summary, packet link, `.honeydrunk-review.yaml` settings, callback target, and idempotency key.
+- Define durable request/review state storage under the OpenClaw workspace or Architecture-managed state file. The idempotency key is `owner/repo#pr@headSha`; reviewed-head-SHA state prevents unchanged PRs from being reviewed repeatedly.
 - Document both trigger modes:
-  - webhook/request delivery from `job-review-request.yml`;
-  - cron/poll fallback for open PRs when webhook delivery is unavailable.
-- Document local auth expectations: `gh` auth is acceptable for v1; a narrowly scoped GitHub App/webhook credential is optional.
+  - webhook/request delivery from `job-review-request.yml` as the Phase-1 primary path;
+  - cron/poll replay fallback for open PRs when webhook delivery is unavailable, using the same payload and idempotency key.
+- Document local auth expectations: `gh` auth is acceptable for PR checkout/comment writeback in v1; a narrowly scoped webhook signing secret or GitHub App credential is required for the inbound request path.
 
 ## NuGet Dependencies
 None. Markdown/config only.
@@ -36,14 +37,16 @@ None. Markdown/config only.
 ## Acceptance Criteria
 - [ ] OpenClaw/Codex runner runtime is documented/configured in Architecture
 - [ ] The runner consumes `.claude/agents/review.md` as the canonical prompt source
+- [ ] The signed webhook receiver contract is documented, including HMAC/timestamp verification, replay window, request size cap, response codes, and secret storage
 - [ ] The review request payload schema is documented
-- [ ] Reviewed head SHA tracking is specified so unchanged PRs are not re-reviewed
-- [ ] Webhook and cron/poll trigger modes are both documented
+- [ ] Durable request state, idempotency, and reviewed-head-SHA tracking are specified so webhook retries and unchanged PRs do not produce duplicate reviews
+- [ ] Webhook primary delivery and cron/poll replay fallback are both documented
 - [ ] The doc explicitly says no Anthropic API key is required for v1
 - [ ] The doc names the advisory failure behavior when OpenClaw is offline
 
 ## Human Prerequisites
-- [ ] Confirm whether Phase 1 uses webhook delivery first or cron/poll fallback first.
+- [x] Phase 1 uses webhook-first delivery. Cron/poll remains the replay/fallback path.
+- [ ] Provide the OpenClaw webhook URL and signing secret storage location before wiring the Actions workflow.
 
 ## Dependencies
 - `packet:01` — ADR-0044 acceptance/amendment (soft).
@@ -56,6 +59,7 @@ None. Markdown/config only.
 ## Constraints
 - Do not provision or require an Anthropic API key for v1.
 - Do not make review a required blocking check.
+- Do not expose an unsigned or unauthenticated local endpoint. The webhook receiver must verify HMAC/timestamp, enforce replay protection, and persist the request before runner execution.
 - Keep runtime behavior provider-neutral enough that a future API-backed fallback can be added deliberately.
 
 ## Agent Handoff
