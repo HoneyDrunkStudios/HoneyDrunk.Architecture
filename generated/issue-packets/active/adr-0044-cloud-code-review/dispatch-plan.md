@@ -24,23 +24,25 @@ ADR-0044 D11's four phases map directly to the four waves. Each phase is a **dis
 
 Packet 01 first (the acceptance flip). Then 02-05 in parallel; 06 after 03/04/05.
 
-- [ ] `HoneyDrunk.Architecture`: **Accept ADR-0044** - flip status, finalize the two new invariants, ADR-0011 amendment note, register the initiative - [`01-architecture-adr-0044-acceptance.md`](01-architecture-adr-0044-acceptance.md)
+- [x] `HoneyDrunk.Architecture`: **Accept ADR-0044** - flip status, finalize the two new invariants, ADR-0011 amendment note, register the initiative - [`01-architecture-adr-0044-acceptance.md`](01-architecture-adr-0044-acceptance.md)
 - [x] **Superseded:** `packet:02` originally provisioned a GitHub App + Anthropic key. Replaced by `packet:02b`; do not execute the old filed issue.
-- [ ] `HoneyDrunk.Architecture`: Define the OpenClaw/Codex Grid Review Runner runtime - [`02b-architecture-openclaw-grid-review-runner.md`](02b-architecture-openclaw-grid-review-runner.md)
+- [x] `HoneyDrunk.Architecture`: Define the OpenClaw/Codex Grid Review Runner runtime - [`02b-architecture-openclaw-grid-review-runner.md`](02b-architecture-openclaw-grid-review-runner.md)
   - Blocked by: `packet:01` (soft).
 - [x] **Superseded:** `packet:03` originally built an Anthropic/Claude `job-review-agent.yml`. Replaced by `packet:03b`; do not execute the old filed issue.
-- [ ] `HoneyDrunk.Actions`: Build `job-review-request.yml` - the GitHub trigger rail for the OpenClaw reviewer - [`03b-actions-job-review-request-workflow.md`](03b-actions-job-review-request-workflow.md)
+- [x] `HoneyDrunk.Actions`: Build `job-review-request.yml` - the GitHub trigger rail for the OpenClaw reviewer - [`03b-actions-job-review-request-workflow.md`](03b-actions-job-review-request-workflow.md)
   - Blocked by: `packet:01` (soft), `packet:02b` (**hard** - runner payload/schema).
-- [ ] `HoneyDrunk.Architecture`: Update `review.md` with the D3 twenty-category rubric execution detail - [`04-architecture-review-md-twenty-category-rubric.md`](04-architecture-review-md-twenty-category-rubric.md) - **`current-focus.md` priority #7 (review.md half)**
+- [x] `HoneyDrunk.Architecture`: Update `review.md` with the D3 twenty-category rubric execution detail - [`04-architecture-review-md-twenty-category-rubric.md`](04-architecture-review-md-twenty-category-rubric.md) - **`current-focus.md` priority #7 (review.md half)**
   - Blocked by: `packet:01` (soft).
 - [x] **Superseded:** `packet:05` documented the old Sonnet/Opus/API schema. Replaced by `packet:05b`; do not execute the old filed issue.
-- [ ] `HoneyDrunk.Architecture`: Author the OpenClaw-aware `.honeydrunk-review.yaml` v1 schema doc - [`05b-architecture-review-config-schema-openclaw.md`](05b-architecture-review-config-schema-openclaw.md)
+- [x] `HoneyDrunk.Architecture`: Author the OpenClaw-aware `.honeydrunk-review.yaml` v1 schema doc - [`05b-architecture-review-config-schema-openclaw.md`](05b-architecture-review-config-schema-openclaw.md)
   - Blocked by: `packet:01` (soft).
 - [x] **Superseded:** `packet:06` enabled the old cloud/API reviewer. Replaced by `packet:06b`; do not execute the old filed issue.
-- [ ] `HoneyDrunk.Architecture`: Enable the OpenClaw/Codex reviewer on the Architecture repo (Phase 1 pilot) - [`06b-architecture-enable-openclaw-review-phase-1-pilot.md`](06b-architecture-enable-openclaw-review-phase-1-pilot.md)
+- [x] `HoneyDrunk.Architecture`: Enable the OpenClaw/Codex reviewer on the Architecture repo (Phase 1 pilot) - [`06b-architecture-enable-openclaw-review-phase-1-pilot.md`](06b-architecture-enable-openclaw-review-phase-1-pilot.md)
   - Blocked by: `packet:02b` (hard), `packet:03b` (hard), `packet:04` (hard), `packet:05b` (soft).
 
 **Wave 1 exit criterion (Phase 1 go/no-go):** the OpenClaw/Codex runner verdicts on real Architecture-repo PRs are at least as useful as the manual `review` agent, the trigger path is reliable, reviewed-head-SHA tracking works, and incremental model cost stays near zero. **If this bar is missed, Wave 2 does not start.**
+
+> **Wave 1 sync (2026-05-23):** Phase 1 is live on Architecture in artifact + OpenClaw cron/poll mode. The trigger path uploads review-request artifacts, the runner has posted advisory comments on real PR head SHAs, and clean reviews now include evidence details. Signed webhook delivery is still the hardening/cutover gap; keep the temporary cron/poll transport until webhook delivery is configured and verified.
 
 ### Wave 2 - Phase 2: Rollout to the 10 remaining live .NET Nodes + discipline foundations
 
@@ -50,16 +52,18 @@ Runs after the Phase-1 go decision. Packets 07-12.
   - Blocked by: `packet:01` (soft).
 - [ ] `HoneyDrunk.Actions`: Seed `large-pr`, `audit-sample`, `skip-review` labels Grid-wide - [`08-actions-seed-review-labels-grid-wide.md`](08-actions-seed-review-labels-grid-wide.md)
   - Blocked by: `packet:07` (soft).
-- [ ] `HoneyDrunk.Architecture`: Roll the D3 rubric into the upstream authoring agents (`scope`/`adr-composer`/`pdr-composer`/`refine`/`node-audit`) - [`09-architecture-d3-rubric-upstream-agent-rollout.md`](09-architecture-d3-rubric-upstream-agent-rollout.md) - **`current-focus.md` priority #7 (upstream half)**
+- [x] `HoneyDrunk.Architecture`: Roll the D3 rubric into the upstream authoring agents (`scope`/`adr-composer`/`pdr-composer`/`refine`/`node-audit`) - [`09-architecture-d3-rubric-upstream-agent-rollout.md`](09-architecture-d3-rubric-upstream-agent-rollout.md) - **`current-focus.md` priority #7 (upstream half)**
   - Blocked by: `packet:04` (**hard** - same category names/numbering).
-- [ ] `HoneyDrunk.Architecture`: Amend execution-surface prompts - emit `Authorship:` line + surface the D3 authoring checklist - [`10-architecture-execution-surface-authorship-and-rubric.md`](10-architecture-execution-surface-authorship-and-rubric.md)
+- [x] `HoneyDrunk.Architecture`: Amend execution-surface prompts - emit `Authorship:` line + surface the D3 authoring checklist - [`10-architecture-execution-surface-authorship-and-rubric.md`](10-architecture-execution-surface-authorship-and-rubric.md)
   - Blocked by: `packet:04` (hard), `packet:07` (soft).
 - [ ] 10 live .NET Nodes (cross-repo, tracked from `HoneyDrunk.Architecture`): Enable the OpenClaw/Codex reviewer on the 10 remaining live .NET Nodes - [`11-cross-repo-enable-review-ten-nodes.md`](11-cross-repo-enable-review-ten-nodes.md)
   - Blocked by: `packet:06b` (**hard** - Phase-1 go), `packet:07` (hard), `packet:08` (hard), `packet:09` (soft), `packet:10` (soft).
-- [ ] `HoneyDrunk.Architecture`: Verify `pr-review-rules.md` severity coverage across all twenty D3 categories - [`12-architecture-pr-review-rules-severity-coverage.md`](12-architecture-pr-review-rules-severity-coverage.md)
+- [x] `HoneyDrunk.Architecture`: Verify `pr-review-rules.md` severity coverage across all twenty D3 categories - [`12-architecture-pr-review-rules-severity-coverage.md`](12-architecture-pr-review-rules-severity-coverage.md)
   - Blocked by: `packet:04` (hard).
 
 **Wave 2 exit criterion (Phase 2 go/no-go):** all 10 fan-out Nodes enabled (Architecture already piloted; Studios and Observe excluded; private revenue Nodes excluded); authorship classification mandatory and passing across the Grid; PR-size discipline visible (warnings-only); the D3 rubric present in all seven agent files; Phase-2 review quality reviewed before Phase 3.
+
+> **Wave 2 Architecture sync (2026-05-23):** Packets 09, 10, and 12 have landed on the Architecture side. Remaining Wave 2 blockers before broad Node fan-out are Actions#85 (`authorship-check` / `pr-size-check`) and Actions#86 (Grid-wide labels), plus the explicit Phase-2 rollout go/no-go.
 
 ### Wave 3 - Phase 3: Discipline tightening
 

@@ -12,20 +12,20 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 **Description:** Accept ADR-0044 and ship the automatic Grid-aware code-review substrate: GitHub Actions emits signed review requests; OpenClaw/Codex runs the canonical `.claude/agents/review.md` with Grid context; review results are advisory in Phase 1 and piloted on `HoneyDrunk.Architecture` before fan-out.
 
 **Tracking (Wave 1 — Phase 1: Architecture pilot):**
-- [ ] Architecture#170: Accept ADR-0044 — flip status, finalize invariants 52/53, register initiative (packet 01)
-- [ ] Architecture#179: Define the OpenClaw/Codex Grid Review Runner runtime (packet 02b)
-- [ ] Actions#87: Build `job-review-request.yml` — GitHub trigger rail for OpenClaw reviewer (packet 03b)
-- [ ] Architecture#172: Update `.claude/agents/review.md` with the D3 twenty-category rubric execution detail (packet 04)
-- [ ] Architecture#180: Author the OpenClaw-aware `.honeydrunk-review.yaml` v1 schema doc (packet 05b)
-- [ ] Architecture#181: Enable the OpenClaw/Codex reviewer on `HoneyDrunk.Architecture` (packet 06b)
+- [x] Architecture#170: Accept ADR-0044 — flip status, finalize invariants 52/53, register initiative (packet 01; shipped via PR #273)
+- [x] Architecture#179: Define the OpenClaw/Codex Grid Review Runner runtime (packet 02b; shipped via PR #274)
+- [x] Actions#87: Build `job-review-request.yml` — GitHub trigger rail for OpenClaw reviewer (packet 03b; shipped via Actions PR #99)
+- [x] Architecture#172: Update `.claude/agents/review.md` with the D3 twenty-category rubric execution detail (packet 04; shipped via PR #276)
+- [x] Architecture#180: Author the OpenClaw-aware `.honeydrunk-review.yaml` v1 schema doc (packet 05b; shipped via PR #277)
+- [x] Architecture#181: Enable the OpenClaw/Codex reviewer on `HoneyDrunk.Architecture` (packet 06b; shipped via PR #278)
 
 **Tracking (Wave 2 — Phase 2: live Node rollout + discipline foundations):**
 - [ ] Actions#85: Add authorship-check and pr-size-check jobs to `pr-core.yml` (packet 07)
 - [ ] Actions#86: Seed `large-pr`, `audit-sample`, and `skip-review` labels Grid-wide (packet 08)
-- [ ] Architecture#175: Roll the D3 rubric into upstream authoring agents (packet 09)
-- [ ] Architecture#176: Amend execution-surface prompts for `Authorship:` and D3 checklist (packet 10)
+- [x] Architecture#175: Roll the D3 rubric into upstream authoring agents (packet 09; shipped via PR #279)
+- [x] Architecture#176: Amend execution-surface prompts for `Authorship:` and D3 checklist (packet 10; shipped via PR #279)
 - [ ] Architecture#182: Enable the OpenClaw/Codex reviewer on the 10 remaining live Nodes (packet 11)
-- [ ] Architecture#183: Verify `pr-review-rules.md` severity coverage across all D3 categories (packet 12)
+- [x] Architecture#183: Verify `pr-review-rules.md` severity coverage across all D3 categories (packet 12; shipped via this PR)
 
 **Tracking (Wave 3 — Phase 3: discipline tightening):**
 - [ ] Architecture#184: Add `review_risk_class` to `catalogs/grid-health.json` (packet 13)
@@ -36,9 +36,11 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [ ] Actions#89: Build the D9 `audit-sample` post-merge labeling and audit job (packet 16)
 - [ ] Architecture#186: Wire `hive-sync` to detect D3 ↔ agent-file drift (packet 17)
 
-**Superseded packets:** Architecture#171, Actions#84, Architecture#173, and Architecture#174 are superseded by the OpenClaw/Codex 02b/03b/05b/06b path and should not be executed.
+**Superseded packets:** Architecture#171, Actions#84, Architecture#173, and Architecture#174 are superseded by the OpenClaw/Codex 02b/03b/05b/06b path and should not be executed. Architecture#173 and Architecture#174 should be closed as superseded by Architecture#180/#181; Architecture#171 remains a gated human/infra item only if webhook/GitHub-App credentials become necessary for the non-cron path.
 
 **Exit criteria:** ADR-0044 is Accepted; Phase 1 MVP (`job-review-request.yml` + Grid Review Runner) is enabled on `HoneyDrunk.Architecture` only and running on every non-draft PR; each phase's dispatch-plan go/no-go criterion is satisfied before the next wave starts.
+
+> **Sync (2026-05-23):** Phase 1 is functionally complete in artifact-plus-cron/poll mode: ADR-0044 is Accepted, `job-review-request.yml` is live, Architecture has `.honeydrunk-review.yaml` and the caller workflow, and OpenClaw posted advisory PR comments for reviewed head SHAs. Webhook provisioning remains the transport hardening gap; the temporary OpenClaw cron/poll jobs should be disabled after signed webhook delivery is configured and verified. Wave 2 Architecture-side docs/prompts (#175, #176, #183) have landed; Actions-side checks/labels (#85/#86) remain before broad Node fan-out (#182).
 
 ### ADR-0047 Testing Patterns and Tooling
 **Status:** In Progress
