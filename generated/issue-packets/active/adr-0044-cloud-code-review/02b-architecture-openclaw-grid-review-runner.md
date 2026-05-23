@@ -35,18 +35,18 @@ ADR-0044 now chooses a subscription-backed OpenClaw/Codex runtime for v1 instead
 None. Markdown/config only.
 
 ## Acceptance Criteria
-- [ ] OpenClaw/Codex runner runtime is documented/configured in Architecture
-- [ ] The runner consumes `.claude/agents/review.md` as the canonical prompt source
-- [ ] The signed webhook receiver contract is documented, including HMAC/timestamp verification, replay window, request size cap, response codes, and secret storage
-- [ ] The review request payload schema is documented
-- [ ] Durable request state, idempotency, and reviewed-head-SHA tracking are specified so webhook retries and unchanged PRs do not produce duplicate reviews
-- [ ] Webhook primary delivery and cron/poll replay fallback are both documented
-- [ ] The doc explicitly says no Anthropic API key is required for v1
-- [ ] The doc names the advisory failure behavior when OpenClaw is offline
+- [x] OpenClaw/Codex runner runtime is documented/configured in Architecture
+- [x] The runner consumes `.claude/agents/review.md` as the canonical prompt source
+- [x] The signed webhook receiver contract is documented, including HMAC/timestamp verification, replay window, request size cap, response codes, and secret storage
+- [x] The review request payload schema is documented
+- [x] Durable request state, idempotency, and reviewed-head-SHA tracking are specified so webhook retries and unchanged PRs do not produce duplicate reviews
+- [x] Webhook primary delivery and cron/poll replay fallback are both documented
+- [x] The doc explicitly says no Anthropic API key is required for v1
+- [x] The doc names the advisory failure behavior when OpenClaw is offline
 
 ## Human Prerequisites
 - [x] Phase 1 uses webhook-first delivery. Cron/poll remains the replay/fallback path.
-- [ ] Provide the OpenClaw webhook URL and signing secret storage location before wiring the Actions workflow.
+- [ ] Provide the OpenClaw webhook URL and signing secret storage location before wiring the Actions workflow. This remains an Actions#87 prerequisite, not a blocker for this Architecture runtime contract.
 
 ## Dependencies
 - `packet:01` — ADR-0044 acceptance/amendment (soft).
