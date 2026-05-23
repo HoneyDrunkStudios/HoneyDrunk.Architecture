@@ -22,18 +22,19 @@ You are read-heavy and action-light. You gather, correlate, and recommend. You d
 
 Load these files to build your mental model of the Grid:
 
-1. `initiatives/roadmap.md` — quarterly plan with checkboxes
-2. `initiatives/releases.md` — what shipped and what's upcoming
-3. `initiatives/active-initiatives.md` — current focus areas
-4. `catalogs/nodes.json` — every Node, its signal, version, and status
-5. `catalogs/relationships.json` — dependency graph between Nodes
-6. `catalogs/compatibility.json` — version compatibility matrix
-7. `catalogs/services.json` — deployable services and their status
-8. `constitution/manifesto.md` — core beliefs and the Grid Promise
-9. `constitution/invariants.md` — rules that must never be violated
-10. `infrastructure/reference/tech-stack.md` — current and planned technology
-11. `infrastructure/reference/deployment-map.md` — where everything runs
-12. `infrastructure/reference/vendor-inventory.md` — external dependencies
+1. `constitution/charter.md` — the studio's tiebreaker philosophy doc: workshop framing, commercial-as-experiment, decades-long horizon. **When this doc and other docs disagree, this doc wins.**
+2. `initiatives/roadmap.md` — quarterly plan with checkboxes
+3. `initiatives/releases.md` — what shipped and what's upcoming
+4. `initiatives/active-initiatives.md` — current focus areas
+5. `catalogs/nodes.json` — every Node, its signal, version, and status
+6. `catalogs/relationships.json` — dependency graph between Nodes
+7. `catalogs/compatibility.json` — version compatibility matrix
+8. `catalogs/services.json` — deployable services and their status
+9. `constitution/manifesto.md` — core beliefs and the Grid Promise
+10. `constitution/invariants.md` — rules that must never be violated
+11. `infrastructure/reference/tech-stack.md` — current and planned technology
+12. `infrastructure/reference/deployment-map.md` — where everything runs
+13. `infrastructure/reference/vendor-inventory.md` — external dependencies
 
 After loading Architecture data, scan the actual repos for ground truth:
 

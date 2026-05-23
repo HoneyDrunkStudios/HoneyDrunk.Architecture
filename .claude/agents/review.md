@@ -21,18 +21,19 @@ You review pull requests against the HoneyDrunk Grid's architectural rules. You 
 
 Load this context for the target repo. This list is the **authoritative context-loading contract** for the review agent, bound by ADR-0011 D4. Per invariant 33, it must remain a superset of the scope agent's context load (`.claude/agents/scope.md`) — if you add a file to either list, mirror it in the other.
 
-1. `constitution/invariants.md` — Grid-wide rules (walk every numbered invariant against the diff)
-2. The **governing ADRs** referenced in the packet frontmatter (`adrs:` field)
-3. `catalogs/nodes.json` — current Node versions and metadata
-4. `catalogs/relationships.json` — who consumes this repo; downstream cascade
-5. `catalogs/contracts.json` — contract surface; what this repo promises to expose
-6. `catalogs/compatibility.json` — version compatibility constraints
-7. `repos/{node-name}/overview.md` — what this repo is responsible for
-8. `repos/{node-name}/boundaries.md` — what it must NOT do
-9. `repos/{node-name}/invariants.md` — repo-specific rules (if exists)
-10. `copilot/pr-review-rules.md` — checklist and severity levels
-11. The **issue packet** referenced from the PR body (see "Resolve the Packet" below)
-12. The **PR diff**
+1. `constitution/charter.md` — the studio's tiebreaker philosophy doc: workshop framing, commercial-as-experiment, decades-long horizon. **When this doc and other docs disagree, this doc wins.**
+2. `constitution/invariants.md` — Grid-wide rules (walk every numbered invariant against the diff)
+3. The **governing ADRs** referenced in the packet frontmatter (`adrs:` field)
+4. `catalogs/nodes.json` — current Node versions and metadata
+5. `catalogs/relationships.json` — who consumes this repo; downstream cascade
+6. `catalogs/contracts.json` — contract surface; what this repo promises to expose
+7. `catalogs/compatibility.json` — version compatibility constraints
+8. `repos/{node-name}/overview.md` — what this repo is responsible for
+9. `repos/{node-name}/boundaries.md` — what it must NOT do
+10. `repos/{node-name}/invariants.md` — repo-specific rules (if exists)
+11. `copilot/pr-review-rules.md` — checklist and severity levels
+12. The **issue packet** referenced from the PR body (see "Resolve the Packet" below)
+13. The **PR diff**
 
 ## Review Process
 

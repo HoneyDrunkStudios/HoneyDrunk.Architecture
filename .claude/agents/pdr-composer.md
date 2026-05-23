@@ -35,13 +35,14 @@ A PDR often precedes one or more ADRs. The PDR sets the direction; ADRs define t
 
 Before every discussion:
 
-1. `constitution/invariants.md` — rules that must never be violated
-2. `constitution/sectors.md` — Grid topology and sector structure
-3. `catalogs/nodes.json` — all Nodes and their versions
-4. `catalogs/relationships.json` — dependency graph
-5. Existing PDRs in `pdrs/` — avoid contradicting prior decisions
-6. Existing ADRs in `adrs/` — architectural constraints
-7. If the discussion involves specific Nodes, use the `repos/` folder name (e.g. `repos/HoneyDrunk.Lore`, `repos/HoneyDrunk.Knowledge`, `repos/HoneyDrunk.AI`, `repos/HoneyHub`, etc.) and load `overview.md`, `boundaries.md`, and `invariants.md` for each. Do not privilege any single Node as "the product surface" — every Node is a candidate product under the HoneyDrunk Studios umbrella.
+1. `constitution/charter.md` — the studio's tiebreaker philosophy doc: workshop framing, commercial-as-experiment, decades-long horizon. **When this doc and other docs disagree, this doc wins.**
+2. `constitution/invariants.md` — rules that must never be violated
+3. `constitution/sectors.md` — Grid topology and sector structure
+4. `catalogs/nodes.json` — all Nodes and their versions
+5. `catalogs/relationships.json` — dependency graph
+6. Existing PDRs in `pdrs/` — avoid contradicting prior decisions
+7. Existing ADRs in `adrs/` — architectural constraints
+8. If the discussion involves specific Nodes, use the `repos/` folder name (e.g. `repos/HoneyDrunk.Lore`, `repos/HoneyDrunk.Knowledge`, `repos/HoneyDrunk.AI`, `repos/HoneyHub`, etc.) and load `overview.md`, `boundaries.md`, and `invariants.md` for each. Do not privilege any single Node as "the product surface" — every Node is a candidate product under the HoneyDrunk Studios umbrella.
 
 Search across all workspace repos for relevant domain models, contracts, and patterns.
 

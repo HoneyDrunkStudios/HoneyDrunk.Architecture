@@ -116,7 +116,7 @@ The single largest UX decision Hearth makes is the one it refuses. There are no 
 
 The product's response to absence is a quieter town. The shops are dimmer at dusk. The streets have less foot traffic. NPCs go about their lives but don't seek the user out as actively. **The town's quietness is descriptive, not evaluative.** The user is never told "you missed yesterday." The town is just quieter, in the way a real town is quieter when you've been away.
 
-This is non-negotiable. Any future scope-pressure to add streaks or XP grind ("but they really do drive retention…") is rejected at the PDR level. If retention requires shame, streaks, or stat-grind mechanics, Hearth's thesis is wrong and the product should be killed before the mechanic is introduced. See §L (Kill Criteria).
+This is non-negotiable. Any future scope-pressure to add streaks or XP grind ("but they really do drive retention…") is rejected at the PDR level. If retention requires shame, streaks, or stat-grind mechanics, Hearth's thesis is wrong and the product should be sunset before the mechanic is introduced — preserving the architectural invariant is a hard rule, not a decision point. See §L (Decision Points and Hard Rules).
 
 The corollary: Hearth's retention model cannot rely on engagement-metric forcing functions. Retention has to come from emotional resonance, visible town growth, Tomoe's letters, NPC arcs, anniversary mechanics, and the Yearly Artifact ritual. This is harder than streak-driven retention, and it is the bet.
 
@@ -362,16 +362,21 @@ The disclosure says: *"When Tomoe writes you a letter, your last week or two of 
 
 This is a non-trivial trust posture for a solo-dev studio. It is also the bar the product requires.
 
-### L. Kill criteria
+### L. Decision points and hard rules
 
-Hearth is killed if any of the following triggers within 12 months of public launch:
+Per `constitution/charter.md`, Hearth has **decision points** (evaluate and choose) and **hard rules** (act immediately if triggered). At each decision point the operator evaluates the signal and chooses one of three outcomes: **(a) extend / pivot**, **(b) drop to maintenance mode**, or **(c) sunset gracefully**. All three are valid.
 
-1. **<5,000 registered users within 6 months of launch.** Hearth's economics need volume — Tomoe's per-user generation cost is meaningful, and the Free tier is a real cost center, not a forever-trial. If 6 months in there are fewer than 5,000 users, the wedge is not real and the marketing strategy is broken. Kill or hard pivot.
-2. **<3% Free-to-Snow conversion at month 12.** Industry baseline for high-quality consumer subscription apps is 3–8% (Headspace ~6%, Calm ~5%, Day One ~4–5%). If Hearth is below 3%, the Free tier is a charity, not a funnel. The thesis that emotional resonance + Tomoe + Yearly Artifact drives conversion is wrong. Kill or restructure.
-3. **Tomoe causes a real harm event.** A vulnerable user experiences a Tomoe-generated letter as harmful (not just disappointing) and the failure mode is one the guardrails should have caught. This is a single-event kill criterion — not a frequency threshold. **Pause Tomoe across the user base while the failure mode is investigated;** kill the product entirely if the failure mode cannot be resolved within constraint. The studio's reputation, and more importantly the user's wellbeing, are not negotiable.
+**Decision points:**
+
+1. **Registered users at month 6.** Target: ≥5,000. Below 5K signals the wedge or the marketing strategy is broken. Decision: pivot positioning and extend; extend soft-launch (invite-only) and defer public launch; drop to maintenance for existing users; or sunset. The 5K bar is a signal threshold, not an automatic terminator. Hearth's economics need volume eventually, but "eventually" can stretch in the workshop framing if the trajectory is alive.
+2. **Free-to-Snow conversion at month 12.** Target: ≥3%. Industry baseline for high-quality consumer subscription apps is 3–8% (Headspace ~6%, Calm ~5%, Day One ~4–5%). Below 3% signals the Free tier is not producing funnel strength. Decision: adjust tier gating (gate a feature currently free); reduce Snow price; extend soft-launch for cleaner signal; drop to maintenance; or sunset.
+
+**Hard rules (immediate action regardless of metrics):**
+
+3. **Tomoe causes a real harm event.** A vulnerable user experiences a Tomoe-generated letter as harmful (not just disappointing) and the failure mode is one the guardrails should have caught. Single-event hard rule — not a frequency threshold. **Pause Tomoe across the user base while the failure mode is investigated;** sunset Hearth entirely if the failure mode cannot be resolved within constraint. The studio's reputation, and more importantly the user's wellbeing, are not negotiable. This is a safety bar.
 4. **Founding Townsfolk legal exposure.** A regulator, lawyer, or state-AG inquiry about the lifetime tier raises a question the studio cannot answer satisfactorily. Withdraw the lifetime tier; refund recent purchases; revisit the structure.
 
-A soft review trigger (not automatic kill):
+**Soft review trigger:**
 
 5. **Per-user gross margin negative at month 12.** If Tomoe + infrastructure cost per Snow subscriber exceeds $54/yr, pricing review. Likely lever: reduce Tomoe to 1/letter/week at the Snow tier, with 2/week as a higher tier ($89/yr) — segmenting the heavy users away from the price-sensitive subscribers.
 
@@ -399,7 +404,7 @@ A soft review trigger (not automatic kill):
 **Cons:**
 - The studio has no consumer brand pull. Build-in-public works for technical audiences; the studio's reach beyond .NET indie devs is zero.
 - The AI sector's nine planned Nodes have no consumer-scale forcing function. Notify Cloud doesn't exercise them at all.
-- Single-product-portfolio risk. If Notify Cloud fails the 90-day kill bar, the studio has nothing else in market.
+- Single-product-portfolio risk. If Notify Cloud lands on "sunset" at its 90-day decision point, the studio has nothing else in market.
 - The studio's most differentiated capability — building constrained, character-driven AI features with editorial care — has no commercial expression.
 
 **Verdict:** Rejected. Notify Cloud is the right developer wedge but is not the only wedge the studio should run. Hearth's economics, audience, and AI-sector forcing function are complementary, not competitive.
@@ -489,7 +494,7 @@ A soft review trigger (not automatic kill):
 
 | Trade-off | Favored Position | Rationale |
 |---|---|---|
-| Streaks / XP grind (proven retention mechanic) vs. no-streak town growth (thesis) | **No streaks, no XP grind** | The thesis is non-negotiable. If retention requires shame or stat-grind mechanics, Hearth is wrong and should be killed before betraying the differentiation. |
+| Streaks / XP grind (proven retention mechanic) vs. no-streak town growth (thesis) | **No streaks, no XP grind** | The thesis is non-negotiable. If retention requires shame or stat-grind mechanics, Hearth is wrong and should be sunset before betraying the differentiation — the architectural invariant is a hard rule. |
 | Pure journaling app vs. broader personal-growth app | **Broader personal-growth app** | The operator does not personally feel pull toward a pure journaling app. Hearth keeps reflection as the core but expands daily use into goals, care, creative work, and milestones. |
 | Tomoe server-side (quality) vs. Tomoe on-device (privacy) | **Server-side at v1, with loud disclosure** | On-device foundation models in 2026 do not yet meet the literary-quality bar Tomoe needs. The disclosure is the price. Re-evaluate at v2 as on-device models improve. |
 | Generative NPC dialogue (personalized) vs. pre-authored NPC arcs (controlled) | **Pre-authored at v1** | Editorial quality is the moat. Generative NPCs at scale risk tone-deaf moments that breach trust. Hybrid (theme-aware selection of pre-authored content) preserves personalization without giving up control. |
@@ -682,8 +687,8 @@ The Yearly Artifact ($34) is **not subject to Apple's cut** — it is a physical
 
 | Risk | Severity | Description |
 |---|---|---|
-| **Tomoe causes a real harm event** | **High** | A vulnerable user receives a Tomoe letter that lands as harmful, and the failure mode is one the guardrails should have caught. Reputation, regulatory, and ethical exposure. Kill criterion §K. |
-| **The no-streaks thesis is wrong** | High | Retention without streaks fails. <3% Free→Snow conversion. The category's gamification was correct; Hearth's refusal of it was a category-misread. Kill criterion §K. |
+| **Tomoe causes a real harm event** | **High** | A vulnerable user receives a Tomoe letter that lands as harmful, and the failure mode is one the guardrails should have caught. Reputation, regulatory, and ethical exposure. §L hard rule (safety bar — pause Tomoe immediately; sunset Hearth if the failure mode cannot be resolved). |
+| **The no-streaks thesis is wrong** | High | Retention without streaks fails. <3% Free→Snow conversion. The category's gamification was correct; Hearth's refusal of it was a category-misread. §L decision point — operator evaluates and chooses extend / pivot, drop to maintenance, or sunset. |
 | **Per-user Tomoe generation cost exceeds Snow ARPU** | Medium-High | Frontier-model generation costs at Tomoe's quality bar may be $0.05–$0.20 per letter; at 1–2 letters/week × 52 weeks, that's $2.60–$20.80/year per Snow user. Combined with Apple's cut, margin compresses sharply. Mitigations: smaller models for generation with tone-evaluator filtering; per-user usage caps; gradual cadence reduction. |
 | **The art pipeline does not clear the aesthetic bar** | Medium-High | Watercolor done badly is worse than no watercolor. If the v1 town does not feel hand-painted and emotionally resonant, the moat collapses. Mitigation: hand-paint the base assets; aggressive review; commit budget to a watercolor artist at v1 if needed. |
 | **iOS App Store editorial does not feature Hearth** | Medium | Editorial coverage is the highest-impact channel; if Apple does not feature, Hearth's reach is constrained to organic and paid channels which are slower. Mitigation: launch ahead of a featured-app submission window; build relationships through TestFlight and submission process. |
@@ -703,8 +708,8 @@ The Yearly Artifact ($34) is **not subject to Apple's cut** — it is a physical
 
 | Risk | Mitigation |
 |---|---|
-| Tomoe harm event | Two-pass generation (generator + tone evaluator). Per-letter pre-publish review. Hard guardrails in the system prompt. Safety-routing model for crisis indicators (separate from Tomoe). User-controllable pause. Apologize-and-flag flow. Single-event kill criterion at the studio level. Public commitment in the privacy policy. |
-| No-streaks thesis wrong | Soft launch with 100–500 users via TestFlight + waitlist before public launch. Measure retention shape over the first 3 months. If retention is below industry benchmarks for the comparable consumer subscription apps, evaluate the thesis before scaling marketing. The kill criterion gives this 6 months of runway. |
+| Tomoe harm event | Two-pass generation (generator + tone evaluator). Per-letter pre-publish review. Hard guardrails in the system prompt. Safety-routing model for crisis indicators (separate from Tomoe). User-controllable pause. Apologize-and-flag flow. Single-event hard rule at the studio level (kill on real harm event). Public commitment in the privacy policy. |
+| No-streaks thesis wrong | Soft launch with 100–500 users via TestFlight + waitlist before public launch. Measure retention shape over the first 3 months. If retention is below industry benchmarks for the comparable consumer subscription apps, evaluate the thesis before scaling marketing. The §L decision-point evaluation gives this 6 months of runway. |
 | Tomoe generation cost | Routing-layer cost ceilings per request. A/B testing of model size — start with frontier-class, evaluate whether mid-tier models pass the tone-evaluator at acceptable rates. Monthly per-user cap (e.g., 8 letters/month max under any cadence setting). Per-tier generation budget — Snow gets weekly; future higher tier could get more. |
 | Art pipeline | Commit to hand-painting the base assets; budget for a watercolor artist (~$5K–$15K for the v1 asset pack). Procedural composition is bounded; AI-generated images are v2. Aesthetic review before every release. |
 | App Store editorial | TestFlight beta submitted 90 days before public launch. Direct outreach to App Store editorial relations (Apple maintains a submission form for app spotlight). Press kit ready; aesthetic short-form social content seeded for the launch week. |
@@ -733,7 +738,7 @@ The Yearly Artifact ($34) is **not subject to Apple's cut** — it is a physical
 
 ### Long-term (12+ months post-launch)
 
-If Hearth clears the kill criteria:
+If Hearth's §L decision-point evaluation lands on "extend":
 
 - **The consumer-app portfolio is established** as a live, revenue-bearing surface. Future consumer products (Lately, Wayside, a HoneyPlay narrative game) inherit Hearth's patterns: privacy-first, on-device-first, hand-authored-where-it-matters.
 - **The studio runs two commercial products** (Notify Cloud + Hearth) on different audiences, different cadences, different revenue shapes. Diversified single-studio risk.
@@ -742,9 +747,10 @@ If Hearth clears the kill criteria:
 - **Founding Townsfolk obligation** runs for as long as the studio runs — a known liability, sized at 1000 units, manageable.
 - **The next consumer app** (Lately or Wayside or HoneyPlay) is plausibly committed in v2.
 
-If Hearth does not clear the kill criteria:
+If Hearth's §L decision-point evaluation lands on "drop to maintenance" or "sunset gracefully" — or if the §L hard rule (Tomoe harm event) fires — the operator chooses the appropriate response:
 
-- **Hearth is wound down respectfully.** Users get 6 months notice, full export of journal content, refund of recent Snow renewals, refund of unfulfilled Yearly Artifact preorders.
+- **Drop to maintenance** when there is enough engaged usage and the trust posture is intact, but commercial signal is below the bar — keep the app alive for existing users, no marketing, no new feature roadmap, signup may remain open.
+- **Sunset gracefully** when neither commercial nor engagement signal supports continued operation, or when the §L hard rule fires. **Hearth is wound down respectfully.** Users get 6 months notice, full export of journal content, refund of recent Snow renewals, refund of unfulfilled Yearly Artifact preorders.
 - **Founding Townsfolk** receive a refund pro-rated against an "expected lifetime" framework documented in the ToS.
 - **A retrospective PDR** is written documenting what failed (the no-streaks thesis, Tomoe trust, art pipeline, conversion economics).
 - **Hearth.Backend, the iOS app, and authoring tools** are archived; the on-device sentiment classifier and the Tomoe prompt structure are kept as research assets.
@@ -826,15 +832,15 @@ Either outcome generates more learning than not building Hearth.
 - Additional NPCs (4th, 5th, 6th).
 - Generative letter exploration (research; may or may not ship).
 
-### Kill-clock review (month 12 post-launch)
+### Decision-point review (month 12 post-launch)
 
 - Count registered users (target: 5,000+).
 - Measure Free → Snow conversion (target: ≥3%).
 - Measure Yearly Artifact attach rate (target: ≥30%).
 - Measure per-user gross margin (target: positive).
-- Review Tomoe harm-event log (target: zero events that breach the §K threshold).
+- Review Tomoe harm-event log (target: zero events that breach the §L hard rule).
 
-If targets are met, Hearth becomes a sustained product line. If targets are missed, the kill protocol activates per §K.
+If targets are met, Hearth becomes a sustained product line. If targets are missed, the operator applies the §L decision-point matrix (extend / pivot, drop to maintenance, or sunset gracefully). If the Tomoe hard rule has fired at any point during the year, the response is immediate per §L regardless of the other metrics.
 
 ---
 
@@ -843,7 +849,7 @@ If targets are met, Hearth becomes a sustained product line. If targets are miss
 | Question | Owner | Notes |
 |---|---|---|
 | **Final product name.** Hearth is the codename; Yuki was the previous codename. Is "Hearth" the launch name, or is there a final consumer-facing name TBD before App Store submission? | Product / Brand | Default proposed: launch as "Hearth." Tested against trademark availability and consumer-resonance research before App Store submission. |
-| **Domain — `hearth.honeydrunkstudios.com` vs. independent brand domain.** | Product | Default proposed: subdomain at v1, consistent with Notify Cloud's choice. Independent domain (e.g., `hearth.app`) revisited if Hearth scales past kill criteria. |
+| **Domain — `hearth.honeydrunkstudios.com` vs. independent brand domain.** | Product | Default proposed: subdomain at v1, consistent with Notify Cloud's choice. Independent domain (e.g., `hearth.app`) revisited if Hearth's §L decision-point evaluation lands on "extend" and the product scales. |
 | **Print-on-demand provider final selection** (Lulu vs. Blurb vs. Printify Pro). | Operations | Side-by-side test in Phase 0; decision before Phase 4 build. |
 | **Tomoe LLM provider routing policy** — frontier-class only, or mid-tier with tone-evaluator filtering for cost. | AI / Product | Default proposed: frontier-class at v1 launch; mid-tier evaluation as a v1.1 cost optimization once volume is meaningful. |
 | **Sentiment classifier — train custom or fine-tune from a published baseline.** | AI / Engineering | Default proposed: fine-tune a published sentiment baseline (HuggingFace's `cardiffnlp/twitter-roberta-base-sentiment-latest`-equivalent or Apple's on-device tone embeddings) on a small hand-labeled journal-text corpus. Training a custom model is overkill at v1 scope. |
@@ -875,7 +881,7 @@ If targets are met, Hearth becomes a sustained product line. If targets are miss
 | Founding Townsfolk legal terms ADR (or operations doc) | ADR | Lawyer-reviewed terms of service for the lifetime tier. Wind-down language. Refund framework. State-AG-conscious marketing copy. |
 | App Store submission and editorial outreach plan | Design doc | Launch calendar, App Store editorial submission, press kit, social-content cadence. |
 | Hearth marketing site copy and pricing page design doc | Design doc | The customer-facing surface. Studio brand, pricing, privacy framing, Founding Townsfolk explanation. |
-| Hearth retrospective PDR (conditional) | PDR | If Hearth fails the 12-month kill criteria, the retrospective PDR documents what the wedge missed and informs future consumer-app commitments. |
+| Hearth retrospective PDR (conditional) | PDR | If Hearth's 12-month §L decision-point evaluation lands on "sunset" (or the §L hard rule fires earlier), the retrospective PDR documents what the wedge missed and informs future consumer-app commitments. |
 
 ---
 

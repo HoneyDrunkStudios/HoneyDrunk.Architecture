@@ -150,7 +150,7 @@ The Room is the bet. **It is the reason to open the app on a Tuesday at 8pm when
 
 The category's retention failure is that nothing happens between matches. The app is interesting on signup, boring on day 7. The Room creates a daily, predictable, contextual reason to open — independent of whether you have unread messages. It is closer in shape to **a daily news app or a daily Wordle** than to a swipe-loop app. People open Wordle because something happens at midnight; people will open Lately because something happens at 8pm.
 
-If The Room does not produce ≥3 Lately app-opens per week per active user, the retention thesis is wrong.
+If The Room does not produce ≥3 Lately app-opens per week per active user, the retention thesis is unproven — see §K for the decision-point evaluation.
 
 ### D. The fingerprint as the warm-context matching primitive
 
@@ -199,7 +199,7 @@ Launch as friendship-only (no dating mode at all) for the first 90 days. Lower b
 
 The two are compatible. Soft-launch in a single fandom (recommended: **Letterboxd-adjacent film viewers**, because the recency-of-currents primitive is most natural for film, and the audience is large enough to seed without being too large to manage). Frame the product publicly as friendship-first with optional dating mode toggle. Add geographic breadth gradually. **Strategy 1 is rejected for v1** because the user has no specific city affinity and city-only launches require ground-game effort the user cannot scale.
 
-The kill criterion against cold-start (§K) measures density per item per city per week. If after 90 days the median Room has fewer than 3 strangers, the cold-start strategy did not produce liquidity, and the product is killed regardless of total signups.
+The §K decision point against cold-start measures density per item per city per week. If after 90 days the median Room has fewer than 3 strangers, the cold-start strategy did not produce liquidity, and the operator chooses an outcome (extend the soft-launch cohort, drop to maintenance, or sunset) regardless of total signups.
 
 ### F. Trust & safety — minimum viable bar for a solo dev
 
@@ -337,7 +337,7 @@ Lately reuses substantially more of the Grid than Notify Cloud does, because Lat
 | **HoneyDrunk.Vault** | Stores third-party API keys (TMDB, Open Library, Hardcover, MusicBrainz, Rekognition). Per-environment isolation already standard. | No changes. |
 | **HoneyDrunk.Notify** | Email (welcome, transactional), SMS (phone verification, abuse alerts), push (match prompts, Room reminders). | **Push channel must ship before Lately launches.** |
 | **HoneyDrunk.Communications** | User preferences (notification cadence, quiet hours, Room time customization), decision-log (why Lately did or did not surface a Room). | Same primitives Notify Cloud uses; reuse is clean. |
-| **HoneyDrunk.Pulse** | Telemetry, engagement metrics, retention dashboards. | Critical for kill-criteria measurement (§K). |
+| **HoneyDrunk.Pulse** | Telemetry, engagement metrics, retention dashboards. | Critical for §K decision-point measurement. |
 | **HoneyDrunk.Web.Rest** | Lately's REST API surface. Response envelopes, correlation IDs, error handling. | Standard Grid pattern. |
 | **HoneyDrunk.Kernel** | Context propagation, lifecycle, identity primitives. | Standard. |
 
@@ -412,22 +412,27 @@ This is consistent with PDR-0002's Notify Cloud cuts and with PDR-0001's "rule-b
 
 This is the pricing wedge. It is non-negotiable because it is the marketing story.
 
-**Estimated paid conversion:** Hinge converts ~5–7% of MAU to paid. Bumble ~3–4%. Lately's lower price point and non-extractive positioning could plausibly hit 6–10% if the wedge is real, but **3% is the planning baseline**. At 10K MAU, that is 300 paid users at $8.99 = $2,697/mo. At 100K MAU, that is $26,970/mo. These are the rough scale benchmarks the kill criteria measure against.
+**Estimated paid conversion:** Hinge converts ~5–7% of MAU to paid. Bumble ~3–4%. Lately's lower price point and non-extractive positioning could plausibly hit 6–10% if the wedge is real, but **3% is the planning baseline**. At 10K MAU, that is 300 paid users at $8.99 = $2,697/mo. At 100K MAU, that is $26,970/mo. These are the rough scale benchmarks the §K decision points measure against.
 
-### K. Kill criteria
+### K. Decision points and hard rules at 90 days
 
-Lately gets killed if any of the following triggers within 90 days of public launch:
+Per `constitution/charter.md`, Lately has **decision points** (evaluate and choose) and **hard rules** (act immediately if triggered). At each decision point the operator evaluates the signal and chooses one of three outcomes: **(a) extend / pivot**, **(b) drop to maintenance mode**, or **(c) sunset gracefully**. All three are valid; the choice depends on trajectory and learnings, not on a single threshold.
 
-1. **<5K daily active users by day 90.** This is the engagement bar. If after 90 days of public launch Lately has fewer than 5K DAU, the wedge is not pulling people in often enough to sustain the network. Kill.
-2. **Median Room density <3 strangers per item.** This is the cold-start bar. If after 90 days the typical Room has fewer than 3 strangers, The Room is not delivering on its promise and the retention thesis fails. Kill.
-3. **<1% paid conversion at 90 days.** This is the commercial bar. The pricing wedge requires that some users find the Hardcover features valuable. Below 1% is fundamentally below the category's floor. Kill.
-4. **Sev-1 trust & safety incident with no operationally feasible mitigation.** This is the responsibility bar. If a class of T&S incident is structurally unmanageable at solo-dev scale (e.g., scalable harassment vectors that AI triage cannot handle), Lately gets killed regardless of engagement. The user does not ship a connection app that produces harm at scale.
+**Decision points (evaluate at day 90):**
 
-A soft kill condition that triggers a PDR review (not an automatic kill):
+1. **DAU at day 90.** Target: ≥5K. Below 5K signals the cold-start strategy (fandom soft-launch + friendship-first framing) did not produce engagement density at the scale needed. Decision: extend soft-launch in the fandom for another 90 days; pivot to a different acquisition channel; drop to maintenance for existing users; or sunset.
+2. **Median Room density.** Target: ≥3 strangers per item. Below this signals the two-sided marketplace is not forming and The Room is not delivering on its promise. Decision: artificially boost density (seed content, invite waves); extend soft-launch; drop to maintenance; or sunset. The product should not push aggressively for public scale until density signal is present.
+3. **Paid conversion at day 90.** Target: ≥1%. Below 1% signals pricing or feature-gate positioning is misaligned. Decision: adjust pricing downward; reframe features at the Hardcover tier; extend soft-launch for cleaner signal; drop to maintenance; or sunset.
+
+**Hard rules (immediate action regardless of metrics):**
+
+4. **Sev-1 trust & safety incident with no operationally feasible mitigation.** Single-event hard rule, independent of engagement metrics. If a class of T&S incident is structurally unmanageable at solo-dev-with-AI scale (e.g., scalable harassment vectors that AI triage cannot handle), Lately is sunset immediately. The studio does not ship a connection app that produces harm at scale. This is a safety bar, not a commercial signal.
+
+**Soft review trigger:**
 
 5. **Operating cost exceeds revenue by 4× at any point in the first 6 months.** Different multiplier than Notify Cloud (PDR-0002 used 3×) because Lately's operating cost is structurally higher (storage, mod APIs, push, photo CDN) and the unit economics curve takes longer to bend. Triggers a pricing or scope review.
 
-Kill criteria are independent. Any single trigger at the threshold is enough.
+Decision points #1–3 may be evaluated independently; hard rule #4 acts on its own trigger regardless of the others.
 
 ### L. Brand and aesthetic register
 
@@ -509,13 +514,13 @@ The brand exercise that produces the final product name is a separate engagement
 - The Room is a structural retention bet, not a behavioral one.
 
 **Cons:**
-- Two-sided marketplace cold-start risk is real (mitigated by Strategy 2 fandom soft-launch + kill criteria).
+- Two-sided marketplace cold-start risk is real (mitigated by Strategy 2 fandom soft-launch + §K decision-point evaluation).
 - T&S exposure is novel for the studio; solo-dev T&S is below industry norm (mitigated by honest framing and AI-triaged moderation).
 - Notify push channel must ship before Lately launches — adds dependency.
 - Mobile-app shipping requires app-store review, which adds latency and surprise risk.
 - Brand exercise is incomplete; the codename Lately is not the launch name.
 
-**Verdict:** Selected. The wedge is real; the cuts are right; the architecture is buildable; the pricing posture is defensible. The risk surface is bounded by aggressive kill criteria.
+**Verdict:** Selected. The wedge is real; the cuts are right; the architecture is buildable; the pricing posture is defensible. The risk surface is bounded by aggressive §K decision points and the §K hard rule on T&S.
 
 ### Option 5: Ship Lately friendship-only at v1, defer dating mode entirely
 
@@ -569,7 +574,7 @@ The brand exercise that produces the final product name is a separate engagement
 | Push channel built in Notify (deferred per PDR-0002) vs. push built directly in Lately | **Built in Notify, used by Lately** | Reuse compounds. Push is a Notify capability; Lately is the first consumer. Notify Cloud can opt in later. |
 | Brand under HoneyDrunk Studios vs. separate consumer brand | **Separate consumer brand (TBD)** | Studio brand is dev-shaped. Consumer brand needs different register. |
 | Publicly mention HoneyDrunk Grid in Lately's marketing vs. invisible architecture | **Invisible architecture** | Regular humans do not care about Grid. Visibility is a trust-negative. |
-| 90-day kill clock vs. longer runway | **90 days** | Aligns with PDR-0002. Solo-dev can't afford to sustain a non-converting consumer product. The metrics (DAU, Room density, paid conversion) are observable in 90 days. |
+| 90-day decision point vs. longer runway | **90 days** | Aligns with PDR-0002. Solo-dev can't afford to sustain a non-converting consumer product without re-evaluating. The metrics (DAU, Room density, paid conversion) are observable in 90 days, after which the operator chooses extend, drop to maintenance, or sunset. |
 
 ---
 
@@ -670,7 +675,7 @@ Critical metrics, all visible in Pulse from day one:
 - Reports per 1K DAU (T&S volume)
 - Time-to-resolution on reports
 
-These map directly to the kill criteria. Without Pulse instrumentation from day one, the kill criteria cannot be measured. Pulse instrumentation is non-negotiable v1 work.
+These map directly to the §K decision points. Without Pulse instrumentation from day one, the decision points cannot be measured. Pulse instrumentation is non-negotiable v1 work.
 
 ### Brand and aesthetic
 
@@ -699,18 +704,18 @@ The brand engagement is a **decision the user must make before MVP design work b
 
 | Risk | Severity | Description |
 |---|---|---|
-| **Cold-start liquidity failure** | High | Two-sided marketplace dynamics. Without enough density per item per metro, The Room is empty and the wedge fails. Kill criterion 2. |
-| **The Room thesis is wrong** | High | If users do not open Lately at 8pm, the retention bet fails and the app inherits the category's churn problem. No mitigation for a wrong thesis except killing fast. |
-| **Trust & safety incident exceeds solo-dev capacity** | High | A coordinated harassment vector or a class of T&S incidents that AI triage cannot handle is an automatic kill (criterion 4). |
+| **Cold-start liquidity failure** | High | Two-sided marketplace dynamics. Without enough density per item per metro, The Room is empty and the wedge fails. §K decision point 2 (Room density). |
+| **The Room thesis is wrong** | High | If users do not open Lately at 8pm, the retention bet fails and the app inherits the category's churn problem. No mitigation for a wrong thesis except measuring fast and choosing deliberately at the §K decision point. |
+| **Trust & safety incident exceeds solo-dev capacity** | High | A coordinated harassment vector or a class of T&S incidents that AI triage cannot handle triggers the §K hard rule (safety bar — kill regardless of metrics). |
 | **App store rejection / suspension** | Medium-High | Apple and Google review processes are unpredictable for new connection apps. Rejection delays launch; suspension mid-flight is catastrophic. |
 | **30-day refresh requirement creates churn** | Medium | If users see the refresh prompt and bounce instead of refreshing, the activation-to-retention curve breaks. Tunable (the requirement could become a soft prompt, not a hard hide). |
-| **Pricing wedge does not convert** | Medium | If <1% of users pay, the commercial bar fails (kill criterion 3). Mitigation: Hardcover features must be genuinely valuable, not artificially gated. |
+| **Pricing wedge does not convert** | Medium | If <1% of users pay, §K decision point 3 (paid conversion) triggers an evaluation — adjust pricing, reframe features, extend soft-launch, drop to maintenance, or sunset. Mitigation: Hardcover features must be genuinely valuable, not artificially gated. |
 | **Notify push channel slips** | Medium | Lately depends on Notify push. If Notify push is delayed, Lately launch slips. Mitigated by sequencing push as a hard prerequisite, not a parallel work stream. |
 | **Brand confusion across Notify Cloud and Lately** | Medium | Two consumer-facing surfaces from one studio confuses press and audience. Mitigated by brand separation (§A) and distinct domains. |
 | **Item canonical ID resolution failure** | Medium | If TMDB / Open Library / Hardcover / MusicBrainz coverage is incomplete, users see "I can't find my book" friction. Mitigated by a "free-text fallback" that does not participate in The Room's overlap query — degraded experience for that user, no degradation for others. |
 | **App-store consumer-app economics** | Medium | iOS takes 30% (15% after year 1 for subscriptions). Android 15-30% depending on tier. The $8.99 price is gross-of-store-cut; net is $6.30–$7.65. Affects unit economics. |
 | **Photo storage / CDN cost scales superlinearly with users** | Low-Medium | Photo storage at 50K MAU is meaningful Azure cost. Mitigated by aggressive image resizing on upload, conservative resolution policies, and Cloudflare R2 if Azure CDN cost gets out of hand. |
-| **Solo-dev burnout from dual product lines** | Medium | Notify Cloud + Lately is two products. Solo-dev capacity is not unlimited. Mitigated by strict scope cuts, AI-agent leverage, and willingness to kill either product if the dual-line load proves untenable. |
+| **Solo-dev burnout from dual product lines** | Medium | Notify Cloud + Lately is two products. Solo-dev capacity is not unlimited. Mitigated by strict scope cuts, AI-agent leverage, and willingness to drop either product to maintenance — or sunset it — if the dual-line load proves untenable. |
 | **Anime / cozy aesthetic register comes off as kitschy** | Low | Aesthetic missteps damage brand. Mitigated by treating brand as a separate engagement, not a side concern. |
 | **Letterboxd-adjacent fandom does not transfer** | Low-Medium | Soft-launch partnership with a film community may not produce signups. Mitigated by having a backup soft-launch strategy (BookTok-adjacent, indie-music-newsletter-adjacent). |
 
@@ -721,7 +726,7 @@ The brand engagement is a **decision the user must make before MVP design work b
 | Risk | Mitigation |
 |---|---|
 | Cold-start liquidity failure | Single-fandom soft launch (Letterboxd-adjacent). Fandom-first is the strategy that gives The Room density without depending on city-by-city ground-game. Backup fandom selected before soft launch begins. |
-| The Room thesis is wrong | The 90-day kill clock catches this. There is no mitigation for a wrong thesis other than measuring fast and killing fast. |
+| The Room thesis is wrong | The 90-day decision-point evaluation catches this. There is no mitigation for a wrong thesis other than measuring fast and choosing deliberately (extend, drop to maintenance, or sunset). |
 | T&S incident exceeds capacity | Automated photo moderation (Rekognition), phone verification, AI-triaged report queue with 48h human review, auto-action on high-severity classes (threats, doxxing, child safety). Honest framing on the marketing site about solo-dev T&S limits. |
 | App store rejection | Conservative content policies in the app's own ToS. Pre-submission review against Apple's known-rejection-vectors checklist. Engaged review processes with Apple and Google before submission. Backup TestFlight / Play Console internal beta surface to maintain user contact during any review cycle. |
 | 30-day refresh churn | Soft prompts starting at day 23 (not day 30). Refresh UX is one tap if the user is opening the app at all. If churn proves to be a real issue, the hide-after-30-days threshold can be lengthened to 45 or 60 without changing the wedge. |
@@ -753,11 +758,11 @@ The brand engagement is a **decision the user must make before MVP design work b
 ### Medium-term (next 9–12 months — through 2027 Q2)
 
 - **Lately MVP design**, build, soft launch (single fandom), public launch. Calendar Q1 2027 earliest public launch.
-- **90-day kill clock** runs from public launch. Q2 2027 is the kill review window.
+- **90-day decision-point evaluation window** runs from public launch. Q2 2027 is the review window.
 - **The Grid's first consumer-product Node** is in production. Telemetry and operational shape are validated.
 - **The studio narrative shifts** — HoneyDrunk Studios ships both dev tools (Notify Cloud) and consumer apps (Lately). Two-product portfolio, one Grid.
 
-### Long-term (post-90-day kill clock)
+### Long-term (post-90-day decision point)
 
 If Lately clears the 90-day bar:
 
@@ -766,11 +771,11 @@ If Lately clears the 90-day bar:
 - **Lately becomes the consumer-facing front of the Grid**, in the same way Notify Cloud is the dev-facing front. The studio is bi-modal.
 - **Cross-product learning** — Notify Cloud's multi-tenant patterns and Lately's consumer-mobile patterns inform future products.
 
-If Lately does not clear the 90-day bar:
+If Lately does not clear the 90-day bar, the operator chooses an outcome per the §K decision-point matrix:
 
-- **Lately is killed.** The mobile client repo is archived. The Lately Node is preserved (to learn from the post-mortem) but no longer accepts new users.
-- **A retrospective PDR** documents what the wedge missed.
-- **The consumer-app portfolio remains** as a category for future products — the portfolio itself is not invalidated by one product's failure.
+- **Drop to maintenance** when there is enough engaged usage to justify keeping the app alive for existing users — no marketing spend, no new feature roadmap, signup may remain open. The substrate keeps producing value for the people already in The Room.
+- **Sunset gracefully** when neither commercial nor engagement signal supports continued operation. The mobile client repo is archived. The Lately Node is preserved (to learn from the post-mortem) but no longer accepts new users. A retrospective PDR documents what the wedge missed.
+- **The consumer-app portfolio remains** as a category for future products under either outcome — the portfolio itself is not invalidated by one product's evaluation result.
 - **The Grid's investment in Lately-specific infrastructure** (Notify push, consumer-app patterns, item canonical ID adapters) is preserved and reusable.
 
 Either outcome generates more learning than not shipping.
@@ -809,7 +814,7 @@ Either outcome generates more learning than not shipping.
 - The Room implementation (8pm local, 90-min window, item-keyed cohort selection).
 - In-app DM (minimal, text-only).
 - Free + Hardcover tier with Stripe / app-store IAP.
-- Pulse instrumentation for all kill-criteria metrics.
+- Pulse instrumentation for all §K decision-point metrics.
 
 **Exit criteria:** App runs end-to-end on TestFlight + Play Console internal beta. 50+ internal beta users (HoneyDrunk Studios extended network) actively using the app.
 
@@ -827,18 +832,19 @@ Either outcome generates more learning than not shipping.
 - App store public launch (iOS first, Android within 2 weeks).
 - Press cycle (tech-culture publications). Pricing-as-honesty narrative.
 - Free tier active, Hardcover ($8.99) live with Stripe + app-store IAP.
-- **The 90-day kill clock starts here.**
+- **The 90-day decision-point evaluation window starts here.**
 
 **Exit criteria for "successful public launch":** Public traffic, working signup flow, paid IAP processing, no Sev-1 incidents in the first 7 days.
 
-### Phase 5: Kill-clock review (90 days post public launch)
+### Phase 5: Decision-point review (90 days post public launch)
 
 - Count DAU, Room density, paid conversion, T&S incident rate.
-- Apply kill criteria from §K. Any single trigger → kill.
-- If clear: continue, write next-PDR for v1.5 / v2.
-- If kill: retrospective PDR, archive, refocus.
+- Apply the §K decision-point matrix. The §K hard rule (Sev-1 T&S incident with no operationally feasible mitigation) acts immediately and overrides the decision-point evaluation.
+- If signals support continuation: extend, write next-PDR for v1.5 / v2.
+- If signals are mixed: drop to maintenance and document.
+- If signals are absent or the hard rule fires: sunset gracefully, write a retrospective PDR, archive, refocus.
 
-**Exit criteria:** Clear go/no-go decision documented as a follow-up PDR.
+**Exit criteria:** Clear extend / maintenance / sunset decision documented as a follow-up PDR.
 
 ---
 
@@ -879,8 +885,8 @@ Either outcome generates more learning than not shipping.
 | Lately consumer brand engagement design doc | Design doc | Output of the brand exercise: final product name, visual register, marketing copy voice, domain. |
 | Lately mobile UX design doc | Design doc | The Room UX, fingerprint gesture interaction, currents shelf composition flow, profile card visual hierarchy. |
 | Lately privacy policy and ToS | Legal | Before public launch. GDPR / CCPA review. App-store-compliant. |
-| Lately retrospective PDR (conditional) | PDR | If Lately is killed at the 90-day bar, the retrospective PDR documents what the wedge missed and informs future Apps-sector decisions. |
-| Lately v1.5 / v2 PDR (conditional) | PDR | If Lately clears the 90-day bar, the next PDR scopes v1.5 (in-app messaging media, voice notes, IRL events) or v2 (multi-fandom expansion, geographic expansion, AI-driven matchmaking). |
+| Lately retrospective PDR (conditional) | PDR | If Lately is sunset at the 90-day decision point (or earlier on the §K hard rule), the retrospective PDR documents what the wedge missed and informs future Apps-sector decisions. |
+| Lately v1.5 / v2 PDR (conditional) | PDR | If the §K decision point lands on "extend," the next PDR scopes v1.5 (in-app messaging media, voice notes, IRL events) or v2 (multi-fandom expansion, geographic expansion, AI-driven matchmaking). |
 
 ---
 
@@ -895,7 +901,7 @@ Concrete decisions the user must settle before any code or design work begins:
 5. **Confirm tech stack.** React Native + Expo + .NET on the Grid (recommended). The user must confirm this choice before Phase 1 begins.
 6. **Confirm the cuts list (§G).** Particularly: no in-app messaging beyond minimal handoff at v1, no video, no voice notes, no AI matchmaking, no annual discount. If any of these are non-negotiable additions for the user, the v1 scope and timeline change materially.
 7. **Confirm pricing wedge non-negotiables.** Free tier with all core features, no swipe limits, no pay-to-see-likes-as-the-product (Hardcover sees who fingerprinted you, but the wedge is asymmetric reveal not artificial gating). The user must confirm this is a non-negotiable design constraint, not a default that drifts.
-8. **Confirm the kill criteria (§K).** 5K DAU at 90 days, median Room density ≥3, ≥1% paid conversion, no unmanageable T&S class. The user must commit to acting on these criteria in advance — saying yes now and rationalizing past them at month 3 is the failure mode.
+8. **Confirm the §K decision points and hard rules.** 5K DAU at 90 days, median Room density ≥3, ≥1% paid conversion are decision-point thresholds (extend / maintenance / sunset). The unmanageable T&S class is the hard rule (immediate sunset). The user must commit to acting on the §K matrix in advance — saying yes now and rationalizing past the decision points at month 3 is the failure mode.
 9. **Confirm legal counsel engagement before public launch.** Privacy policy, ToS, GDPR / CCPA review. Solo dev does not have counsel; this engagement must be scoped and committed before Phase 4.
 10. **Confirm Notify push pull-forward as a hard prerequisite.** Notify push channel ships before Lately mobile client begins push integration. This pulls forward work that PDR-0002 deferred. The user must agree explicitly.
 

@@ -10,7 +10,7 @@
 
 ## Public-First Philosophy
 
-HoneyDrunk is a **build-in-public studio**. Each Node is both system and story. The Grid on HoneyDrunkStudios.com visualizes live data from the catalogs — sectors, nodes, modules, services — and reflects the true state of the system. Transparency is marketing. Shipping is storytelling.
+HoneyDrunk is a **build-in-public studio**. Each Node is both system and story. The Grid on HoneyDrunkStudios.com visualizes live data from the catalogs — sectors, nodes, modules, services — and reflects the true state of the system. Visibility is a side effect of the work, not a strategy that drives it. The studio is public because the operator chose to build in the open; any marketing benefit is a downstream consequence, not the reason.
 
 ## Beliefs
 
@@ -65,9 +65,9 @@ Each phase triggers a Registry event and a Pulse heartbeat. The Hive listens, sy
 
 ## Sustainability
 
-**Open Core. Paid Orchestration.** Core SDKs are open-source. Hosted and orchestration layers carry a commercial license. Paid tiers sustain the Grid and fund innovation.
+**Open Core. Paid Orchestration — as a trial, not a structural pillar.** Core SDKs are open-source. Hosted and orchestration layers may carry a commercial license where it makes sense. Paid tiers are experiments in commercial viability that, if they earn, fund part of the engineering effort — they are not what the studio depends on to exist. See `constitution/charter.md` for the studio's actual relationship to revenue: a portfolio of experiments, not a single financial engine.
 
-Creator economy flows through XP, Grid Credits, and marketplace royalties. Contributions — by humans or agents — earn XP. Creation becomes economy.
+Creator economy primitives — XP, Grid Credits, marketplace royalties — are themselves experiments in what an economy-of-creation can look like inside the Grid. Contributions, human or agent, earn XP. Creation can become economy if the experiment lands.
 
 ## AI Ethics
 
@@ -86,7 +86,7 @@ Cyberpunk realism. Techno-art fusion. Human core. Sector colors reflect their en
 
 ## Long-Term Vision
 
-HoneyDrunk evolves into a multi-agent, multi-node creative OS connecting SDKs, SaaS, Games, and Robotics. Internally — structured, agentic, interoperable. Publicly — visual, narrative, alive.
+HoneyDrunk may evolve into a multi-agent, multi-node creative OS connecting SDKs, SaaS, Games, and Robotics — *if* the experiments running on it point in that direction. Internally — structured, agentic, interoperable. Publicly — visual, narrative, alive. The vision is a direction, not a destination on a calendar; the Grid is built to support many decades of building, with the specific shape that emerges left open.
 
 > Precision is our art. Aesthetic is our architecture. Transparency is our marketing.
 

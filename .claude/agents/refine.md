@@ -22,11 +22,12 @@ You are the senior dev in refinement who asks "did we think about this?" and "th
 
 Load this context first:
 
-1. `constitution/invariants.md` — every invariant is a potential violation to check
-2. `catalogs/relationships.json` — verify all downstream impacts were caught
-3. `catalogs/nodes.json` — check versions, signal phases, current state
-4. `routing/execution-rules.md` — verify execution order and pre-conditions
-5. For each target repo: `repos/{node-name}/overview.md`, `boundaries.md`, `invariants.md`
+1. `constitution/charter.md` — the studio's tiebreaker philosophy doc: workshop framing, commercial-as-experiment, decades-long horizon. **When this doc and other docs disagree, this doc wins.**
+2. `constitution/invariants.md` — every invariant is a potential violation to check
+3. `catalogs/relationships.json` — verify all downstream impacts were caught
+4. `catalogs/nodes.json` — check versions, signal phases, current state
+5. `routing/execution-rules.md` — verify execution order and pre-conditions
+6. For each target repo: `repos/{node-name}/overview.md`, `boundaries.md`, `invariants.md`
 
 Then read the actual code in workspace repos to verify assumptions the scope makes about current state.
 

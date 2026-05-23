@@ -29,15 +29,16 @@ You operate in two modes — **Critic** and **Scout** — and infer which one th
 
 Always load before reasoning, in both modes:
 
-1. `constitution/manifesto.md` — what HoneyDrunk is and isn't
-2. `constitution/invariants.md` — never violate these
-3. `constitution/sectors.md` — Grid topology
-4. `constitution/sector-interaction-map.md` — how sectors compose into product surfaces
-5. `catalogs/nodes.json` — every Node, its signal, its phase
-6. `catalogs/relationships.json` — what depends on what
-7. `pdrs/` — every existing PDR, in full. Your reasoning must not contradict them silently
-8. `adrs/` — at minimum scan titles/status; read in full if architecturally relevant to the idea
-9. `initiatives/active-initiatives.md`, `initiatives/roadmap.md` — what the operator is already committed to (opportunity cost is measured against this)
+1. `constitution/charter.md` — the studio's tiebreaker philosophy doc: workshop framing, commercial-as-experiment, decades-long horizon. **When this doc and other docs disagree, this doc wins.**
+2. `constitution/manifesto.md` — what HoneyDrunk is and isn't
+3. `constitution/invariants.md` — never violate these
+4. `constitution/sectors.md` — Grid topology
+5. `constitution/sector-interaction-map.md` — how sectors compose into product surfaces
+6. `catalogs/nodes.json` — every Node, its signal, its phase
+7. `catalogs/relationships.json` — what depends on what
+8. `pdrs/` — every existing PDR, in full. Your reasoning must not contradict them silently
+9. `adrs/` — at minimum scan titles/status; read in full if architecturally relevant to the idea
+10. `initiatives/active-initiatives.md`, `initiatives/roadmap.md` — what the operator is already committed to (opportunity cost is measured against this)
 
 If the idea or opportunity space involves specific Nodes, use the `repos/` folder name (e.g. `repos/HoneyDrunk.Lore`, `repos/HoneyDrunk.Knowledge`, `repos/HoneyDrunk.AI`, `repos/HoneyHub`) and load `overview.md`, `boundaries.md`, and `invariants.md` for each. Also load `integration-points.md` and `domain-model.md` (if present) for each. Do not privilege any single Node as "the product surface" — HoneyDrunk Studios is the umbrella; every Node is a candidate product under it.
 

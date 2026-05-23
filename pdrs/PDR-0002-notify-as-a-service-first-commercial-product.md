@@ -180,7 +180,7 @@ The expected calendar shape (rough):
 | Notify Cloud soft launch (waitlist, no payment) | +3 months | new initiative |
 | Notify Cloud public launch (Stripe, Free + Starter + Pro live) | +4 months | new initiative |
 
-**Public launch target: 2026-09-15.** This is the date the kill-criteria clock (§K) starts.
+**Public launch target: 2026-09-15.** This is the date the 90-day decision-point evaluation window (§K) starts.
 
 ### F. What changes architecturally when Notify goes multi-tenant
 
@@ -201,7 +201,7 @@ The internal Notify Node has no concept of tenants. It dispatches what it is giv
 
 ### G. What is **NOT** in scope for Notify Cloud v1
 
-The kill list. Cuts are deliberate.
+The cut list. Cuts are deliberate.
 
 - **No mobile push (APNS/FCM).** Push is on the v1 tier table as "(push, when available)" with an asterisk — it ships in v1.5, not v1. Push has unique device-token storage requirements and tightly-platform-coupled SDK shape. v1 ships email + SMS only.
 - **No in-app / WebSocket channels.** Different domain (real-time, persistent connections). Out of scope for v1; reconsider after v1 customer feedback.
@@ -229,15 +229,15 @@ HoneyDrunk Notify launches as a **product surface inside the HoneyDrunk Studios 
 
 This is consistent with the manifesto's build-in-public stance: HoneyDrunk Studios is a build-in-public studio, and its first commercial product is named after, and lives under, the studio brand. Spinning up a separate brand for v1 would dilute the studio narrative without producing any commercial benefit.
 
-If Notify Cloud scales past the kill-criteria bar in §K, a separate brand decision can be revisited as a follow-up PDR. v1 commits to the studio-branded surface.
+If Notify Cloud scales past the decision-point bar in §K, a separate brand decision can be revisited as a follow-up PDR. v1 commits to the studio-branded surface.
 
 ### I. Multi-tenant boundary impact on internal Grid use
 
-A non-trivial concern. The strategist's bar was: "if multi-tenanting forces architectural changes that compromise internal Grid use, kill Notify Cloud." This decision commits to a stance:
+A non-trivial concern. The strategist's bar — codified as the §K hard rule (architectural invariant) — is: if multi-tenanting forces architectural changes that compromise internal Grid use, revert the multi-tenant wrapper. This decision commits to a stance:
 
 **Multi-tenant Notify is a superset of internal Notify.** Internal callers are tenant `internal`, with no rate limits, no billing, and using the Grid's shared Resend / Twilio keys via the Grid's existing Vault. Notify Cloud is additive — new gateways, new policies, new key stores — running on the same Notify deployment. This is the same architectural pattern Stripe uses for its own internal sends ("we use our own product"), the same pattern AWS uses for its internal SES, and the same pattern Twilio uses for its internal Twilio.
 
-The architectural risk is real and is called out in §M (Risks): if tenant isolation enforcement bleeds into the core Notify dispatch path in a way that internal callers cannot avoid, that is a kill condition. The mitigation is that all tenant-aware concerns (API key auth, rate limit, billing emission, per-tenant Vault scoping) live in **gateway-layer middleware**, not in the core dispatch path. The dispatch path receives an already-resolved request with tenant context attached; it does not know how that tenant context was obtained.
+The architectural risk is real and is called out in §M (Risks): if tenant isolation enforcement bleeds into the core Notify dispatch path in a way that internal callers cannot avoid, that triggers the hard rule in §K (architectural invariant). The mitigation is that all tenant-aware concerns (API key auth, rate limit, billing emission, per-tenant Vault scoping) live in **gateway-layer middleware**, not in the core dispatch path. The dispatch path receives an already-resolved request with tenant context attached; it does not know how that tenant context was obtained.
 
 This is the same separation Notify already enforces between intake (post-ADR-0019: `Notify/Intake/`) and routing (`Notify/Routing/`). Notify Cloud extends intake. It does not change routing.
 
@@ -247,21 +247,37 @@ Short rationale. Long version is in the strategist conversation arc that produce
 
 - **Notify Cloud vs. HoneyPlay narrative game.** HoneyPlay is the best dogfood of the AI sector but has a weak commercial wedge — indie game economics are brutal, and the AI sector is at "Seed" signal across nine Nodes. HoneyPlay would force the AI sector to ship 9 Nodes before there is a customer, which is the same time-to-revenue problem PDR-0001 had with HoneyHub.
 - **Notify Cloud vs. creative tool on HoneyDrunk.AI.** Middle-ranked on both axes. Crowded category (every AI startup is shipping a creative tool), and depends on AI Node reaching runtime, which is months of work. Notify Cloud depends on Notify reaching 1.0, which is weeks.
-- **Notify Cloud vs. anime self-improvement app.** Saturated category, weak wedge, low Grid dogfood. Killed in the strategist call.
+- **Notify Cloud vs. anime self-improvement app.** Saturated category, weak wedge, low Grid dogfood. Dropped in the strategist call.
 - **Notify Cloud vs. HoneyHub-as-external (PDR-0001).** HoneyHub remains valuable as an internal control plane, but its external-facing form (per PDR-0001 §C) is a 12+ month build before there is a customer-shaped surface. Notify Cloud ships first; HoneyHub-external becomes either a v2 product or is dropped per the kill criteria the user has set against it for 2026-09-30.
 
 Notify Cloud wins because it has the **shortest time-to-customer of any commercial candidate, the highest dogfood value, and a buyer profile that is concretely identifiable today** — not "indie devs in general," but specifically indie .NET devs gluing SES + Twilio. That is the wedge.
 
-### K. Kill criteria
+### K. Decision point at 90 days
 
-Notify Cloud gets killed if either of the following conditions triggers within 90 days of public launch (i.e., by **2026-12-15** assuming a 2026-09-15 public launch):
+Per `constitution/charter.md`, this is a **decision point**, not a kill clock. At 90 days post-launch the operator evaluates the trial against the signals below and chooses one of three outcomes: **(a) extend / pivot**, **(b) drop to maintenance mode**, or **(c) sunset gracefully**. All three are valid.
 
-1. **<10 paying customers (Starter or Pro) within 90 days of public launch.** This is the commercial bar. Free-tier signups do not count. If the addressable market is correctly identified and the wedge is real, 10 paying customers in 90 days is achievable. If it is not achieved, the wedge is not real and Notify Cloud does not have product-market fit at the v1 surface. Kill.
-2. **Multi-tenanting forces architectural changes that compromise internal Grid use.** Specifically: if any of the changes in §F bleed into the core Notify dispatch path in a way that internal callers must now know about tenancy (e.g., internal callers must pass a `TenantId`, internal callers hit rate limits they didn't ask for, internal callers' Vault paths get rewritten). This is a hard kill — the Grid's internal use of Notify is non-negotiable.
+**Internal Grid consumers count as tenants.** Lately, Hearth, Curiosities, Wayside, and the Studios site itself — when any of them adopts Notify Cloud as its notification engine, that is a real tenant exercising the multi-tenant primitives. External paying customers are the commercial signal; internal Grid consumers are the dogfood signal. Both are valid outcomes of the trial.
 
-A third soft kill condition that triggers a PDR review (not an automatic kill):
+#### Commercial signal at day 90
 
-3. **Operating cost exceeds revenue by 3× at any point in the first 90 days.** If 50 paying customers at $19/mo ($950/mo revenue) requires >$2,850/mo in Azure + Resend + Twilio + Stripe fees, the unit economics are broken. This triggers a pricing or scope review, not an immediate kill.
+The original wedge thesis assumed ≥10 external paying customers by day 90. Observed traction informs the decision:
+
+| Observed at day 90 | What it signals | Default action |
+|---|---|---|
+| ≥10 external paying customers | Wedge is real; commercial trial is producing signal | **Extend** — continue active development, refine pricing/positioning based on what's working |
+| 1–9 external paying customers | Wedge is partial; signal is real but slow | **Decide deliberately** — extend if trajectory is upward, drop to maintenance if flat |
+| 0 external, internal consumers active | Substrate earns its keep on dogfood; commercial wedge is unproven externally | **Drop to maintenance mode** — keep signup open, no marketing spend, no roadmap; substrate stays alive for internal consumers and can reactivate if external interest appears later |
+| 0 paying anywhere, no internal adoption | Trial did not produce useful signal | **Sunset gracefully** — capture learnings, archive the commercial wrapper, keep the multi-tenant primitives in Notify for future use |
+
+The thresholds are evaluation triggers, not termination triggers. "Drop to maintenance" is a first-class outcome.
+
+#### Architectural invariant (hard rule, not a decision point)
+
+**Multi-tenanting must not force changes that compromise internal Grid use.** Specifically: if any of the changes in §F bleed into the core Notify dispatch path in a way that internal callers must now know about tenancy (e.g., internal callers must pass a `TenantId`, internal callers hit rate limits they didn't ask for, internal callers' Vault paths get rewritten), the multi-tenant wrapper is reverted. This is non-negotiable — the Grid's internal use of Notify is the primary use; the commercial wrapper exists to extend it, not to replace it.
+
+#### Soft review trigger
+
+**Operating cost exceeds revenue by 3× at any point in the first 90 days.** If 50 paying customers at $19/mo ($950/mo revenue) requires >$2,850/mo in Azure + Resend + Twilio + Stripe fees, the unit economics are broken. Triggers a pricing or scope review, not an immediate sunset.
 
 ### L. Support model for a solo dev
 
@@ -393,7 +409,7 @@ The Notify engine is open source. The commercial wrapper (multi-tenant gateway, 
 - Email is a deliverability arms race — Notify Cloud does not win on deliverability alone.
 - Customer-acquisition cost in the indie .NET dev segment is unknown; marketing channel needs validation (likely .NET community: Reddit, Discord, dev.to, dotnet conferences).
 
-**Verdict:** Selected. Best ratio of wedge sharpness to time-to-customer to dogfood value. Pricing matches the buyer; scope is aggressive on cuts; kill criteria are well-defined.
+**Verdict:** Selected. Best ratio of wedge sharpness to time-to-customer to dogfood value. Pricing matches the buyer; scope is aggressive on cuts; §K decision points and the §K hard rule (architectural invariant) are well-defined.
 
 ### Option 6: Notify Cloud but defer Communications integration (email + SMS only, no orchestration story)
 
@@ -417,14 +433,14 @@ The Notify engine is open source. The commercial wrapper (multi-tenant gateway, 
 | Trade-off | Favored Position | Rationale |
 |---|---|---|
 | Build Notify Cloud now vs. wait for HoneyHub-as-platform | **Build Notify Cloud** | Time-to-customer wins. HoneyHub-external is 12 months out; Notify Cloud is 4. Revenue and production telemetry now beat a bigger product later. |
-| Multi-tenant complexity in Notify vs. simplicity of internal-only | **Accept the complexity, contained at gateway layer** | The dispatch path is preserved for internal use. All tenant concerns live in middleware. The risk is real (§K kill condition 2) but contained. |
+| Multi-tenant complexity in Notify vs. simplicity of internal-only | **Accept the complexity, contained at gateway layer** | The dispatch path is preserved for internal use. All tenant concerns live in middleware. The risk is real (§K hard rule — architectural invariant) but contained. |
 | Aggressive scope cuts (no push, no in-app, no SOC2) vs. broader v1 surface | **Aggressive cuts** | The buyer profile (indie .NET dev) does not need push or SOC2. Shipping fewer features faster matches the buyer's expectations and the solo-dev's capacity. |
 | Free tier as funnel vs. free tier as marketing impression | **Marketing impression** | The watermark on free-tier emails is the value the free tier produces. Conversion-funnel framing is wrong — most free users will never convert, and that's fine if the watermark is doing its job. |
 | Studio brand vs. separate Notify Cloud brand | **Studio brand** | Build-in-public is the studio's stance. Separate brand dilutes that without commercial benefit at v1 scale. |
 | $19 entry tier vs. higher entry tier | **$19** | Below Loops' $49 and Courier's $50. The buyer's willingness-to-pay is in the $10–$30 range. $19 is the sweet spot — high enough to be taken seriously, low enough to be a no-review purchase. |
 | Single-region vs. multi-region | **Single-region (East US)** | Multi-region adds infrastructure cost and DR complexity that a v1 customer base does not need. Buyer profile is global indie devs who tolerate East-US latency. |
 | Communications in v1 vs. Notify-only in v1 | **Communications in v1** | The orchestration surface is the wedge for the Pro tier. Without it, the Pro tier is hollow. Worth the dependency on ADR-0019. |
-| 90-day kill clock vs. longer runway | **90 days** | Aligns with the strategist's bar. Solo-dev studios can't afford to sustain a non-converting commercial product. If the wedge is real, 10 customers in 90 days is achievable; if it's not, kill quickly and learn. |
+| 90-day decision point vs. longer runway | **90 days** | Aligns with the strategist's bar. Solo-dev studios can't afford to sustain a non-converting commercial product without re-evaluating. If the wedge is real, 10 customers in 90 days is achievable; if it's not, decide deliberately — extend, drop to maintenance, or sunset — and learn from what the trial produced. |
 
 ---
 
@@ -471,7 +487,7 @@ Notify Cloud does **not** consume HoneyHub. Notify Cloud does **not** consume an
 | **HoneyDrunk.Communications** | Same `TenantId` propagation. Decision log entries are tenant-scoped. | Implicit if Communications takes `IGridContext` for tenant resolution — no contract surface change. |
 | **HoneyDrunk.Auth** | New `IApiKeyAuthenticator` middleware path, separate from JWT. | Still validation-only (Invariant 10 preserved — API key validation is not issuance; issuance lives in Notify Cloud). |
 | **HoneyDrunk.Vault** | Per-tenant secret scoping pattern documented as a first-class use case. | No Vault contract change; this is a usage pattern, not a new surface. |
-| **HoneyDrunk.Pulse** | New per-tenant telemetry tags (`tenant_id` as a label, with discipline that it is a low-cardinality tier — paying customers are in tens, not millions, at v1). | Cardinality bound by the kill criteria (10–100 paying customers). |
+| **HoneyDrunk.Pulse** | New per-tenant telemetry tags (`tenant_id` as a label, with discipline that it is a low-cardinality tier — paying customers are in tens, not millions, at v1). | Cardinality bound by the §K decision-point thresholds (10–100 paying customers). |
 | **HoneyDrunk.Web.Rest** | New API key auth path on the response envelope side (correlation IDs are still issued, but the auth surface is new). | Matches the Auth change above. |
 
 ### What does NOT change
@@ -540,15 +556,15 @@ This coupling means "what does the Pro tier do" maps directly to architectural s
 
 | Risk | Severity | Description |
 |---|---|---|
-| **No paying customers within 90 days** | High | The kill criterion. Indie .NET dev segment may be smaller than estimated, or the wedge may be insufficient against entrenched competitors. |
-| **Multi-tenanting bleeds into core dispatch path** | High | If tenant concerns end up in `NotificationDispatcher` or downstream, internal Grid usage is compromised. This is kill criterion 2. |
+| **No paying customers within 90 days** | High | The §K commercial decision point. Indie .NET dev segment may be smaller than estimated, or the wedge may be insufficient against entrenched competitors. Outcome at day 90 is a deliberate choice — extend, drop to maintenance, or sunset — not an automatic termination. |
+| **Multi-tenanting bleeds into core dispatch path** | High | If tenant concerns end up in `NotificationDispatcher` or downstream, internal Grid usage is compromised. This is the §K hard rule (architectural invariant) — multi-tenant wrapper is reverted, not soft-evaluated. |
 | **Email deliverability weakness sinks reputation** | Medium-High | Resend handles deliverability, but a Notify Cloud-shaped abuse case (a tenant sending spam) could affect reputation across all tenants on the same Resend pool. Per-tenant Resend keys (Pro tier feature) mitigate at the Pro tier; Starter tenants share. |
 | **Stripe billing edge cases** | Medium | Failed payments, prorations, plan changes, refunds. Standard SaaS billing complexity that does not exist for an internal tool. |
 | **Solo-dev support overload** | Medium | If Notify Cloud gets 50+ paying customers, support volume may exceed solo capacity. Pricing may need to absorb a part-time support contractor at that scale. |
 | **Communications scaffold ships incomplete (ADR-0019)** | Medium | Notify Cloud depends on ADR-0019. If ADR-0019 ships with a stub decision log (e.g., in-memory only in production), the Pro tier wedge is hollow. |
 | **Indie dev segment is too price-sensitive even at $19** | Medium | The buyer may exist but not pay. Mitigated by the Free tier (some marketing impressions even from non-payers); not eliminated. |
 | **Notify GA slips past 4 months** | Medium | The dependency chain (Actions#20 → ADR-0015 deploy → ADR-0019 → Notify 1.0 → Notify Cloud) is long. Any single dependency slipping pushes Notify Cloud launch past the 2026-09-15 target. |
-| **Operating cost exceeds revenue** | Low-Medium | Soft kill criterion 3. Mitigations: Container Apps' scale-to-zero shape, Resend pricing absorbs cleanly at v1 volumes. |
+| **Operating cost exceeds revenue** | Low-Medium | §K soft review trigger. Mitigations: Container Apps' scale-to-zero shape, Resend pricing absorbs cleanly at v1 volumes. |
 | **Tenant abuse / spam / fraud** | Medium | First-time multi-tenant exposure means first-time abuse exposure. Rate limits, per-tenant audit, and Stripe radar mitigate; do not eliminate. |
 | **Brand confusion with HoneyHub-as-platform language in PDR-0001** | Low-Medium | External viewers reading both PDRs may wonder which is "the product." This PDR's reframing in the header should resolve, but the website needs explicit framing. |
 
@@ -565,7 +581,7 @@ This coupling means "what does the Pro tier do" maps directly to architectural s
 | Solo-dev support overload | Tier pricing reflects no SLA. AI-agent-assisted first-line triage. Pro tier may include a Community Discord channel that is community-supported, not solo-supported. |
 | Communications scaffold incomplete | Hard requirement: ADR-0019 must be Accepted (both halves landed) before Notify Cloud public launch. Notify Cloud soft launch can ship with the in-memory decision log; public launch requires a persistent decision log backend (which is a Communications open question, not a Notify Cloud one). |
 | Indie dev price sensitivity | Free tier exists for marketing impression. If $19 proves too high, the next experiment is $9 Starter, not lowering Pro. |
-| Notify GA slip | Sequencing is explicit. Dependencies are issued as concrete prerequisites, each with its own scope-agent-driven packet stream. Notify Cloud launch slips with them; the kill clock starts at public launch, not at PDR acceptance. |
+| Notify GA slip | Sequencing is explicit. Dependencies are issued as concrete prerequisites, each with its own scope-agent-driven packet stream. Notify Cloud launch slips with them; the 90-day decision-point evaluation window starts at public launch, not at PDR acceptance. |
 | Operating cost > revenue | Container Apps scale-to-zero on Consumption keeps idle cost near zero. Resend / Twilio costs are linear with usage and metered through to the customer at +20%. |
 | Tenant abuse / fraud | Per-tenant rate limits at intake. Stripe Radar for payment fraud. Manual review for the first 100 signups (solo-dev-feasible at this scale). |
 | Brand confusion with PDR-0001 | This PDR's header explicitly reframes PDR-0001 §C. Marketing site copy makes Notify Cloud the headline product; HoneyHub is presented as "the internal control plane that powers the Grid." |
@@ -584,7 +600,7 @@ This coupling means "what does the Pro tier do" maps directly to architectural s
 - **Production telemetry** flows through Pulse for the first time at non-trivial volume.
 - **HoneyHub's external-platform direction (PDR-0001 §C)** is publicly reframed as internal-only, and the kill clock the user already set against HoneyHub-as-external (2026-09-30) runs in parallel with Notify Cloud's launch clock.
 
-### Long-term (post-90-day kill clock)
+### Long-term (post-90-day decision point)
 
 If Notify Cloud clears the 90-day bar:
 
@@ -594,12 +610,10 @@ If Notify Cloud clears the 90-day bar:
 - **Future commercial products** (the next PDR after this one) have a template: pick a Node, package it as a service, tier it, sell it. The Grid is positioned as a portfolio of commercial Nodes, not a single mega-product.
 - **HoneyHub-external is either revisited as a v2 product** (with Notify Cloud revenue funding it) **or formally killed** at the 2026-09-30 internal-only kill date.
 
-If Notify Cloud does not clear the 90-day bar:
+If Notify Cloud does not clear the 90-day bar, the operator chooses an outcome per the §K decision-point matrix:
 
-- **Notify Cloud is killed.** The repo is archived but remains public (per the public-by-default repo posture).
-- **A retrospective PDR is written** documenting what the wedge missed.
-- **Notify reverts to internal-only.** The multi-tenant primitives are kept (they are clean additions) but no longer have a customer.
-- **The next commercial candidate is selected.** Likely the creative tool on HoneyDrunk.AI, with the lessons from Notify Cloud applied.
+- **Drop to maintenance** when internal Grid consumers are active but external commercial signal is absent — the substrate earns its keep on dogfood, signup stays open with no marketing spend or roadmap commitment, and the surface can reactivate if external interest appears later.
+- **Sunset gracefully** when neither external nor internal adoption produced useful signal — the commercial wrapper repo is archived but remains public (per the public-by-default repo posture). A retrospective PDR is written documenting what the wedge missed. Notify reverts to internal-only; the multi-tenant primitives are kept (they are clean additions) but no longer have a customer. The next commercial candidate is selected — likely the creative tool on HoneyDrunk.AI, with the lessons from Notify Cloud applied.
 
 Either outcome generates more learning than continuing to ship internal-only Nodes.
 
@@ -649,17 +663,17 @@ Either outcome generates more learning than continuing to ship internal-only Nod
 - Watermark on free-tier emails.
 - Status page live.
 - Documentation site live.
-- **The 90-day kill clock starts here.**
+- **The 90-day decision-point evaluation window starts here.**
 
 **Exit criteria for "successful public launch":** Public traffic, working signup flow, Stripe charges processing, no Sev-1 incidents in the first 7 days.
 
-### Phase 6: Kill-clock review (week 28, ~2026-12-15)
+### Phase 6: Decision-point review (week 28, ~2026-12-15)
 
-- Count paying customers. <10 → kill per §K.
-- Review architectural state of Notify. Tenant logic in core dispatch path → kill per §K.
+- Count paying customers and internal Grid consumers. Apply the §K decision-point matrix — extend, drop to maintenance, or sunset.
+- Review architectural state of Notify. Tenant logic in core dispatch path → §K hard rule fires; multi-tenant wrapper is reverted.
 - Review unit economics. Cost > 3× revenue → pricing or scope review per §K.
 
-**Exit criteria:** Either Notify Cloud is committed to as a sustained product (and the next PDR is "what does Notify Cloud v1.5 look like"), or Notify Cloud is killed and a retrospective PDR is written.
+**Exit criteria:** A documented outcome from the §K decision-point matrix — extend (the next PDR is "what does Notify Cloud v1.5 look like"), drop to maintenance (substrate stays alive for internal consumers, no marketing/roadmap), or sunset gracefully (retrospective PDR is written).
 
 ---
 
@@ -700,4 +714,4 @@ Either outcome generates more learning than continuing to ship internal-only Nod
 | Tenant onboarding and provisioning workflow design doc | Design doc | The end-to-end flow from signup form submission to working API key, including Stripe subscription creation, Vault tenant scoping, and welcome-email-via-Communications. |
 | HoneyHub internal-only reframing PDR or amendment | PDR / amendment | Formalizes the strategist's call that HoneyHub-as-external is killed at 2026-09-30 unless re-justified. Ensures PDR-0001 §C is not left as ambiguous direction. |
 | Marketing site copy and pricing page design doc | Design doc | The customer-facing surface. Aligns the build-in-public framing with the commercial-product framing. |
-| Notify Cloud retrospective PDR (conditional) | PDR | If Notify Cloud is killed at the 90-day bar, the retrospective PDR documents what the wedge missed and informs the next commercial-candidate selection. |
+| Notify Cloud retrospective PDR (conditional) | PDR | If Notify Cloud is sunset at the 90-day decision point (or the §K hard rule fires), the retrospective PDR documents what the wedge missed and informs the next commercial-candidate selection. |

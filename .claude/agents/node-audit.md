@@ -24,17 +24,18 @@ You are distinct from the `review` agent. `review` is diff-bound and PR-scoped �
 
 Load the Architecture context first. Do not skip any step — incomplete context produces incomplete findings.
 
-1. `constitution/invariants.md` — Grid-wide rules (every numbered invariant is in scope)
-2. `constitution/sectors.md` — where this Node sits in the topology
-3. `catalogs/nodes.json` — Node metadata, version, signal, status
-4. `catalogs/relationships.json` — upstream dependencies and downstream consumers
-5. `catalogs/contracts.json` — contract surface this Node promises to expose
-6. `catalogs/compatibility.json` — version constraints this Node participates in
-7. `repos/{node-name}/overview.md` — what this Node is responsible for
-8. `repos/{node-name}/boundaries.md` — what it must NOT do
-9. `repos/{node-name}/invariants.md` — repo-specific rules (if present)
-10. `initiatives/active-initiatives.md` — cross-Node work in flight that might explain gaps
-11. Relevant ADRs — any in `adrs/` that govern this Node, its contracts, or its boundaries
+1. `constitution/charter.md` — the studio's tiebreaker philosophy doc: workshop framing, commercial-as-experiment, decades-long horizon. **When this doc and other docs disagree, this doc wins.**
+2. `constitution/invariants.md` — Grid-wide rules (every numbered invariant is in scope)
+3. `constitution/sectors.md` — where this Node sits in the topology
+4. `catalogs/nodes.json` — Node metadata, version, signal, status
+5. `catalogs/relationships.json` — upstream dependencies and downstream consumers
+6. `catalogs/contracts.json` — contract surface this Node promises to expose
+7. `catalogs/compatibility.json` — version constraints this Node participates in
+8. `repos/{node-name}/overview.md` — what this Node is responsible for
+9. `repos/{node-name}/boundaries.md` — what it must NOT do
+10. `repos/{node-name}/invariants.md` — repo-specific rules (if present)
+11. `initiatives/active-initiatives.md` — cross-Node work in flight that might explain gaps
+12. Relevant ADRs — any in `adrs/` that govern this Node, its contracts, or its boundaries
 
 Then walk the actual repo on disk under the additional working directories. Read the code — do not infer from docs alone. Check:
 
