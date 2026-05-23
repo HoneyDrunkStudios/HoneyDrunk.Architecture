@@ -261,5 +261,13 @@
   "generated/issue-packets/active/adr-0041-model-registry/02-ai-model-registry-contracts-and-loader.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/6",
   "generated/issue-packets/active/adr-0041-model-registry/03-ai-capability-canary-harness-and-model-lineup.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/7",
   "generated/issue-packets/active/adr-0041-model-registry/04-ai-cost-aware-routing-and-per-call-ceiling.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/8",
-  "generated/issue-packets/active/adr-0041-model-registry/05-ai-dispatch-audit-emit-and-cost-guard-intersection.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/9"
+  "generated/issue-packets/active/adr-0041-model-registry/05-ai-dispatch-audit-emit-and-cost-guard-intersection.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/9",
+  "generated/issue-packets/active/adr-0042-idempotency/00-architecture-adr-0042-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/248",
+  "generated/issue-packets/active/adr-0042-idempotency/01-architecture-idempotency-contract-catalog.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/249",
+  "generated/issue-packets/active/adr-0042-idempotency/02-kernel-idempotency-contracts-and-envelope.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Kernel/issues/39",
+  "generated/issue-packets/active/adr-0042-idempotency/03-data-cosmos-idempotency-store-backing.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Data/issues/26",
+  "generated/issue-packets/active/adr-0042-idempotency/04-kernel-message-handler-base-and-publisher.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Kernel/issues/40",
+  "generated/issue-packets/active/adr-0042-idempotency/05-notify-idempotency-envelope-rollout.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/26",
+  "generated/issue-packets/active/adr-0042-idempotency/06-communications-idempotency-envelope-rollout.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications/issues/20",
+  "generated/issue-packets/active/adr-0042-idempotency/07-kernel-idempotency-canary-and-strict-enforcement.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Kernel/issues/41"
 }
