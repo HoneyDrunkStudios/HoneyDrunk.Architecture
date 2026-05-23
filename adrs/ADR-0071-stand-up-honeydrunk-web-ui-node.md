@@ -16,7 +16,7 @@ Accepting this ADR creates catalog and cross-repo obligations that must be compl
 - [ ] Add Web.UI to `catalogs/modules.json` with the per-stack package layout from D6 (`@honeydrunk/web-ui-tokens`, `@honeydrunk/web-ui-css`, `@honeydrunk/web-ui-react`, optional `HoneyDrunk.Web.UI.Blazor`, optional `@honeydrunk/web-ui-native`)
 - [ ] Add Web.UI to `catalogs/grid-health.json` reflecting the stood-up package surface (tokens + CSS at minimum on day one)
 - [ ] Update [`constitution/sectors.md`](../constitution/sectors.md) Creator-sector text — Web.UI is the anchor, the "No real Nodes yet" line is replaced
-- [ ] Create `repos/HoneyDrunk.Web.UI/` context folder (`overview.md`, `boundaries.md`, `invariants.md`, `active-work.md`, `integration-points.md`) — matching the template used by [`repos/HoneyDrunk.Audit/`](../repos/HoneyDrunk.Audit/)
+- [ ] Create `repos/HoneyDrunk.Web.UI/` context folder (`overview.md`, `boundaries.md`, `invariants.md`, `active-work.md`, `integration-points.md`) — matching the template used by [`repos/HoneyDrunk.Audit/`](../repos/HoneyDrunk.Audit/) and [`repos/HoneyDrunk.Studios/`](../repos/HoneyDrunk.Studios/)
 - [ ] File the HoneyDrunk.Web.UI scaffold packet (monorepo or polyrepo decision per D6; tokens-first publishing pipeline; CI per [ADR-0012](./ADR-0012-grid-cicd-control-plane.md); semantic-versioning cadence per [ADR-0035](./ADR-0035-abstractions-versioning-and-deprecation-policy.md))
 - [ ] Confirm the paired [ADR-0070](./ADR-0070-frontend-platform-stack.md) is Accepted (Web.UI's stack constraints derive from there)
 - [ ] Scope agent flips Status → Accepted after the first packet declaring this ADR in `accepts:` merges and the tokens package publishes its 0.x release
@@ -38,7 +38,7 @@ The forcing functions converging now:
 
 - **Notify Cloud admin UI** ([ADR-0027](./ADR-0027-stand-up-honeydrunk-notify-cloud-node.md)) is imminent. It needs visual identity from day one.
 - **Hearth, Lately, Currents, Curiosities** are queued consumer PDRs. Each needs design system on day one.
-- **Studios** is the established React surface today. It has settled tokens informally; formalizing them is the path of least resistance for Web.UI's first release.
+- **Studios** ([repos/HoneyDrunk.Studios/overview.md](../repos/HoneyDrunk.Studios/overview.md)) is the established React surface today (Next.js 16, React 19, Three.js). It has settled tokens informally; formalizing them is the path of least resistance for Web.UI's first release.
 - **The paired [ADR-0070](./ADR-0070-frontend-platform-stack.md)** commits three stacks. The Web.UI Node is the cross-stack reconciliation point.
 - **The Creator sector is empty.** Per [`constitution/sectors.md`](../constitution/sectors.md), Creator has no real Nodes. Anchoring the sector with a Node whose role is "design substrate for the rest of the Grid" is sector-shape-correct.
 
@@ -65,7 +65,7 @@ This ADR is the **stand-up decision** for the Web.UI Node — what it owns, what
 
 It does **not** own:
 
-- **The Studios website** — Studios is a separate Node and product. Web.UI is **consumed by** Studios; Web.UI does not house Studios. This separation is load-bearing per D3.
+- **The Studios website** ([repos/HoneyDrunk.Studios/overview.md](../repos/HoneyDrunk.Studios/overview.md)) — Studios is a separate Node and product. Web.UI is **consumed by** Studios; Web.UI does not house Studios. This separation is load-bearing per D3.
 - **Per-product page templates, marketing pages, or content models** — those are PDR-side concerns.
 - **State management, routing, data fetching, or any runtime application concerns** — Web.UI ships visual primitives, not application substrate.
 - **Backend integration code** — Web.UI is purely client-side; it does not depend on any Grid Node's runtime contract beyond Kernel.Abstractions records (if used at all).
@@ -87,7 +87,7 @@ The **Core** sector was considered as an alternative placement. Rejected because
 
 ### D3. Web.UI is consumed by Studios — not folded into Studios
 
-Studios is the established React frontend Node in the Grid. The temptation: fold the design system into Studios; let Studios be the canonical source for tokens and components, with other surfaces consuming them from there.
+Studios ([repos/HoneyDrunk.Studios/overview.md](../repos/HoneyDrunk.Studios/overview.md)) is the established React frontend Node in the Grid. The temptation: fold the design system into Studios; let Studios be the canonical source for tokens and components, with other surfaces consuming them from there.
 
 Rejected. Studios is **a product, not a baseline**. The Studios website has its own purpose (HoneyDrunk Studios' public site — marketing, blog, project listings) and its own lifecycle. Folding the design system into Studios couples every consumer PDR to Studios' deployment cadence, Studios' npm package surface, and Studios' release schedule. Cross-PDR substrate should not be downstream of a single product.
 
@@ -322,5 +322,6 @@ Rejected. The design **contract** is the same across stacks — a Button is a Bu
 - [ADR-0035](./ADR-0035-abstractions-versioning-and-deprecation-policy.md) — semver discipline applied to JS/CSS packages
 - [ADR-0039](./ADR-0039-grid-open-source-license-policy.md) — Web.UI is public per the Grid default
 - [ADR-0070](./ADR-0070-frontend-platform-stack.md) — paired stack-selection ADR
+- [repos/HoneyDrunk.Studios/overview.md](../repos/HoneyDrunk.Studios/overview.md) — Studios website (first Web.UI consumer per D3)
 - [`generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md`](../generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md) cluster 7.8 — Web.UI candidate context
 - [PDR-0003](../pdrs/PDR-0003-lately-currents-based-connection-app.md), [PDR-0005](../pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md), [PDR-0006](../pdrs/PDR-0006-currents-social-suggestions-and-quests.md), [PDR-0008](../pdrs/PDR-0008-curiosities-discovery-first-city-app.md) — consumer-app PDRs that consume Web.UI

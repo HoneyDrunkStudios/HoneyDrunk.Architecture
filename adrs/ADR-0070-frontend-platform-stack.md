@@ -9,7 +9,7 @@
 
 The Grid has no committed frontend platform. Today:
 
-- **Studios website** is the only deployed frontend Node. Its stack is settled by virtue of existing; it does not generalize to the rest of the Grid.
+- **Studios website** is the only deployed frontend Node ([`repos/HoneyDrunk.Studios/overview.md`](../repos/HoneyDrunk.Studios/overview.md) — Next.js 16, React 19, Three.js). Its stack is settled by virtue of existing; it does not generalize to the rest of the Grid.
 - **Notify Cloud admin** ([ADR-0027](./ADR-0027-stand-up-honeydrunk-notify-cloud-node.md)) needs a tenant-operator UI. No stack is committed; the packet currently leaves the choice to the implementer.
 - **Consumer-app PDRs** ([PDR-0003 Lately](../pdrs/PDR-0003-lately-currents-based-connection-app.md), [PDR-0005 Hearth](../pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md), [PDR-0006 Currents](../pdrs/PDR-0006-currents-social-suggestions-and-quests.md), [PDR-0008 Curiosities](../pdrs/PDR-0008-curiosities-discovery-first-city-app.md)) all require user-facing surfaces — every one of them implies a web presence and a mobile app. None of them commit a stack.
 - **No mobile platform decision has been made.** [`generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md`](../generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md) cluster 7.7 flags this explicitly as an open operator question: "Big platform-direction decision; doesn't belong in a candidate document; flagging so the operator schedules it explicitly."
@@ -66,7 +66,7 @@ The decision test for "simple enough":
 **Concrete first applications:**
 
 - **Notify Cloud tenant-operator admin** ([ADR-0027](./ADR-0027-stand-up-honeydrunk-notify-cloud-node.md)) — likely Blazor at v1 (small surface, CRUD-shaped, single-operator-per-tenant audience). If it grows past D2's threshold, migrates to React.
-- **Studios admin internals** — already React; not migrated.
+- **Studios** ([repos/HoneyDrunk.Studios/overview.md](../repos/HoneyDrunk.Studios/overview.md)) — already React (Next.js); sets the consumer-web precedent this ADR ratifies. No migration.
 - **Future per-Node admin consoles** — case-by-case. Simple Vault rotation status pages: Blazor. Complex Operator approval queues with real-time agent activity: React.
 
 The cost of permitting Blazor: a third toolchain to maintain. The benefit: meaningful DX wins on the surfaces where Blazor fits well, and a hedge against React lock-in for the surfaces that are inside the .NET-native productivity gradient.
@@ -140,7 +140,7 @@ The following are explicitly **not** decided by this ADR:
 ### Affected Nodes
 
 - **HoneyDrunk.Web.UI** (new — stood up by paired [ADR-0071](./ADR-0071-stand-up-honeydrunk-web-ui-node.md)) — receives the stack constraints from D1, D2, D5. React is the first-class stack; Blazor components are second-class additions per admin-surface demand.
-- **HoneyDrunk.Studios** — already React; this ADR ratifies the existing stack rather than forcing a migration.
+- **HoneyDrunk.Studios** ([repos/HoneyDrunk.Studios/overview.md](../repos/HoneyDrunk.Studios/overview.md)) — already React (Next.js 16, React 19, Three.js); this ADR ratifies the existing stack rather than forcing a migration.
 - **HoneyDrunk.Notify.Cloud** ([ADR-0027](./ADR-0027-stand-up-honeydrunk-notify-cloud-node.md)) — tenant-operator admin lands in Blazor per D2 unless the surface complexity pushes past the threshold.
 - **Consumer-app PDRs** ([PDR-0003](../pdrs/PDR-0003-lately-currents-based-connection-app.md), [PDR-0005](../pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md), [PDR-0006](../pdrs/PDR-0006-currents-social-suggestions-and-quests.md), [PDR-0008](../pdrs/PDR-0008-curiosities-discovery-first-city-app.md)) — each consumes this ADR's stack constraints. Web surfaces in React; mobile surfaces in React Native + Expo.
 

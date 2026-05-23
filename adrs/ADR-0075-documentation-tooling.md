@@ -85,7 +85,7 @@ The default posture: **most Nodes do not have a doc site**; the per-Node `overvi
 
 ### D3 — Studios website is explicitly separate from Docusaurus scope
 
-The Studios website is **a separate Node and a product surface**, not a docs site. Per [ADR-0071](./ADR-0071-stand-up-honeydrunk-web-ui-node.md) D3:
+The Studios website ([repos/HoneyDrunk.Studios/overview.md](../repos/HoneyDrunk.Studios/overview.md)) is **a separate Node and a product surface**, not a docs site. Per [ADR-0071](./ADR-0071-stand-up-honeydrunk-web-ui-node.md) D3:
 
 > Studios is one product, not a baseline.
 
@@ -133,7 +133,7 @@ The following are explicitly **not** decided by this ADR:
 
 - **Every Node with an OpenAPI surface** — adopts Scalar from day one (new Nodes) or opportunistically (existing Nodes per D4). Initial impact: [ADR-0027](./ADR-0027-stand-up-honeydrunk-notify-cloud-node.md) (Notify Cloud gateway), [ADR-0060](./ADR-0060-stand-up-honeydrunk-identity-node.md) (Identity HTTP surface), [ADR-0061](./ADR-0061-stand-up-honeydrunk-files-node.md) (Files HTTP surface), Web.Rest reference composition.
 - **HoneyDrunk.Notify.Cloud** — the first Node likely to warrant a standalone Docusaurus doc site. Tenant-developer integration docs land in Docusaurus when external-developer demand justifies it.
-- **HoneyDrunk.Studios** — unaffected. Per D3, Studios is a separate product Node; its tooling stays per-product.
+- **HoneyDrunk.Studios** ([repos/HoneyDrunk.Studios/overview.md](../repos/HoneyDrunk.Studios/overview.md)) — unaffected. Per D3, Studios is a separate product Node (Next.js); its tooling stays per-product.
 - **HoneyDrunk.Web.UI** per [ADR-0071](./ADR-0071-stand-up-honeydrunk-web-ui-node.md) — Web.UI tokens become the visual baseline for both Scalar customization and Docusaurus theming per D5. The Docusaurus preset (`@honeydrunk/docs-preset`) is a candidate Web.UI Node package.
 
 ### Invariants
@@ -236,4 +236,5 @@ Rejected as over-engineering for the Grid's scale. Scalar covers the interactive
 - [ADR-0070](./ADR-0070-frontend-platform-stack.md) D1 — React-ecosystem alignment (Docusaurus is React)
 - [ADR-0071](./ADR-0071-stand-up-honeydrunk-web-ui-node.md) — Web.UI tokens (consumed by Scalar customization and Docusaurus preset)
 - [ADR-0074](./ADR-0074-testing-library-stack.md) — license-hygiene principle (Scalar / Docusaurus both MIT)
+- [repos/HoneyDrunk.Studios/overview.md](../repos/HoneyDrunk.Studios/overview.md) — Studios is a separate product per D3
 - [`generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md`](../generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md) clusters 2.3 (operator-memory / Lore), 5.1 (failed-experiments shelf), 5.2 (changelog aggregator)
