@@ -8,7 +8,7 @@ Last synced: 2026-05-21
 
 > **Manual addition (2026-05-23):** ADRs 0048–0057 added below by hand on the `claude/adr-review-dFtgC` branch. Hive-sync will reconcile on its next scheduled run; the entries below should be a no-op match.
 >
-> **Manual addition (2026-05-23):** ADR-0060 (HoneyDrunk.Identity stand-up) added below by the adr-composer agent. Hive-sync will reconcile on its next scheduled run.
+> **Manual addition (2026-05-23):** ADRs 0058–0069 added below by the adr-composer agent. Hive-sync will reconcile on its next scheduled run.
 
 ## Awaiting (no `accepts:`-declaring packets yet)
 
@@ -50,8 +50,18 @@ and remain manually-flippable until rescoped.
 | [ADR-0055](../adrs/ADR-0055-feature-flag-and-progressive-rollout-strategy.md) | ADR-0055: Feature Flag and Progressive Rollout Strategy | Core / cross-cutting | 2026-05-22 | 1 |
 | [ADR-0056](../adrs/ADR-0056-threat-model-and-security-review-cadence.md) | ADR-0056: Threat Model and Security Review Cadence | Meta / Security / cross-cutting | 2026-05-22 | 1 |
 | [ADR-0057](../adrs/ADR-0057-public-http-api-versioning-and-client-sdk-strategy.md) | ADR-0057: Public HTTP API Versioning and Client SDK Strategy | Core / cross-cutting | 2026-05-22 | 1 |
+| [ADR-0058](../adrs/ADR-0058-grid-wide-caching-strategy.md) | ADR-0058: Grid-Wide Caching Strategy | Core / cross-cutting | 2026-05-23 | 0 |
+| [ADR-0059](../adrs/ADR-0059-stand-up-honeydrunk-cache-node.md) | ADR-0059: Stand Up the HoneyDrunk.Cache Node — Home for Distributed Cache Backings | Core | 2026-05-23 | 0 |
 | [ADR-0060](../adrs/ADR-0060-stand-up-honeydrunk-identity-node.md) | ADR-0060: Stand Up the HoneyDrunk.Identity Node — User Record, Credential Seam, and Erasure Fan-Out | Core | 2026-05-23 | 0 |
 | [ADR-0061](../adrs/ADR-0061-stand-up-honeydrunk-files-node.md) | ADR-0061: Stand Up the HoneyDrunk.Files Node — Blob Storage, Media Processing, and Signed-URL Delivery | Core | 2026-05-23 | 0 |
+| [ADR-0062](../adrs/ADR-0062-inbound-webhook-verification.md) | ADR-0062: Inbound Webhook Verification and Receiver Pattern | Core / cross-cutting | 2026-05-23 | 0 |
+| [ADR-0063](../adrs/ADR-0063-date-time-and-clock-policy.md) | ADR-0063: Grid-Wide Date, Time, and Clock Policy | Core / cross-cutting | 2026-05-23 | 0 |
+| [ADR-0064](../adrs/ADR-0064-prompt-and-persona-registry-with-versioning.md) | ADR-0064: Prompt and Persona Registry with Versioning | AI / cross-cutting | 2026-05-23 | 0 |
+| [ADR-0065](../adrs/ADR-0065-multi-service-local-dev-orchestration-aspire.md) | ADR-0065: Multi-Service Local Dev Orchestration and .NET Aspire Stance | Ops / cross-cutting | 2026-05-23 | 0 |
+| [ADR-0066](../adrs/ADR-0066-health-readiness-liveness-endpoints.md) | ADR-0066: Health, Readiness, and Liveness Endpoint Contract | Core / cross-cutting | 2026-05-23 | 0 |
+| [ADR-0067](../adrs/ADR-0067-inbound-rate-limiting-and-quota-enforcement.md) | ADR-0067: Inbound Rate Limiting and Quota Enforcement | Core / cross-cutting | 2026-05-23 | 0 |
+| [ADR-0068](../adrs/ADR-0068-background-job-and-recurring-work-substrate.md) | ADR-0068: Background Job and Recurring Work Substrate | Core / Ops · cross-cutting | 2026-05-23 | 0 |
+| [ADR-0069](../adrs/ADR-0069-currency-handling-and-money-representation.md) | ADR-0069: Currency Handling and Money Representation | Core (Kernel.Abstractions) · Ops (first consumers: Billing, Notify Cloud) · cross-cutting | 2026-05-23 | 0 |
 | [PDR-0002](../pdrs/PDR-0002-notify-as-a-service-first-commercial-product.md) | PDR-0002: HoneyDrunk Notify — First Commercial Product on the Grid | Ops (primary) · Meta (positioning) | 2026-05-02 | 19 |
 | [PDR-0003](../pdrs/PDR-0003-lately-currents-based-connection-app.md) | PDR-0003: Lately — A Currents-Based Connection App for Regular Humans | Market / Core / Ops | 2026-05-05 | 16 |
 | [PDR-0005](../pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md) | PDR-0005: Hearth — Personal Growth as a Living Town | Market / AI / Ops | 2026-05-05 | 16 |

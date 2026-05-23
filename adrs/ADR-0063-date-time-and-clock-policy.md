@@ -26,8 +26,8 @@ Time is not yet a Grid-level concern. Every Node currently reads "now" via `Date
 The forcing functions:
 
 - **[ADR-0047](./ADR-0047-testing-patterns-and-tooling.md) Tier-2b Testcontainers pilots** are about to hit "how do I make this deterministic" questions. Invariant 51 bans `Thread.Sleep` in test code, but the resolution — drive time via an injected fake clock — is not codified at the Grid level.
-- **[ADR-0042](./ADR-0042-idempotency-contract-for-async-boundaries.md) idempotency TTLs**, **[ADR-0006](./ADR-0006-secret-rotation-and-lifecycle.md) rotation deadlines**, audit timestamps per [ADR-0030](./ADR-0030-audit-substrate-grid-wide.md), [ADR-0013](./ADR-0013-communications-orchestration-layer.md) Communications cadence rules, and future Memory expirations all need a single "now" source. Ad-hoc `DateTimeOffset.UtcNow` calls scatter the time read across every Node, and every test that depends on time bottoms out at either `Thread.Sleep` (banned) or a one-off injected fake.
-- **[ADR-0028](./ADR-0028-event-driven-architecture-and-messaging.md) Service Bus event timestamps** and **[ADR-0030](./ADR-0030-audit-substrate-grid-wide.md) audit log timestamps** are emitted at the producer, must survive serialization, and must round-trip through downstream consumers without timezone drift. No ADR pins the on-wire format today.
+- **[ADR-0042](./ADR-0042-idempotency-contract-for-async-boundaries.md) idempotency TTLs**, **[ADR-0006](./ADR-0006-secret-rotation-and-lifecycle.md) rotation deadlines**, audit timestamps per [ADR-0030](./ADR-0030-grid-wide-audit-substrate.md), [ADR-0013](./ADR-0013-communications-orchestration-layer.md) Communications cadence rules, and future Memory expirations all need a single "now" source. Ad-hoc `DateTimeOffset.UtcNow` calls scatter the time read across every Node, and every test that depends on time bottoms out at either `Thread.Sleep` (banned) or a one-off injected fake.
+- **[ADR-0028](./ADR-0028-event-driven-architecture-and-messaging.md) Service Bus event timestamps** and **[ADR-0030](./ADR-0030-grid-wide-audit-substrate.md) audit log timestamps** are emitted at the producer, must survive serialization, and must round-trip through downstream consumers without timezone drift. No ADR pins the on-wire format today.
 - **[ADR-0057](./ADR-0057-public-http-api-versioning-and-client-sdk-strategy.md)** governs public HTTP API shape but defers the serialization detail for instants/dates/durations to a future cross-cutting decision. This ADR is that cross-cutting decision.
 - **The Communications drip-campaign and cadence-policy work** ([ADR-0019](./ADR-0019-stand-up-honeydrunk-communications-node.md)) is the next consumer to land cadence rules — cron strings, recurring intervals, business-hours windows — and they must read the clock through a substrate that tests can fake.
 - **[ADR-0068](./ADR-0068-background-job-and-recurring-work-substrate.md)** (Proposed, paired with this ADR) pins the cron-string format and depends on this ADR's `TimeProvider` decision for the "what clock does the cron evaluator read" question.
@@ -86,7 +86,7 @@ This format is pinned for:
 
 - Web.Rest API request and response payloads (cross-references [ADR-0057](./ADR-0057-public-http-api-versioning-and-client-sdk-strategy.md))
 - Service Bus message envelopes and user-properties (cross-references [ADR-0028](./ADR-0028-event-driven-architecture-and-messaging.md))
-- Audit record serialization (cross-references [ADR-0030](./ADR-0030-audit-substrate-grid-wide.md))
+- Audit record serialization (cross-references [ADR-0030](./ADR-0030-grid-wide-audit-substrate.md))
 - App Configuration values that carry timestamps or durations
 - Any JSON document persisted in the Grid
 
@@ -132,7 +132,7 @@ The ban on `Thread.Sleep` ([Invariant 51](../constitution/invariants.md)) remain
 
 ### D8 — Audit timestamps are read once at emit, never regenerated
 
-Every audit record emitted per [ADR-0030](./ADR-0030-audit-substrate-grid-wide.md) carries a `DateTimeOffset` UTC instant read from `TimeProvider.GetUtcNow()` at the **point of emit** (the call into `IAuditLog`). The Audit Node and any downstream consumers (forensic query surface, audit export, billing reconciliation) must **not** regenerate the timestamp.
+Every audit record emitted per [ADR-0030](./ADR-0030-grid-wide-audit-substrate.md) carries a `DateTimeOffset` UTC instant read from `TimeProvider.GetUtcNow()` at the **point of emit** (the call into `IAuditLog`). The Audit Node and any downstream consumers (forensic query surface, audit export, billing reconciliation) must **not** regenerate the timestamp.
 
 The boundary: the emitter is the timestamp authority. Subsequent layers persist, query, and display the timestamp; they do not change it. The reasoning: a timestamp that drifts as it crosses Nodes is not a forensic record; it is a guess. Reading the timestamp once at emit and freezing it preserves the "who did what, when" guarantee that [Invariant 47](../constitution/invariants.md) commits.
 
@@ -170,7 +170,7 @@ What Kernel **does** provide:
 - **Convention extension methods** on `DateTimeOffset` and `TimeSpan` where they earn their keep — for example, `clock.GetUtcNow().IsAfter(someInstant)` as a more readable equivalent of `clock.GetUtcNow() > someInstant` in cadence math. The extensions are convenience, not contract; consumers may use the raw comparison operators if they prefer.
 - **A `CadenceMath` static helper** (if it earns its keep) for the cron-string → next-occurrence math used by [ADR-0068](./ADR-0068-background-job-and-recurring-work-substrate.md). Concrete shape is deferred to the first feature packet that consumes it; the boundary is "Kernel owns the helper, consuming Nodes call it."
 
-The naming convention: `CadenceMath` is a record-style static helper, not an interface; no `I` prefix (per the [Grid-wide naming rule](../../../.claude/projects/c--Users-tatte-source-repos-HoneyDrunkStudios-HoneyDrunk-CoreWorkspace/memory/project_naming_rule_records.md)).
+The naming convention: `CadenceMath` is a record-style static helper, not an interface; no `I` prefix (per the Grid-wide naming rule).
 
 ### D12 — Migration path for existing code
 
@@ -204,7 +204,7 @@ Accepting this ADR unblocks the following:
 - **Communications cadence rules** ([ADR-0019](./ADR-0019-stand-up-honeydrunk-communications-node.md)). The cadence policy reads cron strings under D6 and the clock under D1.
 - **Notify Cloud retry scheduling** ([ADR-0027](./ADR-0027-stand-up-honeydrunk-notify-cloud-node.md)). Retry backoff uses ISO 8601 durations per D6; the retry trigger time is computed via `TimeProvider` per D1.
 - **Tier-2b Testcontainers deterministic tests** ([ADR-0047](./ADR-0047-testing-patterns-and-tooling.md)). Integration tests that depend on time advance `FakeTimeProvider`; container-resident services that read their own wall clock are bounded by the test's time-window assertions, not the host's clock state.
-- **Audit forensic query reliability** ([ADR-0030](./ADR-0030-audit-substrate-grid-wide.md)). The "who did what, when" guarantee per [Invariant 47](../constitution/invariants.md) is sharpened by D8 — the emit-time timestamp is authoritative.
+- **Audit forensic query reliability** ([ADR-0030](./ADR-0030-grid-wide-audit-substrate.md)). The "who did what, when" guarantee per [Invariant 47](../constitution/invariants.md) is sharpened by D8 — the emit-time timestamp is authoritative.
 
 ### New invariants (proposed; scope agent assigns numbers at acceptance)
 
@@ -265,7 +265,7 @@ Rejected. NodaTime is excellent for products whose domain is "calendaring is the
 
 Considered. The argument: this ADR is "broad" — it pins decisions for serialization, type usage, time zones, cron format, and the clock substrate all at once. Maybe each could land in its own ADR when its first consumer needs it.
 
-Rejected. The forcing function is not the first consumer of any single sub-decision — it is the **convergence** of forcing functions across multiple in-flight packets ([ADR-0042](./ADR-0042-idempotency-contract-for-async-boundaries.md), [ADR-0030](./ADR-0030-audit-substrate-grid-wide.md), [ADR-0019](./ADR-0019-stand-up-honeydrunk-communications-node.md), [ADR-0027](./ADR-0027-stand-up-honeydrunk-notify-cloud-node.md), [ADR-0047](./ADR-0047-testing-patterns-and-tooling.md), [ADR-0068](./ADR-0068-background-job-and-recurring-work-substrate.md)) all reaching for the same sub-decisions in slightly different ways. Filing one broad ADR that resolves them in lockstep is the dispatch-efficient move. Splitting into N narrow ADRs would mean each in-flight packet re-litigates the sub-decision it touches.
+Rejected. The forcing function is not the first consumer of any single sub-decision — it is the **convergence** of forcing functions across multiple in-flight packets ([ADR-0042](./ADR-0042-idempotency-contract-for-async-boundaries.md), [ADR-0030](./ADR-0030-grid-wide-audit-substrate.md), [ADR-0019](./ADR-0019-stand-up-honeydrunk-communications-node.md), [ADR-0027](./ADR-0027-stand-up-honeydrunk-notify-cloud-node.md), [ADR-0047](./ADR-0047-testing-patterns-and-tooling.md), [ADR-0068](./ADR-0068-background-job-and-recurring-work-substrate.md)) all reaching for the same sub-decisions in slightly different ways. Filing one broad ADR that resolves them in lockstep is the dispatch-efficient move. Splitting into N narrow ADRs would mean each in-flight packet re-litigates the sub-decision it touches.
 
 ### Pin a 6-field cron format (with seconds)
 

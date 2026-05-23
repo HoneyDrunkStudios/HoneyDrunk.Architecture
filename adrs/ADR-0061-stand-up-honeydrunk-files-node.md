@@ -35,7 +35,7 @@ Audit of what exists today:
 
 The forcing functions for deciding this now:
 
-- **PDR-0005 Hearth** is the scout's first-build pick (per [`project_app_concepts_2026_05_05`](../../../.claude/projects/c--Users-tatte-source-repos-HoneyDrunkStudios-HoneyDrunk-CoreWorkspace/memory/project_app_concepts_2026_05_05.md)). Hearth ships as a journaling-town app. The first time a user attaches a photo to a journal entry, the answer must not be "put blob upload logic inside Hearth." That answer would propagate to every subsequent PDR-driven consumer and become the permanent shape.
+- **PDR-0005 Hearth** is the scout's first-build pick (per `project_app_concepts_2026_05_05`). Hearth ships as a journaling-town app. The first time a user attaches a photo to a journal entry, the answer must not be "put blob upload logic inside Hearth." That answer would propagate to every subsequent PDR-driven consumer and become the permanent shape.
 - **PDR-0003 Lately, PDR-0006 Currents, PDR-0008 Curiosities** every one assumes user-uploaded media — avatars, photos in suggestions, location-tagged images. The same forcing function applies to each.
 - **PDR-0002 Notify Cloud** is approaching multi-tenant GA. Notify Cloud tenants will eventually ask "can my customers attach images to the emails I send through your API?" The Grid-correct answer is "Notify accepts an attachment reference resolved against Files, which is where your tenants' bytes live." Without Files, the answer is bespoke per tenant.
 - **The PII / data-classification rubric from [ADR-0049](./ADR-0049-data-classification-pii-handling-and-retention-schedule.md)** treats journal entries, photo uploads, location traces, and voice/audio payloads as **Restricted** tier (per D1's example list). Restricted-tier data has explicit storage requirements — encryption at rest, tenant-isolated backings, access logged via `IAuditLog`. No existing Node satisfies these requirements for arbitrary byte payloads. A consumer that holds Restricted-tier blobs without a Grid-correct home cannot satisfy ADR-0049.
@@ -72,7 +72,7 @@ This stand-up happens **now** even though no Grid Node has put a byte into a Fil
 
 Files differs slightly from the most front-loaded standups (Cache, Sim, Evals) because a concrete first consumer is already named: **PDR-0005 Hearth is the scout's first-build pick**, and Hearth's journaling-town concept requires media uploads from the first usable iteration. The lead time between this ADR and Hearth's first packet that touches Files is measured in weeks, not quarters. The front-loading is short.
 
-The "provision Azure resources when first needed" preference (per [`feedback_provision_when_needed`](../../../.claude/projects/c--Users-tatte-source-repos-HoneyDrunkStudios-HoneyDrunk-CoreWorkspace/memory/feedback_provision_when_needed.md)) governs **Azure resource provisioning**, not Node standup. No Azure Storage account, no CDN profile, no Front Door endpoint, no Defender for Storage subscription is provisioned by this ADR. The scaffold is repo + solution + CI + contract package + InMemory reference adapter + context folder. The first Azure backing is provisioned at the first feature packet's time, not this one's.
+The "provision Azure resources when first needed" preference (per `feedback_provision_when_needed`) governs **Azure resource provisioning**, not Node standup. No Azure Storage account, no CDN profile, no Front Door endpoint, no Defender for Storage subscription is provisioned by this ADR. The scaffold is repo + solution + CI + contract package + InMemory reference adapter + context folder. The first Azure backing is provisioned at the first feature packet's time, not this one's.
 
 ### D3. Initial scaffolding boundary — abstractions + InMemory reference + no Azure backing
 
@@ -89,7 +89,7 @@ The first PR (a separate scaffold packet, not part of this ADR's text) produces:
 - **CI pipeline** consuming [HoneyDrunk.Actions](../../HoneyDrunk.Actions/) shared workflows — build, test, security scan, secret scan, package scan. Per [ADR-0012](./ADR-0012-grid-cicd-control-plane.md). No deploy workflow at stand-up (Files has no Azure surface yet).
 - **`README.md`** at the repo root and per package, describing purpose, installation, and public API surface (Invariant 12).
 - **`CHANGELOG.md`** at solution level (Invariant 12). Starts at `0.0.1` with the standup entry.
-- **`LICENSE` file** — public-default per [`project_repos_public_by_default`](../../../.claude/projects/c--Users-tatte-source-repos-HoneyDrunkStudios-HoneyDrunk-CoreWorkspace/memory/project_repos_public_by_default.md). Files holds no revenue carve-out (it is substrate, not commercial product), no compliance carve-out (the *consumers* of Files carry classification concerns; Files itself owns no secrets and its public surface is byte-shaped abstractions, not tenant-specific behavior).
+- **`LICENSE` file** — public-default per `project_repos_public_by_default`. Files holds no revenue carve-out (it is substrate, not commercial product), no compliance carve-out (the *consumers* of Files carry classification concerns; Files itself owns no secrets and its public surface is byte-shaped abstractions, not tenant-specific behavior).
 - **No Azure resource provisioning.** No storage account. No CDN. No Front Door. No Defender for Storage. Those land with the first feature packet.
 - **No production processing toolchain.** ImageSharp / Magick.NET / FFmpeg adapter choice is **deferred** to the first feature packet that activates processing.
 
@@ -512,7 +512,7 @@ Rejected. The Grid has multiple persistence shapes (Data for structured, Vault f
 
 Considered. The argument: standup work is dead weight until the first feature implementation is ready to land, so why not bundle them?
 
-Rejected per the standup-ADR convention set 2026-04-19 ([`feedback_adr_before_scaffold`](../../../.claude/projects/c--Users-tatte-source-repos-HoneyDrunkStudios-HoneyDrunk-CoreWorkspace/memory/feedback_adr_before_scaffold.md)). Bundling scaffold work into a feature packet conflates substrate decisions with feature decisions; the reviewer agent and the scope agent both work better when the two are separated. The convention is well-established across Cache, Audit, Operator, Agents, Knowledge, Memory, Evals, Flow, Sim, and Notify Cloud standups, and has not produced a problem case. Following it again here is the right call.
+Rejected per the standup-ADR convention set 2026-04-19 (`feedback_adr_before_scaffold`). Bundling scaffold work into a feature packet conflates substrate decisions with feature decisions; the reviewer agent and the scope agent both work better when the two are separated. The convention is well-established across Cache, Audit, Operator, Agents, Knowledge, Memory, Evals, Flow, Sim, and Notify Cloud standups, and has not produced a problem case. Following it again here is the right call.
 
 ### Use Azure Files (SMB) or Azure NetApp Files instead of Blob Storage
 

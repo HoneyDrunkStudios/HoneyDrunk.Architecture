@@ -79,7 +79,7 @@ Quartz or Hangfire may be revisited later if a genuine workload demands one of t
 
 - **Notify retry pump** ([ADR-0027](./ADR-0027-stand-up-honeydrunk-notify-cloud-node.md)). Retries inside Notify's Worker process; reads Notify's failed-delivery queue; uses `TimeProvider` for backoff windows; ISO 8601 duration strings for backoff configuration per [ADR-0063](./ADR-0063-date-time-and-clock-policy.md) D6.
 - **AI cost-ledger drain** ([ADR-0016](./ADR-0016-stand-up-honeydrunk-ai-node.md)). When the cost-ledger flush cadence is committed, the flusher is a `BackgroundService` inside the AI Node.
-- **Audit batch flush** ([ADR-0030](./ADR-0030-audit-substrate-grid-wide.md)). If audit emission introduces an in-process batch buffer (a future ADR may add one for high-throughput sources), the flusher is a `BackgroundService` inside the Audit Node.
+- **Audit batch flush** ([ADR-0030](./ADR-0030-grid-wide-audit-substrate.md)). If audit emission introduces an in-process batch buffer (a future ADR may add one for high-throughput sources), the flusher is a `BackgroundService` inside the Audit Node.
 
 ### D3 — Cross-Node recurring orchestration uses Azure Container Apps Jobs
 
@@ -147,7 +147,7 @@ Container Apps Jobs supports configurable retry policy and replica count. The Gr
 
 - **Max retries:** 3
 - **Backoff:** exponential — 1 minute, 5 minutes, 25 minutes (configurable per-job; default if unspecified)
-- **Dead-letter on final failure:** the job emits an audit record per [ADR-0030](./ADR-0030-audit-substrate-grid-wide.md) (`AuditEntry` with category `JobFailure`, including job name, scheduled instant, retry count, and last exception summary), and raises an error per [ADR-0045](./ADR-0045-grid-wide-error-tracking.md).
+- **Dead-letter on final failure:** the job emits an audit record per [ADR-0030](./ADR-0030-grid-wide-audit-substrate.md) (`AuditEntry` with category `JobFailure`, including job name, scheduled instant, retry count, and last exception summary), and raises an error per [ADR-0045](./ADR-0045-grid-wide-error-tracking.md).
 - **Per-job override:** any job may override the default in its Container Apps Jobs manifest if its workload demands it (e.g., a long-running data export with a single deterministic retry). The override is configuration, not code.
 
 In-Node `BackgroundService` work is not subject to D7's retry policy directly — the `BackgroundService` author decides the retry semantics in code. The convention: `BackgroundService` retries should be visible in the code (a `Polly` policy or explicit `try/catch` with logging), not implicit in the runtime.
@@ -160,7 +160,7 @@ Every job emits the following:
 
 - **Pulse metrics.** A counter `jobs.outcome` with tags `{job_name, outcome=success|retry|fail}`. A histogram `jobs.duration` with tags `{job_name}`. Both via Kernel's `ITelemetryActivityFactory` per the existing Pulse plumbing.
 - **Job lifecycle traces.** Start, end, and (on retry/fail) the retry attempt are spans on the Pulse trace pipeline. The job's `correlationId` is generated at job start and propagated to every downstream call per [Invariant 6](../constitution/invariants.md).
-- **Long-running job progress.** Jobs running > 60 seconds emit progress to Audit per [ADR-0030](./ADR-0030-audit-substrate-grid-wide.md) (a `JobProgress` audit category) so the forensic surface can answer "where is the long-running job right now."
+- **Long-running job progress.** Jobs running > 60 seconds emit progress to Audit per [ADR-0030](./ADR-0030-grid-wide-audit-substrate.md) (a `JobProgress` audit category) so the forensic surface can answer "where is the long-running job right now."
 - **Failed jobs raise errors per [ADR-0045](./ADR-0045-grid-wide-error-tracking.md).** The error tracking surface (Sentry, Application Insights, whichever ADR-0045 lands on) captures the final-failure stack trace, the retry count, and the job's correlation ID.
 
 The line between Pulse and Audit per [Invariant 47](../constitution/invariants.md) is preserved: Pulse answers "are jobs healthy in aggregate" (metrics, traces, sampled); Audit answers "did this specific job run, did it succeed, what did it do" (durable, attributable, complete). A job-failure event lives in both — Pulse for the SRE-style health view, Audit for the forensic view.
@@ -173,7 +173,7 @@ Container Apps Jobs do not run locally — the platform is Azure-specific. For l
 - Optionally, the binary runs under a **timer-driven host** (`HostBuilder` + a `BackgroundService` that fires the job entry on a developer-controlled cadence) for testing the schedule behavior without Azure in the loop.
 - Test code drives `FakeTimeProvider` to simulate cron-firing without waiting for wall-clock minutes/hours/days.
 
-Cross-references the future Aspire-stance ADR (provisional [ADR-0065](./ADR-0065-aspire-stance.md), not yet filed). If Aspire becomes the local-dev orchestrator, the job-binary-as-console-app pattern composes into the Aspire AppHost; if Aspire is rejected, the pattern stands alone via `dotnet run`. Either way the binary is the unit of code; the platform is the choice.
+Cross-references the future Aspire-stance ADR (provisional [ADR-0065](./ADR-0065-multi-service-local-dev-orchestration-aspire.md), not yet filed). If Aspire becomes the local-dev orchestrator, the job-binary-as-console-app pattern composes into the Aspire AppHost; if Aspire is rejected, the pattern stands alone via `dotnet run`. Either way the binary is the unit of code; the platform is the choice.
 
 ### D10 — Job code organization
 

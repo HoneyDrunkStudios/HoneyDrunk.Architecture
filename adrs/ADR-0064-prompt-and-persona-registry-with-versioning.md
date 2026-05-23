@@ -17,9 +17,9 @@ Every AI-sector standup ADR pulls on this missing piece:
 - **[ADR-0021](./ADR-0021-stand-up-honeydrunk-knowledge-node.md)** stands up Knowledge / RAG. Retrieval-augmentation templates, query-rewriting prompts, citation-formatting prompts — all inlined today.
 - **[ADR-0022](./ADR-0022-stand-up-honeydrunk-memory-node.md)** stands up Memory. Summarization prompts (long-term memory compaction), retrieval-ranking prompts, scope-extraction prompts — all inlined today.
 - **[ADR-0023](./ADR-0023-stand-up-honeydrunk-evals-node.md)** stands up Evals. Evals' whole job is to score model-and-prompt combinations against rubrics. Without a stable prompt identifier and version, an Evals score is meaningless — "the prompt was probably X, give-or-take" is not a forensic anchor. Evals **cannot pin a regression** to a prompt change unless prompts version like models do.
-- **`HoneyDrunk.Lore`** (Seed in [`constitution/sectors.md`](../constitution/sectors.md)) is the LLM-compiled wiki. Per memory [`project_lore_sourcing_workflow`](../../../.claude/projects/c--Users-tatte-source-repos-HoneyDrunkStudios-HoneyDrunk-CoreWorkspace/memory/project_lore_sourcing_workflow.md), a Claude Code skill ingests raw sources into the wiki — that ingestion uses prompts in production.
-- **Honeyclaw** is the user's OpenClaw bear-keeper Telegram bot (memory [`project_honeyclaw_bot`](../../../.claude/projects/c--Users-tatte-source-repos-HoneyDrunkStudios-HoneyDrunk-CoreWorkspace/memory/project_honeyclaw_bot.md)). The bear-keeper persona is in production. Today it lives in OpenClaw's third-party gateway config; there is no Grid-side source of truth for it.
-- The consumer-PDR apps (Hearth, Lately, Curiosities — memory [`project_app_concepts_2026_05_05`](../../../.claude/projects/c--Users-tatte-source-repos-HoneyDrunkStudios-HoneyDrunk-CoreWorkspace/memory/project_app_concepts_2026_05_05.md)) each imply distinct personas. Without a registry committed before they ship, each app reinvents prompt storage at startup.
+- **`HoneyDrunk.Lore`** (Seed in [`constitution/sectors.md`](../constitution/sectors.md)) is the LLM-compiled wiki. Per memory `project_lore_sourcing_workflow`, a Claude Code skill ingests raw sources into the wiki — that ingestion uses prompts in production.
+- **Honeyclaw** is the user's OpenClaw bear-keeper Telegram bot (memory `project_honeyclaw_bot`). The bear-keeper persona is in production. Today it lives in OpenClaw's third-party gateway config; there is no Grid-side source of truth for it.
+- The consumer-PDR apps (Hearth, Lately, Curiosities — memory `project_app_concepts_2026_05_05`) each imply distinct personas. Without a registry committed before they ship, each app reinvents prompt storage at startup.
 
 The forcing function: the AI-sector standup wave is in flight ([ADR-0020](./ADR-0020-stand-up-honeydrunk-agents-node.md), [ADR-0021](./ADR-0021-stand-up-honeydrunk-knowledge-node.md), [ADR-0022](./ADR-0022-stand-up-honeydrunk-memory-node.md), [ADR-0023](./ADR-0023-stand-up-honeydrunk-evals-node.md) all Proposed). Every one of those Nodes' first feature packets will either inline prompts or pull on a registry. Inlining compounds: every Node that inlines now has to migrate later, every Audit emit recorded without a prompt-version field has to be backfilled, every Evals regression discovered after the fact is investigated against drifted text. The cost of doing this later climbs week over week.
 
@@ -37,7 +37,7 @@ Alternatives explicitly rejected:
 - **Prompts in a database table with a content-addressed hash.** Rejected for v1. The database row gives audit-grade immutability but loses the code-review diff surface and forces every prompt change into a data-migration shape. Reviewable text changes are the higher-value property in the prompt iteration loop. A content-hash field is still emitted at use time per D5 — the audit trail does not require database storage.
 - **Prompts embedded in each Node's source, versioned with the Node.** This is the status quo for the Nodes that have shipped (Lore wiki, Honeyclaw). Rejected as the go-forward stance for the same reasons inlining model names is forbidden per Invariant 28: a Grid-wide primitive ("which prompt was this") should not be duplicated across N Nodes. The cross-Node prompt **lookup** capability — "which Nodes use the bear-keeper persona," "show me every prompt that calls `IChatClient` with vision capability" — is impossible when prompts live N-times across N repos.
 
-This is the same pattern `HoneyDrunk.Standards` uses for shared analyzers, EditorConfig, and Roslyn analyzers (per the naming-rule memory [`project_naming_rule_records`](../../../.claude/projects/c--Users-tatte-source-repos-HoneyDrunkStudios-HoneyDrunk-CoreWorkspace/memory/project_naming_rule_records.md)): a single repo, NuGet distribution, every consumer pulls the version they build against.
+This is the same pattern `HoneyDrunk.Standards` uses for shared analyzers, EditorConfig, and Roslyn analyzers (per the naming-rule memory `project_naming_rule_records`): a single repo, NuGet distribution, every consumer pulls the version they build against.
 
 ### D2 — Persona vs Prompt: two kinds, one schema, persona composition optional
 
@@ -118,7 +118,7 @@ A future Evals-side ADR may add **Evals as a release gate** for the prompts pack
 
 ### D7 — Honeyclaw integration: Grid registry is source of truth, OpenClaw consumes via build step
 
-Honeyclaw runs in OpenClaw (third-party agent gateway, memory [`project_openclaw`](../../../.claude/projects/c--Users-tatte-source-repos-HoneyDrunkStudios-HoneyDrunk-CoreWorkspace/memory/project_openclaw.md)). Per memory [`project_honeyclaw_bot`](../../../.claude/projects/c--Users-tatte-source-repos-HoneyDrunkStudios-HoneyDrunk-CoreWorkspace/memory/project_honeyclaw_bot.md), the bear-keeper persona is in production today.
+Honeyclaw runs in OpenClaw (third-party agent gateway, memory `project_openclaw`). Per memory `project_honeyclaw_bot`, the bear-keeper persona is in production today.
 
 The decision: the **Grid's `HoneyDrunk.Prompts` repo is the source of truth for Honeyclaw's persona** even though Honeyclaw runs in third-party OpenClaw infrastructure. The persona file `honeyclaw-bear-keeper.persona.md` lives in `HoneyDrunk.Prompts`. A small adapter (in `HoneyDrunk.Prompts` itself or in a paired `HoneyDrunk.OpenClaw` integration package — to be decided in the standup ADR) exports the persona on each prompts-package release in the format OpenClaw expects. OpenClaw pulls the exported persona at its own release/config-update cadence.
 
@@ -182,7 +182,7 @@ The body of the file is the prompt text (for prompts) or system-prompt text (for
 
 ### D10 — PII and sensitive content: forbidden in prompt/persona files
 
-Prompts and personas are **public-or-internal text artifacts**. Per [ADR-0049](./ADR-0049-data-classification-pii-handling-and-retention-schedule.md), no `Restricted`-tier or PII-bearing value may appear inline in a prompt or persona file. Per memory [`project_repos_public_by_default`](../../../.claude/projects/c--Users-tatte-source-repos-HoneyDrunkStudios-HoneyDrunk-CoreWorkspace/memory/project_repos_public_by_default.md), the `HoneyDrunk.Prompts` repo is **public**, which makes this enforcement obvious — anything tenant-scoped, PII-bearing, or secret has no place in a public repo.
+Prompts and personas are **public-or-internal text artifacts**. Per [ADR-0049](./ADR-0049-data-classification-pii-handling-and-retention-schedule.md), no `Restricted`-tier or PII-bearing value may appear inline in a prompt or persona file. Per memory `project_repos_public_by_default`, the `HoneyDrunk.Prompts` repo is **public**, which makes this enforcement obvious — anything tenant-scoped, PII-bearing, or secret has no place in a public repo.
 
 Tenant-scoped data, PII, customer records, and any classified payload enter the LLM call at **render time, via parameters** (the prompt's `parameters` declaration in D9). The prompt file says `{{ user_message }}`; the runtime substitutes the actual user message at call time. The user message is never inlined into the file.
 
@@ -204,7 +204,7 @@ IPromptResolver
   ResolvedMessages Compose(PromptId promptId, PersonaId? personaId, IReadOnlyDictionary<string, object?> parameters);
 ```
 
-`PersonaId` and `PromptId` are records (no `I` prefix, per memory [`project_naming_rule_records`](../../../.claude/projects/c--Users-tatte-source-repos-HoneyDrunkStudios-HoneyDrunk-CoreWorkspace/memory/project_naming_rule_records.md)). `PersonaContent`, `PromptContent`, and `ResolvedMessages` are records carrying body text, hash, version, and metadata. `Compose` is the typical hot-path call — render a prompt with parameters, prepend the persona's system prompt, return the message sequence ready for `IChatClient`.
+`PersonaId` and `PromptId` are records (no `I` prefix, per memory `project_naming_rule_records`). `PersonaContent`, `PromptContent`, and `ResolvedMessages` are records carrying body text, hash, version, and metadata. `Compose` is the typical hot-path call — render a prompt with parameters, prepend the persona's system prompt, return the message sequence ready for `IChatClient`.
 
 The interface lives in `HoneyDrunk.Prompts.Abstractions` so consumers compile against the abstraction, not the runtime, per the Grid-wide abstractions-first rule (Invariant 2, Invariant 44 by analogy). The default implementation lives in `HoneyDrunk.Prompts` and reads prompt files from the package's embedded content at startup.
 

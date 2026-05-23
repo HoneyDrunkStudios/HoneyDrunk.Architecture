@@ -83,7 +83,7 @@ The first PR (a separate scaffold packet, not part of this ADR's text) produces:
 - **CI pipeline** consuming [HoneyDrunk.Actions](../../HoneyDrunk.Actions/) shared workflows — build, test, security scan, package scan. Per [ADR-0012](./ADR-0012-grid-cicd-control-plane.md). No contract-shape canary at stand-up (no Cache-owned contracts to canary against — the contract lives in Kernel.Abstractions and is guarded by Kernel's canary surface).
 - **`README.md`** at the repo root and per package, describing purpose, installation, and public API surface (Invariant 12).
 - **`CHANGELOG.md`** at solution level (Invariant 12). Starts at `0.0.1` with the standup entry.
-- **`LICENSE` file** — public repo default (per [`feedback_repos_public_by_default`](../../../.claude/projects/c--Users-tatte-source-repos-HoneyDrunkStudios-HoneyDrunk-CoreWorkspace/memory/project_repos_public_by_default.md) — public unless revenue/compliance/experiment). Cache carries no revenue concern, no compliance concern, no commercial-experiment concern; default-public is correct.
+- **`LICENSE` file** — public repo default (per `feedback_repos_public_by_default` — public unless revenue/compliance/experiment). Cache carries no revenue concern, no compliance concern, no commercial-experiment concern; default-public is correct.
 - **No implementations.** No Redis adapter. No Cosmos adapter. No Postgres adapter. The scaffold is the empty room with the right lighting; the furniture arrives with the first feature packet.
 
 The first **implementation** (the first distributed backing) is a separate packet. Its trigger is the first real consumer:
@@ -96,11 +96,11 @@ The first backing's choice — Redis-class vs. Cosmos-with-TTL vs. Postgres-with
 
 ### D4. Owner — solo dev, agent-collaborative
 
-Per Grid default ([`project_human_only_convention`](../../../.claude/projects/c--Users-tatte-source-repos-HoneyDrunkStudios-HoneyDrunk-CoreWorkspace/memory/project_human_only_convention.md)), the Node is solo-dev-owned with AI agents as collaborators. No `human-only` label on the standup work — agent-collaborative is the default. Stand-up scaffolding, future backing implementations, and ongoing maintenance all happen with the studio's normal agent-augmented workflow.
+Per Grid default (`project_human_only_convention`), the Node is solo-dev-owned with AI agents as collaborators. No `human-only` label on the standup work — agent-collaborative is the default. Stand-up scaffolding, future backing implementations, and ongoing maintenance all happen with the studio's normal agent-augmented workflow.
 
 ### D5. Visibility — public, per the Grid default
 
-The repo is **public** per [`project_repos_public_by_default`](../../../.claude/projects/c--Users-tatte-source-repos-HoneyDrunkStudios-HoneyDrunk-CoreWorkspace/memory/project_repos_public_by_default.md). No revenue carve-out applies (Cache backings are substrate, not commercial product). No compliance carve-out applies (the Node owns no secrets, no PII storage, no audit-bearing surfaces; cached data is the consumer Node's classification, handled at the consumer side per [ADR-0058](./ADR-0058-grid-wide-caching-strategy.md) D6). No experiment carve-out applies (Cache is committed substrate, not exploratory).
+The repo is **public** per `project_repos_public_by_default`. No revenue carve-out applies (Cache backings are substrate, not commercial product). No compliance carve-out applies (the Node owns no secrets, no PII storage, no audit-bearing surfaces; cached data is the consumer Node's classification, handled at the consumer side per [ADR-0058](./ADR-0058-grid-wide-caching-strategy.md) D6). No experiment carve-out applies (Cache is committed substrate, not exploratory).
 
 This matches the visibility of every other substrate Node: Kernel public, Vault public, Transport public, Data public, Audit public. Notify Cloud is the lone private Node (commercial revenue carve-out per [ADR-0027 D2](./ADR-0027-stand-up-honeydrunk-notify-cloud-node.md)). Cache stays in the public default.
 
