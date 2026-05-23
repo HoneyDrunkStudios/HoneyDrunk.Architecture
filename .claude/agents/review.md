@@ -422,8 +422,8 @@ This is the category most organizations never formalize, and the one that determ
 ## Reviewed Scope / Evidence Checked
 
 - **Packet / PR scope:** {packet path or out-of-band label status; acceptance criteria checked}
-- **Governing ADRs:** {ADR ids read, or "None referenced"}
-- **Grid invariants:** `constitution/invariants.md` checked for relevant numbered invariants: {ids or "none implicated"}
+- **Governing ADRs:** ADR-0011 and ADR-0044 always, plus packet-referenced ADR ids or "no additional ADRs referenced"
+- **Grid invariants:** all numbered invariants in `constitution/invariants.md` checked against the diff; implicated invariants: {ids or "none implicated"}
 - **Repo boundaries:** {repo boundary files read, or "Architecture repo meta-doc boundary"}
 - **Contracts / downstream:** {catalog files checked; downstream Nodes affected or "none detected"}
 - **Security / secrets:** {secret, auth, tenant, permission, and data-classification checks performed}
