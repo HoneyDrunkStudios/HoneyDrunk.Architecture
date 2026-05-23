@@ -326,6 +326,14 @@ ADR-0047 (Testing Patterns and Tooling) closes two of this ADR's unresolved test
 
 ADR-0011's **Gap 2** (SonarCloud wiring), **Gap 4** (quantitative cost-discipline tooling), and **Gap 5** (SonarCloud coverage on private repos) remain open. ADR-0047 does not change ADR-0011's status.
 
+## Amended by ADR-0044
+
+ADR-0044 (Grid-Aware Cloud Code Review and AI-Authored PR Discipline) changes the review-agent execution posture without accepting or otherwise changing ADR-0011's status:
+
+- **D5 - advisory review agent:** preserved. The automatic Grid Review Runner remains advisory and non-blocking; runner outages must not strand merges.
+- **D10 - local-only, human-invoked review agent:** reversed. The Grid-aware `review` agent now runs automatically through the OpenClaw/Codex Grid Review Runner on every non-draft PR for repos with `.honeydrunk-review.yaml` `enabled: true`. The local/manual invocation path remains available for offline review, pre-PR feedback, and deep dives.
+- **D11 - CodeRabbit rejection:** rendered moot. The Grid fills the automatic reviewer slot by building its own Grid-aware runner rather than buying a third-party reviewer that cannot load Architecture context.
+
 ## Alternatives Considered
 
 ### Ad-hoc review without formalization

@@ -142,6 +142,12 @@ Rules that must never be violated across the HoneyDrunk Grid. Canary tests enfor
 33. **Review-agent and scope-agent context-loading contracts are coupled.**
     The set of files loaded by the review agent (per `.claude/agents/review.md`) must be a superset of the set loaded by the scope agent (per `.claude/agents/scope.md`). Divergence is an anti-pattern; updates to either agent's context-loading section must be mirrored in the other. The coupling exists so there is no class of defect the scope agent could introduce at packet-authoring time that the review agent cannot catch at PR time for lack of information. See ADR-0011 D4 (Proposed — this invariant takes effect when ADR-0011 is accepted).
 
+52. **Every non-draft PR on an `enabled` repo runs the cloud-wired `review` agent.**
+    A repo is `enabled` when it carries a `.honeydrunk-review.yaml` with `enabled: true`. Skip is via the `skip-review` PR label or `enabled: false` config — both explicit, both visible. See ADR-0044 D1 and D11.
+
+53. **Agent-authored PRs touching a high-risk Node receive two independent LLM-review perspectives before merge.**
+    The catalog of high-risk Nodes lives in `catalogs/grid-health.json` under the `review_risk_class` field once ADR-0044 packet 13 lands. Until that field exists, this invariant is accepted as the Phase-3 target state but is not enforceable. The second perspective is a contrarian-prompt pass by default; `/ultrareview` or a `refine` pass are alternative escalation paths the human may invoke. See ADR-0044 D8.
+
 ## Hosting Platform Invariants
 
 34. **Containerized deployable Nodes run on Azure Container Apps, named `ca-hd-{service}-{env}`, one per Node per environment, with system-assigned Managed Identity.**
