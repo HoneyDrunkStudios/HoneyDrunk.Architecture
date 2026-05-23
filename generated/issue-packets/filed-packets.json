@@ -269,5 +269,13 @@
   "generated/issue-packets/active/adr-0042-idempotency/04-kernel-message-handler-base-and-publisher.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Kernel/issues/40",
   "generated/issue-packets/active/adr-0042-idempotency/05-notify-idempotency-envelope-rollout.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/26",
   "generated/issue-packets/active/adr-0042-idempotency/06-communications-idempotency-envelope-rollout.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications/issues/20",
-  "generated/issue-packets/active/adr-0042-idempotency/07-kernel-idempotency-canary-and-strict-enforcement.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Kernel/issues/41"
+  "generated/issue-packets/active/adr-0042-idempotency/07-kernel-idempotency-canary-and-strict-enforcement.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Kernel/issues/41",
+  "generated/issue-packets/active/adr-0043-continuous-backlog-generation/01-architecture-adr-0043-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/250",
+  "generated/issue-packets/active/adr-0043-continuous-backlog-generation/02-architecture-create-backlog-generation-directories.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/251",
+  "generated/issue-packets/active/adr-0043-continuous-backlog-generation/03-architecture-issue-authoring-rules-source-generator-fields.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/252",
+  "generated/issue-packets/active/adr-0043-continuous-backlog-generation/04-architecture-author-audit-rotation-file.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/253",
+  "generated/issue-packets/active/adr-0043-continuous-backlog-generation/05-architecture-hive-sync-strategic-and-reactive-triggers.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/254",
+  "generated/issue-packets/active/adr-0043-continuous-backlog-generation/06-architecture-source-agents-proposed-output-contract.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/255",
+  "generated/issue-packets/active/adr-0043-continuous-backlog-generation/07-architecture-netrunner-weekly-briefing-mode.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/256",
+  "generated/issue-packets/active/adr-0043-continuous-backlog-generation/08-architecture-phase-1-strategic-source-kickoff.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/257"
 }
