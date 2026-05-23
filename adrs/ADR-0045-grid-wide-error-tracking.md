@@ -5,9 +5,11 @@
 **Deciders:** HoneyDrunk Studios
 **Sector:** Ops / cross-cutting
 
+> **Amendment — 2026-05-22.** The original draft placed the error-reporting abstraction and the App Insights error backing in `HoneyDrunk.Observe`. That assignment was a boundary error: `repos/HoneyDrunk.Observe/boundaries.md` explicitly states outbound telemetry to external sinks belongs to **`HoneyDrunk.Pulse`** — Observe is the *inbound* external-system observation layer. `HoneyDrunk.Pulse` is the LIVE (v0.3.0) telemetry-export Node and already owns `ITraceSink`/`ILogSink`/`IMetricsSink`/`IAnalyticsSink`/**`IErrorSink`** plus the `HoneyDrunk.Telemetry.Sink.*` provider family (including `HoneyDrunk.Telemetry.Sink.AzureMonitor` and `HoneyDrunk.Telemetry.Sink.Sentry`). This ADR is corrected throughout to target **Pulse** for the error path, matching the same correction already applied to the companion ADR-0040. The error-reporting facade lives in `HoneyDrunk.Telemetry.Abstractions`; the App Insights error backing **extends the existing `HoneyDrunk.Telemetry.Sink.AzureMonitor` package** — it does not create a new package and does not live in Observe. See D3 for the `IErrorReporter`/`IErrorSink` reconciliation.
+
 ## Context
 
-ADR-0040 (Proposed) selects Azure Monitor + Application Insights as the unified backend for **traces, metrics, and logs**, with `HoneyDrunk.Observe` as the OTLP-only boundary. That decision scopes itself to those three signal types; this ADR addresses **errors** as a distinct signal with first-class error-tracking semantics.
+ADR-0040 (Proposed) selects Azure Monitor + Application Insights as the unified backend for **traces, metrics, and logs**, with `HoneyDrunk.Pulse` as the telemetry-export boundary. That decision scopes itself to those three signal types; this ADR addresses **errors** as a distinct signal with first-class error-tracking semantics.
 
 Today the error story is uneven:
 
@@ -23,7 +25,7 @@ The forcing functions for deciding this now:
 - **Notify Cloud GA** (PDR-0002 / ADR-0027) carries an implicit "we know when errors happen on tenant traffic" expectation.
 - **The existing Notify-Sentry setup needs governance.** Without an ADR, the Notify configuration drifts: account ownership, DSN rotation, sample-rate decisions, PII scrubbing rules all live in unrecorded form.
 
-This ADR decides errors as a fourth Grid signal type, the v1 backend (**Application Insights' Failures + exception tracking**), the **Observe-mediated** integration pattern (preserving ADR-0010's provider-slot reversibility), the cross-link semantics, the per-Node opt-in mechanics, and the explicit **escalation path to Sentry** if v1 doesn't earn its keep.
+This ADR decides errors as a fourth Grid signal type, the v1 backend (**Application Insights' Failures + exception tracking**), the **Pulse-mediated** integration pattern (preserving the sink-provider reversibility Pulse already implements), the cross-link semantics, the per-Node opt-in mechanics, and the explicit **escalation path to Sentry** if v1 doesn't earn its keep.
 
 ## Decision
 
@@ -48,13 +50,18 @@ App Insights' Failures is acknowledged as **"Sentry-lite"** — the model and wo
 
 The architectural property that matters is preserved: **one backend, one unified-view surface, native cross-signal navigation** (D4). The error workflow is good enough for v1 Grid volume; the abstraction (D3) makes future migration cheap.
 
-### D3 — Errors flow through Observe via `IErrorReporter`
+### D3 — Errors flow through Pulse; `IErrorReporter` is a thin facade over the existing `IErrorSink`
 
-The principle from ADR-0010 (Observe is the provider-slot connector layer) and ADR-0040 D2 (Observe is the OTLP-only boundary) extends to errors with a small carve-out: **errors flow through Observe**, but the App Insights connector for errors uses the **App Insights .NET SDK** wrapped behind an `IErrorReporter` interface in `HoneyDrunk.Observe.Abstractions`, not raw OTLP.
+Errors flow through **`HoneyDrunk.Pulse`** — the Grid's telemetry-export Node — exactly as traces/metrics/logs do per ADR-0040. The App Insights connector for errors uses the **App Insights .NET SDK** (not raw OTLP) because App Insights' error model carries fields that are not OTLP primitives — `problem_id`, `application_Version`, custom dimensions for user/tenant scoping that participate in the Failures-blade grouping. The SDK is wrapped behind a sink so the substrate can survive a future backend swap (Sentry per D11, GlitchTip, Bugsnag, etc.).
 
-The carve-out exists because App Insights' error model carries fields that are not OTLP primitives — `problem_id`, `application_Version`, custom dimensions for user/tenant scoping that participate in the Failures-blade grouping. Routing errors as OTLP-generic would strip those features. Better to use the SDK behind an abstraction so the abstraction can survive a future backend swap (Sentry per D11, GlitchTip, Bugsnag, etc.).
+**Reconciliation with Pulse's existing `IErrorSink`.** `HoneyDrunk.Pulse` (v0.3.0, LIVE) **already ships `IErrorSink`** in `HoneyDrunk.Telemetry.Abstractions` — a structured error-capture contract (`CaptureAsync(ErrorEvent)`, `CaptureExceptionAsync`, `CaptureMessageAsync`, `FlushAsync`) with an `ErrorEvent` model carrying exception, message, severity, `CorrelationId`/`OperationId`, `NodeId`, `UserId`, `Environment`, `Release`, and a tag/extra dictionary. The error *capture and fan-out* contract therefore **already exists** — this ADR does **not** create a parallel one.
 
-The `IErrorReporter` shape (added to `HoneyDrunk.Observe.Abstractions`):
+`IErrorReporter` is kept as a **thin, Grid-facing convenience facade layered over `IErrorSink`** — it is explicitly **not** a duplicate of `IErrorSink`. The division of labour:
+
+- **`IErrorSink`** (existing, unchanged) — the sink/fan-out contract. One of five Pulse sinks the Collector fans telemetry out to. It takes a fully-populated `ErrorEvent` and routes it to a backend. It has no notion of ambient request context, no breadcrumb/scope stack — those are caller-side concerns.
+- **`IErrorReporter`** (new, the facade) — the application-facing ergonomic contract a Node consumes. It captures ambient context (the current `Activity`/`trace_id`, the Grid `TenantId`/`PrincipalId`, the deployable `Release`), maintains the breadcrumb/scope stack, builds an `ErrorEvent` from that context, and hands it to `IErrorSink`. It adds no new capture mechanism — it adds ambient-context capture and Sentry-style breadcrumb/scope ergonomics on top of the existing sink.
+
+The `IErrorReporter` facade shape (added to `HoneyDrunk.Telemetry.Abstractions`, alongside `IErrorSink`):
 
 ```
 ValueTask CaptureException(Exception ex, ErrorContext? context = null);
@@ -63,9 +70,9 @@ IDisposable AddBreadcrumb(Breadcrumb crumb);
 IDisposable PushScope(ErrorScope scope);
 ```
 
-`ErrorContext` carries `trace_id` (linking automatically to App Insights traces), `tenant_id` (linking to ADR-0026's primitives), `user_id`, `release` (= application version), and arbitrary tag dictionary. `Breadcrumb` and `ErrorScope` are modeled on Sentry's semantics — they're backend-portable concepts that App Insights can express via custom events on the same `operation_id`, and that Sentry would consume natively if D11 ever fires.
+`ErrorContext` carries `trace_id` (linking automatically to App Insights traces), `tenant_id` (linking to ADR-0026's primitives — the dimension `IErrorSink`'s `ErrorEvent` does **not** carry, and the load-bearing reason the facade exists), `user_id`, `release` (= application version), and an arbitrary tag dictionary. The facade maps `ErrorContext` onto `ErrorEvent` fields (`OperationId`/`CorrelationId` ← `trace_id`; `UserId`; `Release`; tenant id and breadcrumbs ride on `ErrorEvent.Tags`/`ErrorEvent.Extra`). `Breadcrumb` and `ErrorScope` are modeled on Sentry's semantics — backend-portable concepts that App Insights expresses via custom events on the same `operation_id` and that Sentry consumes natively if D11 fires.
 
-The v1 default backing is `HoneyDrunk.Observe.AzureMonitor` (the same backing per ADR-0040 — errors share the App Insights resource with traces/metrics/logs). A Sentry backing (`HoneyDrunk.Observe.Sentry`) is sketched as the D11 escalation path; not implemented at v1.
+The v1 default error backing **extends the existing `HoneyDrunk.Telemetry.Sink.AzureMonitor` package** — the same Pulse sink that ADR-0040 uses for traces/metrics/logs. Errors share the App Insights resource. **No new package is created.** A Sentry error backing already exists as `HoneyDrunk.Telemetry.Sink.Sentry`; it is the D11 escalation path — present in the repo, not the v1 default.
 
 ### D4 — Cross-link is native via `operation_id`
 
@@ -79,11 +86,11 @@ This is the **load-bearing piece** for the unified-view claim. ADR-0040 D4 (cros
 
 If D11 ever fires (move to Sentry), cross-linking re-emerges as a configured integration via `trace_id` — same shape as the original draft of this ADR contemplated. The configuration cost is the trade-off accepted at escalation.
 
-### D5 — Per-Node opt-in via Observe configuration
+### D5 — Per-Node opt-in via Pulse configuration
 
-Each Node enables error capture by configuring its consumption of `IErrorReporter` (which is part of the standard Observe registration). All Nodes consuming Observe get error reporting automatically once the Observe backing is wired; opt-out is per Node via the Observe configuration if a Node has reason to suppress errors (rare; e.g., `HoneyDrunk.Architecture` itself, which does not run user-facing code).
+Each Node enables error capture by configuring its consumption of `IErrorReporter` (which is part of the standard Pulse telemetry registration). All Nodes consuming Pulse get error reporting automatically once the error sink backing is wired; opt-out is per Node via the Pulse configuration if a Node has reason to suppress errors (rare; e.g., `HoneyDrunk.Architecture` itself, which does not run user-facing code).
 
-`HoneyDrunk.Notify`'s existing Sentry configuration is **migrated** into this pattern. Notify drops its direct `SentrySdk.Init(dsn)` call; depends on `HoneyDrunk.Observe` (already does, via the broader Observe relationship); replaces every `SentrySdk.CaptureException(...)` call with `_errorReporter.CaptureException(...)`. Errors flow to App Insights instead of Sentry. The Notify-specific Sentry account is archived after a parallel-run window.
+`HoneyDrunk.Notify`'s existing Sentry configuration is **migrated** into this pattern. A source scan found **no Sentry SDK code in Notify** — only account/DSN configuration. So the migration is config-only: Notify audits its D8 error-capture sites, wires them to `IErrorReporter` via its Pulse telemetry dependency, and the Notify-specific Sentry account is archived. Errors flow to App Insights instead of Sentry. Because nothing in Notify emits to Sentry from code, there is **no parallel-output window** — the cutover is the moment `IErrorReporter` is wired. (If an execution-time scan unexpectedly finds SDK code, the SDK-replacement path with a parallel-run window is the fallback.)
 
 This is the explicit reversal of the first draft of this ADR, which proposed adopting Sentry Grid-wide. The current decision adopts App Insights Grid-wide; Notify's existing Sentry usage is **removed**, not extended.
 
@@ -91,9 +98,9 @@ This is the explicit reversal of the first draft of this ADR, which proposed ado
 
 App Insights' release-tracking feature uses the `application_Version` property on captured telemetry. Wiring to the Grid's release flows:
 
-- **Container Apps deployable Nodes** (Notify.Functions, Notify.Worker, Pulse.Collector, future Notify Cloud) — the `HoneyDrunk.Actions` reusable deploy workflows (per ADR-0015) are amended to set `application_Version` to the deployable's SemVer tag (per ADR-0033's tag→environment mapping) via the App Insights resource's release annotations API. Captured exceptions automatically carry this version.
+- **Container Apps deployable Nodes** (Notify.Functions, Notify.Worker, Pulse.Collector, future Notify Cloud) — the `HoneyDrunk.Actions` reusable deploy workflows (per ADR-0015) are amended to set `application_Version` to the deployable's SemVer tag (per ADR-0033's tag→environment mapping) and to mark the deploy via the current supported release-annotation mechanism. Captured exceptions automatically carry this version.
 - **Library / Abstractions packages** — not deployable, do not set a version. Errors caught in code consuming a library record the consuming application's version, not the library's package version.
-- **Release annotations** — App Insights' release annotations API (`https://aigs1.aisvc.visualstudio.com/applicationinsights/release/v2.0/api`) is called from the deploy workflow with the new version. The Failures blade surfaces these as annotations on the trend graph, making "this error first appeared in v0.4.2" visible.
+- **Release annotations** — the deploy workflow marks the deploy moment on the App Insights Failures trend graph using the **current supported release-annotation mechanism** (`az monitor app-insights` / ARM). The legacy `aisvc.visualstudio.com` annotations endpoint is a fallback only if no supported equivalent applies. The Failures blade surfaces these annotations, making "this error first appeared in v0.4.2" visible.
 
 The workflow quality is **lower than Sentry's** release surface (Sentry has a richer Issues/Releases UX with regression detection, suspect commits, suspect releases). Acceptable for v1 Grid volume; named as one of the D11 escalation triggers if error-triage volume grows.
 
@@ -104,7 +111,7 @@ Errors can leak PII, tenant data, and model content. The mechanism is `ITelemetr
 - **`tenant_id` is allowed** as a custom dimension on exceptions; low cardinality bounded by tenant count. Load-bearing for multi-tenant triage. Not considered PII.
 - **`user_id` is allowed but pseudonymous** — the Grid's internal opaque `PrincipalId` per ADR-0026, never an email or external identifier.
 - **Prompt/completion text from AI Nodes** follows ADR-0040 D9: **forbidden by default**, allowed only behind the `evals.sensitive=true` carve-out. Exceptions thrown from agent execution paths must scrub the prompt/completion content before capture; the breadcrumb (capability invoked, model, cost) is allowed.
-- **Common PII patterns** (emails, phone numbers, credit card patterns, API keys, JWT shapes) are stripped from exception messages and custom dimensions by a regex-based processor in `HoneyDrunk.Observe.AzureMonitor`.
+- **Common PII patterns** (emails, phone numbers, credit card patterns, API keys, JWT shapes) are stripped from exception messages and custom dimensions by the shared, mechanism-agnostic PII scrubber that ADR-0040 builds as a shared component; the error path in `HoneyDrunk.Telemetry.Sink.AzureMonitor` consumes that shared scrubber rather than re-implementing the regex set.
 - **`HoneyDrunk.Audit`-emitted errors** are PII-bearing by design (recipient address on a notification failure, for instance). These flow to the dedicated Audit-tagged Log Analytics table with `sensitive=audit` and 730-day retention per ADR-0040 D3.
 
 ### D8 — When to capture an error vs. log a line
@@ -137,8 +144,8 @@ Free Sentry-tier (5K errors/month, 1 user, 30-day retention) is what the Notify-
 
 ### D10 — Phased rollout
 
-- **Phase 1 (Week 1–2) — `IErrorReporter` abstraction + Notify migration.** Add `IErrorReporter` and related types to `HoneyDrunk.Observe.Abstractions`. Implement the App Insights backing in `HoneyDrunk.Observe.AzureMonitor`. Migrate `HoneyDrunk.Notify` from direct Sentry SDK to `IErrorReporter`; run in parallel-output mode for one week (errors go to both Sentry and App Insights for parity verification); cut over; archive the Notify-Sentry account.
-- **Phase 2 (Week 3–6) — Rollout to deployable Nodes.** Notify.Functions, Notify.Worker, Pulse.Collector wire `IErrorReporter` via their existing Observe dependency. Release tracking (D6) lands in the deploy workflows.
+- **Phase 1 (Week 1–2) — `IErrorReporter` facade + Notify migration.** Add the `IErrorReporter` facade and related types to `HoneyDrunk.Telemetry.Abstractions` (alongside the existing `IErrorSink`). Extend the App Insights error backing in `HoneyDrunk.Telemetry.Sink.AzureMonitor`. Migrate `HoneyDrunk.Notify` onto `IErrorReporter` — config-only (Notify has no Sentry SDK code); wire the D8 capture sites and archive the Notify-Sentry account. No parallel-output window is needed because nothing in Notify emits to Sentry from code.
+- **Phase 2 (Week 3–6) — Rollout to deployable Nodes.** Notify.Functions, Notify.Worker, Pulse.Collector wire `IErrorReporter` via their existing Pulse telemetry dependency. Release tracking (D6) lands in the deploy workflows.
 - **Phase 3 (Month 2–3) — AI-sector standup wave consumes the pattern.** Every Seed-sector AI Node, on standup, wires `IErrorReporter` from day one. The agent execution loop's breadcrumb usage (tool dispatched, model invoked, cost incurred) is the high-value error-tracking surface area for AI Nodes.
 - **Phase 4 (Month 3+) — Escalation evaluation.** Review observed error volume, triage workflow pain points, and Notify Cloud GA error surfaces. Decide whether any D11 trigger has fired. If yes, the relevant escalation amendment lands. If no, hold on App Insights.
 
@@ -155,7 +162,7 @@ Application Insights' Failures + exception tracking is the v1 default chosen for
 | Tenant-scoped error views needed (Notify Cloud) | Multi-tenant error triage at scale needs Sentry's tag-and-environment filtering polish. | Move errors to Sentry; preserve tenant-scoped App Insights traces for context. |
 | AI-sector tool-call breadcrumb depth | Agent-execution failures need the rich breadcrumb chain Sentry handles natively but App Insights expresses awkwardly via custom events. | Move errors to Sentry; preserve App Insights for traces/metrics/logs of the same execution. |
 
-The escalation preserves the substrate: `IErrorReporter` abstraction stays, `HoneyDrunk.Observe.Sentry` backing comes online, the Observe-level configuration swap moves errors to Sentry while traces/metrics/logs stay on App Insights. The result is the two-backend posture the first draft of this ADR committed to, **arrived at with evidence rather than speculation.**
+The escalation preserves the substrate: the `IErrorReporter` facade and `IErrorSink` contract stay, the existing `HoneyDrunk.Telemetry.Sink.Sentry` backing is activated as the error sink, the Pulse-level configuration swap moves errors to Sentry while traces/metrics/logs stay on App Insights. The result is the two-backend posture the first draft of this ADR committed to, **arrived at with evidence rather than speculation.**
 
 Combined cost at escalation: App Insights (~$30–100/month for traces/metrics/logs) + Sentry (free or Team $26/month) = within ADR-0040's $100/month ceiling at low volume, growing to ~$150/month at meaningful Notify Cloud volume.
 
@@ -167,20 +174,20 @@ Recorded explicitly so the boundary doesn't blur: Pulse → metrics/logs; applic
 
 ### D13 — Relationship to ADR-0010, ADR-0040, and the existing Notify-Sentry setup
 
-- **ADR-0010** — preserved. `HoneyDrunk.Observe` is the provider-slot connector layer. This ADR adds `IErrorReporter` to its abstractions surface alongside the existing OTLP-shaped surfaces.
-- **ADR-0040** — extended. ADR-0040 covers traces/metrics/logs in App Insights; this ADR covers errors in the same App Insights resource. The two are complementary; ADR-0040's "unified view" claim is completed by D4's native cross-link.
-- **Existing Notify-Sentry setup** — **removed, not extended.** The first draft of this ADR proposed adopting Sentry Grid-wide; this revised decision instead migrates Notify off Sentry onto App Insights. The Notify-Sentry account is archived after the parallel-run window (D5/Phase 1). Sentry returns only if D11 fires.
+- **ADR-0010** — preserved. `HoneyDrunk.Observe` remains the inbound external-system observation layer; this ADR does **not** touch Observe. Outbound error telemetry is a Pulse concern per Observe's and Pulse's boundary docs.
+- **ADR-0040** — extended. ADR-0040 covers traces/metrics/logs through Pulse into App Insights; this ADR covers errors through the same Pulse sink family into the same App Insights resource. The two are complementary; ADR-0040's "unified view" claim is completed by D4's native cross-link. ADR-0040 was likewise corrected to target Pulse — this ADR's correction is the matching companion change.
+- **Existing Notify-Sentry setup** — **removed, not extended.** The first draft of this ADR proposed adopting Sentry Grid-wide; this revised decision instead migrates Notify off Sentry onto App Insights. The Notify-Sentry account is archived once `IErrorReporter` is wired (D5/Phase 1) — config-only, no parallel-run window, since Notify has no Sentry SDK code. Sentry returns only if D11 fires, via the existing `HoneyDrunk.Telemetry.Sink.Sentry` package.
 
 ## Consequences
 
 ### Affected Nodes
 
-- **HoneyDrunk.Observe** — primary affected Node. `HoneyDrunk.Observe.Abstractions` gains `IErrorReporter`, `ErrorContext`, `ErrorScope`, `Breadcrumb`, `ErrorLevel`. `HoneyDrunk.Observe.AzureMonitor` (the ADR-0040 backing) extends to handle error capture via the App Insights SDK.
-- **HoneyDrunk.Notify** — direct-Sentry usage migrates to `IErrorReporter`; Notify-Sentry account archived after parallel-run cutover.
-- **HoneyDrunk.Notify.Functions, HoneyDrunk.Notify.Worker, HoneyDrunk.Pulse.Collector** — consume `IErrorReporter` via their existing Observe dependency in Phase 2.
-- **HoneyDrunk.Actions** — reusable deploy workflows amended to call the App Insights release annotations API as a post-deploy step (D6).
-- **HoneyDrunk.Vault** — App Insights instrumentation keys (from ADR-0040) are reused; no new secrets for the error path in v1. If D11 fires, Sentry DSNs join Vault.
-- **HoneyDrunk.Architecture** — `catalogs/contracts.json` gains `IErrorReporter` under the Observe Node's published contracts.
+- **HoneyDrunk.Pulse** — primary affected Node. `HoneyDrunk.Telemetry.Abstractions` gains the `IErrorReporter` facade plus `ErrorContext`, `ErrorScope`, `Breadcrumb`, `ErrorLevel` — layered over the existing `IErrorSink`/`ErrorEvent`, not duplicating them. `HoneyDrunk.Telemetry.Sink.AzureMonitor` (the existing ADR-0040 sink) extends to handle error capture via the App Insights SDK. No new package.
+- **HoneyDrunk.Notify** — Sentry config (no SDK code) migrates to `IErrorReporter`; Notify-Sentry account archived once wired.
+- **HoneyDrunk.Notify.Functions, HoneyDrunk.Notify.Worker, HoneyDrunk.Pulse.Collector** — consume `IErrorReporter` via their existing Pulse telemetry dependency in Phase 2.
+- **HoneyDrunk.Actions** — reusable deploy workflows amended to mark the deploy via the current supported App Insights release-annotation mechanism as a post-deploy step (D6).
+- **HoneyDrunk.Vault** — App Insights connection string (from ADR-0040) is reused; no new secrets for the error path in v1. If D11 fires, Sentry DSNs join Vault.
+- **HoneyDrunk.Architecture** — `catalogs/contracts.json` gains the `IErrorReporter` facade under the Pulse Node's published contracts.
 - **AI-sector Seed Nodes (ADR-0016 through ADR-0025)** — each consumes `IErrorReporter` at standup; error capture is part of the standup canary.
 - **HoneyDrunk.Audit** — emits errors with `sensitive=audit` tag and longer-retention requirements per ADR-0040 D3.
 - **HoneyDrunk.Notify.Cloud** (future, ADR-0027) — multi-tenant error capture with `tenant_id` dimensions from day one.
@@ -189,14 +196,14 @@ Recorded explicitly so the boundary doesn't blur: Pulse → metrics/logs; applic
 
 Adds one:
 
-- **Invariant: errors captured for Sentry-eligible cases (D8) flow through `IErrorReporter`, never via direct backend SDK calls.** This preserves backend reversibility (D11 escalation) and the centralized PII-scrubbing surface.
+- **Invariant: errors captured for the capture-eligible cases (D8) flow through `IErrorReporter`, never via a direct backend SDK call.** This preserves backend reversibility (D11 escalation) and the centralized PII-scrubbing surface. Secret values must never survive scrubbing into a captured exception — this invariant references, rather than restates, invariant 8 (secret values never appear in logs, traces, exceptions, or telemetry).
 
-(Final invariant number assigned when the implementing work updates `constitution/invariants.md`; `hive-sync` reconciles per the ADR-0044 pattern.)
+The reserved number for this invariant is **80** — pre-allocated as part of a 12-ADR batch. The implementing packet (packet 00) appends it to `constitution/invariants.md`; if any invariant above the file's verified current maximum (51) lands from outside this batch before merge, shift this one upward, never reuse a number.
 
 ### Operational Consequences
 
 - **No new vendor relationship at v1.** Errors share the App Insights resource that ADR-0040 already provisioned. No new account ownership, no new billing line.
-- **The Notify-Sentry migration is the highest-friction step.** Phase 1 includes a parallel-output window where errors go to both Sentry and App Insights for verification; cut over after parity is confirmed; archive the Sentry account. ~1 week of operator attention.
+- **The Notify-Sentry migration is config-only.** A source scan found no Sentry SDK code in Notify — only account/DSN configuration. Phase 1 wires Notify's D8 capture sites to `IErrorReporter` and archives the Sentry account; there is no parallel-output window because nothing emits to Sentry from code. Low-friction; the SDK-replacement path with a parallel window is the fallback only if an execution-time scan unexpectedly finds SDK code.
 - **App Insights' Failures-blade workflow is the v1 acceptance.** It is real but rougher than Sentry. The escalation triggers (D11) name the conditions under which it stops being acceptable.
 - **Release tracking quality is "good enough" not "best."** Sentry's Releases UX with regression detection and suspect commits is recognized as superior; D11 names that as one of the escalation triggers.
 - **PII-scrubbing rules apply equally** to errors as to traces/logs; the same `ITelemetryProcessor` mechanism (ADR-0040 D9) handles both. Reduces the surface area where a misconfigured scrubber could leak.
@@ -204,10 +211,10 @@ Adds one:
 
 ### Follow-up Work
 
-- Add `IErrorReporter`, `ErrorContext`, `ErrorScope`, `Breadcrumb`, `ErrorLevel` to `HoneyDrunk.Observe.Abstractions`.
-- Extend `HoneyDrunk.Observe.AzureMonitor` with App-Insights-SDK-based error capture.
-- Migrate Notify's direct-Sentry usage to `IErrorReporter`; parallel-output window; cutover; archive Sentry account.
-- Amend HoneyDrunk.Actions deploy workflows to call App Insights release annotations API.
+- Add the `IErrorReporter` facade, `ErrorContext`, `ErrorScope`, `Breadcrumb`, `ErrorLevel` to `HoneyDrunk.Telemetry.Abstractions`, layered over the existing `IErrorSink`.
+- Extend `HoneyDrunk.Telemetry.Sink.AzureMonitor` with App-Insights-SDK-based error capture.
+- Migrate Notify's Sentry config to `IErrorReporter` (config-only — no SDK code, no parallel-output window); archive the Sentry account.
+- Amend HoneyDrunk.Actions deploy workflows to mark the deploy via the current supported App Insights release-annotation mechanism.
 - Implement the PII-scrubbing canary for the error path (similar to ADR-0040 D9 canary for traces/logs).
 - Wire `IErrorReporter` into each AI-sector standup ADR (0016–0025) as the standup canary surface.
 - Update `.claude/agents/review.md` D3 Observability category with the D8 capture-vs-log mapping.
@@ -241,9 +248,13 @@ Considered. Strong on high-cardinality trace-driven error analysis. Rejected bec
 
 Rejected on operational burden. Same conclusion as ADR-0040's self-hosting rejection.
 
-### Direct backend SDK usage without an Observe abstraction
+### Direct backend SDK usage without a Pulse abstraction
 
-Rejected. The `IErrorReporter` abstraction costs little (≤200 lines of code in the Observe.AzureMonitor backing) and buys backend reversibility (D11 escalation), centralized PII scrubbing, consistent `trace_id`/`tenant_id` tagging, and uniform semantics. The direct-SDK pattern is what Notify has today, and the Phase 1 migration is the explicit cost of fixing that.
+Rejected. The `IErrorReporter` facade costs little (it builds an `ErrorEvent` and hands it to the existing `IErrorSink`) and buys backend reversibility (D11 escalation), centralized PII scrubbing, consistent `trace_id`/`tenant_id` tagging, and uniform semantics. The direct-SDK pattern is what Notify has today, and the Phase 1 migration is the explicit cost of fixing that.
+
+### A parallel new error contract instead of reusing `IErrorSink`
+
+Considered and rejected. `HoneyDrunk.Pulse` already ships `IErrorSink` and the `ErrorEvent` model for structured error capture and fan-out. Introducing a second, parallel error-capture contract would silently reinvent that surface and create two error models to keep in sync. `IErrorReporter` is instead a thin Grid-facing facade *over* `IErrorSink` — it adds ambient-context capture (`trace_id`, `tenant_id`, `release`) and Sentry-style breadcrumb/scope ergonomics, and maps onto the existing `ErrorEvent`. It does not duplicate the sink contract.
 
 ### Keep Notify on Sentry as a special case; adopt App Insights elsewhere
 
