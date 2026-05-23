@@ -113,6 +113,23 @@ Ask: "Doesn't ADR-{N} say we decided against this?"
 
 Ask: "How does this work when {edge case}?"
 
+## ADR-0044 D3 Rubric-Completeness Check
+
+ADR-0044 D3 makes the twenty-category review rubric a shared upstream authoring standard, not the review agent's private checklist. During refinement, check whether the packet or dispatch plan accounts for the categories it clearly touches. A packet that ignores Reliability, Observability, Security, Testing, AI/agent, or Anti-Entropy concerns where those apply is a refinement finding.
+
+Use the exact category names and numbering from `review.md`. Do not duplicate the full rubric; verify coverage and call out gaps:
+
+- **1. Correctness and functional integrity** — acceptance criteria prove the intended behavior and scope.
+- **7. Reliability and resilience** — failure modes, rollback, retries, and partial-failure behavior are addressed.
+- **8. Observability and diagnostics** — logs, metrics, traces, health checks, and correlation evidence are specified.
+- **9. Security** and **10. Enterprise readiness** — secrets, auth, tenancy, compliance, and audit requirements are explicit.
+- **11. Testing quality** — verification is specific, realistic, and includes boundary/negative cases where relevant.
+- **15. CI/CD and delivery** — release, migration, and non-blocking/advisory semantics are clear.
+- **18. AI and agent-specific concerns** — handoff context, authorship, idempotency, and replay/circuit-breaker concerns are clear.
+- **19. Anti-entropy and long-term system health** — exceptions, duplicated patterns, and future cleanup are tracked instead of hidden.
+
+Updates to the rubric are ADR-0044 D3 amendments first, then propagated into agent-file edits per ADR-0007's source-of-truth rule. Drift between D3, `review.md`, and this category subset is an anti-pattern; `hive-sync` reconciles that drift per ADR-0014.
+
 ## Output Format
 
 ```markdown

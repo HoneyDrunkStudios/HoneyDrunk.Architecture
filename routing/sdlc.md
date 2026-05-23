@@ -153,6 +153,31 @@ This can be delivered as:
 
 ---
 
+## ADR-0044 D3/D6 Codex Authoring Discipline
+
+When Codex executes a packet, ADR-0044 D3 requires the review rubric to be applied upstream before producing the diff. The handoff should keep this checklist visible so Codex authors against the same standard the review agent later evaluates.
+
+Apply the brief ADR-0044 D3 authoring checklist before producing a diff:
+
+- **1. Correctness and functional integrity** — the change satisfies the packet/intent and handles edge cases.
+- **3. Maintainability** — the implementation is readable and locally understandable.
+- **5. SOLID and design principles** — responsibilities stay cohesive; no speculative abstraction.
+- **4. Reuse and ecosystem cohesion** — reuse existing Grid patterns; avoid duplicate helpers/policy.
+- **9. Security** — no secret leakage, auth bypass, or widened blast radius.
+- **6. Performance and scalability** — no avoidable hot-path, cost, or unbounded-work risk.
+- **11. Testing quality** — verification is meaningful and covers the changed behavior.
+- **18. AI and agent-specific concerns** — authorship, idempotency, context, and replay risks are explicit.
+- **20. Human factors** — PRs are easy for Oleg to review and do not hide operational trade-offs.
+
+The remaining D3 categories are still in scope by reference through `.claude/agents/review.md`; do not treat this short list as exhaustive.
+
+Per ADR-0044 D6, Codex-authored PRs must declare authorship in both places:
+
+- PR body line: `Authorship: agent-codex`
+- Commit trailer: `Authorship: agent-codex`
+
+When Codex materially shares authorship with another surface, use `Authorship: mixed`. Use only the five D6 classes: `human`, `agent-codex`, `agent-copilot`, `agent-claude-code`, or `mixed`.
+
 ## Handoff Protocol: Codex → Developer (PR Review)
 
 When Codex opens a PR, the developer evaluates:

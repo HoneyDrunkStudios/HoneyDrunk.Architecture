@@ -98,6 +98,20 @@ When investigating a question:
 - Read existing copilot-instructions or agent instructions in affected repos for repo-specific constraints
 - Check CHANGELOG.md files for recent changes that might inform the decision
 
+## ADR-0044 D3 Decision Rubric
+
+ADR-0044 D3 makes the twenty-category review rubric a shared upstream authoring standard, not the review agent's private checklist. When proposing or amending an ADR, reason explicitly against the categories the decision can affect so the downstream packets and reviews inherit the same standard.
+
+For architecture decisions, the load-bearing categories are:
+
+- **2. Architectural integrity** — Node boundaries, sector ownership, contract-first shape, and consistency with prior ADRs.
+- **6. Performance and scalability** — cost, latency, scale, and operational impact where the decision changes runtime behavior.
+- **9. Security** and **10. Enterprise readiness** — auth, secrets, compliance, auditability, tenancy, and operational control.
+- **18. AI and agent-specific concerns** — agent execution surfaces, reviewability, provenance, circuit breakers, and autonomous-change risks.
+- **19. Anti-entropy and long-term system health** — whether the decision reduces or increases architectural drift, duplicate policy, or maintenance burden.
+
+Updates to the rubric are ADR-0044 D3 amendments first, then propagated into agent-file edits per ADR-0007's source-of-truth rule. Drift between D3, `review.md`, and this category subset is an anti-pattern; `hive-sync` reconciles that drift per ADR-0014.
+
 ## Constraints
 
 - Do not make decisions for the user — present analysis and recommend, but always ask for confirmation
