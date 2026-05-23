@@ -48,7 +48,7 @@ Collect all ground truth before editing files.
 
 **1c. Detect release drift.** Compare `catalogs/grid-health.json` `last_release` values to `initiatives/releases.md`.
 
-**1d. Load initiative files.** Read `initiatives/active-initiatives.md`, `current-focus.md`, `releases.md`, `roadmap.md`, and `archived-initiatives.md`.
+**1d. Load initiative files.** Read `initiatives/active-initiatives.md`, `initiatives/current-focus.md`, `releases.md`, `initiatives/roadmap.md`, and `initiatives/archived-initiatives.md`.
 
 **1e. Preserve prior run surfaces when needed.** If present, read the previous `initiatives/proposed-adrs.md` and `initiatives/drift-report.md` so sticky first-surfaced dates can carry forward.
 
@@ -67,25 +67,35 @@ For each ADR/PDR, extract ID, title, `**Status:**`, `**Date:**`, and `**Sector:*
 
 Use the date-based branch `chore/hive-sync-$(date +%Y-%m-%d)` for scheduled runs. Reuse it when it already exists so reruns update the same PR.
 
-### Step 3: Update active-initiatives.md
+### Step 3: Update initiatives/active-initiatives.md (shared file — mechanical columns only)
 
-Update initiative tracking from `/tmp/issue-states.json`: check off closed issues, add progress annotations, flag stale initiatives, and mark complete initiatives as ready to archive only when exit criteria are met.
+`initiatives/active-initiatives.md` is **shared with `netrunner`**. Your authority is bounded to mechanical columns only:
 
-### Step 4: (Removed) — `current-focus.md` is owned by `netrunner`
+- **You own:** per-packet `[x]` tracking checkboxes; per-initiative `**Status:**` field; the `> **Sync (date):**` annotation blocks at the bottom of each initiative; archive moves to `initiatives/archived-initiatives.md` (Step 7).
+- **Netrunner owns** (do not touch): initiative ordering within and between sections (In Progress / Planned / Watch); cross-section moves; initiative `**Description:**` narrative text; cross-references to current-focus rank.
 
-`initiatives/current-focus.md` is curated by the `netrunner` agent (sole writer). `hive-sync` reads it for context but never edits it. If you notice drift between `current-focus.md` and the ground truth surfaced by other steps, record it in `drift-report.md` (Step 13, category 14) rather than modifying the file directly.
+From `/tmp/issue-states.json`: check off closed issues, update `**Status:**` based on issue completion ratio, add `> **Sync (YYYY-MM-DD):**` progress annotations, flag stale initiatives, and mark complete initiatives as ready to archive only when exit criteria are met. Do **not** reorder initiative blocks; do **not** rewrite `**Description:**`; do **not** add or remove `(current focus #N)` cross-references.
+
+### Step 4: (Removed) — `initiatives/current-focus.md` is owned by `netrunner`
+
+`initiatives/current-focus.md` is curated by the `netrunner` agent (sole writer). `hive-sync` reads it for context but never edits it. If you notice drift between `initiatives/current-focus.md` and the ground truth surfaced by other steps, record it in `initiatives/drift-report.md` (Step 13, category 14) rather than modifying the file directly.
 
 ### Step 5: Update releases.md
 
 For each release drift item, add a release entry using `grid-health.json`, changelogs, and recent commits. Do not fabricate highlights; flag uncertain entries for human review.
 
-### Step 6: Update roadmap.md
+### Step 6: Update roadmap.md (shared file — mechanical columns only)
 
-Cross-reference quarterly roadmap items against issue states, release state, and initiative status. Update `**Last Updated:**`.
+`initiatives/roadmap.md` is **shared with `netrunner`**. Your authority is bounded to mechanical columns only:
+
+- **You own:** `[ ]` / `[x]` checkbox state on each quarterly item; closure annotations like `*(N/M issues closed; ready for archive)*`; `**Last Updated:**` bump when *your* edits land.
+- **Netrunner owns** (do not touch): item ordering within a quarter; promotion/demotion of items between quarters; narrative commentary tying items to current-focus ranks (e.g., `*(current focus #3)*` annotations).
+
+Cross-reference quarterly roadmap items against issue states, release state, and initiative status. Flip `[ ]` ↔ `[x]` where the underlying issues warrant it; update or add closure annotations like `*(N/M issues closed; ready for archive)*`. Do **not** reorder lines, do **not** move items between quarters, do **not** add or remove `(current focus #N)` annotations. Bump `**Last Updated:**` only if a checkbox or closure annotation actually changed.
 
 ### Step 7: Archive Complete Initiatives
 
-When an initiative is 100% closed and exit criteria are met, move the initiative block from `active-initiatives.md` to `archived-initiatives.md`. **Do not** modify `current-focus.md` even if the archived initiative appears there — `netrunner` owns that file and will demote the row on its next curator pass. Do not archive on checkbox count alone.
+When an initiative is 100% closed and exit criteria are met, move the initiative block from `initiatives/active-initiatives.md` to `initiatives/archived-initiatives.md`. **Do not** modify `initiatives/current-focus.md` even if the archived initiative appears there — `netrunner` owns that file and will demote the row on its next curator pass. Do not archive on checkbox count alone.
 
 ### Step 8: Reconcile Non-Initiative Board Items
 
@@ -222,7 +232,7 @@ Initial categories:
 11. Node IDs in `catalogs/contracts.json` that don't exist in `catalogs/nodes.json`.
 12. Services whose Step-12 status mapping produced a novel value (signal not in the documented set) — record the unmapped signal so the human can extend the mapping.
 13. Nodes in `grid-health.json` whose `version` mismatches `compatibility.json` / `modules.json` / `services.json` *after* Step-12 reconciliation (would only happen if reconciliation was skipped for a specific node — surfaces a reconciliation bug).
-14. Drift between `current-focus.md` (read-only here) and ground truth surfaced by other steps — e.g., a row that references a closed packet, an ADR shown as Proposed that hive-sync just flipped to Accepted, or an archived initiative still appearing in the top-10. Netrunner owns the file; this category just lets `netrunner` know what to fix on its next curator pass.
+14. Drift between `initiatives/current-focus.md` (read-only here) and ground truth surfaced by other steps — e.g., a row that references a closed packet, an ADR shown as Proposed that hive-sync just flipped to Accepted, or an archived initiative still appearing in the top-10. Netrunner owns the file; this category just lets `netrunner` know what to fix on its next curator pass.
 
 Preserve `First Surfaced` dates from the previous drift report by category and item identity. This sticky date is the single exception to the fully-rewritten tracking-file rule.
 
@@ -252,7 +262,7 @@ Commit changes and open/update a PR. If Step 9 flips one or more ADRs/PDRs, appe
 - `initiatives/board-items.md` is fully rewritten every sync run.
 - `hive-sync` authority over ADR/PDR files is bounded to flipping `**Status:** Proposed` to `**Status:** Accepted` when every implementing packet issue is closed. It never edits decision bodies, renames files, flips reverse direction, or sets any other status.
 - `hive-sync` authority over `adrs/README.md` and `pdrs/README.md` is bounded to Status and Date columns only.
-- `hive-sync` surfaces missing-row and orphan-row anomalies in `proposed-adrs.md` but never auto-adds or auto-deletes README index rows.
+- `hive-sync` surfaces missing-row and orphan-row anomalies in `initiatives/proposed-adrs.md` but never auto-adds or auto-deletes README index rows.
 - `initiatives/proposed-adrs.md` is fully rewritten every run; hand-edits will be overwritten.
 - `initiatives/drift-report.md` is fully rewritten except for preserving First Surfaced dates for persistent findings.
 - `hive-sync` authority over `catalogs/` is bounded to **Step 12 reconciliation only**: `compatibility.json` (`currentVersion`, `lastUpdated`), `modules.json` (`version`), `services.json` (`status`). All other catalog files and all other fields on those three files are read-only. Never auto-add rows to any catalog — missing entries are drift, not mutations. Never modify `grid-health.json` — it is the canonical ground truth, written by CI.
