@@ -3,7 +3,8 @@ name: hive-sync
 description: >-
   Reconcile the Architecture repo with The Hive — initiative tracking files,
   packet lifecycle (active/completed), non-initiative board items, Proposed
-  ADR/PDR acceptance, README indexes, and drift reports. Runs through OpenClaw
+  ADR/PDR acceptance, README indexes, mutable catalog fields (version/status
+  derived from grid-health.json), and drift reports. Runs through OpenClaw
   on schedule or manually and opens a PR with all changes.
 tools:
   - Read
@@ -29,12 +30,19 @@ This agent operates within the framing of `constitution/charter.md` — the stud
 
 Collect all ground truth before editing files.
 
-**1a. Load catalog files:**
+**1a. Load catalog and tracking files.** Read every catalog into memory once; downstream steps reuse them. Don't query files multiple times.
 
 1. `generated/issue-packets/filed-packets.json`
-2. `catalogs/grid-health.json`
-3. `catalogs/nodes.json`
-4. `initiatives/releases.md`
+2. `initiatives/releases.md`
+3. `catalogs/grid-health.json` — canonical node state (signal, version, last_release, active_blockers). Source of truth for Step 12 catalog reconciliation. **Read-only for hive-sync** (CI/external workflows write this).
+4. `catalogs/nodes.json` — master node registry. Read-only for hive-sync (additions/renames/removals are deliberate human decisions).
+5. `catalogs/compatibility.json` — per-node version + compatibility matrix. **Reconciled in Step 12** (`currentVersion` and `lastUpdated` fields only).
+6. `catalogs/modules.json` — per-module list with versions. **Reconciled in Step 12** (`version` field only).
+7. `catalogs/services.json` — deployable services with status. **Reconciled in Step 12** (`status` field only).
+8. `catalogs/relationships.json` — node dependency edges. Read-only; drift-checked in Step 13.
+9. `catalogs/contracts.json` — public contract registry. Read-only; drift-checked in Step 13.
+10. `catalogs/signals.json` — signal taxonomy. Read-only; drift-checked in Step 13.
+11. `catalogs/flow_config.json`, `catalogs/flow_tiers.json` — architectural taxonomy. Read-only; not drift-checked (no automatable ground truth).
 
 **1b. Query GitHub issue states.** Gather every issue from `filed-packets.json` in one shell pass and write `/tmp/issue-states.json`. Do not query one issue per later step; all downstream reasoning reuses this file. These pre-prune issue states are also the source of truth for completed-manifest pruning in Step 11.
 
@@ -63,9 +71,9 @@ Use the date-based branch `chore/hive-sync-$(date +%Y-%m-%d)` for scheduled runs
 
 Update initiative tracking from `/tmp/issue-states.json`: check off closed issues, add progress annotations, flag stale initiatives, and mark complete initiatives as ready to archive only when exit criteria are met.
 
-### Step 4: Update current-focus.md
+### Step 4: (Removed) — `current-focus.md` is owned by `netrunner`
 
-Promote or unblock focus items only when issue data supports the change. Update `**Last Updated:**`.
+`initiatives/current-focus.md` is curated by the `netrunner` agent (sole writer). `hive-sync` reads it for context but never edits it. If you notice drift between `current-focus.md` and the ground truth surfaced by other steps, record it in `drift-report.md` (Step 13, category 14) rather than modifying the file directly.
 
 ### Step 5: Update releases.md
 
@@ -77,7 +85,7 @@ Cross-reference quarterly roadmap items against issue states, release state, and
 
 ### Step 7: Archive Complete Initiatives
 
-When an initiative is 100% closed and exit criteria are met, move the initiative block from `active-initiatives.md` to `archived-initiatives.md` and remove it from `current-focus.md` if present. Do not archive on checkbox count alone.
+When an initiative is 100% closed and exit criteria are met, move the initiative block from `active-initiatives.md` to `archived-initiatives.md`. **Do not** modify `current-focus.md` even if the archived initiative appears there — `netrunner` owns that file and will demote the row on its next curator pass. Do not archive on checkbox count alone.
 
 ### Step 8: Reconcile Non-Initiative Board Items
 
@@ -142,7 +150,60 @@ Rationale: `file-issues` only scans `generated/issue-packets/active/**`, so comp
 
 The packet move, completed-entry pruning, and JSON rewrite are committed atomically with the rest of the sync PR. Packet contents are never edited.
 
-### Step 12: Drift Detection
+### Step 12: Catalog Reconciliation
+
+Reconcile mutable fields in `catalogs/` against `grid-health.json` (the canonical node-state ground truth). This step covers the cross-catalog version/status sync that previously had no owner. Run after packet moves (Step 10) and before drift detection (Step 13).
+
+**Scope is strictly bounded.** Hive-sync only updates fields whose ground truth is deterministically derivable from `grid-health.json`. Anything that requires source parsing (interface signatures, dependency graphs), human judgment (compatibility windows, sector assignments), or external systems (Azure deployment state beyond what grid-health already records) is **not** in scope — those drift-check only.
+
+**12a. Reconcile `catalogs/compatibility.json`.**
+
+For each `matrix[]` entry whose `node` matches a `grid-health.json` `nodes[].id`:
+
+1. Set `currentVersion` to grid-health's `nodes[].version` if it differs.
+2. Leave `compatibleWith`, `notes`, and all other fields untouched (human-curated).
+
+If any `currentVersion` changed, bump the top-level `lastUpdated` to today's date. If no field changed, do not touch `lastUpdated` (avoid no-op churn).
+
+Nodes in grid-health that are missing from the matrix are surfaced as drift (Step 13 category 6) — do not auto-add matrix rows. Matrix nodes that don't exist in `nodes.json` are surfaced as drift (Step 13 category 7).
+
+**12b. Reconcile `catalogs/modules.json`.**
+
+For each `[]` entry whose `nodeId` matches a `grid-health.json` `nodes[].id`:
+
+1. Set `version` to grid-health's `nodes[].version` if it differs. All modules within the same Node share the Node's release version.
+2. Leave `name`, `type`, `description`, and all other fields untouched.
+
+Modules whose `nodeId` doesn't exist in `nodes.json` are surfaced as drift (Step 13 category 8).
+
+**12c. Reconcile `catalogs/services.json`.**
+
+For each `[]` entry whose `nodeId` matches a `grid-health.json` `nodes[].id`:
+
+1. Derive `status` from grid-health's `nodes[].signal` and `active_blockers` using this mapping:
+   - signal `Live` + empty `active_blockers` → `active`
+   - signal `Live` + non-empty `active_blockers` → `blocked`
+   - signal `Seed` → `seed`
+   - signal `Archived` → `archived`
+   - any other signal → leave existing status untouched and surface as drift
+2. Leave all other fields untouched.
+
+Services whose `nodeId` doesn't exist in `nodes.json` are surfaced as drift (Step 13 category 9). Use only `status` values that already appear in the file — do not invent new ones; if the mapping above would produce a novel value, surface the case as drift and leave the existing status.
+
+**12d. Never touch these catalog files mutably.**
+
+- `catalogs/grid-health.json` — written by CI / external workflows; reading only.
+- `catalogs/nodes.json` — node registry; additions/renames/removals are deliberate human decisions.
+- `catalogs/relationships.json` — source-derived dependency edges; needs source parsing.
+- `catalogs/contracts.json` — source-derived contract surface; needs source parsing.
+- `catalogs/signals.json` — signal taxonomy; human-curated.
+- `catalogs/flow_config.json`, `catalogs/flow_tiers.json` — architectural taxonomy; no automatable ground truth.
+
+These all participate in Step 13 drift detection but are never mutated by hive-sync.
+
+**12e. Summary in the PR comment.** If Step 12 changed any catalog file, list which catalogs changed and how many entries were updated (e.g., "compatibility.json: 3 currentVersion bumps; modules.json: 5 version bumps; services.json: 1 status change").
+
+### Step 13: Drift Detection
 
 Run last before commit. Scan the post-mutation repo for inconsistencies between Accepted ADRs/PDRs and catalogs, constitution, and agent files. Render `initiatives/drift-report.md`; do not auto-fix.
 
@@ -153,12 +214,21 @@ Initial categories:
 3. Agent files with no capability matrix row, excluding intentional meta-agents (`adr-composer`, `pdr-composer`, `scope`, `file-issues`, `review`, `refine`, `netrunner`, `node-audit`, `product-strategist`, `site-sync`).
 4. Nodes in `catalogs/nodes.json` whose GitHub repo does not exist; token/auth failures are surfaced separately as auth issues, not drift.
 5. HoneyDrunk node names in Accepted ADRs that are missing from `catalogs/nodes.json`, with an inline false-positive exclusion list for non-node repos such as `HoneyDrunk.Architecture`, `HoneyDrunk.Standards`, `HoneyDrunk.Actions`, `HoneyDrunk.Lore`, and `HoneyDrunk.CoreWorkspace`.
+6. Nodes in `catalogs/grid-health.json` that are missing from `catalogs/compatibility.json` matrix (post-Step-12 reconciliation can't add a row for a node that has no matrix entry to update).
+7. Nodes in `catalogs/compatibility.json` matrix whose `node` does not exist in `catalogs/nodes.json`.
+8. Module `nodeId` values in `catalogs/modules.json` that don't exist in `catalogs/nodes.json`.
+9. Service `nodeId` values in `catalogs/services.json` that don't exist in `catalogs/nodes.json`.
+10. Node IDs referenced in `catalogs/relationships.json` `consumes` / `consumed_by` / `consumed_by_planned` arrays that don't exist in `catalogs/nodes.json`.
+11. Node IDs in `catalogs/contracts.json` that don't exist in `catalogs/nodes.json`.
+12. Services whose Step-12 status mapping produced a novel value (signal not in the documented set) — record the unmapped signal so the human can extend the mapping.
+13. Nodes in `grid-health.json` whose `version` mismatches `compatibility.json` / `modules.json` / `services.json` *after* Step-12 reconciliation (would only happen if reconciliation was skipped for a specific node — surfaces a reconciliation bug).
+14. Drift between `current-focus.md` (read-only here) and ground truth surfaced by other steps — e.g., a row that references a closed packet, an ADR shown as Proposed that hive-sync just flipped to Accepted, or an archived initiative still appearing in the top-10. Netrunner owns the file; this category just lets `netrunner` know what to fix on its next curator pass.
 
 Preserve `First Surfaced` dates from the previous drift report by category and item identity. This sticky date is the single exception to the fully-rewritten tracking-file rule.
 
-### Step 13: Commit and Open PR
+### Step 14: Commit and Open PR
 
-Commit changes and open/update a PR. If Step 9 flips one or more ADRs/PDRs, append `(N flips)` to the PR title. Post a summary comment listing files changed, human-review items, and initiative health.
+Commit changes and open/update a PR. If Step 9 flips one or more ADRs/PDRs, append `(N flips)` to the PR title. Post a summary comment listing files changed, human-review items, catalog reconciliation summary (from Step 12e), and initiative health.
 
 ## Decision Rules
 
@@ -185,3 +255,4 @@ Commit changes and open/update a PR. If Step 9 flips one or more ADRs/PDRs, appe
 - `hive-sync` surfaces missing-row and orphan-row anomalies in `proposed-adrs.md` but never auto-adds or auto-deletes README index rows.
 - `initiatives/proposed-adrs.md` is fully rewritten every run; hand-edits will be overwritten.
 - `initiatives/drift-report.md` is fully rewritten except for preserving First Surfaced dates for persistent findings.
+- `hive-sync` authority over `catalogs/` is bounded to **Step 12 reconciliation only**: `compatibility.json` (`currentVersion`, `lastUpdated`), `modules.json` (`version`), `services.json` (`status`). All other catalog files and all other fields on those three files are read-only. Never auto-add rows to any catalog — missing entries are drift, not mutations. Never modify `grid-health.json` — it is the canonical ground truth, written by CI.

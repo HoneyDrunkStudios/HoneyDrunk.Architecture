@@ -9,13 +9,13 @@ Quick-reference card for all Claude Code agents in `.claude/agents/`. Use this t
 | **scope** | New work to decompose | Goal/user request, ADRs, catalogs, repo boundaries | Issue packets, dispatch plan, handoff | Execute work, write code, open PRs |
 | **adr-composer** | New architectural decision needed | Context, existing ADRs for precedent | ADR draft in `generated/adr-drafts/` | Accept/reject decisions, file issues |
 | **pdr-composer** | New product decision needed | Context, existing PDRs for precedent | PDR draft in `generated/pdr-drafts/` | Scope follow-up work, file issues |
-| **netrunner** | Cross-repo discovery needed | Keyword/goal, `catalogs/relationships.json`, `catalogs/nodes.json`, `routing/repo-discovery-rules.md` | Repo list + dependency chain + impact scope | Generate packets, make decisions |
+| **netrunner** | "What's next?" briefing, cross-repo discovery, or weekly focus review | Keyword/goal, `catalogs/relationships.json`, `catalogs/nodes.json`, `routing/repo-discovery-rules.md`, `initiatives/current-focus.md`, `initiatives/active-initiatives.md`, `proposed-adrs.md` | Ad-hoc briefing (verbal), and — in curator mode — updates to `initiatives/current-focus.md` (sole writer of that file) | Edit any other file, generate packets, file issues, mutate The Hive board, make architectural decisions |
 | **file-issues** | Packets ready to file as GitHub Issues | Issue packets from `generated/issue-packets/active/` | GitHub Issues in target repos (via gh CLI) | Edit packets post-filing, make decisions |
 | **review** | PR opened or execution completed | PR diff, issue packet, ADR constraints | Review comments, pass/fail verdict | Merge, approve in GitHub UI |
 | **node-audit** | Whole-Node health check (not a PR diff) | Node name, catalogs, `repos/{node}/*`, governing ADRs, repo code on disk | Findings report — verdict, blocking/changes/suggest, handoff recommendations | Edit files, file issues, open PRs, decide |
 | **refine** | Draft exists, needs iteration | Draft doc (ADR, PDR, packet, design), feedback | Revised draft | Author from scratch, make binding decisions |
 | **site-sync** | Repo release or content update | Release notes, ADRs, repo state | Site-sync packet in `generated/site-sync-packets/` | Publish to website directly |
-| **hive-sync** | OpenClaw Monday/Thursday schedule or manual OpenClaw dispatch | `gh` CLI issue states, `generated/issue-packets/filed-packets.json`, GraphQL Hive board state, `catalogs/grid-health.json`, `catalogs/nodes.json`, `adrs/ADR-*.md` frontmatter, initiative files | Updated `initiatives/` files via PR (new branch per run), packet moves (active → completed), `board-items.md`, `proposed-adrs.md` | Create issues, modify `filed-packets.json` entries (may update existing paths only), make architectural decisions |
+| **hive-sync** | OpenClaw Monday/Thursday schedule or manual OpenClaw dispatch | `gh` CLI issue states, `generated/issue-packets/filed-packets.json`, GraphQL Hive board state, all `catalogs/*.json`, `adrs/ADR-*.md` frontmatter, initiative files | Updated `initiatives/` files via PR (new branch per run), packet moves (active → completed), `board-items.md`, `proposed-adrs.md`, **catalog reconciliation** (`compatibility.json` `currentVersion` + `lastUpdated`, `modules.json` `version`, `services.json` `status` — derived from `grid-health.json`) | Edit `current-focus.md` (netrunner owns it), edit `grid-health.json` / `nodes.json` / `relationships.json` / `contracts.json` / `signals.json` / `flow_config.json` / `flow_tiers.json`, auto-add catalog rows, create issues, make architectural decisions |
 
 > **Status:** `hive-sync` is rolling out across ADR-0014 packets 01-06. The packet-lifecycle (active → completed), `board-items.md`, `proposed-adrs.md`, ADR/PDR auto-acceptance, README index sync, and `drift-report.md` surfaces become live as Packets 02-06 land.
 
@@ -30,8 +30,11 @@ Is there an architectural trade-off to record?
 Is there a product/feature decision to record?
   → yes → pdr-composer
 
-Do I need to understand which repos are affected by a change?
+Do I need to understand which repos are affected by a change, or ask "what's next?"
   → yes → netrunner (then scope if work follows)
+
+Is `initiatives/current-focus.md` stale, or is it the weekly focus review?
+  → yes → netrunner (curator mode)
 
 Do I need to decompose a goal into executable issue packets?
   → yes → scope
@@ -86,7 +89,7 @@ Before any work, load in this order:
 | scope | `catalogs/relationships.json`, `catalogs/nodes.json`, `routing/execution-rules.md`, `repos/{target}/boundaries.md`, `repos/{target}/invariants.md`, issue template from `issues/templates/` |
 | adr-composer | Existing ADRs in `ADRs/` for format and precedent |
 | pdr-composer | Existing PDRs in `PDRs/` for format and precedent |
-| netrunner | `catalogs/relationships.json`, `catalogs/nodes.json`, `routing/repo-discovery-rules.md` |
+| netrunner | `catalogs/relationships.json`, `catalogs/nodes.json`, `routing/repo-discovery-rules.md`, `initiatives/current-focus.md`, `initiatives/active-initiatives.md`, `initiatives/proposed-adrs.md`, `initiatives/archived-initiatives.md` |
 | file-issues | `generated/issue-packets/active/` dispatch plan, `copilot/issue-authoring-rules.md` |
 | hive-sync | `generated/issue-packets/filed-packets.json`, `catalogs/grid-health.json`, `catalogs/nodes.json`, `initiatives/`, `adrs/ADR-*.md` (frontmatter), GraphQL Hive board query results |
 | review | ADRs referenced in packet frontmatter, `constitution/invariants.md` |
@@ -104,7 +107,8 @@ Goal / User Request
   ├─ adr-composer → generated/adr-drafts/{slug}.md
   ├─ pdr-composer → generated/pdr-drafts/{slug}.md
   │
-  ├─ netrunner   → [verbal impact analysis — no file output]
+  ├─ netrunner   → [briefing mode: verbal "what's next" / impact analysis — no file output]
+  │              → [curator mode: writes initiatives/current-focus.md (sole writer)]
   ├─ node-audit  → [verbal findings report on one Node — no file output]
   │
   └─ scope       → generated/issue-packets/active/{initiative}/
