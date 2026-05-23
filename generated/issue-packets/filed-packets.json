@@ -277,5 +277,13 @@
   "generated/issue-packets/active/adr-0043-continuous-backlog-generation/05-architecture-hive-sync-strategic-and-reactive-triggers.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/254",
   "generated/issue-packets/active/adr-0043-continuous-backlog-generation/06-architecture-source-agents-proposed-output-contract.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/255",
   "generated/issue-packets/active/adr-0043-continuous-backlog-generation/07-architecture-netrunner-weekly-briefing-mode.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/256",
-  "generated/issue-packets/active/adr-0043-continuous-backlog-generation/08-architecture-phase-1-strategic-source-kickoff.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/257"
+  "generated/issue-packets/active/adr-0043-continuous-backlog-generation/08-architecture-phase-1-strategic-source-kickoff.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/257",
+  "generated/issue-packets/active/adr-0045-grid-wide-error-tracking/00-architecture-adr-0045-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/258",
+  "generated/issue-packets/active/adr-0045-grid-wide-error-tracking/01-architecture-error-tracking-catalog-and-contracts.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/259",
+  "generated/issue-packets/active/adr-0045-grid-wide-error-tracking/02-pulse-ierror-reporter-abstraction.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/24",
+  "generated/issue-packets/active/adr-0045-grid-wide-error-tracking/03-pulse-app-insights-error-backing.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/25",
+  "generated/issue-packets/active/adr-0045-grid-wide-error-tracking/04-actions-app-insights-release-annotation.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/98",
+  "generated/issue-packets/active/adr-0045-grid-wide-error-tracking/05-notify-migrate-sentry-to-ierror-reporter.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/27",
+  "generated/issue-packets/active/adr-0045-grid-wide-error-tracking/06-architecture-review-d8-mapping-and-escalation-doc.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/260",
+  "generated/issue-packets/active/adr-0045-grid-wide-error-tracking/07-architecture-deployable-node-error-wiring-playbook.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/261"
 }
