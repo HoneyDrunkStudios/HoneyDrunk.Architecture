@@ -87,7 +87,7 @@ The bet is not blind faith — it's based on observable reality. A 2026 solo dev
 
 This bet underwrites:
 
-- **The 20+ PDR count.** Maintaining 20 repos is a different math problem in 2026 than in 2020.
+- **The open-ended portfolio.** Maintaining 25+ Grid repos and a growing PDR set (currently 8, with no upper bound by design) is a different math problem in 2026 than in 2020.
 - **The architecture investment.** The substrate is worth building because AI agents help maintain it.
 - **The decades-long horizon.** As AI capability grows, the multiplier grows with it. The Grid is built to ride that gradient.
 

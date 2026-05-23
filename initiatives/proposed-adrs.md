@@ -4,7 +4,9 @@ Tracked automatically by the hive-sync agent. ADRs/PDRs with all implementing
 issues closed are auto-flipped to Accepted on each run; the rest are listed
 here with progress.
 
-Last synced: 2026-05-21 (ADRs 0048–0057 added manually 2026-05-23; hive-sync will reconcile on next run)
+Last synced: 2026-05-21
+
+> **Manual addition (2026-05-23):** ADRs 0048–0057 added below by hand on the `claude/adr-review-dFtgC` branch. Hive-sync will reconcile on its next scheduled run; the entries below should be a no-op match.
 
 ## Awaiting (no `accepts:`-declaring packets yet)
 

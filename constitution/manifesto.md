@@ -88,7 +88,7 @@ Cyberpunk realism. Techno-art fusion. Human core. Sector colors reflect their en
 
 HoneyDrunk may evolve into a multi-agent, multi-node creative OS connecting SDKs, SaaS, Games, and Robotics — *if* the experiments running on it point in that direction. Internally — structured, agentic, interoperable. Publicly — visual, narrative, alive. The vision is a direction, not a destination on a calendar; the Grid is built to support many decades of building, with the specific shape that emerges left open.
 
-> Precision is our art. Aesthetic is our architecture. Transparency is our marketing.
+> Precision is our art. Aesthetic is our architecture. The work is its own story.
 
 ## How We Work
 
