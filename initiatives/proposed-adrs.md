@@ -7,6 +7,8 @@ here with progress.
 Last synced: 2026-05-21
 
 > **Manual addition (2026-05-23):** ADRs 0048–0057 added below by hand on the `claude/adr-review-dFtgC` branch. Hive-sync will reconcile on its next scheduled run; the entries below should be a no-op match.
+>
+> **Manual addition (2026-05-23):** ADR-0060 (HoneyDrunk.Identity stand-up) added below by the adr-composer agent. Hive-sync will reconcile on its next scheduled run.
 
 ## Awaiting (no `accepts:`-declaring packets yet)
 
@@ -48,6 +50,8 @@ and remain manually-flippable until rescoped.
 | [ADR-0055](../adrs/ADR-0055-feature-flag-and-progressive-rollout-strategy.md) | ADR-0055: Feature Flag and Progressive Rollout Strategy | Core / cross-cutting | 2026-05-22 | 1 |
 | [ADR-0056](../adrs/ADR-0056-threat-model-and-security-review-cadence.md) | ADR-0056: Threat Model and Security Review Cadence | Meta / Security / cross-cutting | 2026-05-22 | 1 |
 | [ADR-0057](../adrs/ADR-0057-public-http-api-versioning-and-client-sdk-strategy.md) | ADR-0057: Public HTTP API Versioning and Client SDK Strategy | Core / cross-cutting | 2026-05-22 | 1 |
+| [ADR-0060](../adrs/ADR-0060-stand-up-honeydrunk-identity-node.md) | ADR-0060: Stand Up the HoneyDrunk.Identity Node — User Record, Credential Seam, and Erasure Fan-Out | Core | 2026-05-23 | 0 |
+| [ADR-0061](../adrs/ADR-0061-stand-up-honeydrunk-files-node.md) | ADR-0061: Stand Up the HoneyDrunk.Files Node — Blob Storage, Media Processing, and Signed-URL Delivery | Core | 2026-05-23 | 0 |
 | [PDR-0002](../pdrs/PDR-0002-notify-as-a-service-first-commercial-product.md) | PDR-0002: HoneyDrunk Notify — First Commercial Product on the Grid | Ops (primary) · Meta (positioning) | 2026-05-02 | 19 |
 | [PDR-0003](../pdrs/PDR-0003-lately-currents-based-connection-app.md) | PDR-0003: Lately — A Currents-Based Connection App for Regular Humans | Market / Core / Ops | 2026-05-05 | 16 |
 | [PDR-0005](../pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md) | PDR-0005: Hearth — Personal Growth as a Living Town | Market / AI / Ops | 2026-05-05 | 16 |

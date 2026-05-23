@@ -67,9 +67,14 @@ For each ADR/PDR, extract ID, title, `**Status:**`, `**Date:**`, and `**Sector:*
 
 Use the date-based branch `chore/hive-sync-$(date +%Y-%m-%d)` for scheduled runs. Reuse it when it already exists so reruns update the same PR.
 
-### Step 3: Update active-initiatives.md
+### Step 3: Update active-initiatives.md (shared file — mechanical columns only)
 
-Update initiative tracking from `/tmp/issue-states.json`: check off closed issues, add progress annotations, flag stale initiatives, and mark complete initiatives as ready to archive only when exit criteria are met.
+`active-initiatives.md` is **shared with `netrunner`**. Your authority is bounded to mechanical columns only:
+
+- **You own:** per-packet `[x]` tracking checkboxes; per-initiative `**Status:**` field; the `> **Sync (date):**` annotation blocks at the bottom of each initiative; archive moves to `archived-initiatives.md` (Step 7).
+- **Netrunner owns** (do not touch): initiative ordering within and between sections (In Progress / Planned / Watch); cross-section moves; initiative `**Description:**` narrative text; cross-references to current-focus rank.
+
+From `/tmp/issue-states.json`: check off closed issues, update `**Status:**` based on issue completion ratio, add `> **Sync (YYYY-MM-DD):**` progress annotations, flag stale initiatives, and mark complete initiatives as ready to archive only when exit criteria are met. Do **not** reorder initiative blocks; do **not** rewrite `**Description:**`; do **not** add or remove `(current focus #N)` cross-references.
 
 ### Step 4: (Removed) — `current-focus.md` is owned by `netrunner`
 
@@ -79,9 +84,14 @@ Update initiative tracking from `/tmp/issue-states.json`: check off closed issue
 
 For each release drift item, add a release entry using `grid-health.json`, changelogs, and recent commits. Do not fabricate highlights; flag uncertain entries for human review.
 
-### Step 6: Update roadmap.md
+### Step 6: Update roadmap.md (shared file — mechanical columns only)
 
-Cross-reference quarterly roadmap items against issue states, release state, and initiative status. Update `**Last Updated:**`.
+`roadmap.md` is **shared with `netrunner`**. Your authority is bounded to mechanical columns only:
+
+- **You own:** `[ ]` / `[x]` checkbox state on each quarterly item; closure annotations like `*(N/M issues closed; ready for archive)*`; `**Last Updated:**` bump when *your* edits land.
+- **Netrunner owns** (do not touch): item ordering within a quarter; promotion/demotion of items between quarters; narrative commentary tying items to current-focus ranks (e.g., `*(current focus #3)*` annotations).
+
+Cross-reference quarterly roadmap items against issue states, release state, and initiative status. Flip `[ ]` ↔ `[x]` where the underlying issues warrant it; update or add closure annotations like `*(N/M issues closed; ready for archive)*`. Do **not** reorder lines, do **not** move items between quarters, do **not** add or remove `(current focus #N)` annotations. Bump `**Last Updated:**` only if a checkbox or closure annotation actually changed.
 
 ### Step 7: Archive Complete Initiatives
 
