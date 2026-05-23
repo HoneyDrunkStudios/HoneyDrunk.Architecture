@@ -30,6 +30,31 @@ These rules apply to all agents operating within the HoneyDrunk Grid.
 - Do not create generic utility dumping grounds. Keep shared code close to its domain unless it is clearly cross-cutting.
 - If duplication is intentional because two paths are expected to diverge, call that out in the PR or a short code comment.
 
+## ADR-0044 D3/D6 Authoring Discipline
+
+ADR-0044 D3 makes the review rubric an upstream authoring standard. Claude Code and shared Grid agents must apply it while authoring, not wait for review to catch preventable issues.
+
+Apply the brief ADR-0044 D3 authoring checklist before producing a diff:
+
+- **1. Correctness and functional integrity** — the change satisfies the packet/intent and handles edge cases.
+- **3. Maintainability** — the implementation is readable and locally understandable.
+- **5. SOLID and design principles** — responsibilities stay cohesive; no speculative abstraction.
+- **4. Reuse and ecosystem cohesion** — reuse existing Grid patterns; avoid duplicate helpers/policy.
+- **9. Security** — no secret leakage, auth bypass, or widened blast radius.
+- **6. Performance and scalability** — no avoidable hot-path, cost, or unbounded-work risk.
+- **11. Testing quality** — verification is meaningful and covers the changed behavior.
+- **18. AI and agent-specific concerns** — authorship, idempotency, context, and replay risks are explicit.
+- **20. Human factors** — PRs are easy for Oleg to review and do not hide operational trade-offs.
+
+The remaining D3 categories are still in scope by reference through `.claude/agents/review.md`; do not treat this short list as exhaustive.
+
+Per ADR-0044 D6, Claude Code-authored PRs must declare authorship in both places:
+
+- PR body line: `Authorship: agent-claude-code`
+- Commit trailer: `Authorship: agent-claude-code`
+
+When work is materially mixed with another surface, use one of the five D6 classes only: `human`, `agent-codex`, `agent-copilot`, `agent-claude-code`, or `mixed`. Do not invent authorship classes.
+
 ## Communication
 
 - Be direct and concise

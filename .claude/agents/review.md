@@ -417,33 +417,46 @@ This is the category most organizations never formalize, and the one that determ
 **Verdict:** {Approved | Request Changes | Block}
 
 ## Summary
-{One paragraph: what this PR does and overall assessment}
+{One paragraph: what this PR does and overall assessment. If clean, explicitly say no blocking findings, requested changes, or suggestions were found.}
+
+## Reviewed Scope / Evidence Checked
+
+- **Packet / PR scope:** {packet path or out-of-band label status; acceptance criteria checked}
+- **Governing ADRs:** ADR-0011 and ADR-0044 always, plus packet-referenced ADR ids or "no additional ADRs referenced"
+- **Grid invariants:** all numbered invariants in `constitution/invariants.md` checked against the diff; implicated invariants: {ids or "none implicated"}
+- **Repo boundaries:** {repo boundary files read, or "Architecture repo meta-doc boundary"}
+- **Contracts / downstream:** {catalog files checked; downstream Nodes affected or "none detected"}
+- **Security / secrets:** {secret, auth, tenant, permission, and data-classification checks performed}
+- **Cost / CI discipline:** {workflow/model/API/Azure/resource cost checks performed}
+- **Testing / verification:** {tests, CI, docs-only rationale, or verification gap}
+- **Idempotency / review state:** {head SHA reviewed; duplicate-review behavior considered when relevant}
+- **Files inspected:** {concise list of key changed files reviewed}
 
 ## Findings
 
 ### Blocking
-- **{Category}**: {Description}. {File and line if applicable}. {What needs to change}.
+- {"None." or **{Category}**: {Description}. {File and line if applicable}. {What needs to change}.}
 
 ### Changes Requested
-- **{Category}**: {Description}. {Suggestion}.
+- {"None." or **{Category}**: {Description}. {Suggestion}.}
 
 ### Suggestions
-- **{Category}**: {Description}. {Optional improvement}.
+- {"None." or **{Category}**: {Description}. {Optional improvement}.}
 
 ## Downstream Impact
 {List of downstream Nodes affected, or "None detected"}
 
 ## Checklist
 - [x] Packet resolved and scope verified (or PR marked out-of-band)
-- [x] Boundary compliance
-- [x] Contract safety
-- [ ] Invariant preservation — {issue found}
-- [x] Code quality
-- [x] Context propagation
-- [x] Cost discipline
-- [x] Tests present
-- [ ] CHANGELOG updated
-- [ ] README updated (if public API or installation changed)
+- [x] Boundary compliance checked
+- [x] Contract safety checked
+- [x] Relevant invariants checked
+- [x] ADR-0044 D3 rubric applied
+- [x] Cost discipline checked
+- [x] Security/secrets checked
+- [x] Tests/verification assessed
+- [x] Downstream impact assessed
+- [x] Clean PR does not get manufactured findings
 ```
 
 ## Severity Guide
@@ -460,4 +473,4 @@ This is the category most organizations never formalize, and the one that determ
 - Don't block for style. Style issues are Suggest-level unless they violate HoneyDrunk.Standards.
 - If you're unsure whether something is a violation, flag it as a question rather than a block.
 - Be specific: name the file, the line, the invariant number, the interface. Vague feedback is not actionable.
-- If the PR is clean, say so. Don't manufacture findings.
+- If the PR is clean, say so. Don't manufacture findings. Still fill out Reviewed Scope / Evidence Checked so silence is not ambiguous.

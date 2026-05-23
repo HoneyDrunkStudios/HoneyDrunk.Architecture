@@ -209,6 +209,22 @@ active/{initiative-slug}/handoff-rotation-bringup.md
 
 Each handoff must be self-contained: upstream changes, new package versions, interface signatures, invariants, acceptance criteria. Per ADR-0008 D7, handoffs are **read once at the wave transition** — ephemeral baton passes, not live trackers. They are immutable under invariant 24.
 
+## ADR-0044 D3 Authoring Rubric
+
+ADR-0044 D3 makes the twenty-category review rubric a shared upstream authoring standard, not the review agent's private checklist. When decomposing work, apply the relevant subset before emitting packets so execution agents receive the right constraints up front.
+
+For scoping, the load-bearing categories are:
+
+- **1. Correctness and functional integrity** — packet scope adherence, edge cases, idempotency, and acceptance criteria that prove the intended behavior.
+- **7. Reliability and resilience** — failure modes, retries, rollback, partial failure, and production recovery paths.
+- **8. Observability and diagnostics** — required logs, metrics, traces, health checks, correlation IDs, and review evidence.
+- **9. Security** — secret handling, auth boundaries, token/RBAC implications, and blast radius.
+- **11. Testing quality** — concrete verification strategy, including negative paths and contract/canary coverage where relevant.
+- **18. AI and agent-specific concerns** — agent handoff clarity, authorship, idempotency, context boundaries, and replay safety.
+- **19. Anti-entropy and long-term system health** — whether the packet introduces exceptions, drift, or duplicate policy surfaces.
+
+Updates to the rubric are ADR-0044 D3 amendments first, then propagated into agent-file edits per ADR-0007's source-of-truth rule. Drift between D3, `review.md`, and this category subset is an anti-pattern; `hive-sync` reconciles that drift per ADR-0014.
+
 ## Phase 5: Output
 
 ### Step 1 — Create issues

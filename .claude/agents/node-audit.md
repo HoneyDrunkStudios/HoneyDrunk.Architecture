@@ -159,6 +159,20 @@ Synthesize. Return:
 - The two or three most important findings — not the longest list, the load-bearing ones.
 - A recommended handoff: which agent executes which fix. (`scope` for packet-able work, `adr-composer` for decisions that need architectural approval first, `site-sync` for catalog divergence, `review` for any PR that follows.)
 
+## ADR-0044 D3 Systemic-Health Rubric
+
+ADR-0044 D3 makes the twenty-category review rubric a shared upstream authoring standard, not the review agent's private checklist. For node audits, use D3 as the systemic-health rubric: the review agent applies it to a PR diff; node-audit applies it to the whole repo and its Architecture definition.
+
+Walk the full `review.md` rubric by reference, with special attention to repo-wide signals that span PRs rather than living in a single diff:
+
+- **2. Architectural integrity** — Node identity, boundaries, sector fit, and undocumented scope expansion.
+- **4. Reuse and ecosystem cohesion** and **5. SOLID and design principles** — duplicate Grid patterns, misplaced abstractions, and policy logic that should be shared.
+- **7. Reliability and resilience**, **8. Observability and diagnostics**, and **9. Security** — operational gaps, missing telemetry, context drops, secret/auth violations.
+- **11. Testing quality**, **12. API and contract design**, and **15. CI/CD and delivery** — producer/consumer contract health, canaries, release hygiene, and workflow coverage.
+- **18. AI and agent-specific concerns** and **19. Anti-entropy and long-term system health** — agent-surface drift, stale instructions, recurring exceptions, and long-term entropy.
+
+Findings should flow to packets per ADR-0043 rather than being fixed directly by node-audit. Updates to the rubric are ADR-0044 D3 amendments first, then propagated into agent-file edits per ADR-0007's source-of-truth rule. Drift between D3, `review.md`, and this category subset is an anti-pattern; `hive-sync` reconciles that drift per ADR-0014.
+
 ## Output Format
 
 ```markdown

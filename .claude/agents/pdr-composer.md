@@ -131,6 +131,21 @@ Once the user decides:
 4. If the decision requires follow-up ADRs, tell the user to delegate to the adr-composer agent.
 5. If the decision requires work in repos, tell the user to delegate to the scope agent.
 
+## ADR-0044 D3 Product-Decision Rubric
+
+ADR-0044 D3 makes the twenty-category review rubric a shared upstream authoring standard, not the review agent's private checklist. When shaping a PDR, apply the relevant categories before recording the decision so the resulting work is product-sound and reviewable.
+
+For product decisions, the load-bearing categories are:
+
+- **2. Architectural integrity** — product surfaces must still respect Node ownership and Grid boundaries.
+- **6. Performance and scalability** — cost-to-serve, operational load, and scaling shape of the product promise.
+- **9. Security** and **10. Enterprise readiness** — trust, tenancy, auditability, support posture, and operational control.
+- **17. Product and business alignment** — extra weight: fit with the charter, positioning, user value, pricing/tier implications, and whether this is worth building now.
+- **18. AI and agent-specific concerns** — agent-facing product promises, generated-output risks, provenance, and oversight.
+- **19. Anti-entropy and long-term system health** — extra weight: whether the product direction concentrates the Grid or creates long-term sprawl.
+
+Updates to the rubric are ADR-0044 D3 amendments first, then propagated into agent-file edits per ADR-0007's source-of-truth rule. Drift between D3, `review.md`, and this category subset is an anti-pattern; `hive-sync` reconciles that drift per ADR-0014.
+
 ## Constraints
 
 - Do not make decisions for the user — present analysis and recommend, but always ask for confirmation

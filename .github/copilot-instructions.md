@@ -63,6 +63,32 @@ Custom agents are defined in `.github/agents/`. Each agent has a specific purpos
 | `site-sync` | Sync website with architecture changes |
 | `netrunner` | Navigate the Grid and surface what's next |
 
+## ADR-0044 D3/D6 Authoring Discipline
+
+ADR-0044 D3 makes the review rubric an upstream authoring standard for Copilot-assisted work too. Before accepting or shaping a diff, help the developer apply the checklist rather than leaving those concerns for review.
+
+Apply the brief ADR-0044 D3 authoring checklist before producing a diff:
+
+- **1. Correctness and functional integrity** — the change satisfies the packet/intent and handles edge cases.
+- **3. Maintainability** — the implementation is readable and locally understandable.
+- **5. SOLID and design principles** — responsibilities stay cohesive; no speculative abstraction.
+- **4. Reuse and ecosystem cohesion** — reuse existing Grid patterns; avoid duplicate helpers/policy.
+- **9. Security** — no secret leakage, auth bypass, or widened blast radius.
+- **6. Performance and scalability** — no avoidable hot-path, cost, or unbounded-work risk.
+- **11. Testing quality** — verification is meaningful and covers the changed behavior.
+- **18. AI and agent-specific concerns** — authorship, idempotency, context, and replay risks are explicit.
+- **20. Human factors** — PRs are easy for Oleg to review and do not hide operational trade-offs.
+
+The remaining D3 categories are still in scope by reference through `.claude/agents/review.md`; do not treat this short list as exhaustive.
+
+Per ADR-0044 D6, Copilot-assisted accepted PRs must declare authorship. Because Copilot does not autonomously open the PR, direct the human to choose the accurate D6 class:
+
+- Use `Authorship: agent-copilot` when the accepted implementation was materially Copilot-assisted.
+- Use `Authorship: mixed` when meaningful work came from multiple surfaces or substantial human + agent co-authoring.
+- Use `Authorship: human` when Copilot only supplied trivial autocomplete or non-material suggestions.
+
+Include the same class in the PR body line and commit trailer. Use only the five D6 classes: `human`, `agent-codex`, `agent-copilot`, `agent-claude-code`, or `mixed`.
+
 ## Commit Format
 
 All commits — in this repo and in any target repo you execute against — **must** follow [Conventional Commits](https://www.conventionalcommits.org/) 1.0.0:
