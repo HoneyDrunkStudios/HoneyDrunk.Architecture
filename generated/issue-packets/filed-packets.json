@@ -285,5 +285,13 @@
   "generated/issue-packets/active/adr-0045-grid-wide-error-tracking/04-actions-app-insights-release-annotation.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/98",
   "generated/issue-packets/active/adr-0045-grid-wide-error-tracking/05-notify-migrate-sentry-to-ierror-reporter.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/27",
   "generated/issue-packets/active/adr-0045-grid-wide-error-tracking/06-architecture-review-d8-mapping-and-escalation-doc.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/260",
-  "generated/issue-packets/active/adr-0045-grid-wide-error-tracking/07-architecture-deployable-node-error-wiring-playbook.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/261"
+  "generated/issue-packets/active/adr-0045-grid-wide-error-tracking/07-architecture-deployable-node-error-wiring-playbook.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/261",
+  "generated/issue-packets/active/adr-0046-specialist-review-agents/01-architecture-adr-0046-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/262",
+  "generated/issue-packets/active/adr-0046-specialist-review-agents/02-architecture-specialist-agent-pattern-and-roster-doc.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/263",
+  "generated/issue-packets/active/adr-0046-specialist-review-agents/03-architecture-author-cfo-agent.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/264",
+  "generated/issue-packets/active/adr-0046-specialist-review-agents/04-architecture-author-security-agent.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/265",
+  "generated/issue-packets/active/adr-0046-specialist-review-agents/05-architecture-author-performance-agent.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/266",
+  "generated/issue-packets/active/adr-0046-specialist-review-agents/06-architecture-author-ai-safety-agent.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/267",
+  "generated/issue-packets/active/adr-0046-specialist-review-agents/07-architecture-author-a11y-agent.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/268",
+  "generated/issue-packets/active/adr-0046-specialist-review-agents/08-architecture-cfo-phase-1-calibration-run.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/269"
 }
