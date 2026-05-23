@@ -4,6 +4,42 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 ## In Progress
 
+### ADR-0044 Cloud Code Review and AI-Authored PR Discipline
+**Status:** In Progress
+**Scope:** Architecture, Actions, OpenClaw runtime, and later the live Node repos
+**Initiative:** `adr-0044-cloud-code-review`
+**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
+**Description:** Accept ADR-0044 and ship the automatic Grid-aware code-review substrate: GitHub Actions emits signed review requests; OpenClaw/Codex runs the canonical `.claude/agents/review.md` with Grid context; review results are advisory in Phase 1 and piloted on `HoneyDrunk.Architecture` before fan-out.
+
+**Tracking (Wave 1 — Phase 1: Architecture pilot):**
+- [ ] Architecture#170: Accept ADR-0044 — flip status, finalize invariants 52/53, register initiative (packet 01)
+- [ ] Architecture#179: Define the OpenClaw/Codex Grid Review Runner runtime (packet 02b)
+- [ ] Actions#87: Build `job-review-request.yml` — GitHub trigger rail for OpenClaw reviewer (packet 03b)
+- [ ] Architecture#172: Update `.claude/agents/review.md` with the D3 twenty-category rubric execution detail (packet 04)
+- [ ] Architecture#180: Author the OpenClaw-aware `.honeydrunk-review.yaml` v1 schema doc (packet 05b)
+- [ ] Architecture#181: Enable the OpenClaw/Codex reviewer on `HoneyDrunk.Architecture` (packet 06b)
+
+**Tracking (Wave 2 — Phase 2: live Node rollout + discipline foundations):**
+- [ ] Actions#85: Add authorship-check and pr-size-check jobs to `pr-core.yml` (packet 07)
+- [ ] Actions#86: Seed `large-pr`, `audit-sample`, and `skip-review` labels Grid-wide (packet 08)
+- [ ] Architecture#175: Roll the D3 rubric into upstream authoring agents (packet 09)
+- [ ] Architecture#176: Amend execution-surface prompts for `Authorship:` and D3 checklist (packet 10)
+- [ ] Architecture#182: Enable the OpenClaw/Codex reviewer on the 10 remaining live Nodes (packet 11)
+- [ ] Architecture#183: Verify `pr-review-rules.md` severity coverage across all D3 categories (packet 12)
+
+**Tracking (Wave 3 — Phase 3: discipline tightening):**
+- [ ] Architecture#184: Add `review_risk_class` to `catalogs/grid-health.json` (packet 13)
+- [ ] Actions#88: Activate D8 multi-perspective review for high-risk-Node PRs (packet 14)
+
+**Tracking (Wave 4 — Phase 4: sampling audit + drift detection):**
+- [ ] Architecture#185: Create `generated/post-merge-audits/` with README (packet 15)
+- [ ] Actions#89: Build the D9 `audit-sample` post-merge labeling and audit job (packet 16)
+- [ ] Architecture#186: Wire `hive-sync` to detect D3 ↔ agent-file drift (packet 17)
+
+**Superseded packets:** Architecture#171, Actions#84, Architecture#173, and Architecture#174 are superseded by the OpenClaw/Codex 02b/03b/05b/06b path and should not be executed.
+
+**Exit criteria:** ADR-0044 is Accepted; Phase 1 MVP (`job-review-request.yml` + Grid Review Runner) is enabled on `HoneyDrunk.Architecture` only and running on every non-draft PR; each phase's dispatch-plan go/no-go criterion is satisfied before the next wave starts.
+
 ### ADR-0047 Testing Patterns and Tooling
 **Status:** In Progress
 **Scope:** Architecture, Standards, Actions, Data, Kernel, Studios, and every Node repo with test projects

@@ -1,6 +1,6 @@
 # ADR-0044: Grid-Aware Cloud Code Review and AI-Authored PR Discipline
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-05-21
 **Deciders:** HoneyDrunk Studios
 **Sector:** Meta
@@ -346,7 +346,7 @@ Each phase is a discrete go/no-go. Phase 1's exit criterion is "the automatic ru
 - **HoneyDrunk.Actions** - primary affected Node; new reusable workflow `job-review-request.yml`; new jobs `pr-size-check` and `authorship-check` added to `pr-core.yml`; post-merge `audit-sample` labeling job added.
 - **HoneyDrunk.Architecture** (this repo) - pilot for Phase 1; OpenClaw runner configuration/runbook; new directory `generated/post-merge-audits/`; new field `review_risk_class` in `catalogs/grid-health.json`; `.honeydrunk-review.yaml` authored as the v1 reference.
 - **OpenClaw workspace/runtime** - hosts the Grid Review Runner, tracks reviewed PR head SHAs, loads local target/Architecture repos, runs Codex, and posts review comments via `gh`.
-- **HoneyDrunk.Vault** - no Anthropic API key is required for v1. It may store future GitHub App/webhook credentials if the webhook path is used; local `gh` auth is acceptable for the OpenClaw-hosted runner.
+- **HoneyDrunk.Vault** - no Anthropic API key is required for v1. Webhook signing credentials are required for the Phase-1 primary path and are stored per ADR-0005/ADR-0006 secret discipline; local `gh` auth remains acceptable for PR checkout/comment writeback in the OpenClaw-hosted runner.
 - **Every Grid repo (eventually)** - adds `.honeydrunk-review.yaml`, `large-pr` and `audit-sample` labels via the existing label-setup pattern, and the `Authorship:` line convention to PR templates.
 - **Codex execution surface** - amended in a follow-up packet to emit `Authorship: agent-codex` and the corresponding commit trailer (`Authorship:` and `Co-authored-by:`).
 - **Claude Code commit-template behavior** - amended to emit `Authorship: agent-claude-code`.
