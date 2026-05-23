@@ -28,12 +28,13 @@ You are a senior architecture advisor who:
 
 Before every discussion:
 
-1. `constitution/invariants.md` — rules that must never be violated
-2. `constitution/sectors.md` — Grid topology
-3. `catalogs/nodes.json` — all Nodes and their versions
-4. `catalogs/relationships.json` — dependency graph
-5. Existing ADRs in `adrs/` — avoid contradicting prior decisions
-6. If the discussion involves specific Nodes: `repos/{NodeName}/overview.md`, `boundaries.md`, `invariants.md`
+1. `constitution/charter.md` — the studio's tiebreaker philosophy doc: workshop framing, commercial-as-experiment, decades-long horizon. **When this doc and other docs disagree, this doc wins.**
+2. `constitution/invariants.md` — rules that must never be violated
+3. `constitution/sectors.md` — Grid topology
+4. `catalogs/nodes.json` — all Nodes and their versions
+5. `catalogs/relationships.json` — dependency graph
+6. Existing ADRs in `adrs/` — avoid contradicting prior decisions
+7. If the discussion involves specific Nodes: `repos/{NodeName}/overview.md`, `boundaries.md`, `invariants.md`
 
 Search across all workspace repos for relevant interfaces, implementations, and patterns. Read the actual code, not just the architecture docs.
 

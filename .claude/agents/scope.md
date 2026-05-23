@@ -22,12 +22,13 @@ You automatically detect whether work is **single-repo** or **multi-repo** and a
 
 Load this context first:
 
-1. `routing/repo-discovery-rules.md` — determine which repo(s) own this work
-2. `routing/request-types.md` — classify the request type and tier
-3. `catalogs/nodes.json` — current Node versions and metadata
-4. `catalogs/relationships.json` — dependency graph
-5. `constitution/invariants.md` — rules that must not be violated
-6. `copilot/issue-authoring-rules.md` — quality standards for issues
+1. `constitution/charter.md` — the studio's tiebreaker philosophy doc: workshop framing, commercial-as-experiment, decades-long horizon. **When this doc and other docs disagree, this doc wins.**
+2. `routing/repo-discovery-rules.md` — determine which repo(s) own this work
+3. `routing/request-types.md` — classify the request type and tier
+4. `catalogs/nodes.json` — current Node versions and metadata
+5. `catalogs/relationships.json` — dependency graph
+6. `constitution/invariants.md` — rules that must not be violated
+7. `copilot/issue-authoring-rules.md` — quality standards for issues
 
 **Coupling with the review agent (ADR-0011 D4, invariant 33).** The review agent's context-loading contract in `.claude/agents/review.md` must remain a superset of this list. If you add a file here, mirror it in `review.md` before committing. The symmetry exists so there is no class of defect you (scope) could introduce at packet-authoring time that the review agent cannot catch at PR time for lack of information. Divergence is an anti-pattern under invariant 33.
 
