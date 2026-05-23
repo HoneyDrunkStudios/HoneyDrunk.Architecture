@@ -35,7 +35,7 @@ The data-access stance is enterprise-grade-substrate-shaped: pick the boring, we
 
 Every Node in the Grid that reads from or writes to a relational database uses **Entity Framework Core** as the default data-access library. The committed shape:
 
-- **EF Core current LTS** (currently EF Core 9 / .NET 9; tracked to the .NET LTS cadence per the Grid's general framework discipline).
+- **EF Core current LTS** (tracked to the .NET LTS cadence per the Grid's general framework discipline; LTS releases are the even-numbered .NET majors, e.g., .NET 8 / EF Core 8, .NET 10 / EF Core 10, etc.).
 - **`Microsoft.EntityFrameworkCore.SqlServer`** for SQL Server backings (Azure SQL is the Grid's default per the existing Azure-first posture).
 - **`Microsoft.EntityFrameworkCore.Npgsql`** for PostgreSQL backings when a Node specifically chooses Postgres (the Identity Node, Files Node, and consumer-app PDRs are likely candidates).
 - **EF Migrations** as the canonical migration tool per [ADR-0048](./ADR-0048-data-schema-evolution-and-migration-policy.md). This ADR ratifies the implicit ORM behind ADR-0048's migration choice.

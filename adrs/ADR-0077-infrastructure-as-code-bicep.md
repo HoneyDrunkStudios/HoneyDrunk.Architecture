@@ -70,20 +70,30 @@ Bicep templates are organized by **concern**, not by Node. The committed structu
 | **Messaging** | Service Bus namespaces, topics, subscriptions, queues, Event Grid topics | `serviceBusNamespace`, `serviceBusTopic`, `eventGridTopic` |
 | **Observability** | Application Insights, Log Analytics, Action Groups, Alerts | `applicationInsights`, `logAnalyticsWorkspace`, `actionGroup` |
 
-Each module is a Bicep file under a shared `bicep/modules/` location (likely `HoneyDrunk.Actions/bicep/modules/` to align with the deploy workflow ownership). Node-specific templates consume the modules:
+Each module is a Bicep file maintained in a shared canonical source location (`HoneyDrunk.Actions/bicep/modules/`) and **published to a dedicated Bicep registry on tagged release**. The registry is an Azure Container Registry (`acrhdbicep`) distinct from the per-environment container-image ACR (`acrhdshared{env}` per [ADR-0015](./ADR-0015-container-hosting-platform.md)) — Bicep modules are environment-agnostic templates, so a single shared registry across environments is the right shape. Per-Node templates consume modules via Bicep registry references (`br:`), never via cross-repo relative paths.
+
+The publish flow:
+
+- Module authors edit `HoneyDrunk.Actions/bicep/modules/` and tag a semantic-version release (`modules/v1.2.0` style).
+- A reusable `bicep-publish` workflow in `HoneyDrunk.Actions` runs `az bicep publish` for each changed module against the target registry on tag.
+- Module consumers reference the registry path with an immutable version: `br:acrhdbicep.azurecr.io/modules/{concern}/{name}:{semver}`.
+
+Node-specific templates consume the modules via registry refs:
 
 ```bicep
 // HoneyDrunk.Identity/infra/main.bicep
-module identityVault '../../HoneyDrunk.Actions/bicep/modules/secrets/keyVault.bicep' = {
+module identityVault 'br:acrhdbicep.azurecr.io/modules/secrets/keyVault:1.0.0' = {
   name: 'identityVault'
   params: { ... }
 }
 
-module identityApp '../../HoneyDrunk.Actions/bicep/modules/compute/containerApp.bicep' = {
+module identityApp 'br:acrhdbicep.azurecr.io/modules/compute/containerApp:1.0.0' = {
   name: 'identityApp'
   params: { ... }
 }
 ```
+
+The follow-up packet for this ADR (filed at acceptance time) provisions `acrhdbicep`, the publish workflow in `HoneyDrunk.Actions`, and a first set of modules covering Container Apps, Key Vault, App Configuration, Storage, Service Bus, and Application Insights.
 
 **Why modularize by concern, not by Node:**
 
@@ -148,7 +158,7 @@ This ADR is **Azure-deep**. Bicep is Azure-only by construction; Bicep templates
 Existing manually-provisioned resources (the early Vault namespaces, the existing Service Bus namespaces, the existing Container Apps) **are not retroactively migrated by a cross-cutting campaign**. The discipline matches the grandfather pattern from [ADR-0058](./ADR-0058-grid-wide-caching-strategy.md) D9, [ADR-0074](./ADR-0074-testing-library-stack.md) D6, [ADR-0075](./ADR-0075-documentation-tooling.md) D4:
 
 - **New infrastructure goes through Bicep from day one.**
-- **Existing resources are imported to Bicep opportunistically.** When an existing resource needs a configuration change, the operator authors a Bicep template for it as part of the change, imports the resource state (via `az bicep` import or manual reconciliation), and the resource is Bicep-managed thereafter.
+- **Existing resources are imported to Bicep opportunistically.** When an existing resource needs a configuration change, the operator authors a Bicep template for it as part of the change. The migration path: export the existing resource to ARM JSON (`az resource show --ids ... --query properties`), decompile it to Bicep (`az bicep decompile --file resource.json`), reconcile drift between the decompiled template and the desired state, and adopt the resource into the deploy pipeline thereafter.
 - **A per-Node import-to-Bicep packet** is filed when the Node's next significant infrastructure work happens; not a campaign.
 
 The grandfather posture preserves the working state of existing infrastructure; the migration happens at natural touch points; over months, the Grid converges on Bicep-managed-everything.

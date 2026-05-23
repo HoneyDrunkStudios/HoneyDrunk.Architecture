@@ -10,7 +10,7 @@ Last synced: 2026-05-21
 >
 > **Manual addition (2026-05-23):** ADRs 0058–0069 added below by the adr-composer agent. Hive-sync will reconcile on its next scheduled run.
 >
-> **Manual addition (2026-05-23):** ADRs 0070-0080 added by the adr-composer agent on the `claude/adr-nodes-architecture-Lbg7F` branch. Hive-sync will reconcile on its next scheduled run.
+> **Manual addition (2026-05-23):** ADRs 0070–0080 added by the adr-composer agent on the `claude/adr-nodes-architecture-Lbg7F` branch. Hive-sync will reconcile on its next scheduled run.
 
 ## Awaiting (no `accepts:`-declaring packets yet)
 
