@@ -4,7 +4,7 @@ Tracked automatically by the hive-sync agent. ADRs/PDRs with all implementing
 issues closed are auto-flipped to Accepted on each run; the rest are listed
 here with progress.
 
-Last synced: 2026-05-21
+Last synced: 2026-05-21 (ADRs 0048–0057 added manually 2026-05-23; hive-sync will reconcile on next run)
 
 ## Awaiting (no `accepts:`-declaring packets yet)
 
@@ -36,6 +36,16 @@ and remain manually-flippable until rescoped.
 | [ADR-0045](../adrs/ADR-0045-grid-wide-error-tracking.md) | ADR-0045: Grid-Wide Error Tracking | Ops / cross-cutting | 2026-05-21 | 0 |
 | [ADR-0046](../adrs/ADR-0046-specialist-review-agents.md) | ADR-0046: Specialist Review Agents | Meta | 2026-05-21 | 0 |
 | [ADR-0047](../adrs/ADR-0047-testing-patterns-and-tooling.md) | ADR-0047: Testing Patterns and Tooling | Meta / cross-cutting | 2026-05-21 | 0 |
+| [ADR-0048](../adrs/ADR-0048-data-schema-evolution-and-migration-policy.md) | ADR-0048: Data Schema Evolution and Migration Policy | Core / cross-cutting | 2026-05-22 | 1 |
+| [ADR-0049](../adrs/ADR-0049-data-classification-pii-handling-and-retention-schedule.md) | ADR-0049: Data Classification, PII Handling, and Retention Schedule | Core / cross-cutting | 2026-05-22 | 1 |
+| [ADR-0050](../adrs/ADR-0050-tenant-lifecycle-provisioning-suspension-offboarding-and-data-export.md) | ADR-0050: Tenant Lifecycle — Provisioning, Suspension, Offboarding, and Data Export | Core / cross-cutting | 2026-05-22 | 1 |
+| [ADR-0051](../adrs/ADR-0051-ai-agent-authorization-and-tool-scoping-model.md) | ADR-0051: AI Agent Authorization and Tool Scoping Model | AI / cross-cutting | 2026-05-22 | 1 |
+| [ADR-0052](../adrs/ADR-0052-cost-governance-budget-alerts-and-kill-switches.md) | ADR-0052: Cost Governance, Budget Alerts, and Kill-Switches | Ops / cross-cutting | 2026-05-22 | 1 |
+| [ADR-0053](../adrs/ADR-0053-environments-branching-and-release-cadence.md) | ADR-0053: Environments, Branching, and Release Cadence | Meta / cross-cutting | 2026-05-22 | 1 |
+| [ADR-0054](../adrs/ADR-0054-incident-response-and-on-call-model-for-a-one-person-studio.md) | ADR-0054: Incident Response and On-Call Model for a One-Person Studio | Ops / cross-cutting | 2026-05-22 | 1 |
+| [ADR-0055](../adrs/ADR-0055-feature-flag-and-progressive-rollout-strategy.md) | ADR-0055: Feature Flag and Progressive Rollout Strategy | Core / cross-cutting | 2026-05-22 | 1 |
+| [ADR-0056](../adrs/ADR-0056-threat-model-and-security-review-cadence.md) | ADR-0056: Threat Model and Security Review Cadence | Meta / Security / cross-cutting | 2026-05-22 | 1 |
+| [ADR-0057](../adrs/ADR-0057-public-http-api-versioning-and-client-sdk-strategy.md) | ADR-0057: Public HTTP API Versioning and Client SDK Strategy | Core / cross-cutting | 2026-05-22 | 1 |
 | [PDR-0002](../pdrs/PDR-0002-notify-as-a-service-first-commercial-product.md) | PDR-0002: HoneyDrunk Notify — First Commercial Product on the Grid | Ops (primary) · Meta (positioning) | 2026-05-02 | 19 |
 | [PDR-0003](../pdrs/PDR-0003-lately-currents-based-connection-app.md) | PDR-0003: Lately — A Currents-Based Connection App for Regular Humans | Market / Core / Ops | 2026-05-05 | 16 |
 | [PDR-0005](../pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md) | PDR-0005: Hearth — Personal Growth as a Living Town | Market / AI / Ops | 2026-05-05 | 16 |
