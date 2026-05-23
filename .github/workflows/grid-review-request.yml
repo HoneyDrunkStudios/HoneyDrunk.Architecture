@@ -22,7 +22,10 @@ jobs:
       openclaw-webhook-url: ${{ vars.OPENCLAW_GRID_REVIEW_WEBHOOK_URL || '' }}
       review-config-path: .honeydrunk-review.yaml
       upload-fallback-artifact: true
-      post-fallback-comment: true
+      # Artifact-only fallback for the first Architecture pilot run.
+      # PR comment fallback needs token/permission hardening because GitHub
+      # rejected addComment from the reusable workflow token on PR #278.
+      post-fallback-comment: false
       artifact-name: grid-review-request
     secrets:
       openclaw-webhook-secret: ${{ secrets.OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET }}

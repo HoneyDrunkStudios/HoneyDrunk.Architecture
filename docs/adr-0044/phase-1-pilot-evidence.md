@@ -22,7 +22,7 @@ Phase 1 starts with fallback transport only:
 
 - GitHub Actions emits the `grid-review-request` payload.
 - The OpenClaw webhook URL is intentionally empty until the receiver and signing secret are provisioned.
-- The workflow uploads `review-request.json` as an artifact and posts the machine-readable replay pointer comment.
+- The workflow uploads `review-request.json` as an artifact. Machine-readable replay pointer comments are disabled for the first Architecture pilot run until reusable-workflow token permissions are hardened.
 - OpenClaw cron/poll discovers pending Architecture review requests and runs the Grid Review Runner.
 
 ## OpenClaw Polling Window
@@ -60,5 +60,6 @@ Cron/poll is a temporary fallback transport, not the long-term primary path.
 - [ ] `skip-review` PRs do not request review.
 - [ ] A real/test Architecture PR receives a Grid Review Runner comment.
 - [ ] Re-running on the same head SHA does not duplicate review work.
-- [ ] OpenClaw-offline behavior is advisory/pending, not a hard failure.
+- [x] OpenClaw-offline behavior is advisory/pending, not a hard failure via artifact fallback.
+- [ ] PR comment fallback is re-enabled after token/permission hardening.
 - [ ] Phase 1 go/no-go result is recorded.
