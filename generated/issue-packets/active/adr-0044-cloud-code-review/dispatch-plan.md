@@ -48,9 +48,9 @@ Packet 01 first (the acceptance flip). Then 02-05 in parallel; 06 after 03/04/05
 
 Runs after the Phase-1 go decision. Packets 07-12.
 
-- [ ] `HoneyDrunk.Actions`: Add `authorship-check` + `pr-size-check` jobs to `pr-core.yml` (D6/D7, warnings-only) - [`07-actions-authorship-and-pr-size-checks.md`](07-actions-authorship-and-pr-size-checks.md)
+- [x] `HoneyDrunk.Actions`: Add `authorship-check` + `pr-size-check` jobs to `pr-core.yml` (D6/D7, warnings-only) - [`07-actions-authorship-and-pr-size-checks.md`](07-actions-authorship-and-pr-size-checks.md) - shipped via Actions PR #100; Actions#85 closed 2026-05-23
   - Blocked by: `packet:01` (soft).
-- [ ] `HoneyDrunk.Actions`: Seed `large-pr`, `audit-sample`, `skip-review` labels Grid-wide - [`08-actions-seed-review-labels-grid-wide.md`](08-actions-seed-review-labels-grid-wide.md)
+- [ ] `HoneyDrunk.Actions`: Seed `large-pr`, `audit-sample`, `skip-review` labels Grid-wide - [`08-actions-seed-review-labels-grid-wide.md`](08-actions-seed-review-labels-grid-wide.md) - labels-as-code and seed/fanout workflows shipped via Actions PR #100; fanout run + verification still pending
   - Blocked by: `packet:07` (soft).
 - [x] `HoneyDrunk.Architecture`: Roll the D3 rubric into the upstream authoring agents (`scope`/`adr-composer`/`pdr-composer`/`refine`/`node-audit`) - [`09-architecture-d3-rubric-upstream-agent-rollout.md`](09-architecture-d3-rubric-upstream-agent-rollout.md) - **`current-focus.md` priority #7 (upstream half)**
   - Blocked by: `packet:04` (**hard** - same category names/numbering).
@@ -63,7 +63,7 @@ Runs after the Phase-1 go decision. Packets 07-12.
 
 **Wave 2 exit criterion (Phase 2 go/no-go):** all 10 fan-out Nodes enabled (Architecture already piloted; Studios and Observe excluded; private revenue Nodes excluded); authorship classification mandatory and passing across the Grid; PR-size discipline visible (warnings-only); the D3 rubric present in all seven agent files; Phase-2 review quality reviewed before Phase 3.
 
-> **Wave 2 Architecture sync (2026-05-23):** Packets 09, 10, and 12 have landed on the Architecture side. Remaining Wave 2 blockers before broad Node fan-out are Actions#85 (`authorship-check` / `pr-size-check`) and Actions#86 (Grid-wide labels), plus the explicit Phase-2 rollout go/no-go.
+> **Wave 2 sync (2026-05-23):** Packets 09, 10, and 12 have landed on the Architecture side. Actions#85 is closed via Actions PR #100. Actions#86 has its labels-as-code config and seed/fanout workflow code merged via Actions PR #100, but remains open until the Grid-wide `seed-labels-fanout.yml` run is completed/verified (or explicitly deferred). Remaining blockers before broad Node fan-out are Actions#86 fanout verification plus the explicit Phase-2 rollout go/no-go.
 
 ### Wave 3 - Phase 3: Discipline tightening
 
