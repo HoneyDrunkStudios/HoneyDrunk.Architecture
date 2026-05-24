@@ -21,7 +21,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 **Tracking (Wave 2 — Phase 2: live Node rollout + discipline foundations):**
 - [x] Actions#85: Add authorship-check and pr-size-check jobs to `pr-core.yml` (packet 07; shipped via Actions PR #100, closed 2026-05-23)
-- [ ] Actions#86: Seed `large-pr`, `audit-sample`, and `skip-review` labels Grid-wide (packet 08; labels-as-code and seed/fanout workflows shipped via Actions PR #100; fanout run + verification still pending)
+- [x] Actions#86: Seed `large-pr`, `audit-sample`, and `skip-review` labels Grid-wide (packet 08; labels-as-code and seed/fanout workflows shipped via Actions PR #100; fanout repair shipped via Actions PR #101; fanout run verified 2026-05-24)
 - [x] Architecture#175: Roll the D3 rubric into upstream authoring agents (packet 09; shipped via PR #279)
 - [x] Architecture#176: Amend execution-surface prompts for `Authorship:` and D3 checklist (packet 10; shipped via PR #279)
 - [ ] Architecture#182: Enable the OpenClaw/Codex reviewer on the 10 remaining live Nodes (packet 11)
@@ -40,7 +40,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 **Exit criteria:** ADR-0044 is Accepted; Phase 1 MVP (`job-review-request.yml` + Grid Review Runner) is enabled on `HoneyDrunk.Architecture` only and running on every non-draft PR; each phase's dispatch-plan go/no-go criterion is satisfied before the next wave starts.
 
-> **Sync (2026-05-23):** Phase 1 is functionally complete in artifact-plus-cron/poll mode: ADR-0044 is Accepted, `job-review-request.yml` is live, Architecture has `.honeydrunk-review.yaml` and the caller workflow, and OpenClaw posted advisory PR comments for reviewed head SHAs. Webhook provisioning remains the transport hardening gap; the temporary OpenClaw cron/poll jobs should be disabled after signed webhook delivery is configured and verified. Wave 2 Architecture-side docs/prompts (#175, #176, #183) have landed. Actions#85 is closed via Actions PR #100; Actions#86 has its labels-as-code and seed/fanout workflow code merged, but remains open until the `seed-labels-fanout.yml` run is completed/verified (or explicitly deferred) before broad Node fan-out (#182).
+> **Sync (2026-05-24):** Phase 1 is functionally complete in artifact-plus-cron/poll mode: ADR-0044 is Accepted, `job-review-request.yml` is live, Architecture has `.honeydrunk-review.yaml` and the caller workflow, and OpenClaw posted advisory PR comments for reviewed head SHAs. Webhook provisioning remains the transport hardening gap; the temporary OpenClaw cron/poll jobs should be disabled after signed webhook delivery is configured and verified. Wave 2 Architecture-side docs/prompts (#175, #176, #183) have landed. Actions#85 is closed via Actions PR #100; Actions#86 is closed after the `seed-labels-fanout.yml` run completed successfully on 2026-05-24. ADR-0044 no longer uses the deprecated multi-agent cloud-review path; broad Node fan-out (#182) is unblocked.
 
 ### ADR-0047 Testing Patterns and Tooling
 **Status:** In Progress

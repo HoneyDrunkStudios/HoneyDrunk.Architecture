@@ -299,18 +299,16 @@ The catalog of high-risk Nodes lives in `catalogs/grid-health.json` under a new 
 - Switches to the highest-quality locally available Codex review profile for the first pass.
 - Triggers a second pass automatically using a deliberately contrarian prompt ("identify ways the first reviewer was wrong"). The two passes are independent sessions, posted as separate comments.
 
-Alternative escalation paths the human may invoke instead:
-- `/ultrareview` - multi-agent cloud review (billed separately).
-- `refine` agent against the PR's packet + diff (skeptical-senior-dev archetype).
+The human may also invoke the `refine` agent against the PR's packet + diff (skeptical-senior-dev archetype) when a deeper manual escalation is warranted.
 
-The PR body records which path was used. Two same-runner passes is the default because it is cheapest and automatic under the OpenClaw/Codex setup; the alternatives exist for cases the human judges warrant deeper scrutiny.
+Two same-runner passes remain the default because they are cheapest and automatic under the OpenClaw/Codex setup. Separate multi-agent cloud review modes are intentionally out of scope for ADR-0044; the review system should stay subscription-backed, local/runtime-owned, and low-noise unless a future ADR deliberately reopens provider-backed review.
 
 ### D9 - Post-merge sampling audit
 
 Every Nth agent-authored merged PR (starting N=10, tunable via the weekly briefing per ADR-0043) is selected for a deeper post-merge audit:
 
 - Selection is automatic (CI labels the chosen PR `audit-sample` at merge time).
-- Audit runs `/ultrareview` against the merged PR's diff.
+- Audit reruns the canonical OpenClaw/Codex Grid Review Runner against the merged PR's diff using an audit prompt that asks what the pre-merge review missed.
 - Output is committed to `generated/post-merge-audits/{YYYY-MM-DD}-{repo}-{pr-number}.md`.
 - Findings at `Block` or `Request Changes` severity become Reactive packets per ADR-0043's Reactive source taxonomy.
 
