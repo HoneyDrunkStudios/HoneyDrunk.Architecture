@@ -33,7 +33,7 @@ The probe's behavior (verbatim from D3):
 
 **Pulse is a Seed Node** per the catalog. Its solution exists and is versioned; this is the first ADR-0054 packet on the Pulse solution → minor bump per invariant 27.
 
-**Vault.** The probe authenticates to PagerDuty via the Events API v2 key stored in `kv-hd-pulse-{env}` (or wherever packet 03 placed it — the walkthrough doc names the path). The probe authenticates to Notify via the existing Notify intake surface (no new credential — Notify's intake authenticates via the Grid identity per ADR-0005's intra-Grid auth).
+**Vault.** The probe authenticates to PagerDuty via the Events API v2 key stored at `pagerduty-events-api-key` in `kv-hd-pulse-{env}` per packet 03's canonical Vault placement (invariant 17 — no shared Vault). The probe authenticates to Notify via the existing Notify intake surface (no new credential — Notify's intake authenticates via the Grid identity per ADR-0005's intra-Grid auth).
 
 ## Scope
 - `HoneyDrunk.Pulse` solution — a new synthetic probe `PagingPathProbe` on the Pulse synthetic-monitoring surface, running every 5 minutes.
@@ -118,7 +118,7 @@ The probe's behavior (verbatim from D3):
 
 **ADR-0040 — Pulse is the telemetry-export boundary.** Probe metrics flow through the existing Pulse OTLP path to App Insights.
 
-**ADR-0005 — Vault placement.** Pulse's Vault is `kv-hd-pulse-{env}` (or `kv-hd-shared-{env}` if Pulse does not yet have a dedicated Vault). The PagerDuty Events API v2 key is read from the documented path.
+**ADR-0005 — Vault placement.** Pulse's Vault is `kv-hd-pulse-{env}` per invariant 17 (one Vault per deployable Node — no shared Vault fallback). The PagerDuty Events API v2 key is read from the documented path. If `kv-hd-pulse-{env}` does not exist yet, provisioning it is a Human Prerequisite for this packet — packet 03 holds the canonical Vault placement for the PagerDuty secret and matches this rule.
 
 ## Constraints
 > **Invariant 1 — Abstractions packages have zero runtime dependencies on other HoneyDrunk packages.** Any new abstraction types respect this.
