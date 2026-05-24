@@ -51,7 +51,7 @@ Two sequential PRs (plus a third if Pulse has persisted records — verify at br
 ### PII sub-category (ADR-0049 D2)
 
 - **Pii** — identifies a natural person: name, email, IP address, behavioral telemetry, device ID.
-- **SensitivePii** — Article 9 special category: government ID, financial-account credential, biometric, precise geolocation, health, religion, political opinion, racial/ethnic origin, trade-union membership, children's data, full PAN. **REQUIRES** explicit consent (or one of the narrow Article 9(2)(a-j) bases). **NEVER appears in audit channel** even as tokens (invariant 83).
+- **SensitivePii** — Article 9 special category: government ID, financial-account credential, biometric, precise geolocation, health, religion, political opinion, racial/ethnic origin, trade-union membership, children's data, full PAN. **REQUIRES** explicit consent (or one of the narrow Article 9(2)(a-j) bases). **NEVER appears in audit channel** even as tokens (invariant {N2}).
 - **Pseudonymous** — opaque Grid-scoped identifier with separately-held mapping (PrincipalId, TenantId, hashed-email idempotency key, agent-execution correlation IDs).
 
 ### "Field that should not exist" workflow

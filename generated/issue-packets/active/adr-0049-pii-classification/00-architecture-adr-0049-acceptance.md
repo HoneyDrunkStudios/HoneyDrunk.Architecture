@@ -127,7 +127,7 @@ None. This packet touches only Markdown governance files; no .NET project is cre
 - [ ] No `.claude/agents/` change in this packet (agent rubric updates land in packet 11)
 
 ## Human Prerequisites
-None.
+- **`constitution/invariant-reservations.md` must exist on `main` before this packet executes.** That file is introduced by [PR #288](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/pull/288); ADR-0049 already has a soft-claim row in it for invariants 58–60 (`{N1}`–`{N3}`). If #288 has not merged, hold this packet until it does.
 
 ## Referenced ADR Decisions
 **ADR-0049 D1 — Four-tier taxonomy.** Public / Internal / Confidential / Restricted; ordered by handling rigor; classification is of the field, not the record; default-to-Restricted on ambiguity.

@@ -84,7 +84,7 @@ None. This packet touches only Markdown governance files; no .NET project is cre
 - [ ] No catalog schema change in this packet (catalog updates land in packet 01)
 
 ## Human Prerequisites
-None.
+- **`constitution/invariant-reservations.md` must exist on `main` before this packet executes.** That file is introduced by [PR #288](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/pull/288); ADR-0050 already has a soft-claim row in it for invariants 67–68 (`{N1}`–`{N2}`). If #288 has not merged, hold this packet until it does.
 
 ## Referenced ADR Decisions
 **ADR-0050 D1 — Seven-state tenant enumeration.** `Prospect`, `Trialing`, `Active`, `PastDue`, `Suspended`, `Offboarding`, `Closed`. Transitions are explicit, audited, and initiator-attributed. State is persisted canonically in `HoneyDrunk.Billing` (when standup completes) with a read-replica view in `HoneyDrunk.Auth`; until Billing scaffolds, state lives in a `Tenants` table in Auth as the interim home.

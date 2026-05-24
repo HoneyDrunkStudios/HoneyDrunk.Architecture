@@ -21,7 +21,7 @@ Both ADR-0040 (Telemetry Backend and Retention) and ADR-0045 (Grid-Wide Error Tr
 
 - The redactor regressions from packets 04 and 05 would not be caught at CI — a future PR that "optimizes" the reflection walk and accidentally skips `SensitivePii` markers would land without a build failure.
 - The Evals carve-out (`evals.sensitive=true` skips redaction in `SpanProcessor`) is a contract that needs ongoing verification — a refactor that drops the carve-out check would silently break sensitive Eval suites.
-- The `IAuditLog`-rejection-on-SensitivePii path needs to stay enforced — a future change that softens the rejection to a sentinel write would violate invariant 83 silently.
+- The `IAuditLog`-rejection-on-SensitivePii path needs to stay enforced — a future change that softens the rejection to a sentinel write would violate invariant {N2} silently.
 
 ADR-0049 D4 lists "Test canaries" as the fifth attribute-consumer: "every Node ships a redaction canary that constructs sample payloads with `[PiiField]`-marked fields, sends them through the log/audit/error paths, and asserts the output is properly redacted. A canary failure blocks the package release per ADR-0034." This packet ships the **Grid-wide canary** that proves redaction works at the Pulse and Audit boundaries; per-Node canaries (e.g. for consumer-app onboarding flows) are deferred to those Nodes' standup packets per ADR-0049 D10 Phase 6.
 
@@ -145,7 +145,7 @@ The canary lives in Pulse because Pulse is the boundary that owns the log/trace/
 
 **Invariant 14 — Canary tests validate cross-Node boundaries.** This canary exercises the Pulse↔Kernel-Abstractions boundary (logs/traces/errors) and the Audit↔Kernel-Abstractions boundary (append path) as one suite.
 
-**Invariant 47 (amended in packet 00) + invariant 83.** The canary's audit assertions verify both: sensitive fields are redacted before append (invariant 47 amended), and SensitivePii is rejected entirely from the audit channel (invariant 83 new).
+**Invariant 47 (amended in packet 00) + invariant {N2}.** The canary's audit assertions verify both: sensitive fields are redacted before append (invariant 47 amended), and SensitivePii is rejected entirely from the audit channel (invariant {N2} new).
 
 **ADR-0040 D9 — Evals carve-out.** `evals.sensitive=true` spans skip redaction; the canary asserts this carve-out is honored.
 
