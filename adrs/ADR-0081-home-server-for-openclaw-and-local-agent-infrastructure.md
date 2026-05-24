@@ -29,9 +29,7 @@ ADR-0044's webhook-first direction makes this sharper. A Cloudflare Tunnel can s
 
 HoneyDrunk will introduce a small always-on **home server** as the preferred host for OpenClaw, webhook bridges, scheduled local automations, and local-agent experimentation.
 
-This server is **not** a production application host for public HoneyDrunk customer-facing Nodes. Public/runtime products remain on their chosen cloud hosts (Azure Container Apps/App Service/Functions, Vercel, etc.). The home server is an **operator-owned local control-plane host** for development automation, review automation, and agent infrastructure.
-
-## Decisions
+This server is **not** a production application host for public HoneyDrunk customer-facing services/products. Public/runtime services remain on their chosen cloud hosts (Azure Container Apps/App Service/Functions, Vercel, etc.). The home server is an **operator-owned local control-plane host** for development automation, review automation, and agent infrastructure.
 
 ### D1 - Home server is the always-on local automation host
 
