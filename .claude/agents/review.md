@@ -201,12 +201,12 @@ Use `copilot/pr-review-rules.md` as the severity taxonomy reference. Findings us
 
 ### 2. Architectural integrity
 
-- **Boundary enforcement.** Is logic in the correct layer? Is domain logic leaking into transport, UI, or data layers? Is infrastructure leaking into business logic? Are abstractions respected?
-- **Node governance.** Does this belong in this Node (per `repos/{node}/overview.md`)? Is another Node already responsible? Is this creating hidden coupling? Is package ownership respected? Is functionality duplicated elsewhere in the Grid?
-- **Dependency hygiene.** Are dependencies necessary? Is dependency direction correct (per `catalogs/relationships.json`)? Are there circular references? Is the package graph still clean? Is the abstraction level appropriate (consuming `*.Abstractions` per ADR-0035, never reaching into backings)?
+- **Boundary enforcement.** Is logic in the correct layer? Is domain logic leaking into transport, UI, or data layers? Is infrastructure leaking into business logic? Are abstractions respected? Are abstractions leaking across boundaries?
+- **Node governance.** Does this belong in this Node/package/service (per `repos/{node}/overview.md`)? Is domain ownership respected? Is another Node already responsible? Is this creating hidden coupling or accidental coupling? Is package ownership respected? Is functionality duplicated elsewhere in the Grid? Should this have been an extension point/plugin instead?
+- **Dependency hygiene.** Are dependencies necessary and justified? Is the dependency too heavy for the use case? Is dependency direction correct (per `catalogs/relationships.json`)? Are there circular references? Is the package graph still clean? Are we introducing transitive bloat? Is the abstraction level appropriate (consuming `*.Abstractions` per ADR-0035, never reaching into backings)? Is an internal SDK/package being bypassed? Is the dependency trustworthy, maintained, and license-compatible? Is there hidden vendor lock-in?
 - **Architectural drift.** Does this move the system away from established patterns? Is this introducing a "special case architecture"? Is temporary code pretending to be permanent?
 
-**Execution detail.** Inspect changed files against repo boundaries, Node ownership, dependency direction, contract surfaces, and whether the design creates a special-case architecture. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
+**Execution detail.** Inspect changed files against repo boundaries, Node ownership, domain ownership, dependency direction, contract surfaces, accidental coupling, extension-point/plugin fit, and whether the design creates a special-case architecture. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
 
 **Severity mapping.** Block for boundary violations, illegal dependency direction, or runtime leakage into abstractions. Request Changes for undocumented drift or avoidable hidden coupling. Suggest for architectural cleanup that is not required for safety.
 
@@ -214,7 +214,7 @@ Use `copilot/pr-review-rules.md` as the severity taxonomy reference. Findings us
 
 - **Complexity management.** Is the solution simpler than the problem? Can complexity be reduced? Are there too many abstractions? Is there unnecessary indirection? Is control flow understandable?
 - **Readability.** Is intent obvious? Are names meaningful? Is the code self-documenting? Is cognitive load reasonable?
-- **Evolvability.** Can this be extended safely? Will future modifications cause regressions? Is the design composable? Is this rigid or flexible at the right places?
+- **Evolvability.** Can this be extended safely? Will future modifications cause regressions? Will this become painful in six months? Is the design composable and future-proof enough for the known roadmap? Is this rigid or flexible at the right places? Are hidden assumptions or temporal/order dependencies being introduced? Does this increase cognitive load unnecessarily?
 - **Technical debt.** Is debt being introduced intentionally or accidentally? Is debt documented (TODO/FIXME, follow-up packet, ADR amendment)? Is the debt acceptable for the business value?
 
 **Execution detail.** Inspect complexity, naming, readability, composability, future modification risk, and whether introduced debt is intentional and tracked. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
@@ -223,7 +223,7 @@ Use `copilot/pr-review-rules.md` as the severity taxonomy reference. Findings us
 
 ### 4. Reuse and ecosystem cohesion
 
-- **Reuse.** Is existing functionality reused before creating new logic? Could this extend an existing service or module? Is this solving an already-solved problem?
+- **Reuse.** Is existing functionality reused before creating new logic? Could this extend an existing service, module, extension point, or plugin? Is this solving an already-solved problem? Is this generic enough to become shared infrastructure? Is duplication emerging across Nodes? Should this move into Kernel, Data, Transport, or another platform Node?
 - **Shared contracts.** Are shared SDKs and contracts respected (per `catalogs/contracts.json`)? Is naming aligned across the ecosystem? Are standards consistent?
 - **Platform consistency.** Does this feel like HoneyDrunk code? Does it follow established patterns? Would another engineer immediately recognize the conventions?
 
@@ -246,32 +246,32 @@ Use `copilot/pr-review-rules.md` as the severity taxonomy reference. Findings us
 
 ### 6. Performance and scalability
 
-- **Runtime performance.** Expensive allocations in hot paths? Blocking calls in async code? Inefficient loops? Over-fetching data? Serialization overhead?
+- **Runtime performance.** Expensive allocations in hot paths? Blocking calls in async code? Inefficient loops? Over-fetching data? Excessive serialization? Chatty APIs? Cache invalidation risks? Hot-path concerns? Horizontal scalability blockers?
 - **Database performance.** N+1 queries? Missing indexes? Table scans? Large payloads where pagination would help? Query explosion under realistic load?
-- **Scalability.** Will this work under 10× load? Is concurrency safe? Is backpressure handled? Is batching possible where it matters?
+- **Scalability.** Will this work under 10× load? Is concurrency safe? Is backpressure handled? Is batching possible where it matters? Are retry storms, lock contention, or horizontal scaling blockers possible?
 - **Resource efficiency.** Memory pressure, connection exhaustion, cache abuse, thread starvation, queue flooding.
 
-**Execution detail.** Inspect hot paths, allocations, async blocking, database access, serialization, concurrency, resource usage, queue pressure, and realistic growth behavior. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
+**Execution detail.** Inspect hot paths, allocations, async blocking/misuse, database access, N+1 risks, lock contention, excessive serialization, chatty APIs, retry storms, cache invalidation, concurrency, resource usage, queue pressure, horizontal scaling blockers, and realistic growth behavior. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
 
 **Severity mapping.** Block for performance regressions that make the feature unusable or unsafe at expected scale. Request Changes for N+1 queries, blocking async, missing pagination, unbounded work, or resource exhaustion risk. Suggest for optimizations that are not currently load-bearing.
 
 ### 7. Reliability and resilience
 
-- **Fault tolerance.** What happens when dependencies fail? Is retry logic safe? Are retries idempotent (per ADR-0042)? Are timeouts defined? Are circuit breakers used where they belong?
-- **Recovery.** Can the system recover automatically? Is state recoverable per ADR-0036's DR posture? Is replay safe?
+- **Fault tolerance.** What happens when dependencies fail? Is retry logic safe? Are retries idempotent (per ADR-0042)? Are timeouts defined? Are circuit breakers used where they belong? Is cancellation handled? Are dead-letter paths defined where relevant?
+- **Recovery.** Can the system recover automatically? Is state recoverable per ADR-0036's DR posture? Is replay safe? Is partial failure handled? Are rollback consistency and transaction boundaries correct?
 - **Defensive programming.** Are assumptions validated at trust boundaries? Are invariants protected? Are dangerous operations guarded?
 - **Chaos resistance.** Does this fail gracefully? Are cascading failures possible? Are blast radii bounded?
 
-**Execution detail.** Inspect dependency failures, retry/idempotency behavior, timeouts, circuit breakers, recovery/replay safety, validation, and blast-radius boundaries. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
+**Execution detail.** Inspect dependency failures, retry/idempotency behavior, cancellation, timeouts, circuit breakers, partial failure, dead-letter behavior, recovery/replay safety, rollback consistency, transaction boundaries, validation, and blast-radius boundaries. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
 
 **Severity mapping.** Block for unsafe retries, non-idempotent replay, cascading-failure risks, or unguarded dangerous operations. Request Changes for missing timeouts/recovery paths. Suggest for resilience hardening that can follow.
 
 ### 8. Observability and diagnostics
 
-- **Logging.** Are logs actionable, not noise? Is context included? Are logs structured? Are log levels correct (no `Information`-level chatter in hot paths)?
-- **Metrics.** Are business metrics captured? Are operational metrics captured? Can SLOs be measured?
-- **Tracing.** Is distributed tracing propagated (per ADR-0010 and ADR-0040)? Are spans meaningful? Are cross-Node flows observable?
-- **Diagnostics.** Can support and debugging teams diagnose issues quickly? Is failure provenance clear? Are error messages useful to humans?
+- **Logging.** Are logs actionable, not noise? Is context included? Are logs structured? Are log levels correct (no `Information`-level chatter in hot paths)? Will support/devs actually be able to diagnose production issues from them?
+- **Metrics.** Are business metrics captured? Are operational metrics captured? Are metrics meaningful rather than vanity counters? Can SLOs be measured?
+- **Tracing.** Is distributed tracing propagated and correlated (per ADR-0010 and ADR-0040)? Are spans meaningful? Are cross-Node flows observable?
+- **Diagnostics.** Can support and debugging teams diagnose issues quickly? Is failure provenance clear? Are error messages useful to humans? Are failures observable without reproducing locally? Is sensitive data kept out of telemetry?
 
 **Execution detail.** Inspect logs, metrics, tracing, diagnostic context, error messages, and whether a future operator can reconstruct what happened. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
 
@@ -291,9 +291,9 @@ Use `copilot/pr-review-rules.md` as the severity taxonomy reference. Findings us
 
 ### 10. Enterprise readiness
 
-- **Operational maturity.** Deployable safely (per ADR-0033)? Rollback ready? Configurable per environment? Feature-flaggable where it matters?
+- **Operational maturity.** Deployable safely (per ADR-0033)? Rollback ready? Configurable per environment? Feature-flaggable where it matters? Requires migration sequencing or backfill? Zero-downtime compatible? Infra dependencies documented?
 - **Supportability.** Easy to troubleshoot? Clear ownership in `repos/{node}/overview.md`? Safe defaults?
-- **Documentation.** Does this need an ADR or amendment? Runbooks needed (per ADR-0036)? Config docs updated?
+- **Documentation.** Does this need an ADR or amendment? Runbooks needed (per ADR-0036)? Config docs updated? Are examples/sample configs, manifests/schema updates, dashboards, or operational notes needed?
 - **Compliance.** PCI, GDPR, SOC2 implications? Retention rules (per ADR-0036 D7)? Audit requirements (per ADR-0030)?
 
 **Execution detail.** Inspect deployment safety, rollback, environment config, feature flags, ownership docs, runbooks, retention/compliance, and support posture. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
@@ -302,8 +302,8 @@ Use `copilot/pr-review-rules.md` as the severity taxonomy reference. Findings us
 
 ### 11. Testing quality
 
-- **Coverage quality.** Happy paths tested? Failure paths tested? Edge cases tested? Concurrency cases tested?
-- **Test architecture.** Are tests maintainable? Are tests brittle (testing internals)? Are tests meaningful (not tautological assertions like `Assert.True(true)`)?
+- **Coverage quality.** Happy paths tested? Failure paths tested? Edge cases tested? Regression tests added where a bug is fixed? Concurrency/load/security cases tested where relevant?
+- **Test architecture.** Are tests maintainable? Are tests brittle (testing internals)? Are tests meaningful rather than fake confidence/tautological assertions?
 - **Verification depth.** Unit tests in the right project? Integration tests for cross-Node seams (per ADR-0011 Gap 1)? Contract tests for `*.Abstractions` surfaces? End-to-end tests where they earn their keep (per ADR-0011 Gap 3)?
 - **Anti-patterns.** No testing implementation details. No excessive mocking that mocks the system under test. No non-deterministic tests (no real time, real randomness, real network in unit tests).
 
@@ -314,7 +314,7 @@ Use `copilot/pr-review-rules.md` as the severity taxonomy reference. Findings us
 ### 12. API and contract design
 
 - **API ergonomics.** Is the API intuitive? Is naming consistent? Are responses predictable?
-- **Versioning.** Breaking changes labeled and gated per ADR-0035? Deprecation path documented? Backward compatibility honored at the published version?
+- **Versioning.** Breaking changes labeled and gated per ADR-0035? Contract drift avoided? Serialization changes documented? Deprecation path documented? Backward compatibility honored at the published version? Client impact analyzed?
 - **Consumer safety.** Are defaults safe? Are contracts explicit (no silent assumptions)?
 
 **Execution detail.** Inspect public API shape, naming, response semantics, defaults, versioning, deprecation path, and consumer compatibility. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
@@ -324,7 +324,7 @@ Use `copilot/pr-review-rules.md` as the severity taxonomy reference. Findings us
 ### 13. Data and persistence integrity
 
 - **Data correctness.** Referential integrity preserved? Precision and rounding handled correctly (financial, time)? Idempotency where writes can repeat (per ADR-0042)?
-- **Migration safety.** Backfill strategy clear? Rollback strategy clear? Zero-downtime where the table is hot?
+- **Migration safety.** Backfill strategy clear? Rollback strategy clear? DB compatibility maintained? Zero-downtime where the table is hot?
 - **Multi-tenant integrity.** Isolation guarantees (per ADR-0026)? Cross-tenant leakage prevented in queries, caches, and any in-memory state?
 
 **Execution detail.** Inspect persistence writes, precision/rounding, referential integrity, migrations, backfills, rollback, idempotent writes, and tenant predicates. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
@@ -333,7 +333,7 @@ Use `copilot/pr-review-rules.md` as the severity taxonomy reference. Findings us
 
 ### 14. Distributed systems concerns
 
-- **Messaging.** Duplicate delivery handled (per ADR-0042)? Ordering assumptions explicit? Poison message handling defined?
+- **Messaging.** Duplicate delivery handled (per ADR-0042)? Ordering assumptions explicit? Poison/dead-letter behavior defined? Double-processing and reentrancy risks handled?
 - **Event architecture.** Event versioning planned? Contract evolution path clear? Outbox pattern where it belongs?
 - **Consistency models.** Strong vs eventual consistency awareness - is the chosen model right for the use case and communicated to consumers?
 
@@ -344,8 +344,8 @@ Use `copilot/pr-review-rules.md` as the severity taxonomy reference. Findings us
 ### 15. CI/CD and delivery
 
 - **Pipeline quality.** Build reproducibility? Deterministic outputs (per ADR-0034 D4)? Artifact traceability?
-- **Release safety.** Safe rollout path (per ADR-0033)? Canary support where it earns its keep? Environment parity between dev/staging/prod?
-- **Automation.** Is manual work avoidable? Is operational toil reduced rather than added?
+- **Release safety.** Safe rollout path (per ADR-0033)? Canary support where it earns its keep? Environment parity between dev/staging/prod? Feature flags/backfills/migration sequencing considered? Rollback safety explicit?
+- **Automation.** Is manual work avoidable? Is operational toil reduced rather than added? Are environment/config/infra changes captured rather than tribal?
 
 **Execution detail.** Inspect workflow triggers, path guards, deterministic builds, artifact traceability, environment parity, rollout/canary posture, and avoidable manual toil. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
 
