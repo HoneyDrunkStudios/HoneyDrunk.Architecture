@@ -146,7 +146,7 @@ Rules that must never be violated across the HoneyDrunk Grid. Canary tests enfor
     A repo is `enabled` when it carries a `.honeydrunk-review.yaml` with `enabled: true`. Skip is via the `skip-review` PR label or `enabled: false` config — both explicit, both visible. See ADR-0044 D1 and D11.
 
 53. **Agent-authored PRs touching a high-risk Node receive two independent LLM-review perspectives before merge.**
-    The catalog of high-risk Nodes lives in `catalogs/grid-health.json` under the `review_risk_class` field once ADR-0044 packet 13 lands. Until that field exists, this invariant is accepted as the Phase-3 target state but is not enforceable. The second perspective is a contrarian-prompt pass by default; `/ultrareview` or a `refine` pass are alternative escalation paths the human may invoke. See ADR-0044 D8.
+    The catalog of high-risk Nodes lives in `catalogs/grid-health.json` under the `review_risk_class` field once ADR-0044 packet 13 lands. Until that field exists, this invariant is accepted as the Phase-3 target state but is not enforceable. The second perspective is a contrarian-prompt pass by default; the human may also invoke `refine` against the packet and diff for manual escalation. Separate multi-agent cloud review modes are intentionally out of scope for ADR-0044. See ADR-0044 D8.
 
 ## Hosting Platform Invariants
 
