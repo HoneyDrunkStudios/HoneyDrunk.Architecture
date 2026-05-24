@@ -139,7 +139,7 @@ This ADR binds the **categories and the questions within them**. The detailed pe
 #### 11. Testing quality
 
 - **Coverage quality.** Happy paths tested? Failure paths tested? Edge cases tested? Regression tests added where a bug is fixed? Concurrency/load/security cases tested where relevant?
-- **Test architecture.** Are tests maintainable? Are tests brittle (testing internals)? Are tests meaningful (not tautological assertions like `Assert.True(true)`)?
+- **Test architecture.** Are tests maintainable? Are tests brittle (testing internals)? Are tests meaningful rather than fake confidence/tautological assertions?
 - **Verification depth.** Unit tests in the right project? Integration tests for cross-Node seams (per ADR-0011 Gap 1)? Contract tests for `*.Abstractions` surfaces? End-to-end tests where they earn their keep (per ADR-0011 Gap 3)?
 - **Anti-patterns.** No testing implementation details. No excessive mocking that mocks the system under test. No non-deterministic tests (no real time, real randomness, real network in unit tests).
 
