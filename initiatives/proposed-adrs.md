@@ -11,6 +11,8 @@ Last synced: 2026-05-21
 > **Manual addition (2026-05-23):** ADRs 0058–0069 added below by the adr-composer agent. Hive-sync will reconcile on its next scheduled run.
 >
 > **Manual addition (2026-05-23):** ADRs 0070–0080 added by the adr-composer agent on the `claude/adr-nodes-architecture-Lbg7F` branch. Hive-sync will reconcile on its next scheduled run.
+>
+> **Manual addition (2026-05-24):** ADR-0081 added during ADR-0044 webhook setup discussion. Hive-sync will reconcile on its next scheduled run.
 
 ## Awaiting (no `accepts:`-declaring packets yet)
 
@@ -75,6 +77,7 @@ and remain manually-flippable until rescoped.
 | [ADR-0078](../adrs/ADR-0078-end-user-identity-entra-external-id.md) | ADR-0078: End-User Identity — Microsoft Entra External ID | Core | 2026-05-23 | 0 |
 | [ADR-0079](../adrs/ADR-0079-multi-perspective-pr-review-stack.md) | ADR-0079: Multi-Perspective PR Review Stack — Copilot + CodeRabbit + Grid-Aware Agent (Codex + Claude) | Meta | 2026-05-23 | 0 |
 | [ADR-0080](../adrs/ADR-0080-vendor-lock-in-posture-and-exit-readiness-hedges.md) | ADR-0080: Vendor Lock-In Posture and Exit-Readiness Hedges | Meta / Infrastructure / cross-cutting | 2026-05-23 | 0 |
+| [ADR-0081](../adrs/ADR-0081-home-server-for-openclaw-and-local-agent-infrastructure.md) | ADR-0081: Home Server for OpenClaw and Local Agent Infrastructure | Meta / Ops / AI | 2026-05-24 | 0 |
 | [PDR-0002](../pdrs/PDR-0002-notify-as-a-service-first-commercial-product.md) | PDR-0002: HoneyDrunk Notify — First Commercial Product on the Grid | Ops (primary) · Meta (positioning) | 2026-05-02 | 19 |
 | [PDR-0003](../pdrs/PDR-0003-lately-currents-based-connection-app.md) | PDR-0003: Lately — A Currents-Based Connection App for Regular Humans | Market / Core / Ops | 2026-05-05 | 16 |
 | [PDR-0005](../pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md) | PDR-0005: Hearth — Personal Growth as a Living Town | Market / AI / Ops | 2026-05-05 | 16 |
