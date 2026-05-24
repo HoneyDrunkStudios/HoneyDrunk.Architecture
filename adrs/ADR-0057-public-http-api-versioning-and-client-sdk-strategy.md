@@ -231,20 +231,22 @@ Cross-ref ADR-0006 (config & secrets strategy) for the per-tenant key storage an
 
 ### D11 — Rate-limit envelope
 
-Standardized response headers on every endpoint, every response:
+**Reconciled with [ADR-0067](./ADR-0067-inbound-rate-limiting-and-quota-enforcement.md) D5/D7 (2026-05-24).** ADR-0067 is the canonical source for the rate-limit envelope, keying, and policy mechanics. This decision restates ADR-0067's envelope commitments here so SDK consumers reading ADR-0057 in isolation see the same shape. The earlier draft of D11 used `X-RateLimit-*` headers and per-API-key keying; both were superseded during the ADR-0067 reconciliation pass.
 
-- **`X-RateLimit-Limit`** — the limit value for the current window (e.g., `1000`).
-- **`X-RateLimit-Remaining`** — remaining requests in the current window (e.g., `847`).
-- **`X-RateLimit-Reset`** — Unix timestamp at which the current window resets (e.g., `1735689600`).
+Standardized response headers on every endpoint, every response, in the **unprefixed IETF form** per `draft-ietf-httpapi-ratelimit-headers`:
+
+- **`RateLimit-Limit`** — the limit value for the current window (e.g., `1000`).
+- **`RateLimit-Remaining`** — remaining requests in the current window (e.g., `847`).
+- **`RateLimit-Reset`** — Unix timestamp at which the current window resets (e.g., `1735689600`).
+
+Legacy `X-RateLimit-*` mirrors are **not** emitted. SDK consumers parse the unprefixed form only.
 
 On a `429 Too Many Requests` response:
 
 - The above three headers are still present.
 - A **`Retry-After`** header (RFC 7231) with the seconds-to-retry value (e.g., `Retry-After: 30`).
 
-Headers follow the IETF draft (`draft-ietf-httpapi-ratelimit-headers`) close enough to be familiar to developers who've integrated with GitHub, Stripe, or Twitter; we use the `X-` prefix because the draft hasn't standardized at time of writing and the `X-` prefix is the de-facto compatibility shape.
-
-**Scoping.** Rate limits are **per-tenant and per-API-key**. A single tenant with two API keys gets two independent rate-limit buckets. This lets a tenant separate "production traffic" from "ad-hoc scripts" without one starving the other.
+**Scoping.** Rate limits are **per-tenant**. All API keys belonging to one tenant share one bucket. Per-API-key fan-out is deferred to a future ADR — the v1 posture matches Notify Cloud's tier model (per [ADR-0027](./ADR-0027-stand-up-honeydrunk-notify-cloud-node.md) D3 / [ADR-0037](./ADR-0037-payment-and-billing-integration.md) D3), where a tenant's tier governs the bucket and per-key separation is not part of the value proposition at v1.
 
 **Limits per API are declared in the OpenAPI spec's `info.x-rate-limits` extension** so they're visible in generated SDKs and docs. Per-endpoint overrides are declared on the operation. Changing a rate-limit value downward (more restrictive) without a major version bump is a **breaking change** per D4; changing it upward (more permissive) is not breaking.
 
@@ -254,7 +256,7 @@ Standardized JSON shape for every non-2xx response, per **RFC 7807 (`application
 
 ```json
 {
-  "type": "https://errors.honeydrunkstudios.com/notify/recipient-not-found",
+  "type": "https://docs.honeydrunkstudios.com/errors/notify/recipient-not-found",
   "title": "Recipient not found",
   "status": 404,
   "detail": "No recipient exists for tenant 'tnt_abc123' with id 'rcp_def456'.",
@@ -276,7 +278,7 @@ Fields:
 
 The trace/correlation linkage is **the load-bearing piece** for tenant-driven incident triage: a tenant pastes their `traceId` into a support request and Studios immediately has the full distributed trace + error event in App Insights and the structured error in App Insights Failures. Cross-ref ADR-0040 (Azure Monitor + App Insights) and ADR-0045 (error tracking, `IErrorReporter`).
 
-Per-API error type catalog lives at `errors.honeydrunkstudios.com/{api}/` and is generated from the OpenAPI spec's `components.responses` declarations. Adding a new error `type` (with a new docs page) is non-breaking; renaming or removing an error `type` is breaking per D4.
+Per-API error type catalog lives at `docs.honeydrunkstudios.com/errors/{api}/` and is generated from the OpenAPI spec's `components.responses` declarations (reconciled with [ADR-0067](./ADR-0067-inbound-rate-limiting-and-quota-enforcement.md) D6 — the same `docs.honeydrunkstudios.com/errors/` host is the canonical home for both Studios-wide error types and per-API error types). Adding a new error `type` (with a new docs page) is non-breaking; renaming or removing an error `type` is breaking per D4.
 
 ### D13 — Idempotency on writes
 
@@ -284,7 +286,7 @@ Per ADR-0042, public `POST`, `PUT`, and `PATCH` endpoints accept an **`Idempoten
 
 **Required vs recommended:**
 
-- **Required** for billing-relevant endpoints — anything that costs the tenant money (Notify Cloud send endpoints once metered billing per ADR-0037 lands; future Billing-API endpoints). A request without `Idempotency-Key` to a required endpoint returns `400 Bad Request` with a per-D12 problem-details envelope citing `type: "https://errors.honeydrunkstudios.com/common/idempotency-key-required"`.
+- **Required** for billing-relevant endpoints — anything that costs the tenant money (Notify Cloud send endpoints once metered billing per ADR-0037 lands; future Billing-API endpoints). A request without `Idempotency-Key` to a required endpoint returns `400 Bad Request` with a per-D12 problem-details envelope citing `type: "https://docs.honeydrunkstudios.com/errors/common/idempotency-key-required"`.
 - **Recommended** elsewhere. A request without the header is accepted; the docs site and SDK README call out the loss of safety.
 
 SDK implementations (D8) auto-generate an `Idempotency-Key` (a UUID v7) for every write request by default; the SDK consumer can override per-call. This means the "recommended" cases are de-facto "required for any consumer using the SDK," which is the desired posture.
@@ -309,7 +311,7 @@ All list endpoints use **cursor-based pagination**:
 
 **Cursor opacity.** Cursors are opaque base64-encoded strings; clients MUST NOT parse or interpret them. The server is free to change cursor encoding without a major bump as long as previously-issued cursors remain decodable for the deprecation window of the previous encoding.
 
-**Cursor TTL.** Server-side cursor state is retained for at minimum 24 hours from issuance. A client that holds a cursor longer and resumes against it may receive a `410 Gone` per-D12 problem-details envelope citing `type: "https://errors.honeydrunkstudios.com/common/cursor-expired"`. Documented per-API; mobile clients with intermittent connectivity are explicitly called out as the population most affected by the TTL and are guided in the docs to restart pagination from `cursor=null` on a `410 Gone`.
+**Cursor TTL.** Server-side cursor state is retained for at minimum 24 hours from issuance. A client that holds a cursor longer and resumes against it may receive a `410 Gone` per-D12 problem-details envelope citing `type: "https://docs.honeydrunkstudios.com/errors/common/cursor-expired"`. Documented per-API; mobile clients with intermittent connectivity are explicitly called out as the population most affected by the TTL and are guided in the docs to restart pagination from `cursor=null` on a `410 Gone`.
 
 **Default and maximum `limit`.** The default `limit` per list endpoint is 50 and the maximum is 200. Per-endpoint overrides are declared in the OpenAPI spec. Tightening the maximum is breaking per D4 (an existing client passing `limit=500` would now fail); loosening it is not.
 
@@ -323,7 +325,16 @@ docs.{api}.honeydrunkstudios.com
 
 So Notify's docs live at `docs.notify.honeydrunkstudios.com`; future Billing API docs at `docs.billing.honeydrunkstudios.com`; HoneyHub at `docs.honeyhub.honeydrunkstudios.com` (despite being GraphQL — the docs convention is uniform).
 
-**Generation.** Docs are generated from the same OpenAPI spec (D7) at release time using a tool from the OpenAPI ecosystem (initial choice: **Redocly** for static site generation; reconsidered if a richer interactive experience is needed — Scalar and Stoplight are alternatives). The docs site for each major version is deployed to a path prefix (`docs.notify.honeydrunkstudios.com/v1/`, `/v2/`) with a version switcher in the navigation.
+**Generation.** Reconciled with [ADR-0075](./ADR-0075-documentation-tooling.md) (2026-05-24). The per-API docs site is a two-part composition:
+
+- **Scalar** renders the OpenAPI reference (the spec-driven part — endpoints, schemas, try-it-out, error catalog). This is the same Scalar that [ADR-0075](./ADR-0075-documentation-tooling.md) D1 commits as the in-product OpenAPI renderer; the static publication path here uses the same renderer applied to the spec at release time. Reference docs are generated from the OpenAPI spec (D7) at release time.
+- **Docusaurus** carries the narrative content surrounding the reference — getting-started guides, conceptual explainers, longer-form tutorials, migration guides — per [ADR-0075](./ADR-0075-documentation-tooling.md) D2.
+
+The two compose into a single per-API docs site at `docs.{api}.honeydrunkstudios.com`, with the reference at `/api/` and narrative at the root.
+
+The docs site for each major version is deployed to a path prefix (`docs.notify.honeydrunkstudios.com/v1/`, `/v2/`) with a version switcher in the navigation.
+
+The earlier draft of D15 picked Redocly as the OpenAPI renderer; that choice was superseded by ADR-0075's commitment to Scalar (already in use as the in-product renderer via `Scalar.AspNetCore`).
 
 **Cross-ref Studios sector.** The docs subdomains are managed under the Studios sector (per ADR-0029's marketing/docs surface ownership). Each new API surface that ships requires a Studios-side packet to provision the docs subdomain.
 
@@ -401,7 +412,7 @@ Plus one HoneyHub-scoped variant:
 
 - Author `job-openapi-diff.yml` in HoneyDrunk.Actions (Phase 1).
 - Author `job-publish-public-sdk.yml` parameterized for TypeScript / Swift / Kotlin (Phase 1).
-- Author `job-publish-docs.yml` using Redocly (or chosen alternative) (Phase 1).
+- Author `job-publish-docs.yml` using Scalar for the OpenAPI reference and Docusaurus for the narrative shell, per D15 + [ADR-0075](./ADR-0075-documentation-tooling.md) (Phase 1).
 - Author `job-graphql-inspector.yml` and `job-publish-graphql-docs.yml` (Phase 4).
 - Onboard `com.honeydrunkstudios` namespace at Maven Central; register GPG keys for SDK signing (Phase 1).
 - Establish `@honeydrunk` npm scope ownership (Phase 1).
@@ -484,7 +495,7 @@ Considered. 3.0 has wider tooling support; 3.1 is newer. Rejected because 3.1's 
 
 ### Allow per-Node OpenAPI tooling choices
 
-Considered. Let each Node pick its preferred OpenAPI generator, docs renderer, diff tool. Rejected as the same per-Node-drift anti-pattern this ADR is designed to prevent. Grid-wide commitment to OpenAPI Generator + Redocly + `oasdiff` (or named alternatives) means the HoneyDrunk.Actions reusable workflows handle everything; per-Node configuration is minimized.
+Considered. Let each Node pick its preferred OpenAPI generator, docs renderer, diff tool. Rejected as the same per-Node-drift anti-pattern this ADR is designed to prevent. Grid-wide commitment to OpenAPI Generator + Scalar + Docusaurus + `oasdiff` (per D15 + [ADR-0075](./ADR-0075-documentation-tooling.md)) means the HoneyDrunk.Actions reusable workflows handle everything; per-Node configuration is minimized.
 
 ### Defer until the second commercial API exists to validate cross-API patterns
 

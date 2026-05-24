@@ -93,7 +93,16 @@ The committed shape:
 - **Expo eliminates the worst RN pain points.** Pre-Expo, RN required local Xcode + Android Studio dance, native-module-linking errors, and a fragile build chain. Expo Managed Workflow removes most of that for the cases the Grid will hit; Expo Dev Client handles the rest.
 - **AI-assistance leverage.** Claude/Codex/Copilot pattern recognition on RN + Expo in 2026 is materially deeper than on Flutter or MAUI. The same React-ecosystem reasoning from D1 applies.
 
-The negative form: MAUI is not adopted; native Swift/Kotlin is not adopted; Flutter is not adopted; Cordova / Ionic / Capacitor are not adopted.
+The negative form: MAUI is not adopted; Flutter is not adopted; Cordova / Ionic / Capacitor are not adopted.
+
+**Native Swift/Kotlin is permitted as a justified exception** when a specific consumer-app PDR documents a technical requirement that RN + Expo cannot meet — typically render-pipeline depth, on-device ML latency, platform-API depth, or first-party SDK gaps. The exception is not a default and does not relax for convenience; it is reserved for cases where RN would materially degrade the product experience.
+
+Known active exceptions (2026-05-24):
+
+- **[PDR-0005 Hearth](../pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md)** — native Swift + Kotlin for the watercolor render pipeline and on-device Core ML / NNAPI usage.
+- **[PDR-0008 Curiosities](../pdrs/PDR-0008-curiosities-discovery-first.md)** — native Swift + Kotlin per the PDR's tech-stack commitment.
+
+Future PDRs default to RN + Expo unless they articulate the same caliber of justification (and the justification is reviewed at PDR-acceptance time, not at scaffolding time). The bar is intentionally high: a justified exception names a specific, measurable RN gap and explains why the gap is product-affecting. "We prefer native" is not a justification; "the watercolor pipeline needs Metal/Vulkan shader access that React Native does not expose" is.
 
 ### D4 — The three-stack tax is acknowledged and accepted
 
@@ -198,7 +207,9 @@ If MAUI's 2027–2028 trajectory closes the gap meaningfully (Microsoft has inve
 
 Considered. The argument: maximum native UX fidelity, maximum platform-feature access, no cross-platform abstraction tax.
 
-Rejected. Solo-dev with two native codebases is not viable. The maintenance burden — two test surfaces, two release pipelines, two language ecosystems, two SDKs to track — exceeds what one human plus AI agents can sustain on the charter's many-decade horizon. The AI-multiplier does not close this gap; native iOS and native Android each carry their own AI-assistance gradients that do not compound. Native is held in reserve for the scenario where a specific consumer PDR's UX requirements exceed what RN+Expo can deliver (e.g., a graphics-intensive consumer app where the native rendering pipeline matters). No current or queued PDR meets that bar.
+Rejected **as the default**. Solo-dev with two native codebases by default is not viable. The maintenance burden — two test surfaces, two release pipelines, two language ecosystems, two SDKs to track — exceeds what one human plus AI agents can sustain on the charter's many-decade horizon if applied uniformly. The AI-multiplier does not close this gap at default scale; native iOS and native Android each carry their own AI-assistance gradients that do not compound.
+
+**Permitted as a justified exception** for specific consumer PDRs whose UX requirements exceed what RN+Expo can deliver — typically a graphics-intensive consumer app where the native rendering pipeline matters, on-device ML latency where the framework overhead is product-affecting, or platform-API depth where RN's bridge does not expose what the product needs. The cost (two codebases, two pipelines) is accepted at the PDR level when the operator decides the product can't be built well any other way. Active exceptions today: [PDR-0005 Hearth](../pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md) (watercolor render pipeline + on-device Core ML) and [PDR-0008 Curiosities](../pdrs/PDR-0008-curiosities-discovery-first.md). See D3 for the exception criteria.
 
 ### Flutter for mobile
 
