@@ -100,7 +100,7 @@ The negative form: MAUI is not adopted; Flutter is not adopted; Cordova / Ionic 
 Known active exceptions (2026-05-24):
 
 - **[PDR-0005 Hearth](../pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md)** — native Swift + Kotlin for the watercolor render pipeline and on-device Core ML / NNAPI usage.
-- **[PDR-0008 Curiosities](../pdrs/PDR-0008-curiosities-discovery-first.md)** — native Swift + Kotlin per the PDR's tech-stack commitment.
+- **[PDR-0008 Curiosities](../pdrs/PDR-0008-curiosities-discovery-first-city-app.md)** — native Swift + Kotlin per the PDR's tech-stack commitment.
 
 Future PDRs default to RN + Expo unless they articulate the same caliber of justification (and the justification is reviewed at PDR-acceptance time, not at scaffolding time). The bar is intentionally high: a justified exception names a specific, measurable RN gap and explains why the gap is product-affecting. "We prefer native" is not a justification; "the watercolor pipeline needs Metal/Vulkan shader access that React Native does not expose" is.
 
@@ -209,7 +209,7 @@ Considered. The argument: maximum native UX fidelity, maximum platform-feature a
 
 Rejected **as the default**. Solo-dev with two native codebases by default is not viable. The maintenance burden — two test surfaces, two release pipelines, two language ecosystems, two SDKs to track — exceeds what one human plus AI agents can sustain on the charter's many-decade horizon if applied uniformly. The AI-multiplier does not close this gap at default scale; native iOS and native Android each carry their own AI-assistance gradients that do not compound.
 
-**Permitted as a justified exception** for specific consumer PDRs whose UX requirements exceed what RN+Expo can deliver — typically a graphics-intensive consumer app where the native rendering pipeline matters, on-device ML latency where the framework overhead is product-affecting, or platform-API depth where RN's bridge does not expose what the product needs. The cost (two codebases, two pipelines) is accepted at the PDR level when the operator decides the product can't be built well any other way. Active exceptions today: [PDR-0005 Hearth](../pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md) (watercolor render pipeline + on-device Core ML) and [PDR-0008 Curiosities](../pdrs/PDR-0008-curiosities-discovery-first.md). See D3 for the exception criteria.
+**Permitted as a justified exception** for specific consumer PDRs whose UX requirements exceed what RN+Expo can deliver — typically a graphics-intensive consumer app where the native rendering pipeline matters, on-device ML latency where the framework overhead is product-affecting, or platform-API depth where RN's bridge does not expose what the product needs. The cost (two codebases, two pipelines) is accepted at the PDR level when the operator decides the product can't be built well any other way. Active exceptions today: [PDR-0005 Hearth](../pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md) (watercolor render pipeline + on-device Core ML) and [PDR-0008 Curiosities](../pdrs/PDR-0008-curiosities-discovery-first-city-app.md). See D3 for the exception criteria.
 
 ### Flutter for mobile
 

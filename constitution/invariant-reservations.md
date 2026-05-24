@@ -4,10 +4,11 @@
 
 **Rule:**
 1. The canonical state of accepted invariants lives in `constitution/invariants.md`. Today's max accepted invariant is **53**.
-2. ADRs in `Proposed` state that intend to add invariants reserve numbers here by listing them below. **A reservation is a soft claim, not an accepted invariant** — it disappears if the ADR is rejected or restructured.
-3. Reservations are claimed by the ADR's packet 00 (the acceptance packet). Adding a reservation here is part of authoring packet 00, not a separate ceremony.
-4. **First merge wins.** If two ADRs end up racing for the same number block, the one whose packet 00 merges first keeps the reservation; the second shifts upward by editing its packet 00 + this file in a follow-up commit before pushing.
-5. Numbering is contiguous and ascending. New reservations append after the highest existing claim. No gaps reserved "for later."
+2. ADRs in `Proposed` state that intend to add invariants reserve numbers here by listing them below. **A reservation is a forward soft-claim, not an accepted invariant** — it disappears if the ADR is rejected or restructured. Reservations may be added before any of the ADR's packets have merged; that's the point of the registry (coordinate across in-flight Proposed ADRs before they land).
+3. The reservation is added in the same PR that introduces (or last refines) the ADR's packet set. The **Notes** column points at the packet that will actually write to `constitution/invariants.md` — usually packet 00, but some standup ADRs delegate the invariant edit to a later packet (e.g., a separate `02-architecture-{node}-invariants.md`). The packet 00 PR carries a Required Decision if that's the case.
+4. **First merge wins.** If two ADRs end up racing for the same number block, the one whose invariant-writing packet merges first keeps the reservation; the second shifts upward by editing its packet body + this file in a follow-up commit before pushing.
+5. Numbering is contiguous and ascending across reservations. New reservations append after the highest existing claim. No gaps reserved "for later."
+6. **When an ADR is rejected or restructured**, the author removes its row from Active Reservations in the same PR that records the rejection / restructure. Downstream packets that reference the released numbers must shift down (or the released block stays empty in `invariants.md`, but contiguity rule 5 still holds for future claims).
 
 **Current ceiling:** highest reservation below is the next ADR's starting point. With the ADR-0080 reservation below, **next free = 102.**
 
@@ -34,9 +35,7 @@
 
 ## Active Reservations (in-flight Proposed ADRs)
 
-Format: `Range | ADR | Status | Packet 00 path`
-
-(Empty at first authoring. Populate as ADR packet 00s land.)
+Format: `Range | ADR | Status | Notes (packet path + invariant texts)`
 
 | Range | ADR | Status | Notes |
 |-------|-----|--------|-------|

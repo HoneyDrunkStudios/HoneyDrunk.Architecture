@@ -237,7 +237,7 @@ Standardized response headers on every endpoint, every response, in the **unpref
 
 - **`RateLimit-Limit`** — the limit value for the current window (e.g., `1000`).
 - **`RateLimit-Remaining`** — remaining requests in the current window (e.g., `847`).
-- **`RateLimit-Reset`** — Unix timestamp at which the current window resets (e.g., `1735689600`).
+- **`RateLimit-Reset`** — seconds until the current window resets (e.g., `23`). Relative, not an absolute Unix timestamp — matches [ADR-0067](./ADR-0067-inbound-rate-limiting-and-quota-enforcement.md) D7 and the IETF `draft-ietf-httpapi-ratelimit-headers` draft. SDK clients compute the absolute reset time as `now + RateLimit-Reset` if needed.
 
 Legacy `X-RateLimit-*` mirrors are **not** emitted. SDK consumers parse the unprefixed form only.
 
@@ -330,9 +330,14 @@ So Notify's docs live at `docs.notify.honeydrunkstudios.com`; future Billing API
 - **Scalar** renders the OpenAPI reference (the spec-driven part — endpoints, schemas, try-it-out, error catalog). This is the same Scalar that [ADR-0075](./ADR-0075-documentation-tooling.md) D1 commits as the in-product OpenAPI renderer; the static publication path here uses the same renderer applied to the spec at release time. Reference docs are generated from the OpenAPI spec (D7) at release time.
 - **Docusaurus** carries the narrative content surrounding the reference — getting-started guides, conceptual explainers, longer-form tutorials, migration guides — per [ADR-0075](./ADR-0075-documentation-tooling.md) D2.
 
-The two compose into a single per-API docs site at `docs.{api}.honeydrunkstudios.com`, with the reference at `/api/` and narrative at the root.
+The two compose into a single per-API docs site at `docs.{api}.honeydrunkstudios.com`. Each major version of the API gets its own path prefix; within a version, the reference lives at `/api/` and narrative at the version root. Worked example for Notify v1:
 
-The docs site for each major version is deployed to a path prefix (`docs.notify.honeydrunkstudios.com/v1/`, `/v2/`) with a version switcher in the navigation.
+- `docs.notify.honeydrunkstudios.com/v1/` — narrative (Docusaurus): getting-started, conceptual explainers, tutorials.
+- `docs.notify.honeydrunkstudios.com/v1/api/` — OpenAPI reference (Scalar): endpoints, schemas, try-it-out, error catalog.
+- `docs.notify.honeydrunkstudios.com/v2/` and `/v2/api/` — same shape for the next major.
+- `docs.notify.honeydrunkstudios.com/` (no version prefix) — redirects to the current default major's narrative root.
+
+A version switcher in the top navigation crosses majors at the same conceptual path (`/v1/api/messages` ↔ `/v2/api/messages`).
 
 The earlier draft of D15 picked Redocly as the OpenAPI renderer; that choice was superseded by ADR-0075's commitment to Scalar (already in use as the in-product renderer via `Scalar.AspNetCore`).
 
