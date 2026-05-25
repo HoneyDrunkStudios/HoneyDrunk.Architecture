@@ -272,5 +272,20 @@
   "generated/issue-packets/active/adr-0056-threat-model/06-architecture-found-secret-rotation-runbook.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/335",
   "generated/issue-packets/active/adr-0056-threat-model/07-architecture-pentest-and-diy-probe-playbook.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/336",
   "generated/issue-packets/active/adr-0056-threat-model/08-actions-dependabot-and-secret-scanning.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/108",
-  "generated/issue-packets/active/adr-0056-threat-model/09-architecture-cross-track-followup-tracker.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/337"
+  "generated/issue-packets/active/adr-0056-threat-model/09-architecture-cross-track-followup-tracker.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/337",
+  "generated/issue-packets/active/adr-0072-data-access-stance/00-architecture-adr-0072-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/339",
+  "generated/issue-packets/active/adr-0072-data-access-stance/01-architecture-review-d3-category-13-ef-dapper-discipline.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/340",
+  "generated/issue-packets/active/adr-0072-data-access-stance/02-architecture-database-agent-orm-and-query-discipline.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/341",
+  "generated/issue-packets/active/adr-0072-data-access-stance/03a-architecture-data-overview-orm-commitment.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/342",
+  "generated/issue-packets/active/adr-0072-data-access-stance/03b-architecture-integration-points-data-access-stance-sweep.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/343",
+  "generated/issue-packets/active/adr-0072-data-access-stance/04-data-ratify-ef-core-readme-and-changelog.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Data/issues/29",
+  "generated/issue-packets/active/adr-0079-pr-review-stack/00-architecture-adr-0079-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/344",
+  "generated/issue-packets/active/adr-0079-pr-review-stack/01-architecture-coderabbit-template-and-substantive-safe-list.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/345",
+  "generated/issue-packets/active/adr-0079-pr-review-stack/02-actions-substantive-pr-classifier.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/109",
+  "generated/issue-packets/active/adr-0079-pr-review-stack/03-actions-reviewer4-claude-trigger-and-auth-gotcha.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/110",
+  "generated/issue-packets/active/adr-0079-pr-review-stack/04-architecture-operator-doc-watchlist-cost-hook.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/346",
+  "generated/issue-packets/active/adr-0080-vendor-lockin/00-architecture-adr-0080-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/347",
+  "generated/issue-packets/active/adr-0080-vendor-lockin/01-architecture-governance-vendor-postures-azure-stub.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/348",
+  "generated/issue-packets/active/adr-0080-vendor-lockin/02-architecture-governance-vendor-postures-github-stub.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/349",
+  "generated/issue-packets/active/adr-0080-vendor-lockin/03-architecture-cross-link-azure-deep-adrs.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/350"
 }
