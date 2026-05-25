@@ -429,5 +429,17 @@
   "generated/issue-packets/active/adr-0073-notify-providers/06-notify-push-channel-and-contract.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/39",
   "generated/issue-packets/active/adr-0073-notify-providers/07-notify-expo-push-provider.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/40",
   "generated/issue-packets/active/adr-0073-notify-providers/08-notify-expo-push-receipts-worker.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/41",
-  "generated/issue-packets/active/standalone/2026-05-24-lore-birdclaw-optional-x-sourcing-lane.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Lore/issues/10"
+  "generated/issue-packets/active/standalone/2026-05-24-lore-birdclaw-optional-x-sourcing-lane.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Lore/issues/10",
+  "generated/issue-packets/active/adr-0071-web-ui-standup/01-architecture-web-ui-catalog-registration.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/431",
+  "generated/issue-packets/active/adr-0071-web-ui-standup/02-architecture-web-ui-invariants.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/432",
+  "generated/issue-packets/active/adr-0071-web-ui-standup/03-architecture-create-web-ui-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/433",
+  "generated/issue-packets/active/adr-0076-cache-backing-redis/00-architecture-adr-0076-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/434",
+  "generated/issue-packets/active/adr-0076-cache-backing-redis/01-architecture-catalogs-and-walkthrough.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/435",
+  "generated/issue-packets/active/adr-0076-cache-backing-redis/02-architecture-provision-dev-redis.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/436",
+  "generated/issue-packets/active/adr-0078-entra-external-id/00-architecture-adr-0078-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/437",
+  "generated/issue-packets/active/adr-0078-entra-external-id/01-architecture-entra-catalog-updates.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/438",
+  "generated/issue-packets/active/adr-0078-entra-external-id/02-architecture-per-app-config-shape.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/439",
+  "generated/issue-packets/active/adr-0078-entra-external-id/03-architecture-provision-entra-tenant.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/440",
+  "generated/issue-packets/active/adr-0078-entra-external-id/04-architecture-entra-app-registration-walkthrough.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/441",
+  "generated/issue-packets/active/adr-0078-entra-external-id/05-architecture-adr-0006-tier2-rotation-extension-proposal.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/442"
 }
