@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Accepted ADR-0012 as the Grid CI/CD control-plane decision: finalized invariants 37-41, registered the rollout initiative, and added the review-agent caller-permissions rule.
+- Added the ADR-0012 D7 GitHub Actions failure-notification runbook and linked it from the infrastructure index.
+- Extended `catalogs/grid-health.json` to schema 1.1 with per-repo `tracked_workflows` for the ADR-0012 grid-health aggregator.
 - Accepted ADR-0031 after all four standup packets closed: moved the Audit standup packets to `completed/`, updated filed packet paths/proposed-ADR tracking, recorded Audit v0.1.0 as published, and documented Auth PR #24 as the first `IAuditLog` emitter through `HoneyDrunk.Audit.Abstractions` only.
 - Added Audit constitutional invariants 47 (audit-emission boundary), 48 (downstream Nodes depend only on `HoneyDrunk.Audit.Abstractions`), and 49 (Audit Abstractions contract-shape canary); finalized ADR-0030/ADR-0031 invariant references and substituted the assigned numbers in ADR-0031 follow-up packets.
 - Amended Audit ADR/standup scope so `HoneyDrunk.Audit` v0.1.0 explicitly supports both activity/security audit and data-change audit via category/outcome/target/change value types, with redaction guidance before scaffold.

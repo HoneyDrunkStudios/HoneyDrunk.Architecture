@@ -4,6 +4,52 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 ## In Progress
 
+### Code Review Pipeline (ADR-0011)
+**Status:** In Progress
+**Scope:** Architecture, Actions, plus per-repo SonarQube Cloud onboarding (Wave 2; Wave 3 deferred)
+**Initiative:** `adr-0011-code-review-pipeline`
+**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
+**Description:** Accept ADR-0011 and ship the pipeline plumbing it requires: SonarQube Cloud reusable workflow in `HoneyDrunk.Actions`, packet-link injection into the cloud execution workflow's PR body (carries invariant 32), `out-of-band` label seeded across active repos, SonarQube Cloud organization setup walkthrough, plus the first two per-repo SonarQube Cloud onboardings as templates (Kernel and Web.Rest). Remaining .NET repos roll out as a follow-up wave once the templates prove out. ADR-0011 is amended by ADR-0044 (cloud-wires the review agent; reverses D10 local-only stance) — this initiative ships the SonarQube Cloud + label + packet-link work that ADR-0044 did not address.
+
+**Tracking (Wave 1 — foundation):**
+- [x] Architecture: Accept ADR-0011 — flip status, ADR index, invariants 31–33 qualifier strip, `agent_couplings` catalog entry, SonarQube Cloud org walkthrough, register initiative (packet 01 + packet 04 bundled in this PR)
+- [ ] Actions: Author `job-sonarcloud.yml` reusable workflow (packet 02)
+- [ ] Actions: Amend `agent-run.yml` to inject packet link into PR body (packet 03)
+- [ ] Actions: Labels-as-code config + reusable `seed-labels.yml` workflow (packet 05a; superseded in part by ADR-0044 Actions#86 — verify scope before filing)
+- [ ] Actions: Cross-repo fan-out — `out-of-band` label on Grid repos via `seed-labels-fanout.yml` + PAT (packet 05b; superseded in part by ADR-0044 Actions#86 — verify scope before filing)
+
+**Tracking (Wave 2 — template rollout):**
+- [ ] Kernel: Onboard SonarQube Cloud (first canonical .NET template) (packet 06)
+- [ ] Web.Rest: Onboard SonarQube Cloud (ASP.NET Core variant template) (packet 07)
+
+**Deferred (Wave 3 — post-template fan-out, scope after Wave 2 lands):**
+- Transport, Vault, Vault.Rotation, Auth, Data, Pulse, Notify, Communications, Actions, Audit, and the 8 AI-seed Nodes (AI, Capabilities, Agents, Memory, Knowledge, Flow, Operator, Observe) — per-repo SonarQube Cloud onboardings, each a small (~5-line `sonar-project.properties` + branch-protection toggle + reusable-workflow call) packet
+- HoneyDrunk.Studios — TypeScript/Next.js posture, separate from the .NET fan-out; SonarQube-JS onboarding evaluated as a one-off when Studios CI is otherwise wired
+
+**Out of scope (Unresolved Consequences in the ADR):**
+- Integration tests (Gap 1) — slot defined, ADR-0047 closes this
+- E2E / Playwright tests (Gap 3) — slot defined, ADR-0047 closes this
+- Cost discipline tooling (Gap 4) — review agent's checklist covers it qualitatively
+- Private-repo SonarQube Cloud (Gap 5) — opt-in per repo, no Wave-3 fan-out
+
+### Grid CI/CD Control Plane (ADR-0012)
+**Status:** In Progress
+**Scope:** Architecture, Actions
+**Initiative:** `adr-0012-grid-cicd-control-plane`
+**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
+**Description:** Land the follow-up work for ADR-0012 — `tracked_workflows` catalog extension, `grid-health-report.yml` aggregator, `consumer-usage.md` refresh, `action-pins.md` inventory, D4 direct-CLI retrofit audit, caller-workflow `permissions:` audit across all 11 Grid repos, and the Node 20 deprecated-action bump. The aggregator (D6) is the headline deliverable; the other packets close visibility, documentation, and operational gaps named in the ADR's Unresolved Consequences.
+
+**Tracking:**
+- [ ] Architecture#NN: Accept ADR-0012 — flip status, renumber invariants 34-38 to 37-41, register initiative, amend review.md (packet 01)
+- [ ] Architecture#NN: GitHub profile notifications runbook at `infrastructure/github-notifications.md` (packet 02)
+- [ ] Architecture#NN: Add `tracked_workflows` to repo catalog (packet 03)
+- [ ] Actions#NN: Author `grid-health-report.yml` aggregator (packet 04)
+- [ ] Actions#NN: Refresh `docs/consumer-usage.md` with canonical `permissions:` blocks per D5 (packet 05)
+- [ ] Actions#NN: Author `docs/action-pins.md` inventory (packet 06)
+- [ ] Actions#NN: D4 direct-CLI retrofit audit + re-run nightly-security across 11 repos (packet 07)
+- [ ] Architecture#NN: Caller-workflow `permissions:` audit across 11 Grid repos (packet 08)
+- [ ] Actions#NN: Bump Node 20 deprecated actions, update pin inventory (packet 09)
+
 ### ADR-0044 Cloud Code Review and AI-Authored PR Discipline
 **Status:** In Progress
 **Scope:** Architecture, Actions, OpenClaw runtime, and later the live Node repos

@@ -381,5 +381,16 @@
         "honeydrunk-flow": ["IWorkflowEngine", "HoneyDrunk.Flow.Abstractions"]
       }
     }
+  ],
+  "agent_couplings": [
+    {
+      "id": "scope-review-context-loading",
+      "kind": "context_load_superset",
+      "agents": ["scope", "review"],
+      "rule": "review.md context-loading list must be a superset of scope.md context-loading list",
+      "governing_invariant": 33,
+      "governing_adr": "ADR-0011",
+      "rationale": "There must be no class of defect the scope agent could introduce at packet-authoring time that the review agent cannot catch at PR time for lack of information."
+    }
   ]
 }

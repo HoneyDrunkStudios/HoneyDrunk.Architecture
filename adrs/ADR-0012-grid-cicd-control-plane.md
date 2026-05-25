@@ -1,6 +1,6 @@
 # ADR-0012: HoneyDrunk.Actions as the Grid CI/CD Control Plane
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-04-13
 **Deciders:** HoneyDrunk Studios
 **Sector:** Meta
@@ -201,17 +201,17 @@ This decision exists because the Node 20 warnings surfaced in the same failing-n
 
 ### Grid CI/CD Invariants
 
-The following invariants must be added to `constitution/invariants.md` under a new **Grid CI/CD Invariants** section, numbered 34 onwards. Invariants 1–28 are the existing enforcement surface; 29–30 are reserved for ADR-0010; 31–33 are ADR-0011's code review invariants; 34 onwards are this ADR's.
+The following invariants are added to `constitution/invariants.md` under a new **Grid CI/CD Invariants** section, numbered 37 onwards. Invariants 1–28 are the existing enforcement surface; 29–30 are reserved for ADR-0010; 31–33 are ADR-0011's code review invariants; 34–36 are ADR-0015's hosting-platform invariants; 37 onwards are this ADR's.
 
-34. **`HoneyDrunk.Actions` is the source of truth for shared CI/CD configuration.** Shared tool configurations (gitleaks rules, CodeQL query packs, Trivy policy, dotnet-format rules, etc.) live under `HoneyDrunk.Actions/.github/config/`. Caller repos do not duplicate these files; they consume them via reusable-workflow checkout at job runtime. A caller repo may commit a `.<tool>.<ext>` at its root as a per-repo override, which is expected to extend the shared baseline rather than replace it. See ADR-0012 D2, D3.
+37. **`HoneyDrunk.Actions` is the source of truth for shared CI/CD configuration.** Shared tool configurations (gitleaks rules, CodeQL query packs, Trivy policy, dotnet-format rules, etc.) live under `HoneyDrunk.Actions/.github/config/`. Caller repos do not duplicate these files; they consume them via reusable-workflow checkout at job runtime. A caller repo may commit a `.<tool>.<ext>` at its root as a per-repo override, which is expected to extend the shared baseline rather than replace it. See ADR-0012 D2, D3.
 
-35. **Reusable workflows invoke tool CLIs directly.** Wrapping a tool in a third-party marketplace action is forbidden for any tool that provides a stable CLI. Exceptions: first-party GitHub actions under `actions/*`, `github/codeql-action/*`, and composite actions authored inside `HoneyDrunk.Actions`. See ADR-0012 D4.
+38. **Reusable workflows invoke tool CLIs directly.** Wrapping a tool in a third-party marketplace action is forbidden for any tool that provides a stable CLI. Exceptions: first-party GitHub actions under `actions/*`, `github/codeql-action/*`, and composite actions authored inside `HoneyDrunk.Actions`. See ADR-0012 D4.
 
-36. **Caller workflows declare a `permissions:` block that is a superset of the reusable workflow's declared permissions.** Callers that omit `permissions:` inherit the repository default, which is insufficient for any reusable workflow that requests a `write` scope. Validation failure is not detected until the next scheduled run; grid-health (invariant 37) is the safety net. See ADR-0012 D5.
+39. **Caller workflows declare a `permissions:` block that is a superset of the reusable workflow's declared permissions.** Callers that omit `permissions:` inherit the repository default, which is insufficient for any reusable workflow that requests a `write` scope. Validation failure is not detected until the next scheduled run; grid-health (invariant 40) is the safety net. See ADR-0012 D5.
 
-37. **Grid pipeline health is centrally visible.** The `HoneyDrunk.Actions` `🕸️ Grid Health` issue is the single canonical view of CI/CD state across the Grid, updated at least daily by the grid-health aggregator. Staleness of that issue is itself a signal — the aggregator's own failure surfaces as the issue not updating. Real-time per-failure notification is separately delivered by the operator's GitHub profile notification settings ("Only notify for failed workflows"), and both mechanisms are mandatory. See ADR-0012 D6, D7.
+40. **Grid pipeline health is centrally visible.** The `HoneyDrunk.Actions` `🕸️ Grid Health` issue is the single canonical view of CI/CD state across the Grid, updated at least daily by the grid-health aggregator. Staleness of that issue is itself a signal — the aggregator's own failure surfaces as the issue not updating. Real-time per-failure notification is separately delivered by the operator's GitHub profile notification settings ("Only notify for failed workflows"), and both mechanisms are mandatory. See ADR-0012 D6, D7.
 
-38. **New Grid repos are added to `HoneyDrunk.Architecture/repos/` at creation time.** The grid-health aggregator reads the repo catalog to know which repos to poll; a repo missing from the catalog is invisible to grid observability. This invariant re-mandates the existing ADR-0008 / architecture-repo convention from the CI/CD visibility angle. See ADR-0012 D6.
+41. **New Grid repos are added to `HoneyDrunk.Architecture/repos/` at creation time.** The grid-health aggregator reads the repo catalog to know which repos to poll; a repo missing from the catalog is invisible to grid observability. This invariant re-mandates the existing ADR-0008 / architecture-repo convention from the CI/CD visibility angle. See ADR-0012 D6.
 
 ### Process Consequences
 

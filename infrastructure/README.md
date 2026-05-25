@@ -19,7 +19,13 @@ Listed in provisioning order — platform-shared first, per-Node second.
 
 **GitHub platform (provision once for the org):**
 
+- [GitHub Actions failure notifications](github-notifications.md) - Per-account GitHub notification setup for ADR-0012 D7 failed-workflow email alerts.
+
 - [HoneyDrunk Hive GitHub App](walkthroughs/github-app-hive-walkthrough.md) — Dedicated GitHub App that mints scoped installation tokens for the file-packets reusable workflow. Replaces the developer's PAT for control-plane work.
+
+**Third-party CI tooling (provision once for the org):**
+
+- [SonarQube Cloud organization setup](walkthroughs/sonarcloud-organization-setup.md) — One-time creation of the `honeydrunkstudios` SonarQube Cloud organization, GitHub App install on 20 in-scope public repos, and `SONAR_TOKEN` GitHub org secret provisioning. Prerequisite for per-repo SonarQube Cloud onboarding (ADR-0011 rollout Wave 2+).
 
 **Azure platform-shared (provision once per environment):**
 
@@ -58,6 +64,7 @@ Listed in provisioning order — platform-shared first, per-Node second.
 - [ADR-0005: Configuration and Secrets Strategy](../adrs/ADR-0005-configuration-and-secrets-strategy.md)
 - [ADR-0006: Secret Rotation and Lifecycle](../adrs/ADR-0006-secret-rotation-and-lifecycle.md)
 - [ADR-0008: Packet Lifecycle](../adrs/ADR-0008-work-tracking-and-execution-flow.md)
+- [ADR-0011: Code Review and Merge Flow](../adrs/ADR-0011-code-review-and-merge-flow.md)
 - [ADR-0012: Actions as CI/CD Control Plane](../adrs/ADR-0012-grid-cicd-control-plane.md)
 - [ADR-0015: Container Hosting Platform](../adrs/ADR-0015-container-hosting-platform.md)
-- [Grid Invariants](../constitution/invariants.md) — especially invariants 17–22 and 34–36.
+- [Grid Invariants](../constitution/invariants.md) — especially invariants 17–22, 31–33, 34–36.
