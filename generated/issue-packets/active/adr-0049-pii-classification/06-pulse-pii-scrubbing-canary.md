@@ -99,7 +99,7 @@ The canary lives in Pulse because Pulse is the boundary that owns the log/trace/
    - Sends it through the boundary (log/trace/error/audit).
    - Reads the exporter / audit-store state.
    - Asserts the redaction outcome.
-   - On failure, the test description names the regression class clearly (e.g. "PiiField(Pii) was NOT redacted in log output — invariant 47/82 violation").
+   - On failure, the test description names the regression class clearly (e.g. "PiiField(Pii) was NOT redacted in log output — invariant 47/58 violation").
 
 6. **Audit append-only assertion.** A reflection-based test that asserts `IAuditLog` exposes only the append/query methods named in `HoneyDrunk.Audit.Abstractions` and that no `Update`/`Delete`/`Modify`/`Erase` member has been added. Reuses the contract-shape canary pattern (invariant 49) but scoped narrowly to the append-only property.
 

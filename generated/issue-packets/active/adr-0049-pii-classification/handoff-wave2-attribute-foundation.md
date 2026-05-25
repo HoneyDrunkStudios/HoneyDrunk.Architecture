@@ -10,10 +10,10 @@ This is the wave-transition baton: read once, execute Wave 2 packets, then move 
 
 - **Packet 00** — ADR-0049 flipped to **Accepted**. `constitution/invariants.md` updated:
   - **Invariant 47** amended: the phrase "sensitive fields" now reads "sensitive fields (as defined by ADR-0049 D2 — fields marked `[PiiField(SensitivePii)]`)". The audit-append redaction mandate is preserved.
-  - **Invariant 82** added (Data Classification Invariants section): every persisted field, every public API contract field, and every `AuditEntry` payload field carries a `[Classification]` attribute. Unmarked fields on records inside Restricted-class contexts are a CI gate failure under the `HoneyDrunk.Standards` analyzer rule. Explicit `[Classification(DataClass.Public)]` is the way to opt out.
+  - **Invariant 58** added (Data Classification Invariants section): every persisted field, every public API contract field, and every `AuditEntry` payload field carries a `[Classification]` attribute. Unmarked fields on records inside Restricted-class contexts are a CI gate failure under the `HoneyDrunk.Standards` analyzer rule. Explicit `[Classification(DataClass.Public)]` is the way to opt out.
   - **Invariant 59** added: `[PiiField(SensitivePii)]`-marked fields never appear in the audit channel, even as redaction-tokens. The Audit Node rejects appends whose Before/After payload reflection surfaces a SensitivePii marker. Only the field-name-and-class metadata may appear.
-  - **Invariant 84** added: Restricted-class data never leaves the v1 Azure US East 2 region.
-  - Numbers 82/83/84 are pre-reserved as ADR-0049's block in the 12-ADR batch; current verified max in the file (before packet 00 merged) was 53.
+  - **Invariant 60** added: Restricted-class data never leaves the v1 Azure US East 2 region.
+  - Numbers 58/59/60 are pre-reserved as ADR-0049's block in the 12-ADR batch; current verified max in the file (before packet 00 merged) was 53.
 - **Packet 01** — `catalogs/data-classification.json` exists with the schema and an empty `nodes` object. Per ADR-0049 D9, this catalog is the operator-facing inventory of where classified data flows in the Grid. Population waits for Wave 4 backfill to complete.
 
 ## What Wave 2 builds

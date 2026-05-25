@@ -49,10 +49,10 @@ ADR-0049 extends ADRs 0030, 0036, 0040, 0045, and 0046, and is sibling to ADR-00
 ## Wave Diagram
 
 ### Wave 1 (No Dependencies — governance + catalog)
-- [ ] **00** — Architecture: Accept ADR-0049, amend Invariant 47, add invariants **82, 83, 84**, register the initiative. `Actor=Agent`.
+- [ ] **00** — Architecture: Accept ADR-0049, amend Invariant 47, add invariants **58, 59, 60**, register the initiative. `Actor=Agent`.
 - [ ] **01** — Architecture: Author the `catalogs/data-classification.json` schema and seed an empty inventory. `Actor=Agent`. Blocked by: 00.
 
-> **Invariant numbering.** The current verified maximum in `constitution/invariants.md` is **53**. Invariant numbers **82, 83, 84** are pre-reserved as ADR-0049's block within the 12-ADR batch (ADR-0034 → 54-56; 0035 → 57-59; 0036 → 60-61; 0037 → 62-64; 0038 → 65-66; 0039 → 67-68; 0040 → 69-71; 0041 → 72-74; 0042 → 75-77; 0043 → 78-79; 0045 → 80; 0046 → 81; **0049 → 82-84**). Use those hard numbers. If any invariant above 53 lands from outside this 12-ADR batch before packet 00 merges, shift this block upward, never reuse a number.
+> **Invariant numbering.** The current verified maximum in `constitution/invariants.md` is **53**. Invariant numbers **58, 59, 60** are pre-reserved as ADR-0049's block within the 12-ADR batch (ADR-0034 → 54-56; 0035 → 57-59; 0036 → 60-61; 0037 → 62-64; 0038 → 65-66; 0039 → 67-68; 0040 → 69-71; 0041 → 72-74; 0042 → 75-77; 0043 → 78-79; 0045 → 80; 0046 → 81; **0049 → 58-60**). Use those hard numbers. If any invariant above 53 lands from outside this 12-ADR batch before packet 00 merges, shift this block upward, never reuse a number.
 
 ### Wave 2 (Depends on Wave 1 — contract foundation, parallel)
 - [ ] **02** — Kernel: Add `[Classification]`, `[PiiField]`, `DataClass`, `PiiCategory` to `HoneyDrunk.Kernel.Abstractions`. `Actor=Agent`. Blocked by: 00. **Version-bumping packet for `HoneyDrunk.Kernel` in this initiative.**
@@ -164,7 +164,7 @@ No site-sync flag. ADR-0049 is internal Core-sector governance and infrastructur
 
 ## Rollback Plan
 
-- **Packet 00 (acceptance + invariants):** revert the PR. ADR returns to Proposed; Invariant 47 reverts to its pre-amendment form; invariants 82/83/84 are removed. No runtime impact.
+- **Packet 00 (acceptance + invariants):** revert the PR. ADR returns to Proposed; Invariant 47 reverts to its pre-amendment form; invariants 58/59/60 are removed. No runtime impact.
 - **Packet 01 (catalog schema):** revert the PR. The new `data-classification.json` file is deleted; the catalog index doc reverts. No runtime impact.
 - **Packet 02 (Kernel attributes):** revert the PR; the Kernel solution rolls back one minor version. The attributes leave `HoneyDrunk.Kernel.Abstractions`. Downstream packets that consumed them (03–08) would break at the next build; do not revert 02 alone — coordinate with downstream packets.
 - **Packet 03 (Standards analyzer rule):** revert the PR; the analyzer rule is removed from `HoneyDrunk.Standards.Analyzers`. Standards rolls back one minor version. Backfill packets 07/08 lose their warning-driven checklist but can still proceed manually.

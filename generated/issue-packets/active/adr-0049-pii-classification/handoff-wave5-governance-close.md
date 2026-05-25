@@ -78,7 +78,7 @@ After Wave 5 packets 09, 10, 11 land:
 - [ ] `security` specialist has the ADR-0049 D1–D6 rubric inline.
 - [ ] `review` agent's D3 category 9 covers classification completeness.
 - [ ] `database` specialist promoted to v1 roster with a published rubric.
-- [ ] Invariant 47 amended; invariants 82/83/84 live.
+- [ ] Invariant 47 amended; invariants 58/59/60 live.
 - [ ] Pulse and Audit redactors operate against the marker surface; PII-scrubbing canary green.
 
 Sibling **ADR-0050 (Tenant Lifecycle)** can now decompose into actionable packets — its D6-erasure-mechanics scope was blocked on this ADR's D6 principle being Accepted.

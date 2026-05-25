@@ -148,7 +148,7 @@ Per-Node procedure (repeat for Vault, then Data, then Auth):
 
 **ADR-0049 Operational Consequences — "should not have been storing at all" finding.** A finding is not a regression; treat as a separate follow-up, not in-scope of the backfill PR.
 
-**Invariant 82 (from packet 00).** "Every persisted field, every public API contract field, and every `AuditEntry` payload field carries a `[Classification]` attribute. Unmarked fields on records inside Restricted-class contexts are a CI gate failure under the `HoneyDrunk.Standards` analyzer rule. Explicit `[Classification(DataClass.Public)]` is the way to opt out."
+**Invariant 58 (from packet 00).** "Every persisted field, every public API contract field, and every `AuditEntry` payload field carries a `[Classification]` attribute. Unmarked fields on records inside Restricted-class contexts are a CI gate failure under the `HoneyDrunk.Standards` analyzer rule. Explicit `[Classification(DataClass.Public)]` is the way to opt out."
 
 ## Constraints
 - **Three separate PRs in three repos.** Do not combine. Each PR is reviewed independently; cross-Node sequencing (Vault → Data → Auth) is enforced via human release-tag gating between them.

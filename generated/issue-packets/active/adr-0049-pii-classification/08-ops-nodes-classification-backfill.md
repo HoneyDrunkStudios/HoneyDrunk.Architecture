@@ -155,7 +155,7 @@ Per-Node procedure (repeat for Notify, then Communications):
 
 **ADR-0019 invariant 41 — Decision logic in Communications, delivery in Notify.** Preserved; the marker discipline reinforces the boundary.
 
-**Invariant 82 (from packet 00).** Same as packet 07's reference.
+**Invariant 58 (from packet 00).** Same as packet 07's reference.
 
 **Invariant 43 — Communications contract-shape canary.** Stays green; additive marker additions paired with a minor-version bump are not shape drift per ADR-0035.
 

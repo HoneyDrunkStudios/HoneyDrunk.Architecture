@@ -123,7 +123,7 @@ Order: Standards first (the analyzer flip needs to land before the next post-mer
 
 **ADR-0014 — Hive-sync reconciliation pattern.** Drift findings emit to the board-item channel per ADR-0014 D3 + invariant 38.
 
-**Invariant 82 (from packet 00).** "Every persisted field, every public API contract field, and every `AuditEntry` payload field carries a `[Classification]` attribute. Unmarked fields on records inside Restricted-class contexts are a CI gate failure under the `HoneyDrunk.Standards` analyzer rule." This packet operationalizes "CI gate failure."
+**Invariant 58 (from packet 00).** "Every persisted field, every public API contract field, and every `AuditEntry` payload field carries a `[Classification]` attribute. Unmarked fields on records inside Restricted-class contexts are a CI gate failure under the `HoneyDrunk.Standards` analyzer rule." This packet operationalizes "CI gate failure."
 
 ## Constraints
 - **30-day window enforcement.** Do not flip the analyzer before 30 days have elapsed since packet 03's merge. The window is a deliberate adoption ramp.

@@ -82,7 +82,7 @@ Read the existing `.claude/agents/security.md` (per ADR-0046 D2 acceptance packe
 > - New persisted store for user-attributable data without retention configuration matching ADR-0049 D3.
 > - Stack-trace-included exception logging where the exception's `Data` dictionary or message likely carries Pii (regex fallback only is insufficient if a field-level marker is available).
 > - Missing `[Classification]` on any new property in a record under `HoneyDrunk.Data`/`HoneyDrunk.Audit`-referencing project (the analyzer fires too, but I double-check the *correctness* of the marker, not just its presence).
-> - Cross-region data movement violating invariant 84 (Restricted data leaves US East 2).
+> - Cross-region data movement violating invariant 60 (Restricted data leaves US East 2).
 
 ### 2. `review.md` — amend D3 category 9 checklist
 
@@ -92,7 +92,7 @@ Read `.claude/agents/review.md`. The D3 rubric per ADR-0044 has 20 categories; c
 > - **PII marker correctness (ADR-0049 D2/D4):** When a property carries personal data, `[PiiField(...)]` is also applied with the correct `PiiCategory` and a `Purpose` string. Defaulting to `Pseudonymous` for opaque IDs; `SensitivePii` for Article 9 categories; `Pii` for everything else identifying a natural person.
 > - **Restricted-boundary regression (ADR-0049 D5):** A new HTTP endpoint, message envelope, audit event family, or persisted store handling Restricted-class data must reach the Pulse/Audit boundary redactors via the `[PiiField]` marker discipline; defense-in-depth requires both emitter pre-redaction and boundary defense.
 > - **SensitivePii in audit (invariant 59):** Any code path that could land a `SensitivePii`-marked value in an `AuditEntry` `Before`/`After` or `Metadata` payload is a hard rejection — the Audit Node refuses the append at runtime; the reviewer confirms the code doesn't even *attempt* such an append.
-> - **Cross-region movement (invariant 84):** Confirm new infra/replication config does not move Restricted-class data out of Azure US East 2.
+> - **Cross-region movement (invariant 60):** Confirm new infra/replication config does not move Restricted-class data out of Azure US East 2.
 
 Per invariant 33: this edit is to the rule list, not the context-loading section. Symmetry with `scope.md` is preserved by construction.
 
@@ -126,11 +126,11 @@ Pattern after the existing `.claude/agents/security.md` (per ADR-0046 D2 packet 
 >
 > 4. **AuditEntry table specifics.** The `AuditEntry` table follows the append-only-by-interface property — no `Update` migration shape, no `Delete` migration shape on `AuditEntry` itself. Schema additions (new columns) are fine; schema *changes* (column type changes, column drops) require explicit ADR amendment.
 >
-> 5. **Backup region.** Confirm new backup/replication settings stay within Azure US East 2 per invariant 84.
+> 5. **Backup region.** Confirm new backup/replication settings stay within Azure US East 2 per invariant 60.
 >
 > ## Tools and context
 > The `database` agent loads:
-> - `constitution/invariants.md` — for invariants 47, 82, 83, 84 (data-classification), invariant 60 (DR tiers from ADR-0036), and any new database/migration invariants.
+> - `constitution/invariants.md` — for invariants 47, 58, 59, 60 (data-classification), ADR-0036 DR-tier semantics, and any new database/migration invariants.
 > - `adrs/ADR-0049-data-classification-pii-handling-and-retention-schedule.md` — for the retention schedule (D3) and policy principles (D6).
 > - `adrs/ADR-0048-data-schema-evolution-and-migration-policy.md` (when Accepted) — for the migration framework.
 > - `adrs/ADR-0036-disaster-recovery-and-backup-policy.md` — for DR tier semantics.

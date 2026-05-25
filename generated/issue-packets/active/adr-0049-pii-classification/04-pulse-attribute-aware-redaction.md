@@ -76,7 +76,7 @@ The Pulse Azure Monitor sink is the existing `HoneyDrunk.Telemetry.Sink.AzureMon
    - Exception messages through the regex fallback (per ADR-0045 D7).
    - Exception `StackTrace` is **NEVER** redacted — explicit ADR-0049 D5 rule. Document this in code comment and README.
 
-6. **Composition wiring** — extend the existing `AddAzureMonitorTelemetry` (or matching name from ADR-0040 packet 03) DI extension to register `PiiAwareLogRecordProcessor` and `PiiAwareSpanProcessor` in the OTel processor pipeline before the Azure Monitor exporter. The redactor is **on by default**; provide a configuration option to disable it only in tightly-controlled dev/test scenarios (the default-on posture is non-negotiable for production — invariant 47 + invariants 82/83 from packet 00 enforce it).
+6. **Composition wiring** — extend the existing `AddAzureMonitorTelemetry` (or matching name from ADR-0040 packet 03) DI extension to register `PiiAwareLogRecordProcessor` and `PiiAwareSpanProcessor` in the OTel processor pipeline before the Azure Monitor exporter. The redactor is **on by default**; provide a configuration option to disable it only in tightly-controlled dev/test scenarios (the default-on posture is non-negotiable for production — invariant 47 + invariants 58/59 from packet 00 enforce it).
 
 7. **Tests.** Cover the redaction helper exhaustively:
    - `Pii` marker → value replaced with redaction marker.
