@@ -200,6 +200,12 @@ For v1, local `gh` authentication is acceptable for:
 
 A narrowly scoped GitHub App can replace local `gh` auth later if operational pressure justifies it. No Anthropic/OpenAI model API key is required for v1.
 
+## PR comment write safety
+
+Grid Review comments must post the rendered Markdown body, never a local path or shell shorthand. When using `gh`, prefer `gh issue comment <pr> --repo <owner/repo> --body-file <file>`. If using `gh api`, verify the exact file-body syntax before writing. Do not use `--body @<file>`; that posts the literal path in some command shapes. Before any write, assert the outgoing body starts with the Grid Review metadata/header and does not start with `@`, `C:\`, `/tmp/`, or another temp-file path. If the guard fails, do not post the PR comment; mark the local review state `failed` with the reason.
+
+Follow-up reviews should be incremental: diff the previous reviewed head to the current head, verify prior findings as resolved/still-open/waived, and deeply review only changed files plus directly impacted contracts/boundaries. They should not repeat a full review of unchanged files unless the delta changes a boundary or invariant.
+
 ## Offline and fallback behavior
 
 If OpenClaw is offline or the webhook endpoint is unreachable, `job-review-request.yml` should:
