@@ -428,5 +428,6 @@
   "generated/issue-packets/active/adr-0073-notify-providers/05-architecture-notify-cloud-override-policy.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/430",
   "generated/issue-packets/active/adr-0073-notify-providers/06-notify-push-channel-and-contract.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/39",
   "generated/issue-packets/active/adr-0073-notify-providers/07-notify-expo-push-provider.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/40",
-  "generated/issue-packets/active/adr-0073-notify-providers/08-notify-expo-push-receipts-worker.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/41"
+  "generated/issue-packets/active/adr-0073-notify-providers/08-notify-expo-push-receipts-worker.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/41",
+  "generated/issue-packets/active/standalone/2026-05-24-lore-birdclaw-optional-x-sourcing-lane.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Lore/issues/10"
 }
