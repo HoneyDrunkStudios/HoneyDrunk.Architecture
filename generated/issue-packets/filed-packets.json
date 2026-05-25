@@ -312,5 +312,20 @@
   "generated/issue-packets/active/adr-0053-release-cadence/05-actions-branch-prefix-validation.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/113",
   "generated/issue-packets/active/adr-0053-release-cadence/06-architecture-local-dev-quick-start-template-and-audit-playbook.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/363",
   "generated/issue-packets/active/adr-0053-release-cadence/07-actions-monthly-changelog-cadence-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/114",
-  "generated/issue-packets/active/adr-0053-release-cadence/08-architecture-per-node-quick-start-audit-execution.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/364"
+  "generated/issue-packets/active/adr-0053-release-cadence/08-architecture-per-node-quick-start-audit-execution.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/364",
+  "generated/issue-packets/active/adr-0070-frontend-stack/00-architecture-adr-0070-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/366",
+  "generated/issue-packets/active/adr-0070-frontend-stack/01-architecture-scope-agent-stack-checklist.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/367",
+  "generated/issue-packets/active/adr-0070-frontend-stack/02-architecture-review-agent-stack-rubric.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/368",
+  "generated/issue-packets/active/adr-0070-frontend-stack/03-architecture-charter-aware-draft-sync.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/369",
+  "generated/issue-packets/active/adr-0070-frontend-stack/04-architecture-consumer-pdr-stack-reconciliation.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/370",
+  "generated/issue-packets/active/adr-0070-frontend-stack/05-architecture-notify-cloud-admin-d2-recount.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/371",
+  "generated/issue-packets/active/adr-0074-testing-stack/00-architecture-adr-0074-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/372",
+  "generated/issue-packets/active/adr-0074-testing-stack/01-architecture-review-md-adr-0074-citation.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/373",
+  "generated/issue-packets/active/adr-0074-testing-stack/02-standards-readme-and-props-adr-0074-citation.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Standards/issues/46",
+  "generated/issue-packets/active/adr-0074-testing-stack/03-architecture-testing-stack-stewardship-watchlist.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/374",
+  "generated/issue-packets/active/adr-0075-docs-tooling/00-architecture-adr-0075-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/375",
+  "generated/issue-packets/active/adr-0075-docs-tooling/01-architecture-docs-tooling-convention-catalog.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/376",
+  "generated/issue-packets/active/adr-0075-docs-tooling/02-web-rest-scalar-aspnetcore-reference-middleware.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Web.Rest/issues/24",
+  "generated/issue-packets/active/adr-0075-docs-tooling/03-architecture-per-node-docs-site-decision-rubric.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/377",
+  "generated/issue-packets/active/adr-0075-docs-tooling/05-actions-docs-deploy-cloudflare-pages-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/115"
 }
