@@ -364,5 +364,10 @@
   "generated/issue-packets/completed/adr-0047-testing-patterns-and-tooling/04-cross-repo-fluentassertions-to-awesomeassertions-migration.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/188",
   "generated/issue-packets/completed/adr-0047-testing-patterns-and-tooling/05-cross-repo-moq-to-nsubstitute-migration.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/189",
   "generated/issue-packets/completed/adr-0047-testing-patterns-and-tooling/07-architecture-integration-test-scaffold-template.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/190",
-  "generated/issue-packets/completed/adr-0047-testing-patterns-and-tooling/08-architecture-review-agent-testing-quality-checklist.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/191"
+  "generated/issue-packets/completed/adr-0047-testing-patterns-and-tooling/08-architecture-review-agent-testing-quality-checklist.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/191",
+  "generated/issue-packets/active/adr-0059-cache-standup/01-architecture-cache-catalog-registration.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/389",
+  "generated/issue-packets/active/adr-0059-cache-standup/02-architecture-create-cache-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/390",
+  "generated/issue-packets/active/adr-0060-identity-standup/01-architecture-identity-catalog-registration.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/391",
+  "generated/issue-packets/active/adr-0060-identity-standup/02-architecture-identity-invariants.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/392",
+  "generated/issue-packets/active/adr-0060-identity-standup/03-architecture-create-identity-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/393"
 }
