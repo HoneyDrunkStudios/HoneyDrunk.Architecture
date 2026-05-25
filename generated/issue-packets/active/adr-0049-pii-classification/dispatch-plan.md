@@ -52,7 +52,7 @@ ADR-0049 extends ADRs 0030, 0036, 0040, 0045, and 0046, and is sibling to ADR-00
 - [ ] **00** — Architecture: Accept ADR-0049, amend Invariant 47, add invariants **58, 59, 60**, register the initiative. `Actor=Agent`.
 - [ ] **01** — Architecture: Author the `catalogs/data-classification.json` schema and seed an empty inventory. `Actor=Agent`. Blocked by: 00.
 
-> **Invariant numbering.** The current verified maximum in `constitution/invariants.md` is **53**. Invariant numbers **58, 59, 60** are pre-reserved as ADR-0049's block within the 12-ADR batch (ADR-0034 → 54-56; 0035 → 57-59; 0036 → 60-61; 0037 → 62-64; 0038 → 65-66; 0039 → 67-68; 0040 → 69-71; 0041 → 72-74; 0042 → 75-77; 0043 → 78-79; 0045 → 80; 0046 → 81; **0049 → 58-60**). Use those hard numbers. If any invariant above 53 lands from outside this 12-ADR batch before packet 00 merges, shift this block upward, never reuse a number.
+> **Invariant numbering.** Invariant numbers **58, 59, 60** are claimed from `constitution/invariant-reservations.md`, which is the source of truth for in-flight invariant ranges. At authoring time `constitution/invariants.md` max is **53** and ADR-0051 reserves **54–57**, so ADR-0049's reserved block is **58–60**. Packet 00 must re-read the reservation row before opening its PR; if the registry has shifted, update every ADR-0049 packet reference in the same rebase and never reuse a number already landed or reserved.
 
 ### Wave 2 (Depends on Wave 1 — contract foundation, parallel)
 - [ ] **02** — Kernel: Add `[Classification]`, `[PiiField]`, `DataClass`, `PiiCategory` to `HoneyDrunk.Kernel.Abstractions`. `Actor=Agent`. Blocked by: 00. **Version-bumping packet for `HoneyDrunk.Kernel` in this initiative.**
