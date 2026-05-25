@@ -2,7 +2,7 @@
 
 High-level roadmap for the HoneyDrunk Grid.
 
-**Last Updated:** 2026-05-21
+**Last Updated:** 2026-05-25
 
 For the near-term ranked priority list, see [current-focus.md](current-focus.md); this roadmap is the quarterly horizon.
 
@@ -20,10 +20,16 @@ For the near-term ranked priority list, see [current-focus.md](current-focus.md)
 
 ## Q2 2026 (Apr–Jun)
 
+- [ ] **ADR-0011 Code Review and Merge Flow — Acceptance** *(current focus #1 — due 2026-06-08 target)*
+- [ ] **ADR-0012 Grid CI/CD Control Plane — Acceptance** *(current focus #2 — due 2026-06-08 target)*
+- [ ] **ADR-0079 Multi-Perspective PR Review Stack — Acceptance** *(current focus #3 — due 2026-06-15 hard; Claude Max Agent SDK launch)*
+- [ ] **ADR-0033 environment-gated trigger packets** *(current focus #4 — due 2026-06-12 target; blocks ADR-0015 Notify/Pulse deploy)*
+- [ ] **ADR-0046 Specialist Review Agents — Phase 1** *(current focus #8 — due 2026-06-30 target)*
+- [ ] **Archive / exit-criteria review for closed rollouts** *(current focus #9 — due 2026-06-15 target)*
 - [ ] **Config & Secrets Rollout (ADR-0005/0006) — packet rollout complete** *(15/15 issues closed; ready for archive/exit-criteria review)*
 - [x] **Package Scanning Rollout (ADR-0009) — complete** *(8/8 issues closed; ready for archive review)*
 - [x] **Hive Sync Rollout (ADR-0014) - implementation merged** *(6/6 issues closed; ready for archive/exit-criteria review)*
-- [ ] **ADR-0015 Container Apps Rollout — underway** *(2/5 issues closed; walkthroughs + reusable deploy workflow complete; Notify/Pulse release work remains)*
+- [ ] **ADR-0015 Container Apps Rollout — underway** *(2/5 issues closed; walkthroughs + reusable deploy workflow complete; Notify/Pulse release work remains; current focus #5 — due 2026-06-30 target)*
 - [x] Pulse — v0.3.0 Kernel-aligned package release complete; production deployment / Grafana templates remain under ADR-0015 and Ops observability work
 - [x] Notify — v0.3.0 Kernel-aligned package release complete; Azure Functions/Worker deployment remains under ADR-0015
 - [x] HoneyDrunk.Communications — v0.2.0 Kernel-abstractions-only runtime/abstractions release complete
@@ -41,7 +47,9 @@ For the near-term ranked priority list, see [current-focus.md](current-focus.md)
 
 ## Q3 2026 (Jul–Sep)
 
-- [ ] **ADR-0010 Phase 2 (first useful increment)** — HoneyDrunk.Observe.Connectors.GitHub (webhook receiver + repo health checks), cost-first IRoutingPolicy implementation in HoneyDrunk.AI, routing policies loaded from Azure App Configuration
+- [ ] **ADR-0043 Backlog Generation — Phase 1** *(current focus #6 — due 2026-07-15 target)*
+- [ ] **ADR-0047 Phase 2 — Tier 2a integration CI** *(current focus #7 — due 2026-07-31 target)*
+- [ ] **ADR-0010 Phase 2 (first useful increment)** — HoneyDrunk.Observe.Connectors.GitHub (webhook receiver + repo health checks), cost-first IRoutingPolicy implementation in HoneyDrunk.AI, routing policies loaded from Azure App Configuration *(current focus #10 — no concrete trigger yet)*
 - [ ] HoneyDrunk.Knowledge — Document ingestion, RAG pipelines, Azure AI Search provider
 - [ ] HoneyDrunk.Flow — Workflow engine, multi-step pipelines, agent chaining, compensation
 - [ ] HoneyDrunk.Lore — Initial scaffolding, raw ingestion, LLM compilation, wiki maintenance

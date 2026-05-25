@@ -76,11 +76,14 @@ Cross-reference `releases.md` with actual git tags and changelogs. Summarize:
 
 ### Phase 3 — What's Next
 
-Synthesize the roadmap, dependency graph, and current signals to produce a prioritized list of next actions. For each item:
+Synthesize the roadmap, dependency graph, current signals, and the `Due` column in `initiatives/current-focus.md` to produce a prioritized list of next actions. For each item:
 - **What:** The concrete deliverable
+- **Due:** The target ship date from current-focus (carry the `(hard)`/`(target)`/`—` marker through verbatim — do not silently strip it)
 - **Why now:** Why this is the highest-leverage next step
 - **Depends on:** What must be true before starting
 - **Hand off to:** Which agent to delegate to (scope for planning, adr-composer for decisions, site-sync for catalog updates)
+
+Then flag every row whose Due is past today, or within the next 14 days, in a dedicated **At-risk / due soon** sub-section below the list. A past `(hard)` date is a Red flag; a past `(target)` date is a Yellow flag and a re-ranking signal for the next curator pass.
 
 Prioritization rules:
 1. **Unblock others first.** If a Core Node blocks downstream work, it ranks highest.
@@ -115,6 +118,7 @@ Call out anything that threatens the roadmap:
 
 ### 1. {Highest priority item}
 - **What:** ...
+- **Due:** YYYY-MM-DD (hard|target) or —
 - **Why now:** ...
 - **Depends on:** ...
 - **Hand off to:** scope / adr-composer / site-sync
@@ -123,6 +127,12 @@ Call out anything that threatens the roadmap:
 ...
 
 {Continue for top 5-7 items}
+
+## At-risk / Due Soon
+
+- 🔴 **Past hard deadline:** {item} — was due {date}, X days ago
+- 🟡 **Past target:** {item} — was due {date}, re-rank candidate
+- 🟢 **Due within 14 days:** {item} — due {date}
 
 ## Risks & Blockers
 
@@ -162,6 +172,11 @@ The **How to use this file** and **Type Legend** sections of `initiatives/curren
 - **Blockers get promoted.** If item X is blocked by item Y and Y is itself actionable, **Y is its own row higher than X**, and X's "Blocked by" cell references Y by rank (e.g., `#2`). Non-actionable blockers (upstream CVEs, "no concrete trigger yet") stay in X's "Blocked by" cell only — they do not get their own row.
 - **Rank is strict ordinal — no ties.** The order *is* the decision.
 - **Phase** shows the specific phase or progress slice (`Phase 2 of 6`, `2/5 packets`, `0/9 standup ADRs`) or `n/a` for non-phased items. Source of truth for phase progress is `initiatives/active-initiatives.md`; this cell is a quick orientation hint.
+- **Due** must be populated for every active row. Format: `YYYY-MM-DD (hard)`, `YYYY-MM-DD (target)`, or `—`.
+  - `(hard)` is for external constraints that do not move — vendor launches, billing windows, partner deadlines, regulatory cutoffs. The "Why now" cell must name the external constraint so the hardness is auditable.
+  - `(target)` is a self-imposed pacing date you (curator) set to keep the work moving and the roadmap honest. Made up but committed. When a target slips, that's a prioritization signal — flag it in the next curator pass rather than silently bumping it.
+  - `—` is only for `Watch` rows where no honest date can be set because the trigger has not fired. Never use `—` for in-progress or actionable rows; guess a target instead.
+  - **Roadmap alignment is non-negotiable:** an item's Due date must place it in the quarter where its roadmap line lives (Q2 = Apr–Jun, Q3 = Jul–Sep, Q4 = Oct–Dec). If you change a Due date across a quarter boundary, also move the roadmap line.
 - **Future / Watch is not fixed-size.** It can shrink when items get promoted; it grows organically when new ADRs/PDRs/BDRs are proposed, items are demoted from top-10, or new work is identified. Do not pad F/W with filler to keep it populated.
 
 ### Curator workflow
@@ -190,7 +205,8 @@ The **How to use this file** and **Type Legend** sections of `initiatives/curren
    - If you genuinely cannot fill 10 with non-trivial work: that itself is a finding. Flag it to the operator rather than padding with filler. (Do not pad F/W either — F/W can be empty.)
 7. **Update `initiatives/current-focus.md`.** Edit the file directly:
    - Renumber rows 1–10.
-   - For each row, refresh: `Type`, `Status`, `Phase`, `Why now`, `Exit criteria`, `Blocked by`.
+   - For each row, refresh: `Type`, `Status`, `Phase`, `Due`, `Why now`, `Exit criteria`, `Blocked by`.
+   - Re-check every Due date. For `(hard)` rows, confirm the external constraint still applies. For `(target)` rows, ask: has it slipped? If today is past the target, either bump it with a one-line justification in "Why now" or escalate the row's rank. For `—` rows, confirm the trigger has still not fired.
    - Update `**Last reviewed:**` to today's date (UTC).
    - Update **Future / Watch** to reflect demotions and promotions.
 8. **Propagate to `initiatives/active-initiatives.md`** (your columns only — see Shared-ownership table above):
@@ -200,8 +216,9 @@ The **How to use this file** and **Type Legend** sections of `initiatives/curren
    - If you edited a `**Description:**` for narrative accuracy, do it. Don't touch `**Status:**` (hive-sync's column).
    - Do **not** touch tracking checkboxes, `**Status:**` fields, or `> **Sync (date):**` annotation blocks.
 9. **Propagate to `initiatives/roadmap.md`** (your columns only):
-   - If you promoted/demoted an item across quarter boundaries because priority shifted, move the line. Do not flip the checkbox during the move — hive-sync will check it when the underlying issues close.
-   - If a current-focus item maps to a roadmap line, append a narrative annotation referencing its rank (e.g., `*(current focus #3)*`) after the existing closure annotation, separated by `;`. Strip the annotation if the item leaves current-focus.
+   - **Place every current-focus item on the quarter that matches its Due date.** Q2 = Apr–Jun, Q3 = Jul–Sep, Q4 = Oct–Dec. If the item has no roadmap line yet, add one (unchecked, in the right quarter).
+   - If you changed a Due date across a quarter boundary, move the roadmap line to match. If you changed a Due within the same quarter, the line stays put — just refresh the annotation.
+   - If a current-focus item maps to a roadmap line, the annotation must reference its rank **and** its Due (e.g., `*(current focus #3 — due 2026-06-15 hard)*`) after the existing closure annotation, separated by `;`. Strip the annotation if the item leaves current-focus.
    - Reorder lines within a quarter to match current-focus priority where it makes sense.
    - Bump `**Last Updated:**` to today's date *if* any of your edits actually changed the file. Don't bump if you only re-read.
    - Do **not** flip `[ ]` ↔ `[x]` checkboxes, edit closure annotations like `*(N/M issues closed)*`, or modify any line whose only stale element is the checkbox.
@@ -210,12 +227,13 @@ The **How to use this file** and **Type Legend** sections of `initiatives/curren
 ### Prioritization rules
 
 1. **Unblock others first.** If a row blocks downstream work that is itself on the list, the blocker ranks higher.
-2. **Substrate before features.** Foundational work (review gates, test patterns, deploy substrate, audit) ranks above product features.
-3. **In-flight ahead of new starts.** Open packets with clear next actions rank above Proposed-status ADRs.
-4. **Forcing functions matter.** A "Watch" item whose trigger has fired jumps the queue.
-5. **Operational over speculative.** If a deployment or release is partly done, ranking it above the next greenfield decision usually wins.
-6. **Cost of delay.** Items whose cost grows over time (retrofit-cost-grows-with-surface, expiring deals, customer-facing) rank higher than reversible decisions.
-7. **Ship increments.** Prefer the next concrete shippable slice over the whole rollout.
+2. **Hard deadlines override most other rules.** A `(hard)` Due date with a near or past deadline jumps every rule below it except #1 (unblock-first). Missing a hard date has external cost; missing a target is a self-correcting prioritization signal.
+3. **Substrate before features.** Foundational work (review gates, test patterns, deploy substrate, audit) ranks above product features.
+4. **In-flight ahead of new starts.** Open packets with clear next actions rank above Proposed-status ADRs.
+5. **Forcing functions matter.** A "Watch" item whose trigger has fired jumps the queue.
+6. **Operational over speculative.** If a deployment or release is partly done, ranking it above the next greenfield decision usually wins.
+7. **Cost of delay.** Items whose cost grows over time (retrofit-cost-grows-with-surface, expiring deals, customer-facing) rank higher than reversible decisions. A `(target)` Due that has slipped is itself a cost-of-delay signal — re-rank rather than silently bumping the date.
+8. **Ship increments.** Prefer the next concrete shippable slice over the whole rollout.
 
 ### What you do NOT do in curator mode
 
