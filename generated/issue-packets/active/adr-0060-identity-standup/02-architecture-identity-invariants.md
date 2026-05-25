@@ -136,13 +136,12 @@ None. Architecture is a knowledge repo.
 
 ## Acceptance Criteria
 
-- [ ] **Collision check performed at edit time** using `rg -n '^[0-9]+\.' constitution/invariants.md | tail -n 20`. The actual assigned numbers are recorded in the PR body and substituted into every cross-reference target. **Hardcoding 54/55/56/57 is wrong if the high-water mark has moved.**
+- [ ] **Collision check performed at edit time** using `rg -n '^[0-9]+\.' constitution/invariants.md | tail -n 20`. The actual assigned numbers are recorded in the PR body and substituted into every cross-reference target. **Hardcoding 64/65/66 is wrong if the high-water mark has moved.**
 - [ ] `constitution/invariants.md` has a new `## Identity Invariants` section placed immediately after `## Audit Invariants`.
 - [ ] The three new invariants carry text matching ADR-0060 D1 / D6 / D7 with the `(Proposed — this invariant takes effect when ADR-0060 is accepted)` qualifier.
-- [ ] Invariant 54's text states: user identity records, the `IdentityMap`, and the user profile live in `HoneyDrunk.Identity`, not in `HoneyDrunk.Auth`. References ADR-0050 D6's interim placement and the additive amendment.
-- [ ] Invariant 55's text states: internal-token issuance for service-to-service `UserPrincipal` flows is exclusively `HoneyDrunk.Identity.IInternalTokenIssuer`'s responsibility. References Invariant 10's preservation.
-- [ ] Invariant 56's text states: downstream Nodes take a runtime dependency only on `HoneyDrunk.Identity.Abstractions`. Cites the precedents (AI invariant 44, Communications invariant 40, Audit invariant 48, Operator invariant 47).
-- [ ] Invariant 57's text states: the HoneyDrunk.Identity Node CI must include a contract-shape canary for the full `HoneyDrunk.Identity.Abstractions` public surface. Names all six interfaces + all seven records.
+- [ ] Invariant 64's text states: user identity records, the `IdentityMap`, and the user profile live in `HoneyDrunk.Identity`, not in `HoneyDrunk.Auth`. References ADR-0050 D6's interim placement and the additive amendment.
+- [ ] Invariant 65's text states: internal-token issuance for service-to-service `UserPrincipal` flows is exclusively `HoneyDrunk.Identity.IInternalTokenIssuer`'s responsibility. References Invariant 10's preservation.
+- [ ] Invariant 66's text states: the HoneyDrunk.Identity Node CI must include a contract-shape canary for the full `HoneyDrunk.Identity.Abstractions` public surface. Names all six interfaces + all seven records.
 - [ ] **All cross-reference targets updated in lockstep with the assigned numbers:** ADR-0060 Consequences, `repos/HoneyDrunk.Identity/invariants.md`, packet 04 source file (pre-filing under invariant 24's carve-out).
 - [ ] `adrs/ADR-0060-stand-up-honeydrunk-identity-node.md` Consequences `### Invariants` subsection has its preamble sentence replaced with the assigned-number list. The remaining three "Invariant proposal:" bullets stay after dropping the D13 coupling-restatement proposal.
 - [ ] `repos/HoneyDrunk.Identity/invariants.md` no longer contains the literal placeholder strings `{N1}`, `{N2}`, `{N3}`.
@@ -157,25 +156,23 @@ None. Architecture is a knowledge repo.
 
 ## Referenced Invariants
 
-> **Invariant 10:** Auth tokens are validated, never issued. HoneyDrunk.Auth validates JWT Bearer tokens. **It is not an identity provider.** — Survives ADR-0060 intact. Invariant 55 (this packet) is the affirmative version: not only does Auth not issue, but Identity is the only Node that does. The two invariants together pin the validation-vs-issuance boundary unambiguously.
+> **Invariant 10:** Auth tokens are validated, never issued. HoneyDrunk.Auth validates JWT Bearer tokens. **It is not an identity provider.** — Survives ADR-0060 intact. Invariant 65 (this packet) is the affirmative version: not only does Auth not issue, but Identity is the only Node that does. The two invariants together pin the validation-vs-issuance boundary unambiguously.
 
 > **Invariant 24:** Issue packets are immutable once filed as a GitHub Issue. Pre-filing amendments are permitted; post-filing corrections require a new packet. — Packet 04 of this initiative cites the three invariant numbers this packet assigns. Packet 04 must be amended in place pre-filing once this packet's PR merges and the actual assigned numbers are known. **Packets 02 and 04 cannot be filed in the same push.**
 
-> **Invariant 47:** Durable, attributable security, action, and data-change events are emitted to the `HoneyDrunk.Audit` substrate via `IAuditLog`, on a durable channel separate from observability telemetry. — Identity is a first-class emitter alongside Auth; the new event types (`UserCreated`, `UserVerified`, `UserLocked`, `UserUnlocked`, `UserErased`, `InternalTokenIssued` sampled) flow through `IAuditLog`. Invariant 54 (this packet) is upstream of Invariant 47 — Identity owns the writes that get audited.
+> **Invariant 47:** Durable, attributable security, action, and data-change events are emitted to the `HoneyDrunk.Audit` substrate via `IAuditLog`, on a durable channel separate from observability telemetry. — Identity is a first-class emitter alongside Auth; the new event types (`UserCreated`, `UserVerified`, `UserLocked`, `UserUnlocked`, `UserErased`, `InternalTokenIssued` sampled) flow through `IAuditLog`. Invariant 64 (this packet) is upstream of Invariant 47 — Identity owns the writes that get audited.
 
-> **Invariant 48:** Downstream Nodes take a runtime dependency only on `HoneyDrunk.Audit.Abstractions`. — The precedent for invariant 56 (this packet). Same abstraction/runtime split applied to Identity.
-
-> **Invariant 49:** The HoneyDrunk.Audit Node CI must include a contract-shape canary for the full `HoneyDrunk.Audit.Abstractions` public surface. — The precedent for invariant 57 (this packet). Same contract-shape canary applied to Identity.
+> **Invariant 49:** The HoneyDrunk.Audit Node CI must include a contract-shape canary for the full `HoneyDrunk.Audit.Abstractions` public surface. — The precedent for invariant 66 (this packet). Same contract-shape canary applied to Identity.
 
 ## Referenced ADR Decisions
 
-**ADR-0060 D1 (Identity Node ownership):** Identity is the Core sector's single Node owning the user record, the external-IdP seam, internal-token issuance, and account-deletion fan-out. Restated as constitutional invariant 54 by this packet.
+**ADR-0060 D1 (Identity Node ownership):** Identity is the Core sector's single Node owning the user record, the external-IdP seam, internal-token issuance, and account-deletion fan-out. Restated as constitutional invariant 64 by this packet.
 
-**ADR-0060 D6 (Internal-token issuance — Identity issues, Auth validates):** Identity issues short-lived internal JWT bearer tokens. Auth validates these tokens through its existing JWKS path. Invariant 10 holds: Auth still only validates. Restated as constitutional invariant 55 by this packet.
+**ADR-0060 D6 (Internal-token issuance — Identity issues, Auth validates):** Identity issues short-lived internal JWT bearer tokens. Auth validates these tokens through its existing JWKS path. Invariant 10 holds: Auth still only validates. Restated as constitutional invariant 65 by this packet.
 
-**ADR-0060 D7 (Contract-shape canary):** A contract-shape canary is added to the Identity Node's CI; it fails the build if any of the six interfaces or six records change shape without a corresponding version bump. Restated as constitutional invariant 57 by this packet.
+**ADR-0060 D7 (Contract-shape canary):** A contract-shape canary is added to the Identity Node's CI; it fails the build if any of the six interfaces or six records change shape without a corresponding version bump. Restated as constitutional invariant 66 by this packet.
 
-**ADR-0060 D13 (Downstream Abstractions-only coupling, captured in §If Accepted and §Invariants):** Downstream Nodes compile only against `HoneyDrunk.Identity.Abstractions`. Restated as constitutional invariant 56 by this packet.
+**ADR-0060 D13 (Downstream Abstractions-only coupling, captured in §If Accepted and §Invariants):** Downstream Nodes compile only against `HoneyDrunk.Identity.Abstractions`. This remains an ADR constraint backed by the existing Abstractions-only coupling convention; it is not a fourth ADR-0060 constitutional invariant.
 
 ## Dependencies
 
@@ -203,7 +200,7 @@ None. Architecture is a knowledge repo.
 **Constraints:**
 
 - **Invariant 24:** Issue packets are immutable once filed as a GitHub Issue. Before a packet is filed, it may be amended to fill in missing operational context without violating this rule. — Packet 04 of this initiative cites the three invariant numbers assigned here. Packet 04 must be amended in place pre-filing once this packet's PR merges and the actual assigned numbers are known. **Packets 02 and 04 cannot be filed in the same push.**
-- **The assignment is dynamic — do NOT hardcode 54/55/56/57.** Use the actual assigned numbers from the §Collision-Check Protocol. At scoping time the high-water mark is 53; if it moved, shift all four together.
+- **The assignment is dynamic — do NOT hardcode 64/65/66.** Use the actual assigned numbers from the §Collision-Check Protocol. At scoping time the high-water mark is 53; if it moved, shift all three together.
 - **Preserve all existing invariants unchanged.** This packet only appends a new section and the three entries within it.
 - **No `(Proposed)` qualifier removal needed.** The qualifier in parentheses takes effect / lifts when ADR-0060 is flipped to Accepted; no separate edit needed to lift it.
 - **Ordering of the three entries within the section is fixed:** D1 first, then D6, then D7. The numeric assignment maps in landing order: D1 first assigned slot, D6 second, D7 third.

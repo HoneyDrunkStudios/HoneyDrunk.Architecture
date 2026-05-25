@@ -334,7 +334,6 @@ Every new `.csproj` lists `HoneyDrunk.Standards` (`PrivateAssets="all"`) per inv
 | Package | Notes |
 |---|---|
 | `HoneyDrunk.Standards` | `PrivateAssets="all"` |
-| `HoneyDrunk.Kernel.Abstractions` | For `TenantId` strong type (ADR-0026). Deliberate departure from zero-`HoneyDrunk` stance per ADR-0060 D4 / D13 — same exception as Audit (ADR-0031). |
 | `NUlid` | ULID generation for `UserId.New()`. Leaf dependency; no transitive `HoneyDrunk` weight. |
 
 ### `HoneyDrunk.Identity.csproj`
@@ -412,7 +411,7 @@ Project reference: `HoneyDrunk.Identity.Abstractions`.
 ## Human Prerequisites
 
 - [ ] Packet 03 of this initiative complete — `HoneyDrunkStudios/HoneyDrunk.Identity` repo exists on GitHub with org-default branch protection, labels seeded, OIDC federated credential wired, and the local working tree cloned at `c:/Users/tatte/source/repos/HoneyDrunkStudios/HoneyDrunk.Identity/`.
-- [ ] Packet 02 of this initiative merged — the three new Identity invariants exist in `constitution/invariants.md` so this packet's acceptance criteria reference them by number. **This packet's source file uses `{N-ownership}`, `{N-issuance}`, `{N-canary}` placeholders** for the three Identity-related invariant numbers; substitute the real numbers in place pre-push under invariant 24's pre-filing carve-out, **after** packet 02 merges and the assigned numbers are known. Hardcoding 54/55/56/57 is wrong; use the 64/65/66 reservation unless the registry shifts if the high-water mark moved between scoping and packet 02's edit time.
+- [ ] Packet 02 of this initiative merged — the three new Identity invariants exist in `constitution/invariants.md` so this packet's acceptance criteria reference them by number. **This packet's source file uses `{N-ownership}`, `{N-issuance}`, `{N-canary}` placeholders** for the three Identity-related invariant numbers; substitute the real numbers in place pre-push under invariant 24's pre-filing carve-out, **after** packet 02 merges and the assigned numbers are known. Hardcoding 64/65/66 is wrong; use the 64/65/66 reservation unless the registry shifts if the high-water mark moved between scoping and packet 02's edit time.
 - [ ] Packet 01 of this initiative merged — the `repos/HoneyDrunk.Identity/` context folder is registered and `honeydrunk-identity` is in `catalogs/nodes.json`; the ADR-0050 amendment is on disk; the Auth context files are amended.
 - [ ] After this packet's PR merges, push tag `v0.1.0` from `main` to trigger the first NuGet publish. Tags are human-pushed per invariant 27.
 - [ ] **`NUGET_API_KEY` repository (or org-level) secret is available to the `HoneyDrunk.Identity` repo before `v0.1.0` is tagged.** Org-level `NUGET_API_KEY` shared with other HoneyDrunk repos publishing to nuget.org is the standard approach — verify it's bound to this repo before tagging.

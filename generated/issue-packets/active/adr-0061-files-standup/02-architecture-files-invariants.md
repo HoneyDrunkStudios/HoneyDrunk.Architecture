@@ -45,7 +45,7 @@ The two invariants this packet lands need constitutional anchors for three reaso
 
 This packet adds **two** invariants to `constitution/invariants.md`. Per the reservation discipline in `constitution/invariant-reservations.md`, packet 00 (the acceptance packet) of an ADR is normally where reservations land. ADR-0061 has no separate packet 00 — this packet 02 *is* the constitutional landing packet, so it claims the block here at the same time as it consumes it.
 
-**Step 1 — claim the reservation block.** Open `constitution/invariant-reservations.md` and read the **Active Reservations** table. The next free range is at `max(accepted high-water in invariants.md, highest existing reservation) + 1`. As of scoping time (2026-05-24), the highest in-flight reservation is **61–63** (ADR-0054 Incident Response), and accepted high-water in `invariants.md` is **53** — so the next free block of size 2 is **{N1}–{N2} = 64–65**. **Verify at edit time** by re-reading the file; if another ADR's packet 00 landed an interim reservation, shift up by the appropriate offset.
+**Step 1 — claim the reservation block.** Open `constitution/invariant-reservations.md` and read the **Active Reservations** table. The next free range is at `max(accepted high-water in invariants.md, highest existing reservation) + 1`. As of scoping time (2026-05-24), the highest in-flight reservation before this packet is **64–66** (ADR-0060 Identity), and accepted high-water in `invariants.md` is **53** — so the next free block of size 2 is **{N1}–{N2} = 67–68**. **Verify at edit time** by re-reading the file; if another ADR's packet 00 landed an interim reservation, shift up by the appropriate offset.
 
 Add a row to the **Active Reservations** table:
 
@@ -74,7 +74,8 @@ The numbers `{N1}` and `{N2}` must be **strictly greater** than every existing n
 | 54–57 | ADR-0051 (Agent authorization) | Reservation | In-flight reservation |
 | 58–60 | ADR-0049 (Data classification) | Reservation | In-flight reservation |
 | 61–63 | ADR-0054 (Incident response) | Reservation | In-flight reservation |
-| {N1}–{N2} (expected 64–65) | **This packet** (ADR-0061 standup) | `## Files Invariants` (new section) | This packet claims |
+| 64–66 | ADR-0060 (Identity) | Reservation | In-flight reservation |
+| {N1}–{N2} (expected 67–68) | **This packet** (ADR-0061 standup) | `## Files Invariants` (new section) | This packet claims |
 
 **Filing-order rule (hard, enforced by `dependencies:` frontmatter):**
 

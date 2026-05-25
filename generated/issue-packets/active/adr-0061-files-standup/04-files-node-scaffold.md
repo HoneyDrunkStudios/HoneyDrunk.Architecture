@@ -159,6 +159,17 @@ public readonly record struct FileId(string Value)
     public bool IsEmpty => string.IsNullOrEmpty(Value);
     public override string ToString() => Value;
 }
+
+/// <summary>
+/// Files-local tenant identifier. Runtime adapters map this to Kernel TenantId at composition boundaries.
+/// </summary>
+public readonly record struct FilesTenantId(string Value)
+{
+    public static FilesTenantId Internal { get; } = new("tnt_internal");
+    public static FilesTenantId Empty { get; } = new(string.Empty);
+    public bool IsEmpty => string.IsNullOrEmpty(Value);
+    public override string ToString() => Value;
+}
 ```
 
 **Enums.** `FilePurpose`, `FileClassification`, `FileProcessingStatus` — value types, drop the `I`:
@@ -199,13 +210,12 @@ public enum FileProcessingStatus
 ```csharp
 namespace HoneyDrunk.Files.Abstractions;
 
-using HoneyDrunk.Kernel.Abstractions.Identity;
 
 /// <summary>
 /// Canonical bytes-metadata envelope. Files persists this; the bytes themselves live behind IFileStore.
 /// </summary>
 /// <param name="Id">Strong-typed file identifier. ULID-shaped. Assigned by IFileUploadSession.Initiate.</param>
-/// <param name="TenantId">Tenant scope of the file. Uses the Kernel strong type per ADR-0026; use TenantId.Internal for first-party Grid blobs.</param>
+/// <param name="TenantId">Tenant scope of the file. Uses the Files-local tenant identifier; use FilesTenantId.Internal for first-party Grid blobs. Runtime adapters map to Kernel TenantId.</param>
 /// <param name="Purpose">Files-defined enumeration — avatar / journal-media / attachment / voice-clip / system-asset.</param>
 /// <param name="ContentType">MIME content-type pinned at SAS issuance time.</param>
 /// <param name="SizeBytes">Stored byte size. Set at upload-completion time.</param>
@@ -216,7 +226,7 @@ using HoneyDrunk.Kernel.Abstractions.Identity;
 /// <param name="IsPublic">True for CDN-fronted public assets; false for private (short-lived SAS) assets.</param>
 public sealed record FileDescriptor(
     FileId Id,
-    TenantId TenantId,
+    FilesTenantId TenantId,
     FilePurpose Purpose,
     string ContentType,
     long SizeBytes,
@@ -232,10 +242,9 @@ public sealed record FileDescriptor(
 ```csharp
 namespace HoneyDrunk.Files.Abstractions;
 
-using HoneyDrunk.Kernel.Abstractions.Identity;
 
 public sealed record UploadRequest(
-    TenantId TenantId,
+    FilesTenantId TenantId,
     FilePurpose Purpose,
     string ContentType,
     long DeclaredSizeBytes,
@@ -259,7 +268,7 @@ public sealed record SignedDownloadUrl(
     bool IsPublic);
 
 public sealed record QuotaSnapshot(
-    TenantId TenantId,
+    FilesTenantId TenantId,
     long BytesUsed,
     int FileCount,
     DateTimeOffset LastRefreshed);
@@ -320,7 +329,7 @@ public interface IFileMetadata
     /// unless the caller is a tnt_internal-privileged principal.
     /// </summary>
     Task<IReadOnlyList<FileDescriptor>> ListAsync(
-        TenantId tenantId,
+        FilesTenantId tenantId,
         FilePurpose purpose,
         DateTimeOffset since,
         DateTimeOffset until,
@@ -352,7 +361,7 @@ public interface IFileQuotaPolicy
     /// <summary>
     /// Current quota snapshot for a tenant.
     /// </summary>
-    Task<QuotaSnapshot> GetSnapshotAsync(TenantId tenantId, CancellationToken cancellationToken = default);
+    Task<QuotaSnapshot> GetSnapshotAsync(FilesTenantId tenantId, CancellationToken cancellationToken = default);
 }
 ```
 
@@ -371,7 +380,7 @@ public interface IFileQuotaPolicy
 
 **`DefaultFileUploadSession`** — implements `IFileUploadSession.InitiateAsync`:
 
-- Resolves the upload request's TenantId via `IGridContextAccessor.GridContext` if the request's TenantId is `default`.
+- Resolves the upload request's FilesTenantId via `IGridContextAccessor.GridContext` if the request's FilesTenantId is `default`.
 - Calls `IFileQuotaPolicy.CheckAsync(request)`. If a denial is returned, returns `null` and emits a `FileUploadDenied` audit event (via `IAuditLog`) for quota-exceeded outcomes.
 - Allocates a fresh `FileId` (`FileId.New()`).
 - Calls `IFileStore`-side SAS minting (the backing adapter exposes a `MintWriteSasAsync` extension on its concrete implementation; the runtime composes against the adapter, not the interface). For v0.1.0 with the InMemory adapter, this is `InMemorySasMinter` which returns a deterministic synthetic URL.
@@ -381,8 +390,8 @@ public interface IFileQuotaPolicy
 
 **`DefaultFileMetadata`** — composed over `IFileStore` and `IRepository<FileDescriptor>`:
 
-- `GetAsync(FileId)`: reads `FileDescriptor` via `IReadOnlyRepository<FileDescriptor>.FindByIdAsync`. Enforces `TenantId` match against `IGridContext.TenantId` (unless the caller is `tnt_internal`).
-- `ListAsync(TenantId, FilePurpose, since, until, limit)`: composes the filter as a single `Expression<Func<FileDescriptor, bool>>` and calls `FindAsync`. Time ordering and `Limit` happen post-fetch, in memory (same Phase-1 pattern as `DataAuditQuery` in ADR-0031 packet 03). Limit default 100, cap 1000.
+- `GetAsync(FileId)`: reads `FileDescriptor` via `IReadOnlyRepository<FileDescriptor>.FindByIdAsync`. Enforces `FilesTenantId` match against `IGridContext.TenantId` (unless the caller is `tnt_internal`).
+- `ListAsync(FilesTenantId, FilePurpose, since, until, limit)`: composes the filter as a single `Expression<Func<FileDescriptor, bool>>` and calls `FindAsync`. Time ordering and `Limit` happen post-fetch, in memory (same Phase-1 pattern as `DataAuditQuery` in ADR-0031 packet 03). Limit default 100, cap 1000.
 
 **`ProcessingPipelineDispatcher`** — dispatches `IFileProcessor` stages in registered order. Idempotency-by-`file_id` is enforced: if a stage has already run for a given file_id, it is skipped. Stage execution is async and runs off the upload-completion event. v0.1.0 ships:
 
@@ -460,8 +469,8 @@ internal static class Placeholder
 `UploadInitiate_ThroughIFileUploadSession_RoundTrips_ToBytesViaIFileStore`:
 
 1. Instantiate `InMemoryFileStore` + `InMemorySasMinter`.
-2. Compose `DefaultFileUploadSession` over them with a permissive `IFileQuotaPolicy` and a test `IGridContextAccessor` populated with `TenantId.Internal`.
-3. Call `InitiateAsync(new UploadRequest(TenantId.Internal, FilePurpose.JournalMedia, "image/jpeg", 1024, FileClassification.Restricted))`.
+2. Compose `DefaultFileUploadSession` over them with a permissive `IFileQuotaPolicy` and a test `IGridContextAccessor` populated with `FilesTenantId.Internal`.
+3. Call `InitiateAsync(new UploadRequest(FilesTenantId.Internal, FilePurpose.JournalMedia, "image/jpeg", 1024, FileClassification.Restricted))`.
 4. Assert `UploadSession` is returned, `Id.IsEmpty == false`, `SignedUploadUrl` starts with `inmem://write/`.
 5. Simulate the client upload by writing bytes directly to `InMemoryFileStore` (test-only seam).
 6. Call `IFileStore.GetDownloadUrlAsync(uploadSession.Id, TimeSpan.FromMinutes(15))` and assert the returned `SignedDownloadUrl.Url` starts with `inmem://`, `ExpiresAt` is non-null and ~15 minutes ahead, `IsPublic == false` (the upload was Restricted-classification, not public).
@@ -623,7 +632,7 @@ Project reference: `HoneyDrunk.Files.Abstractions`. **No `Azure.Storage.Blobs` r
 - [ ] `FileDescriptor` has exactly the byte-metadata allow-list members: `Id`, `TenantId`, `Purpose`, `ContentType`, `SizeBytes`, `Classification`, `UploadedAt`, `ProcessingStatus`, `SoftDeletedAt`, `IsPublic`. The reflection test `DomainMeaningBoundaryTests.cs` asserts this and passes. Constitutional invariant `{N-domain-meaning}` is satisfied at the type-shape level.
 - [ ] `HoneyDrunk.Files` exposes `AddHoneyDrunkFiles()` extension; `IFileUploadSession`, `IFileMetadata`, `IFileQuotaPolicy` all resolve from DI after registration.
 - [ ] `DefaultFileUploadSession.InitiateAsync` calls `IFileQuotaPolicy.CheckAsync` before allocating a `FileId`; returns `null` if the policy denies and emits an audit event via `IAuditLog`. Test coverage in `DefaultFileUploadSessionTests.cs`.
-- [ ] `DefaultFileMetadata.GetAsync` enforces `TenantId` match against `IGridContext.TenantId` (unless caller is `tnt_internal`).
+- [ ] `DefaultFileMetadata.GetAsync` enforces `FilesTenantId` match against `IGridContext.TenantId` (unless caller is `tnt_internal`).
 - [ ] `DefaultFileQuotaPolicy.CheckAsync` reads tier-default values from `IConfigProvider` (key prefix `files:quota:`) **once at startup**; falls back to in-code seeds with a `::warning::` log if unset. **No subscription to change-events** — `IConfigProvider` does not expose a change-token at v0.1.0; configuration changes require a host restart. Hot-reload is out of scope.
 - [ ] `IFileUploadSession`, `IFileMetadata`, `IFileQuotaPolicy`, `ProcessingPipelineDispatcher`, `FilesTelemetry` are all registered as `Singleton` in `AddHoneyDrunkFiles()`. Lifetime story matches the Audit precedent (Singletons over scoped GridContext access via `IGridContextAccessor`).
 - [ ] `DefaultFileUploadSession`, `DefaultFileMetadata`, `DefaultFileQuotaPolicy` resolve `IGridContext` via `IGridContextAccessor.GridContext` (ambient per-call), **not** via direct `IGridContext` ctor injection. They resolve `IRepository<...>` / `IReadOnlyRepository<...>` / `IUnitOfWork` via `IServiceScopeFactory.CreateAsyncScope()` per call.
@@ -668,7 +677,7 @@ Project reference: `HoneyDrunk.Files.Abstractions`. **No `Azure.Storage.Blobs` r
 
 > **Invariant 4:** No circular dependencies. The dependency graph is a DAG. Kernel is always at the root. — Files → Kernel and Files → Data → Kernel and Files → Audit → Data → Kernel are all DAG-consistent.
 
-> **Invariant 5:** GridContext must be present in every scoped operation. — `DefaultFileUploadSession.InitiateAsync` enriches the upload request's TenantId from `IGridContextAccessor.GridContext` if the request's TenantId is `default`.
+> **Invariant 5:** GridContext must be present in every scoped operation. — `DefaultFileUploadSession.InitiateAsync` enriches the upload request's FilesTenantId from `IGridContextAccessor.GridContext` if the request's FilesTenantId is `default`.
 
 > **Invariant 6:** CorrelationId is never null or empty, and TenantId is never absent, in a live GridContext. — Files enriches empty fields rather than persisting unattributable upload sessions.
 
@@ -699,7 +708,7 @@ Project reference: `HoneyDrunk.Files.Abstractions`. **No `Azure.Storage.Blobs` r
 - **ADR-0061 D1** — Files is the Core sector's single Node for bytes + bytes-metadata. Substrate only; no domain meaning, no observability pipeline, no audit storage.
 - **ADR-0061 D3** — Four packages (`Abstractions` + runtime + `InMemory` reference adapter + `AzureBlob` placeholder); contracts authored fresh in this packet; `AzureBlob` ships empty at v0.1.0.
 - **ADR-0061 D6** — Primary surfaces: `IFileStore`, `IFileUploadSession`, `IFileMetadata`, `IFileProcessor`, `IFileQuotaPolicy`; supporting records: `FileDescriptor`, `UploadRequest`, `UploadSession`, `SignedDownloadUrl`, `QuotaSnapshot`, `RetentionPolicy`.
-- **ADR-0061 D5** — Tenant isolation is path-prefixed (`{tenant_id}/{purpose}/{file_id}{?/derivative}`) within a single container per environment. v0.1.0 doesn't have a real Azure container, but `DefaultFileMetadata.GetAsync` and `DefaultFileMetadata.ListAsync` enforce `TenantId` match at the metadata-read level (policy-side enforcement of the isolation rule that the storage-side SAS-prefix-constraint will reinforce when the AzureBlob adapter lands).
+- **ADR-0061 D5** — Tenant isolation is path-prefixed (`{tenant_id}/{purpose}/{file_id}{?/derivative}`) within a single container per environment. v0.1.0 doesn't have a real Azure container, but `DefaultFileMetadata.GetAsync` and `DefaultFileMetadata.ListAsync` enforce `FilesTenantId` match at the metadata-read level (policy-side enforcement of the isolation rule that the storage-side SAS-prefix-constraint will reinforce when the AzureBlob adapter lands).
 - **ADR-0061 D7** — Upload pattern is signed-URL direct-to-blob. The API never proxies bytes. The runtime composition reflects this: `DefaultFileUploadSession.InitiateAsync` returns a `SignedUploadUrl`; there is no `IFileUploadSession.UploadBytesAsync(stream)` method.
 - **ADR-0061 D8** — Public vs. private is metadata-driven. `FileDescriptor.IsPublic` is the flag; `IFileStore.GetDownloadUrlAsync` returns `SignedDownloadUrl` with `IsPublic` set; no path-based distinction.
 - **ADR-0061 D9** — Processing pipeline is async, idempotent, scan-before-available. v0.1.0 ships `ProcessingPipelineDispatcher` + a `PassThroughVirusScan` stage; real toolchain (ImageSharp, FFmpeg, Defender for Storage) lands with first feature packet.
@@ -707,7 +716,7 @@ Project reference: `HoneyDrunk.Files.Abstractions`. **No `Azure.Storage.Blobs` r
 - **ADR-0061 D11** — Soft-delete by default; hard-delete via offboarding/erasure cascade. `FileDescriptor.SoftDeletedAt` carries the state; `IFileStore.DeleteAsync` is soft-delete only at this surface; hard-delete is an internal operation triggered by `TenantClosed`/`UserErasureRequest` events (event-handler wiring lands with the first feature packet that wires Files to Transport).
 - **ADR-0061 D12** — Audit events emit via `IAuditLog`. v0.1.0 emits `FileUploadDenied` (quota path); other event kinds land with the first feature packet that activates the production paths.
 - **ADR-0061 D13** — Notify-attachment compatibility — both paths supported. Not directly in scope here; the optional `file_id` field on Notify's `Attachment` record is wired in a Notify-side follow-up packet that consumes `HoneyDrunk.Files.Abstractions 0.1.0`.
-- **ADR-0026** — `IGridContext.TenantId` is the non-nullable Kernel `TenantId` strong type with `Internal` sentinel. Files' per-tenant quota and forensic-listing paths use the strong type at the contract surface.
+- **ADR-0026** — `IGridContext.TenantId` is the non-nullable Kernel `TenantId` strong type with `Internal` sentinel. Files' per-tenant quota and forensic-listing paths use Files-local contract identifiers and runtime adapters map them to the Kernel strong type.
 - **ADR-0027** — The fixture-vs-Testing-package decision: Files ships `HoneyDrunk.Files.InMemory` as a separately-packaged reference adapter at v0.1.0 (the Capabilities pattern, ADR-0017 D2), not the Audit pattern (fixture `internal` to test project). Justification: PDR-0005 Hearth as the named first consumer is an external repo that will need to mock `IFileStore` in its own unit tests from the first media-bearing packet.
 - **ADR-0042** — Idempotency contract for async boundaries. `ProcessingPipelineDispatcher` is idempotent by `file_id`; `DefaultFileUploadSession.InitiateAsync` is idempotent by `{tenant_id}:{purpose}:{client-provided-idempotency-key}`.
 - **ADR-0009** — No `.github/dependabot.yml`; nightly workflows handle deps.
@@ -732,7 +741,7 @@ Project reference: `HoneyDrunk.Files.Abstractions`. **No `Azure.Storage.Blobs` r
 **Context:**
 - Goal: Unblock every PDR-driven app's first media-bearing packet (Hearth's journal photo upload is the named imminent driver), Notify's optional `file_id`-resolved attachment path, Communications' digest embeddings, and any future Studios product surface needing avatar serving. Establish the contract-shape canary baseline that protects the surface from drift.
 - Feature: ADR-0061 standup initiative — this is the substrate scaffold, the fourth packet of the initiative (after Architecture catalog registration, the two new Files invariants `{N-domain-meaning}` / `{N-download-shape}`, and the human-only repo creation).
-- ADRs: ADR-0061 (sole governing standup ADR); ADR-0026 (TenantId strong type at the contract surface); ADR-0027 (fixture-vs-Testing-package convention — Files ships InMemory as a separately-packaged reference adapter); ADR-0042 (idempotency contract for upload-initiation and processing-pipeline stages); ADR-0005 (App Config-via-Vault pattern for quota tier defaults); ADR-0009 (no Dependabot config file).
+- ADRs: ADR-0061 (sole governing standup ADR); ADR-0026 (Kernel TenantId strong type inside runtime adapters); ADR-0027 (fixture-vs-Testing-package convention — Files ships InMemory as a separately-packaged reference adapter); ADR-0042 (idempotency contract for upload-initiation and processing-pipeline stages); ADR-0005 (App Config-via-Vault pattern for quota tier defaults); ADR-0009 (no Dependabot config file).
 
 **Acceptance Criteria:** As listed above.
 
@@ -742,7 +751,7 @@ Project reference: `HoneyDrunk.Files.Abstractions`. **No `Azure.Storage.Blobs` r
 
 - **Invariant 1:** Abstractions packages have zero runtime dependencies on other HoneyDrunk packages. Only `Microsoft.Extensions.*` abstractions are permitted. - `HoneyDrunk.Files.Abstractions.csproj` carries zero `HoneyDrunk.*` references. The `HoneyDrunk.Standards` reference uses `PrivateAssets="all"`.
 - **Invariant 4:** No circular dependencies. The dependency graph is a DAG. Kernel is always at the root. — Files → Kernel and Files → Data → Kernel and Files → Audit → Data → Kernel are all DAG-consistent. Files does NOT reference Notify, Communications, or any consumer app Node.
-- **Invariant 5/6:** GridContext + CorrelationId + TenantId must be present in every scoped operation. — `DefaultFileUploadSession` enriches the upload request's TenantId from `IGridContextAccessor.GridContext` if the request's TenantId is `default`.
+- **Invariant 5/6:** GridContext + CorrelationId + TenantId must be present in every scoped operation. — `DefaultFileUploadSession` enriches the upload request's FilesTenantId from `IGridContextAccessor.GridContext` if the request's FilesTenantId is `default`.
 - **Invariant 9:** Vault is the only source of secrets. — The quota tier-default values are non-secret configuration, sourced via `IConfigProvider` from App Configuration per ADR-0005. No `ISecretStore` calls are needed in this scaffold (Storage account credentials and SAS signing keys land with the first feature packet that wires the AzureBlob adapter).
 - **Invariant 12:** Semantic versioning with CHANGELOG and README. New projects must have both files from the first commit. — All four `src/*` projects ship `README.md` and `CHANGELOG.md` in the same commit.
 - **Invariant 13:** All public APIs have XML documentation. — Every public type/member in `HoneyDrunk.Files.Abstractions` carries `///` summaries. StyleCop rules from `HoneyDrunk.Standards` enforce this.

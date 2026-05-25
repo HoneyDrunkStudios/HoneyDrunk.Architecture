@@ -250,9 +250,9 @@ repos/HoneyDrunk.Identity/
 
 **`invariants.md`** — repo-local invariant cross-reference. Mirror the trailing-paragraph pattern used by `repos/HoneyDrunk.Audit/invariants.md`. Final paragraph (substitute the actual numbers from packet 02):
 
-> `_Constitutional invariants {N1} (Identity user-record ownership), {N2} (internal-token issuance exclusivity), {N3} (downstream Abstractions-only coupling), and {N4} (Identity contract-shape canary) in \`constitution/invariants.md\` are the Grid-level rules this Node exists to enforce. They were landed by ADR-0060's stand-up initiative._`
+> `_Constitutional invariants {N1} (Identity user-record ownership), {N2} (internal-token issuance exclusivity), {N3} (Identity contract-shape canary) in \`constitution/invariants.md\` are the Grid-level rules this Node exists to enforce. They were landed by ADR-0060's stand-up initiative._`
 
-Use the **placeholder names `{N1}` / `{N2}` / `{N3}` / `{N4}`** in this packet's authored file. Packet 02 of this initiative substitutes the assigned numbers (54/55/56/57 at the current high-water mark of 53) in lockstep when packet 02's PR lands. **Packets 01 and 02 cannot be filed in the same push** because packet 02 needs to overwrite a placeholder in this packet's output — pre-filing carve-out under invariant 24 applies to packet 02's amendment of the `invariants.md` file, and to the pre-push amendment of packet 04's source.
+Use the **placeholder names `{N1}` / `{N2}` / `{N3}`** in this packet's authored file. Packet 02 of this initiative substitutes the assigned numbers (64/65/66 at the current reservation framework default) in lockstep when packet 02's PR lands. **Packets 01 and 02 cannot be filed in the same push** because packet 02 needs to overwrite a placeholder in this packet's output — pre-filing carve-out under invariant 24 applies to packet 02's amendment of the `invariants.md` file, and to the pre-push amendment of packet 04's source.
 
 **`active-work.md`** — initial entry referencing the in-flight standup initiative. Mirror the template used by `repos/HoneyDrunk.Audit/active-work.md`. Single in-progress entry: "ADR-0060 standup — packet 04 (scaffold) blocked on packet 03 (create-repo)."
 
@@ -318,11 +318,11 @@ Append a new entry under `## In Progress`:
 **Scope:** Architecture, HoneyDrunk.Identity (new repo)
 **Initiative:** `adr-0060-identity-standup`
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
-**Description:** Stand up `HoneyDrunk.Identity` as the Core sector's owner of the user record, the external-IdP seam (leading candidate Microsoft Entra External ID), internal-token issuance for service-to-service flows, and the user-level GDPR Art. 17 deletion fan-out. Catalog registration (6 interfaces + 7 records per D4 — including DeletionAck), four new invariants for D1 / D6 / D9 / D7 (default numbers 54-57), `repos/HoneyDrunk.Identity/` context folder, ADR-0050 amendment (IdentityMap relocates from Auth to Identity), Auth-context amendments (validation-only clarification), public repo creation (human-only), and the scaffold packet. Unblocks Hearth (PDR-0005), Lately (PDR-0003), Curiosities (PDR-0008), and Notify.Cloud signup flows.
+**Description:** Stand up `HoneyDrunk.Identity` as the Core sector's owner of the user record, the external-IdP seam (leading candidate Microsoft Entra External ID), internal-token issuance for service-to-service flows, and the user-level GDPR Art. 17 deletion fan-out. Catalog registration (6 interfaces + 7 records per D4 — including DeletionAck), three new invariants for D1 / D6 / D9 / D7 (default numbers 64-66), `repos/HoneyDrunk.Identity/` context folder, ADR-0050 amendment (IdentityMap relocates from Auth to Identity), Auth-context amendments (validation-only clarification), public repo creation (human-only), and the scaffold packet. Unblocks Hearth (PDR-0005), Lately (PDR-0003), Curiosities (PDR-0008), and Notify.Cloud signup flows.
 
 **Tracking:**
 - [ ] Architecture#NN: Catalog registration + context folder + ADR-0050/Auth amendments (packet 01)
-- [ ] Architecture#NN: Add four new invariants for D1 / D6 / D9 / D7 (packet 02)
+- [ ] Architecture#NN: Add three new invariants for D1 / D6 / D9 / D7 (packet 02)
 - [ ] Architecture#NN: Create HoneyDrunk.Identity public repo, branch protection, labels, OIDC, clone locally (packet 03 — human-only)
 - [ ] Identity#NN: Scaffold HoneyDrunk.Identity (packet 04)
 ```
@@ -351,7 +351,7 @@ Append to the current dated SemVer section (per memory `feedback_no_unreleased_c
 - `constitution/sectors.md` (append `Identity` row to the Core sector table)
 - `repos/HoneyDrunk.Identity/overview.md` (new)
 - `repos/HoneyDrunk.Identity/boundaries.md` (new)
-- `repos/HoneyDrunk.Identity/invariants.md` (new — placeholders `{N1}` / `{N2}` / `{N3}` / `{N4}` for the four invariant numbers landing in packet 02)
+- `repos/HoneyDrunk.Identity/invariants.md` (new — placeholders `{N1}` / `{N2}` / `{N3}` for the three invariant numbers landing in packet 02)
 - `repos/HoneyDrunk.Identity/active-work.md` (new)
 - `repos/HoneyDrunk.Identity/integration-points.md` (new)
 - `adrs/ADR-0050-tenant-lifecycle-provisioning-suspension-offboarding-and-data-export.md` (append amendment section)
@@ -388,7 +388,7 @@ None. Architecture is a knowledge repo — no .NET projects.
 - [ ] `catalogs/modules.json` contains `identity-abstractions` and `identity-runtime` entries at version `0.0.0`.
 - [ ] `constitution/sectors.md` Core sector table contains the `Identity | Seed | ...` row after the `Audit` row.
 - [ ] `repos/HoneyDrunk.Identity/` folder exists and contains five files: `overview.md`, `boundaries.md`, `invariants.md`, `active-work.md`, `integration-points.md`. Each matches the template used by `repos/HoneyDrunk.Audit/` or `repos/HoneyDrunk.Operator/`.
-- [ ] `repos/HoneyDrunk.Identity/invariants.md` uses `{N1}` / `{N2}` / `{N3}` / `{N4}` placeholders for the four invariant numbers landing in packet 02. (Packet 02 of this initiative substitutes the assigned numbers — pre-filing carve-out applies because packet 02's PR is what overwrites them, not this packet.)
+- [ ] `repos/HoneyDrunk.Identity/invariants.md` uses `{N1}` / `{N2}` / `{N3}` placeholders for the three invariant numbers landing in packet 02. (Packet 02 of this initiative substitutes the assigned numbers — pre-filing carve-out applies because packet 02's PR is what overwrites them, not this packet.)
 - [ ] `adrs/ADR-0050-tenant-lifecycle-provisioning-suspension-offboarding-and-data-export.md` has a new `## Amendment — 2026-05-23 (driven by ADR-0060 standup)` section. ADR-0050's `Status:` line is **not** modified.
 - [ ] `repos/HoneyDrunk.Auth/overview.md` Purpose section has a new trailing sentence pointing to HoneyDrunk.Identity. No existing text in `overview.md` is removed or rewritten.
 - [ ] `repos/HoneyDrunk.Auth/boundaries.md` "What Auth Does NOT Own" list has a new trailing bullet. No existing bullets are removed or rewritten.
@@ -403,7 +403,7 @@ None. The 2026-05-23 ADR-0060 text is already on disk; this packet reflects it i
 
 ## Referenced Invariants
 
-> **Invariant 1:** Abstractions packages have zero runtime dependencies on other HoneyDrunk packages. Only `Microsoft.Extensions.*` abstractions are permitted. — Reinforces why `HoneyDrunk.Identity.Abstractions` is what downstream Nodes will compile against. Note: per ADR-0060 D4 the Abstractions package may take the same Kernel.Abstractions dependency Audit took (for `TenantId`), as a permitted exception. Full enforcement comes from packet 02's downstream-coupling invariant.
+> **Invariant 1:** Abstractions packages have zero runtime dependencies on other HoneyDrunk packages. Only `Microsoft.Extensions.*` abstractions are permitted. — Reinforces why `HoneyDrunk.Identity.Abstractions` is what downstream Nodes will compile against. Identity Abstractions use primitive/value-object contract shapes; the runtime package adapts those values to Kernel context types at composition boundaries.
 
 > **Invariant 4:** No circular dependencies. The dependency graph is a DAG. Kernel is always at the root. — Identity consumes Kernel, Vault, Auth, Audit, Data, Communications; none of those consume Identity in return. The DAG stays acyclic.
 
@@ -452,7 +452,7 @@ None. Packet 01 is the foundation of the initiative.
 
 **Constraints:**
 
-- **Invariant 1:** Abstractions packages have zero runtime dependencies on other HoneyDrunk packages. Only `Microsoft.Extensions.*` abstractions are permitted. — Reinforces why `HoneyDrunk.Identity.Abstractions` is what downstream Nodes will compile against. Per ADR-0060 D4 the Abstractions package may take a single dependency on `HoneyDrunk.Kernel.Abstractions` (for `TenantId`), the same permitted exception Audit took. This packet does not author the .csproj; it records the package name in the catalogs.
+- **Invariant 1:** Abstractions packages have zero runtime dependencies on other HoneyDrunk packages. Only `Microsoft.Extensions.*` abstractions are permitted. — Reinforces why `HoneyDrunk.Identity.Abstractions` is what downstream Nodes will compile against. The Abstractions package must not reference `HoneyDrunk.Kernel.Abstractions`; this packet records the package name in the catalogs, and packet 04 keeps Kernel adaptation inside the runtime package.
 - **Invariant 4:** No circular dependencies. The dependency graph is a DAG. Kernel is always at the root. — Identity consumes Kernel, Vault, Auth, Audit, Data, Communications; none of those consume Identity in return. The DAG stays acyclic.
 - **Invariant 10:** Auth tokens are validated, never issued. HoneyDrunk.Auth validates JWT Bearer tokens. **It is not an identity provider.** — Survives ADR-0060 intact. Auth still only validates; Identity is the new Node that issues internal tokens. The Auth context amendment in this packet makes the boundary visually unambiguous.
 - **Invariant 11:** One repo per Node (or tightly coupled Node family). Each repo has its own solution, CI pipeline, and versioning. — Identity is a new Node ⇒ new repo. Packet 03 creates it.
@@ -460,7 +460,7 @@ None. Packet 01 is the foundation of the initiative.
 - **ADR-0050 amendment is additive only.** Do not modify ADR-0050's D6 architectural posture, its Status, or any of its existing decisions. Append the amendment section after Consequences/Alternatives.
 - **Auth context amendments are additive only.** Do not remove or rewrite any existing text in `repos/HoneyDrunk.Auth/overview.md` or `repos/HoneyDrunk.Auth/boundaries.md`. The new sentence in `overview.md` and the new bullet in `boundaries.md` extend the existing content.
 - **No ADR Status flip in this packet.** ADR-0060 stays Proposed throughout the initiative. Status flip is handled by the scope agent after every packet merges.
-- **`{N1}` / `{N2}` / `{N3}` / `{N4}` placeholders in `repos/HoneyDrunk.Identity/invariants.md`** must be left in place. Packet 02 of this initiative substitutes the assigned numbers (54/55/56/57 at the current high-water mark, or whichever next four slots are free at packet 02's edit time).
+- **`{N1}` / `{N2}` / `{N3}` placeholders in `repos/HoneyDrunk.Identity/invariants.md`** must be left in place. Packet 02 of this initiative substitutes the assigned numbers (64/65/66 at the current reservation framework default, or whichever three-number block is reserved at packet 02's edit time).
 
 **Key Files:**
 - `catalogs/nodes.json` — insert `honeydrunk-identity` block after `honeydrunk-audit`
