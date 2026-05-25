@@ -134,13 +134,13 @@ Rules that must never be violated across the HoneyDrunk Grid. Canary tests enfor
 ## Code Review Invariants
 
 31. **Every PR traverses the tier-1 gate before merge.**
-    Build, unit tests, analyzers, vulnerability scan, and secret scan are required branch-protection checks on every .NET repo in the Grid, delivered via `pr-core.yml` in `HoneyDrunk.Actions`. Bypassing tier 1 via force-push to `main` or admin override is forbidden except for `hotfix-infra` scenarios where the gate itself is broken. See ADR-0011 D2 and D5 (Proposed — this invariant takes effect when ADR-0011 is accepted).
+    Build, unit tests, analyzers, vulnerability scan, and secret scan are required branch-protection checks on every .NET repo in the Grid, delivered via `pr-core.yml` in `HoneyDrunk.Actions`. Bypassing tier 1 via force-push to `main` or admin override is forbidden except for `hotfix-infra` scenarios where the gate itself is broken. See ADR-0011 D2 and D5.
 
 32. **Agent-authored PRs must link to their packet in the PR body.**
-    The review agent resolves the packet via this link and uses it as the primary scope anchor. Absent the link, the PR is treated as out-of-band, must carry the `out-of-band` label, and receives a degraded review in which the agent runs against the Grid context only (invariants, boundaries, relationships, diff) without a packet-scope check. See ADR-0011 D3 and D9 (Proposed — this invariant takes effect when ADR-0011 is accepted).
+    The review agent resolves the packet via this link and uses it as the primary scope anchor. Absent the link, the PR is treated as out-of-band, must carry the `out-of-band` label, and receives a degraded review in which the agent runs against the Grid context only (invariants, boundaries, relationships, diff) without a packet-scope check. See ADR-0011 D3 and D9.
 
 33. **Review-agent and scope-agent context-loading contracts are coupled.**
-    The set of files loaded by the review agent (per `.claude/agents/review.md`) must be a superset of the set loaded by the scope agent (per `.claude/agents/scope.md`). Divergence is an anti-pattern; updates to either agent's context-loading section must be mirrored in the other. The coupling exists so there is no class of defect the scope agent could introduce at packet-authoring time that the review agent cannot catch at PR time for lack of information. See ADR-0011 D4 (Proposed — this invariant takes effect when ADR-0011 is accepted).
+    The set of files loaded by the review agent (per `.claude/agents/review.md`) must be a superset of the set loaded by the scope agent (per `.claude/agents/scope.md`). Divergence is an anti-pattern; updates to either agent's context-loading section must be mirrored in the other. The coupling exists so there is no class of defect the scope agent could introduce at packet-authoring time that the review agent cannot catch at PR time for lack of information. See ADR-0011 D4.
 
 52. **Every non-draft PR on an `enabled` repo runs the cloud-wired `review` agent.**
     A repo is `enabled` when it carries a `.honeydrunk-review.yaml` with `enabled: true`. Skip is via the `skip-review` PR label or `enabled: false` config — both explicit, both visible. See ADR-0044 D1 and D11.
@@ -158,6 +158,18 @@ Rules that must never be violated across the HoneyDrunk Grid. Canary tests enfor
 
 36. **Container App revision mode is `Multiple` with explicit traffic splitting on deploy.**
     Single-revision mode is forbidden — it removes the rollback seam. See ADR-0015.
+
+## Grid CI/CD Invariants
+
+37. **`HoneyDrunk.Actions` is the source of truth for shared CI/CD configuration.** Shared tool configurations (gitleaks rules, CodeQL query packs, Trivy policy, dotnet-format rules, etc.) live under `HoneyDrunk.Actions/.github/config/`. Caller repos do not duplicate these files; they consume them via reusable-workflow checkout at job runtime. A caller repo may commit a `.<tool>.<ext>` at its root as a per-repo override, which is expected to extend the shared baseline rather than replace it. See ADR-0012 D2, D3.
+
+38. **Reusable workflows invoke tool CLIs directly.** Wrapping a tool in a third-party marketplace action is forbidden for any tool that provides a stable CLI. Exceptions: first-party GitHub actions under `actions/*`, `github/codeql-action/*`, and composite actions authored inside `HoneyDrunk.Actions`. See ADR-0012 D4.
+
+39. **Caller workflows declare a `permissions:` block that is a superset of the reusable workflow's declared permissions.** Callers that omit `permissions:` inherit the repository default, which is insufficient for any reusable workflow that requests a `write` scope. Validation failure is not detected until the next scheduled run; grid-health (invariant 40) is the safety net. See ADR-0012 D5.
+
+40. **Grid pipeline health is centrally visible.** The `HoneyDrunk.Actions` `🕸️ Grid Health` issue is the single canonical view of CI/CD state across the Grid, updated at least daily by the grid-health aggregator. Staleness of that issue is itself a signal — the aggregator's own failure surfaces as the issue not updating. Real-time per-failure notification is separately delivered by the operator's GitHub profile notification settings ("Only notify for failed workflows"), and both mechanisms are mandatory. See ADR-0012 D6, D7.
+
+41. **New Grid repos are added to `HoneyDrunk.Architecture/repos/` at creation time.** The grid-health aggregator reads the repo catalog to know which repos to poll; a repo missing from the catalog is invisible to grid observability. This invariant re-mandates the existing ADR-0008 / architecture-repo convention from the CI/CD visibility angle. See ADR-0012 D6.
 
 ## Hive Sync Invariants
 

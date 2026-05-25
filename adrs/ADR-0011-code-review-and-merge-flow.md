@@ -1,6 +1,6 @@
 # ADR-0011: Code Review and Merge Flow
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-04-12
 **Deciders:** HoneyDrunk Studios
 **Sector:** Meta

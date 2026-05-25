@@ -183,6 +183,12 @@ Cost findings follow the normal severity taxonomy:
 - **Request Changes** — hot-path logging without sampling; unguarded CI jobs; LLM calls without cost caps.
 - **Suggest** — outbound HTTP without caching; catalog loops that work today but won't scale.
 
+### 9. CI/CD Workflow Compliance
+
+- **Caller workflow that omits `permissions:` while calling a reusable HoneyDrunk.Actions workflow** — Request Changes. Under `workflow_call`, the callee's `permissions:` block is purely documentary; effective token scope is the caller's. A caller without an explicit `permissions:` block inherits the repository default (`contents: read`, all writes `none`) and any reusable workflow that needs a `write` scope fails at workflow-load time on every scheduled run. The fix is to add a top-level `permissions:` block to the caller that is a superset of the callee's declared needs. Canonical baselines are in `HoneyDrunk.Actions/docs/consumer-usage.md`. See invariant 39 and ADR-0012 D5.
+
+Severity: **Request Changes** for any caller that omits `permissions:` or under-grants relative to the callee's declared needs.
+
 ## ADR-0044 D3 Review Rubric
 
 This rubric is the Grid's shared standard for defensible change. Authors apply it upstream while scoping and implementing; this `review` agent applies the full rubric as the evaluation gate. The categories and questions below are bound by ADR-0044 D3. Changing categories or questions requires an ADR-0044 D3 amendment. The execution detail and severity mappings in this file are editable agent-definition content under ADR-0007. `hive-sync` is expected to detect drift between ADR-0044 D3 and this file's category/question list.

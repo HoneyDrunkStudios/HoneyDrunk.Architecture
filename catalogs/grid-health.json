@@ -1,8 +1,11 @@
 {
   "_meta": {
     "description": "Live health snapshot of every Node in the Grid. Written by CI workflows and agents; read by Claude Code, HoneyHub (when live), and the developer. Not a substitute for the Project board — this tracks repo-level readiness, not individual work items.",
-    "updated": "2026-05-21",
-    "schema_version": "1.0"
+    "updated": "2026-05-25",
+    "schema_version": "1.1",
+    "changelog": [
+      "1.1: added tracked_workflows per repo for ADR-0012 grid-health aggregator"
+    ]
   },
   "nodes": [
     {
@@ -14,7 +17,12 @@
       "canary_status": "passing",
       "last_release": "2026-05-17",
       "active_blockers": [],
-      "notes": "Kernel v0.7.0 is the current Core baseline: canonical WellKnownNodes, typed TenantId, and Grid/Operation context contracts."
+      "notes": "Kernel v0.7.0 is the current Core baseline: canonical WellKnownNodes, typed TenantId, and Grid/Operation context contracts.",
+      "tracked_workflows": [
+        "nightly-security.yml",
+        "publish.yml",
+        "weekly-deps.yml"
+      ]
     },
     {
       "id": "honeydrunk-transport",
@@ -25,7 +33,12 @@
       "canary_status": "passing",
       "last_release": "2026-05-18",
       "active_blockers": [],
-      "notes": "Aligned to Kernel 0.7.0 abstractions; full Kernel runtime dependency removed; repo changelog finalized after v0.6.0 tag."
+      "notes": "Aligned to Kernel 0.7.0 abstractions; full Kernel runtime dependency removed; repo changelog finalized after v0.6.0 tag.",
+      "tracked_workflows": [
+        "nightly-security.yml",
+        "publish.yml",
+        "weekly-deps.yml"
+      ]
     },
     {
       "id": "honeydrunk-vault",
@@ -36,7 +49,12 @@
       "canary_status": "passing",
       "last_release": "2026-05-18",
       "active_blockers": [],
-      "notes": "Aligned to Kernel 0.7.0; provider facade cancellation behavior and provider-helper consolidation completed."
+      "notes": "Aligned to Kernel 0.7.0; provider facade cancellation behavior and provider-helper consolidation completed.",
+      "tracked_workflows": [
+        "nightly-security.yml",
+        "publish.yml",
+        "weekly-deps.yml"
+      ]
     },
     {
       "id": "honeydrunk-vault-rotation",
@@ -49,7 +67,10 @@
       "active_blockers": [
         "No published package/tag yet by decision"
       ],
-      "notes": "Repo scaffolded. Timer jobs establish Kernel Grid/Operation context; placeholder provider rotators consolidated. No release tag required for this pass."
+      "notes": "Repo scaffolded. Timer jobs establish Kernel Grid/Operation context; placeholder provider rotators consolidated. No release tag required for this pass.",
+      "tracked_workflows": [
+        "publish.yml"
+      ]
     },
     {
       "id": "honeydrunk-auth",
@@ -60,7 +81,12 @@
       "canary_status": "passing",
       "last_release": "2026-05-21",
       "active_blockers": [],
-      "notes": "Auth emits fail-soft security audit records through HoneyDrunk.Audit.Abstractions 0.1.0 while preserving validation-only boundary and token/claims privacy."
+      "notes": "Auth emits fail-soft security audit records through HoneyDrunk.Audit.Abstractions 0.1.0 while preserving validation-only boundary and token/claims privacy.",
+      "tracked_workflows": [
+        "nightly-security.yml",
+        "publish.yml",
+        "weekly-deps.yml"
+      ]
     },
     {
       "id": "honeydrunk-web-rest",
@@ -71,7 +97,12 @@
       "canary_status": "passing",
       "last_release": "2026-05-18",
       "active_blockers": [],
-      "notes": "Requires Kernel request context at registration and live execution; Kernel operation correlation is authoritative."
+      "notes": "Requires Kernel request context at registration and live execution; Kernel operation correlation is authoritative.",
+      "tracked_workflows": [
+        "nightly-security.yml",
+        "publish.yml",
+        "weekly-deps.yml"
+      ]
     },
     {
       "id": "honeydrunk-data",
@@ -82,7 +113,13 @@
       "canary_status": "passing",
       "last_release": "2026-05-18",
       "active_blockers": [],
-      "notes": "Aligned to Kernel 0.7.0 and Transport 0.6.0; outbox enrichment requires operation context or explicit CorrelationId/TenantId."
+      "notes": "Aligned to Kernel 0.7.0 and Transport 0.6.0; outbox enrichment requires operation context or explicit CorrelationId/TenantId.",
+      "tracked_workflows": [
+        "nightly-deps.yml",
+        "nightly-security.yml",
+        "publish.yml",
+        "weekly-deps.yml"
+      ]
     },
     {
       "id": "honeydrunk-audit",
@@ -93,7 +130,12 @@
       "canary_status": "passing",
       "last_release": "2026-05-21",
       "active_blockers": [],
-      "notes": "Initial Audit Node released: Abstractions and Data packages provide append-only-by-interface durable audit records, query surface, redaction-before-append boundary, EF-ready data store, in-memory fixtures, and contract canaries."
+      "notes": "Initial Audit Node released: Abstractions and Data packages provide append-only-by-interface durable audit records, query surface, redaction-before-append boundary, EF-ready data store, in-memory fixtures, and contract canaries.",
+      "tracked_workflows": [
+        "nightly-security.yml",
+        "publish.yml",
+        "weekly-deps.yml"
+      ]
     },
     {
       "id": "honeydrunk-notify",
@@ -104,7 +146,12 @@
       "canary_status": "passing",
       "last_release": "2026-05-18",
       "active_blockers": [],
-      "notes": "Aligned to Kernel canonical Notify identity; queue credential resolution moved behind Vault-backed secret boundary. NuGet/GitHub Release published; changelog hygiene follow-up remains in Notify PR #16."
+      "notes": "Aligned to Kernel canonical Notify identity; queue credential resolution moved behind Vault-backed secret boundary. NuGet/GitHub Release published; changelog hygiene follow-up remains in Notify PR #16.",
+      "tracked_workflows": [
+        "nightly-security.yml",
+        "publish.yml",
+        "weekly-deps.yml"
+      ]
     },
     {
       "id": "honeydrunk-communications",
@@ -115,7 +162,8 @@
       "canary_status": "passing",
       "last_release": "2026-05-18",
       "active_blockers": [],
-      "notes": "Full Kernel runtime dependency removed; runtime now consumes Kernel abstractions only and Notify.Abstractions 0.3.0. Runtime/Abstractions v0.2.0 release workflows succeeded."
+      "notes": "Full Kernel runtime dependency removed; runtime now consumes Kernel abstractions only and Notify.Abstractions 0.3.0. Runtime/Abstractions v0.2.0 release workflows succeeded.",
+      "tracked_workflows": []
     },
     {
       "id": "honeydrunk-pulse",
@@ -128,7 +176,12 @@
       "active_blockers": [
         "Container image publication blocked by upstream Ubuntu sed CVE-2026-5958"
       ],
-      "notes": "Aligned to Kernel canonical Pulse identity and Transport 0.6.0; NuGet/GitHub Release published. Container scan blocked only image push, not package release."
+      "notes": "Aligned to Kernel canonical Pulse identity and Transport 0.6.0; NuGet/GitHub Release published. Container scan blocked only image push, not package release.",
+      "tracked_workflows": [
+        "nightly-security.yml",
+        "publish.yml",
+        "weekly-deps.yml"
+      ]
     },
     {
       "id": "honeydrunk-observe",
@@ -141,7 +194,12 @@
       "active_blockers": [
         "Repo not yet scaffolded"
       ],
-      "notes": "ADR-0010 Phase 1 Node. Contracts and connector provider-slot packages (GitHub, Azure, HTTP) will ship from the Observe repo; no separate connectors Node."
+      "notes": "ADR-0010 Phase 1 Node. Contracts and connector provider-slot packages (GitHub, Azure, HTTP) will ship from the Observe repo; no separate connectors Node.",
+      "tracked_workflows": [
+        "nightly-security.yml",
+        "publish.yml",
+        "weekly-deps.yml"
+      ]
     },
     {
       "id": "honeydrunk-actions",
@@ -154,7 +212,14 @@
       "active_blockers": [
         "D6 batch-filing action not yet built (primary bottleneck for initiative launch)"
       ],
-      "notes": "hive-field-mirror.yml shipped (Actions#22 closed). D6 batch-filer will incorporate mirror step, resolving D5 for the primary flow. hive-backfill-issue.sh exists for manual one-offs."
+      "notes": "hive-field-mirror.yml shipped (Actions#22 closed). D6 batch-filer will incorporate mirror step, resolving D5 for the primary flow. hive-backfill-issue.sh exists for manual one-offs.",
+      "tracked_workflows": [
+        "nightly-accessibility.yml",
+        "nightly-deps.yml",
+        "nightly-security.yml",
+        "refresh-hive-project-metadata.yml",
+        "weekly-governance.yml"
+      ]
     },
     {
       "id": "honeydrunk-lore",
@@ -168,7 +233,8 @@
         "Repo not yet scaffolded",
         "Bring-up packets on deck"
       ],
-      "notes": "LLM-compiled living wiki. 6 packets scoped and ready to file. On deck after ADR-0005/0006 wave completes."
+      "notes": "LLM-compiled living wiki. 6 packets scoped and ready to file. On deck after ADR-0005/0006 wave completes.",
+      "tracked_workflows": []
     },
     {
       "id": "honeydrunk-architecture",
@@ -182,7 +248,8 @@
         "Org Project auto-add not yet enabled",
         "ADR-0003 Phase 1 scoping needed"
       ],
-      "notes": "Command center. Grid-health.json, contracts.json, sector-interaction-map.md added 2026-04-12."
+      "notes": "Command center. Grid-health.json, contracts.json, sector-interaction-map.md added 2026-04-12.",
+      "tracked_workflows": []
     },
     {
       "id": "honeydrunk-standards",
@@ -193,7 +260,10 @@
       "canary_status": "none",
       "last_release": null,
       "active_blockers": [],
-      "notes": "Shared analyzers, EditorConfig, and build tooling referenced Grid-wide (invariants 26, 27, 58). ADR-0047 adds the test-stack Directory.Build.props fragment, coverlet.runsettings tier templates, and the Thread.Sleep analyzer rule."
+      "notes": "Shared analyzers, EditorConfig, and build tooling referenced Grid-wide (invariants 26, 27, 58). ADR-0047 adds the test-stack Directory.Build.props fragment, coverlet.runsettings tier templates, and the Thread.Sleep analyzer rule.",
+      "tracked_workflows": [
+        "publish.yml"
+      ]
     },
     {
       "id": "honeydrunk-studios",
@@ -204,7 +274,8 @@
       "canary_status": "passing",
       "last_release": null,
       "active_blockers": [],
-      "notes": "Public website. Site-sync workflow active."
+      "notes": "Public website. Site-sync workflow active.",
+      "tracked_workflows": []
     },
     {
       "id": "honeydrunk-agents",
@@ -218,7 +289,12 @@
         "Repo not yet scaffolded",
         "Awaiting AI sector bring-up initiative"
       ],
-      "notes": "Agent runtime and lifecycle. Designed in ai-sector-architecture.md. Repo context docs in repos/HoneyDrunk.Agents/."
+      "notes": "Agent runtime and lifecycle. Designed in ai-sector-architecture.md. Repo context docs in repos/HoneyDrunk.Agents/.",
+      "tracked_workflows": [
+        "nightly-security.yml",
+        "publish.yml",
+        "weekly-deps.yml"
+      ]
     },
     {
       "id": "honeydrunk-ai",
@@ -231,7 +307,12 @@
       "active_blockers": [
         "Scaffold packet (HoneyDrunk.AI#2 — packet 03 of adr-0016-honeydrunk-ai-standup) not yet executed"
       ],
-      "notes": "ADR-0016 standup ADR Accepted 2026-04-19. Catalog surface registered (7 contracts per D3). Awaiting scaffold execution: HoneyDrunk.AI.Abstractions (7 contracts), HoneyDrunk.AI runtime, four provider-slot packages (OpenAI/Anthropic/AzureOpenAI/InMemory), Standards wiring, CI with api-compatibility canary scoped to Abstractions (D8), InMemory provider for Evals/CI determinism."
+      "notes": "ADR-0016 standup ADR Accepted 2026-04-19. Catalog surface registered (7 contracts per D3). Awaiting scaffold execution: HoneyDrunk.AI.Abstractions (7 contracts), HoneyDrunk.AI runtime, four provider-slot packages (OpenAI/Anthropic/AzureOpenAI/InMemory), Standards wiring, CI with api-compatibility canary scoped to Abstractions (D8), InMemory provider for Evals/CI determinism.",
+      "tracked_workflows": [
+        "nightly-security.yml",
+        "publish.yml",
+        "weekly-deps.yml"
+      ]
     },
     {
       "id": "honeydrunk-memory",
@@ -244,7 +325,12 @@
       "active_blockers": [
         "Repo not yet scaffolded"
       ],
-      "notes": "Agent memory — short-term, long-term, scoped. Designed in ai-sector-architecture.md."
+      "notes": "Agent memory — short-term, long-term, scoped. Designed in ai-sector-architecture.md.",
+      "tracked_workflows": [
+        "nightly-security.yml",
+        "publish.yml",
+        "weekly-deps.yml"
+      ]
     },
     {
       "id": "honeydrunk-knowledge",
@@ -257,7 +343,12 @@
       "active_blockers": [
         "Repo not yet scaffolded"
       ],
-      "notes": "External knowledge ingestion, embeddings, RAG pipelines."
+      "notes": "External knowledge ingestion, embeddings, RAG pipelines.",
+      "tracked_workflows": [
+        "nightly-security.yml",
+        "publish.yml",
+        "weekly-deps.yml"
+      ]
     },
     {
       "id": "honeydrunk-evals",
@@ -270,7 +361,8 @@
       "active_blockers": [
         "Repo not yet scaffolded"
       ],
-      "notes": "Prompt evaluation, regression testing, model comparison."
+      "notes": "Prompt evaluation, regression testing, model comparison.",
+      "tracked_workflows": []
     },
     {
       "id": "honeydrunk-capabilities",
@@ -283,7 +375,12 @@
       "active_blockers": [
         "Repo not yet scaffolded"
       ],
-      "notes": "Tool registry, discovery, permissioning, versioning."
+      "notes": "Tool registry, discovery, permissioning, versioning.",
+      "tracked_workflows": [
+        "nightly-security.yml",
+        "publish.yml",
+        "weekly-deps.yml"
+      ]
     },
     {
       "id": "honeydrunk-flow",
@@ -296,7 +393,12 @@
       "active_blockers": [
         "Repo not yet scaffolded"
       ],
-      "notes": "Workflow engine, multi-step pipelines, sagas, compensation."
+      "notes": "Workflow engine, multi-step pipelines, sagas, compensation.",
+      "tracked_workflows": [
+        "nightly-security.yml",
+        "publish.yml",
+        "weekly-deps.yml"
+      ]
     },
     {
       "id": "honeydrunk-operator",
@@ -309,7 +411,12 @@
       "active_blockers": [
         "Repo not yet scaffolded"
       ],
-      "notes": "Human oversight — approvals, safety, circuit breakers, cost controls, audit."
+      "notes": "Human oversight — approvals, safety, circuit breakers, cost controls, audit.",
+      "tracked_workflows": [
+        "nightly-security.yml",
+        "publish.yml",
+        "weekly-deps.yml"
+      ]
     },
     {
       "id": "honeydrunk-sim",
@@ -322,7 +429,8 @@
       "active_blockers": [
         "Repo not yet scaffolded"
       ],
-      "notes": "Simulation, plan evaluation, risk analysis."
+      "notes": "Simulation, plan evaluation, risk analysis.",
+      "tracked_workflows": []
     }
   ],
   "summary": {
