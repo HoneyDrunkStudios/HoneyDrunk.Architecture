@@ -73,7 +73,7 @@ Read the existing `.claude/agents/security.md` (per ADR-0046 D2 acceptance packe
 >
 > **D5 — Boundary redaction.** Pulse log/trace/error and Audit append paths redact `[PiiField]` markers via reflection. Defense-in-depth: emitter pre-redacts AND boundary defends. Evals `evals.sensitive=true` carve-out preserved. StackTrace never redacted.
 >
-> **D6 — Right to erasure.** Pseudonymous token in audit + erasable PII↔token map in per-Node identity store. SensitivePii NEVER in audit even as tokens — rejected at append per invariant {N2}.
+> **D6 — Right to erasure.** Pseudonymous token in audit + erasable PII↔token map in per-Node identity store. SensitivePii NEVER in audit even as tokens — rejected at append per invariant 59.
 >
 > **What I flag specifically:**
 > - New `[PiiField(SensitivePii)]` declaration on any field — confirm Article 9 lawful basis (explicit consent or 9(2)(a-j)).
@@ -91,7 +91,7 @@ Read `.claude/agents/review.md`. The D3 rubric per ADR-0044 has 20 categories; c
 > - **Classification completeness (ADR-0049 D4):** Every new public/internal property on a persisted-record, API-contract, or `AuditEntry`-payload type carries `[Classification(...)]`. The `HoneyDrunk.Standards` analyzer rule (error severity) catches absent markers; the reviewer confirms the marker's *tier* is correct (no debug-only fields marked Internal that should be Restricted).
 > - **PII marker correctness (ADR-0049 D2/D4):** When a property carries personal data, `[PiiField(...)]` is also applied with the correct `PiiCategory` and a `Purpose` string. Defaulting to `Pseudonymous` for opaque IDs; `SensitivePii` for Article 9 categories; `Pii` for everything else identifying a natural person.
 > - **Restricted-boundary regression (ADR-0049 D5):** A new HTTP endpoint, message envelope, audit event family, or persisted store handling Restricted-class data must reach the Pulse/Audit boundary redactors via the `[PiiField]` marker discipline; defense-in-depth requires both emitter pre-redaction and boundary defense.
-> - **SensitivePii in audit (invariant {N2}):** Any code path that could land a `SensitivePii`-marked value in an `AuditEntry` `Before`/`After` or `Metadata` payload is a hard rejection — the Audit Node refuses the append at runtime; the reviewer confirms the code doesn't even *attempt* such an append.
+> - **SensitivePii in audit (invariant 59):** Any code path that could land a `SensitivePii`-marked value in an `AuditEntry` `Before`/`After` or `Metadata` payload is a hard rejection — the Audit Node refuses the append at runtime; the reviewer confirms the code doesn't even *attempt* such an append.
 > - **Cross-region movement (invariant 84):** Confirm new infra/replication config does not move Restricted-class data out of Azure US East 2.
 
 Per invariant 33: this edit is to the rule list, not the context-loading section. Symmetry with `scope.md` is preserved by construction.

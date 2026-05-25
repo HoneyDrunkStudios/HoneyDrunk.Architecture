@@ -37,7 +37,7 @@ ADR-0049 is Proposed with no scope. The forcing functions from the ADR's Context
 
 ADR-0049 extends ADRs 0030, 0036, 0040, 0045, and 0046, and is sibling to ADR-0050. The relationships:
 
-- **ADR-0030 (Audit Substrate)** — extended. Invariant 47's "sensitive field" gains a definition (packet 00); the audit append path runs the attribute-aware redactor and rejects SensitivePii outright (packet 05, new invariant {N2}).
+- **ADR-0030 (Audit Substrate)** — extended. Invariant 47's "sensitive field" gains a definition (packet 00); the audit append path runs the attribute-aware redactor and rejects SensitivePii outright (packet 05, new invariant 59).
 - **ADR-0036 (Disaster Recovery)** — extended. ADR-0036 D7's deferred DPA work is closed by packet 12; ADR-0036 D7's deferred backup-vs-erasure reconciliation is closed by ADR-0049 D3 (retention) + D6 (erasure policy) + ADR-0050 (mechanics).
 - **ADR-0040 (Telemetry Backend)** — extended. The previously-implicit "sensitive field" in ADR-0040 D9's PII carve-outs is bound to the `[PiiField]` markers (packet 04); the PII-scrubbing canary that ADR-0040 deferred is shipped (packet 06).
 - **ADR-0045 (Grid-Wide Error Tracking)** — extended. The error-channel scrubbing rule from ADR-0045 D7 is now mechanically enforced via the same shared redactor (packet 04).
@@ -117,7 +117,7 @@ ADR-0049 D4 names the analyzer package as "`HoneyDrunk.Analyzers`." The existing
 
 ### Audit redactor's SensitivePii — rejection, not redaction
 
-ADR-0049 D5's table row for Audit reads: "`[PiiField(SensitivePii)]` → `[REDACTED:sensitive]`." ADR-0049 D6's text and invariant {N2} (added in packet 00) read: "`[PiiField(SensitivePii)]`-marked fields never appear in the audit channel, even as redaction-tokens. The Audit Node rejects appends whose Before/After payload reflection surfaces a SensitivePii marker. Only the field-name-and-class metadata may appear."
+ADR-0049 D5's table row for Audit reads: "`[PiiField(SensitivePii)]` → `[REDACTED:sensitive]`." ADR-0049 D6's text and invariant 59 (added in packet 00) read: "`[PiiField(SensitivePii)]`-marked fields never appear in the audit channel, even as redaction-tokens. The Audit Node rejects appends whose Before/After payload reflection surfaces a SensitivePii marker. Only the field-name-and-class metadata may appear."
 
 These two are in tension only on a surface reading. The resolution: D5's "`[REDACTED:sensitive]`" describes the redactor's *output* if you ran it through; D6's text overrides that for the audit channel specifically, mandating *rejection of the append* rather than persistence of the redacted form. Packet 05 implements D6's stricter reading — the audit redactor refuses the append and emits operational telemetry naming the offending field + classification, but persists nothing. The "field name, classification, source Node" record D6 alludes to is the operational-telemetry signal to Pulse, not a persisted partial audit entry.
 
@@ -169,7 +169,7 @@ No site-sync flag. ADR-0049 is internal Core-sector governance and infrastructur
 - **Packet 02 (Kernel attributes):** revert the PR; the Kernel solution rolls back one minor version. The attributes leave `HoneyDrunk.Kernel.Abstractions`. Downstream packets that consumed them (03–08) would break at the next build; do not revert 02 alone — coordinate with downstream packets.
 - **Packet 03 (Standards analyzer rule):** revert the PR; the analyzer rule is removed from `HoneyDrunk.Standards.Analyzers`. Standards rolls back one minor version. Backfill packets 07/08 lose their warning-driven checklist but can still proceed manually.
 - **Packet 04 (Pulse redactor):** revert the PR; Pulse rolls back one minor version. The `LogRecordProcessor`/`SpanProcessor`/error-reporter revert to their pre-redactor behavior. The defense-in-depth half at the boundary is lost; the emitter-side discipline from packets 07/08 markers remains in place but unenforced at the Pulse boundary. PII may leak in telemetry until re-applied.
-- **Packet 05 (Audit redactor + tokenizer):** revert the PR; Audit rolls back one minor version. The append path reverts to no-redaction; the new `IAuditTokenizer` interface leaves Abstractions. Audit entries from emitters that pre-redacted are still safe; emitters that relied on the boundary defense leak raw values into audit. The SensitivePii-rejection contract is gone — invariant {N2} is unenforced until re-applied.
+- **Packet 05 (Audit redactor + tokenizer):** revert the PR; Audit rolls back one minor version. The append path reverts to no-redaction; the new `IAuditTokenizer` interface leaves Abstractions. Audit entries from emitters that pre-redacted are still safe; emitters that relied on the boundary defense leak raw values into audit. The SensitivePii-rejection contract is gone — invariant 59 is unenforced until re-applied.
 - **Packet 06 (canary):** revert the PR; the canary leaves the Pulse test suite. CI no longer catches redactor regressions; a future redactor change could silently break without test failure.
 - **Packet 07 (Core-sector backfill):** revert each Node's PR independently. Auth/Vault/Data lose their markers; the Pulse/Audit redactors find nothing to redact on those Nodes' types. Roll back each Node's solution version per the revert.
 - **Packet 08 (Ops-sector backfill):** same as 07 for Notify/Communications.

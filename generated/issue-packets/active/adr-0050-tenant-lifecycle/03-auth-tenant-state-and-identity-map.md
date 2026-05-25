@@ -50,7 +50,7 @@ The pseudonymous-token value types `PseudoUserToken` and `PseudoTenantToken` are
   - `ValueTask EraseUserAsync(PseudoUserToken token, string gdprRequestId, CancellationToken ct)` — hard-deletes the row; returns successfully whether the row exists or not (idempotent erasure).
   - Symmetric methods for tenant identities.
 - `TransitionRules` — static (or stateless service) carrying the valid-transition graph from ADR-0050 D1's table. Used by `ITenantStore.TransitionAsync` to validate moves at runtime.
-- `InvalidTenantTransitionException` — thrown when an undeclared transition is attempted; the message names the actual source/target/initiator combination and references the seven-state-machine invariant (`{N2}`, claimed by packet 00).
+- `InvalidTenantTransitionException` — thrown when an undeclared transition is attempted; the message names the actual source/target/initiator combination and references the seven-state-machine invariant (`68`, claimed by packet 00).
 
 ### `HoneyDrunk.Auth` (runtime) — implementations
 - Default in-memory `ITenantStore` + `IIdentityMap` implementations (mirroring Communications' v0.2.0 in-memory-first pattern). Production hosts swap to a durable backing later (a deferred follow-up).
@@ -207,7 +207,7 @@ public sealed class TenantStore : ITenantStore
 }
 ```
 
-The `InvalidTenantTransitionException` message names the source/target/initiator combination and references the seven-state-machine invariant (`{N2}`, claimed by packet 00).
+The `InvalidTenantTransitionException` message names the source/target/initiator combination and references the seven-state-machine invariant (`68`, claimed by packet 00).
 
 ### 6. Tests
 
@@ -262,7 +262,7 @@ Unit tests:
 - [ ] Tokens are NOT derived from underlying IDs (unit-tested: same `user_id` issued twice produces different tokens with overwhelming probability)
 - [ ] `IIdentityMap.EraseUserAsync` is idempotent (calling on non-existent token returns successfully)
 - [ ] `IIdentityMap.EraseUserAsync` hard-deletes the row (resolve returns null after erasure)
-- [ ] `ITenantStore.TransitionAsync` throws `InvalidTenantTransitionException` on undeclared transitions; the message references the seven-state-machine invariant (`{N2}`, claimed by packet 00)
+- [ ] `ITenantStore.TransitionAsync` throws `InvalidTenantTransitionException` on undeclared transitions; the message references the seven-state-machine invariant (`68`, claimed by packet 00)
 - [ ] DI extension `services.AddHoneyDrunkAuthTenants()` registers the in-memory implementations
 - [ ] All new public types have XML documentation (invariant 13)
 - [ ] `HoneyDrunk.Auth.Abstractions` references `HoneyDrunk.Audit.Abstractions` v0.2.0 (per packet 02) and the existing `HoneyDrunk.Kernel.Abstractions`
@@ -290,7 +290,7 @@ None for this packet. (The in-memory backing requires no Azure provisioning. Whe
 
 **Invariant 27 (constraint) — All projects in a solution share one version and move together.** Bump every non-test `.csproj` to `0.6.0` in one commit.
 
-**Invariant `{N2}` (from this initiative, claimed by packet 00) — Every tenant exists in exactly one of the seven enumerated states with audited initiator-attributed transitions.** This packet ships the state machine; packet 07 wires the audit emission of transition events.
+**Invariant `68` (from this initiative, claimed by packet 00) — Every tenant exists in exactly one of the seven enumerated states with audited initiator-attributed transitions.** This packet ships the state machine; packet 07 wires the audit emission of transition events.
 
 **Invariant 47 (referenced) — Audit substrate is append-only and durable.** The IdentityMap is NOT the audit substrate. It is the erasable PII↔token map. Hard-deletion of an IdentityMap row is fully allowed and is the load-bearing GDPR-erasure mechanism; the audit substrate remains untouched.
 

@@ -233,9 +233,9 @@ Each step emits a `CommunicationDecisionLogEntry` via the existing `ICommunicati
 
 **Invariant 47 (referenced) — Audit substrate is append-only and durable.** Audit emissions in this workflow use `IAuditLog.Append` (append-only); no audit mutation.
 
-**Invariant `{N1}` (this initiative, claimed by packet 00) — Audit substrate accepts only pseudonymous tokens.** Workflow audit emissions use `CreatePseudonymous` with `PseudoTenantToken` / `PseudoUserToken`.
+**Invariant `67` (this initiative, claimed by packet 00) — Audit substrate accepts only pseudonymous tokens.** Workflow audit emissions use `CreatePseudonymous` with `PseudoTenantToken` / `PseudoUserToken`.
 
-**Invariant `{N2}` (this initiative, claimed by packet 00) — Every tenant transition is audited and initiator-attributed.** Each `SuspendAsync` / `ReinstateAsync` / `BeginOffboardingAsync` / `CloseAsync` call composes the state-machine transition (Auth-side, packet 03) AND an audit emission.
+**Invariant `68` (this initiative, claimed by packet 00) — Every tenant transition is audited and initiator-attributed.** Each `SuspendAsync` / `ReinstateAsync` / `BeginOffboardingAsync` / `CloseAsync` call composes the state-machine transition (Auth-side, packet 03) AND an audit emission.
 
 ## Constraints
 - **Durable runtime is NOT chosen in this packet.** The in-process implementation is the explicit deliverable. Do NOT introduce a dependency on Dapr Workflow, Azure Durable Functions, MassTransit Sagas, or any other workflow runtime. The contract shape is deliberately runtime-agnostic so the spike packet can pick later.

@@ -14,13 +14,13 @@ node: honeydrunk-audit
 # Wire attribute-aware redaction + SensitivePii rejection into HoneyDrunk.Audit's append path
 
 ## Summary
-Extend the `HoneyDrunk.Audit` append path with an attribute-aware redactor: on every `IAuditLog.AppendAsync(AuditEntry)` call, walk `AuditEntry.DataChange.Before/After` and `AuditEntry.Metadata` payloads against the `[PiiField]` markers from packet 02. `[PiiField(Pii)]` fields become pseudonymous tokens (D6); `[PiiField(SensitivePii)]` fields are **rejected entirely** — the append fails with a typed error and a metadata-only audit entry is the only acceptable substitute. `[PiiField(Pseudonymous)]` passes through. This makes invariant 47's amended "sensitive fields" mandate concrete and turns invariant {N2} (SensitivePii never in audit) into a hard runtime contract.
+Extend the `HoneyDrunk.Audit` append path with an attribute-aware redactor: on every `IAuditLog.AppendAsync(AuditEntry)` call, walk `AuditEntry.DataChange.Before/After` and `AuditEntry.Metadata` payloads against the `[PiiField]` markers from packet 02. `[PiiField(Pii)]` fields become pseudonymous tokens (D6); `[PiiField(SensitivePii)]` fields are **rejected entirely** — the append fails with a typed error and a metadata-only audit entry is the only acceptable substitute. `[PiiField(Pseudonymous)]` passes through. This makes invariant 47's amended "sensitive fields" mandate concrete and turns invariant 59 (SensitivePii never in audit) into a hard runtime contract.
 
 ## Context
 ADR-0030 D3 mandated "data-change details that include sensitive fields must be redacted before append" against an undefined "sensitive field" concept. ADR-0049 D2 defines them (`[PiiField(SensitivePii)]`), and ADR-0049 D5 binds the audit append path to the field-marking attributes. Two distinct redaction behaviors apply at the audit boundary:
 
 - **PII fields (`[PiiField(Pii)]`)** — redacted to their **pseudonymous-token form**, not to a sentinel marker. The token-to-value mapping lives in the per-Node identity store (`HoneyDrunk.Auth`'s user store for Studio products; the per-app onboarding store for consumer products). This is the load-bearing mechanic for ADR-0049 D6 right-to-erasure: the audit record retains the token, which resolves through the identity-store row at read time; deletion of the identity-store row makes the token resolve to *nothing*, while the audit history "user did X at time T" remains intact and forensically useful.
-- **Sensitive PII fields (`[PiiField(SensitivePii)]`)** — **never appear** in the audit channel, not even as tokens. This is stricter than the `Pii` case and is **mandatory** (invariant {N2} from packet 00). Article 9 special-category data has no business in audit data-change details. The audit Node rejects the append entirely with a typed exception or returns a failure result, depending on `IAuditLog`'s existing error-shape contract.
+- **Sensitive PII fields (`[PiiField(SensitivePii)]`)** — **never appear** in the audit channel, not even as tokens. This is stricter than the `Pii` case and is **mandatory** (invariant 59 from packet 00). Article 9 special-category data has no business in audit data-change details. The audit Node rejects the append entirely with a typed exception or returns a failure result, depending on `IAuditLog`'s existing error-shape contract.
 - **Pseudonymous fields (`[PiiField(Pseudonymous)]`)** — pass through unchanged. Pseudonymous identifiers (`PrincipalId`, `TenantId`, hashed-email idempotency keys) are the audit channel's normal vocabulary.
 - **`AuditEntry.Metadata` dictionary** — same walk, with the boxed-value reflection caveat: if a value presents as a raw `string` with no source-type metadata, the boundary cannot determine its classification from the bag alone. ADR-0049 D5 names this as **emitter-responsibility** (the emitter must not put raw-string PII in `Metadata` without pre-redacting). The audit redactor falls through and ships the raw value in that case, but the analyzer rule (packet 03) and emitter discipline (packets 07, 08 per-Node backfill) catch this at compile/review time.
 
@@ -83,7 +83,7 @@ The redactor logic lives in the **runtime append path** (the implementation behi
    - The offending field name.
    - The classification (`SensitivePii`).
    - The category (`PiiCategory.SensitivePii`).
-   - A message string explaining ADR-0049 D6 + invariant {N2}: "Sensitive PII may not appear in the audit channel even as redaction-tokens. Record the *fact* of the change via field-name and classification metadata only."
+   - A message string explaining ADR-0049 D6 + invariant 59: "Sensitive PII may not appear in the audit channel even as redaction-tokens. Record the *fact* of the change via field-name and classification metadata only."
 
    If `IAuditLog.AppendAsync` returns a result type instead of throwing (e.g. `AuditAppendResult.Ok` / `AuditAppendResult.Rejected`), use the result-shape pattern instead.
 
@@ -144,7 +144,7 @@ The redactor logic lives in the **runtime append path** (the implementation behi
 - [ ] **Confirm the published version of `HoneyDrunk.Kernel.Abstractions` carrying the packet-02 attributes is on the package feed.** Same gate as packet 04 — a human release tag on `HoneyDrunk.Kernel` is required between packet 02 merging and this packet building.
 
 ## Referenced ADR Decisions
-**ADR-0049 D5 — Audit append redaction.** `AuditEntry.DataChange.Before/After` walked unconditionally: `[PiiField(Pii)]` → pseudonymous token; `[PiiField(SensitivePii)]` → `[REDACTED:sensitive]` — and (this packet's stricter interpretation, per D6 + invariant {N2}) **the SensitivePii case is a rejection, not a redaction**. `[PiiField(Pseudonymous)]` → as-is. `Metadata` walked the same way with the boxed-value fall-through documented as emitter-responsibility.
+**ADR-0049 D5 — Audit append redaction.** `AuditEntry.DataChange.Before/After` walked unconditionally: `[PiiField(Pii)]` → pseudonymous token; `[PiiField(SensitivePii)]` → `[REDACTED:sensitive]` — and (this packet's stricter interpretation, per D6 + invariant 59) **the SensitivePii case is a rejection, not a redaction**. `[PiiField(Pseudonymous)]` → as-is. `Metadata` walked the same way with the boxed-value fall-through documented as emitter-responsibility.
 
 **ADR-0049 D6 — Right-to-erasure mechanic.** `AuditEntry.Actor` and `AuditEntry.Target` carry `PrincipalId` and `TenantId` (pseudonymous identifiers per D2). `[PiiField(Pii)]` fields in `AuditEntry.Metadata` and `AuditEntry.DataChange.Before/After` are stored as **pseudonymous tokens at emit time**, not as raw values. The token-to-value map sits in the per-Node identity store. Same erasure mechanic: deleting the identity-store row makes the token resolve to nothing; the audit history remains intact.
 
@@ -156,14 +156,14 @@ The redactor logic lives in the **runtime append path** (the implementation behi
 
 **Invariant 47 (amended in packet 00).** "Data-change details that include sensitive fields (as defined by ADR-0049 D2 — fields marked `[PiiField(SensitivePii)]`) must be redacted before append." This packet ships the runtime enforcement.
 
-**Invariant {N2} (added in packet 00).** "`[PiiField(SensitivePii)]`-marked fields never appear in the audit channel, even as redaction-tokens. The Audit Node rejects appends whose `Before`/`After` payload reflection surfaces a `SensitivePii` marker. Only the field-name-and-class metadata may appear."
+**Invariant 59 (added in packet 00).** "`[PiiField(SensitivePii)]`-marked fields never appear in the audit channel, even as redaction-tokens. The Audit Node rejects appends whose `Before`/`After` payload reflection surfaces a `SensitivePii` marker. Only the field-name-and-class metadata may appear."
 
 **Invariant 48 — Downstream consumers compile against `HoneyDrunk.Audit.Abstractions` only.** The new `IAuditTokenizer` and `AuditPiiToken` ship in Abstractions; the runtime stays internal to the Audit Node. Consumers do not reference the runtime package in production composition.
 
 **Invariant 49 — Contract-shape canary on `HoneyDrunk.Audit.Abstractions`.** The new interface and record are additive minor-version changes — the canary must remain green paired with the minor-version bump.
 
 ## Constraints
-- **SensitivePii is a rejection, not a redaction.** Invariant {N2}'s "never appears in the audit channel, even as redaction-tokens" rule means the audit Node refuses the append outright. Do not soften this to a `[REDACTED:sensitive]` write — that would leak the *fact* of the value into the audit body in a way invariant {N2} forbids. The audit entry records that a SensitivePii field was changed (field name and classification) ONLY through the operational-telemetry rejection signal, never as a persisted audit body.
+- **SensitivePii is a rejection, not a redaction.** Invariant 59's "never appears in the audit channel, even as redaction-tokens" rule means the audit Node refuses the append outright. Do not soften this to a `[REDACTED:sensitive]` write — that would leak the *fact* of the value into the audit body in a way invariant 59 forbids. The audit entry records that a SensitivePii field was changed (field name and classification) ONLY through the operational-telemetry rejection signal, never as a persisted audit body.
 - **Append-only-by-interface preserved.** `IAuditLog` adds no update or delete method. The new types are additive (new interface, new record, new exception).
 - **Tokenizer is an injected seam.** Audit does not own the identity store. v1 ships an `InMemoryAuditTokenizer` stub; ADR-0050's tenant-lifecycle work wires the real Auth-backed implementation. Document this in code comments and README.
 - **Operational telemetry emit on rejection.** The Audit Node's own operational telemetry flows one-way to Pulse per ADR-0030 D9 — no runtime dependency on Pulse. The rejection signal uses the existing Pulse-emit pathway in the Audit runtime (created when the Audit Node stood up). The payload carries field name + classification, never the value.
@@ -181,7 +181,7 @@ The redactor logic lives in the **runtime append path** (the implementation behi
 **Target:** `HoneyDrunk.Audit`, branch from `main`.
 
 **Context:**
-- Goal: Bind ADR-0030 D3's "redact sensitive fields before append" to the field-marking attributes; make invariant {N2} (SensitivePii never in audit) a runtime contract.
+- Goal: Bind ADR-0030 D3's "redact sensitive fields before append" to the field-marking attributes; make invariant 59 (SensitivePii never in audit) a runtime contract.
 - Feature: ADR-0049 Data Classification rollout, Wave 3 (Phase 3 redactor integrations).
 - ADRs: ADR-0049 D5/D6 (primary), ADR-0030 D3/D6/D7 (audit substrate boundary).
 
@@ -191,7 +191,7 @@ The redactor logic lives in the **runtime append path** (the implementation behi
 - `packet:02` — `ClassificationAttribute` and `PiiFieldAttribute` exist in `HoneyDrunk.Kernel.Abstractions` and are published to the package feed.
 
 **Constraints:**
-- SensitivePii is a rejection, not a redaction. Invariant {N2} forbids any audit body containing SensitivePii fields, even as redaction-tokens.
+- SensitivePii is a rejection, not a redaction. Invariant 59 forbids any audit body containing SensitivePii fields, even as redaction-tokens.
 - Append-only-by-interface preserved — no new update or delete method on `IAuditLog`.
 - Tokenizer is an injected seam (`IAuditTokenizer`); v1 InMemory stub, production-real arrives with ADR-0050.
 - Rejection emits operational telemetry to Pulse via the existing one-way emit path; payload carries field name + classification, never the value.

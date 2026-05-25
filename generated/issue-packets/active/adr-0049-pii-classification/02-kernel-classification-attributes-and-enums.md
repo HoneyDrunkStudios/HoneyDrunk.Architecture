@@ -43,7 +43,7 @@ The contracts live in `HoneyDrunk.Kernel.Abstractions` because Kernel is the zer
 
 ## Proposed Implementation
 1. **`DataClass`** — `public enum DataClass { Public, Internal, Confidential, Restricted }`. Order matches ADR-0049 D1's handling-rigor order. XML-doc each value with the D1 definition (one sentence per tier).
-2. **`PiiCategory`** — `public enum PiiCategory { Pii, SensitivePii, Pseudonymous }`. XML-doc each value with the D2 definition; `SensitivePii` doc must call out GDPR Article 9 special-category status and the `IAuditLog`-channel forbidden-entirely rule (invariant {N2} from packet 00).
+2. **`PiiCategory`** — `public enum PiiCategory { Pii, SensitivePii, Pseudonymous }`. XML-doc each value with the D2 definition; `SensitivePii` doc must call out GDPR Article 9 special-category status and the `IAuditLog`-channel forbidden-entirely rule (invariant 59 from packet 00).
 3. **`ClassificationAttribute`** — sealed class deriving from `Attribute` with `[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]`. Constructor: `public ClassificationAttribute(DataClass classification)`. Property: `public DataClass Classification { get; }` (read-only, set in constructor).
 4. **`PiiFieldAttribute`** — sealed class deriving from `Attribute` with the same `AttributeUsage`. Constructor: `public PiiFieldAttribute(PiiCategory category)`. Properties: `public PiiCategory Category { get; }` (read-only); `public string? Purpose { get; set; }` (nullable, mutable to allow named-argument initialization `[PiiField(PiiCategory.Pii, Purpose = "notify:delivery")]` per ADR-0049 D4's worked example).
 5. All public types/members get full XML documentation (invariant 13). The XML doc on `PiiFieldAttribute.Purpose` must explain the GDPR Article 5(1)(b) purpose-limitation tag intent and recommend short colon-delimited tokens (e.g. `"notify:delivery"`, `"billing:invoice"`, `"audit:correlation"`).
@@ -82,7 +82,7 @@ The contracts live in `HoneyDrunk.Kernel.Abstractions` because Kernel is the zer
 - [ ] `HoneyDrunk.Kernel.Abstractions` exposes `PiiCategory` enum with values `Pii`, `SensitivePii`, `Pseudonymous` (in that order)
 - [ ] `HoneyDrunk.Kernel.Abstractions` exposes sealed `ClassificationAttribute` with `[AttributeUsage(Property | Field | Parameter, AllowMultiple = false, Inherited = true)]` and a `DataClass Classification { get; }` property set via constructor
 - [ ] `HoneyDrunk.Kernel.Abstractions` exposes sealed `PiiFieldAttribute` with the same `AttributeUsage`, a `PiiCategory Category { get; }` property set via constructor, and a `string? Purpose { get; set; }` mutable property defaulting to `null`
-- [ ] All new public types/members have XML documentation; the `SensitivePii` enum doc-comment calls out GDPR Article 9 + invariant {N2} (never appears in audit even as redaction-token)
+- [ ] All new public types/members have XML documentation; the `SensitivePii` enum doc-comment calls out GDPR Article 9 + invariant 59 (never appears in audit even as redaction-token)
 - [ ] `HoneyDrunk.Kernel.Abstractions` has zero runtime `PackageReference` on any HoneyDrunk package (invariant 1)
 - [ ] Every non-test `.csproj` in the Kernel solution is at the new same minor version in a single commit (invariant 27)
 - [ ] Repo-level `CHANGELOG.md` has a new `[X.Y.0]` entry dated to the merge, describing the data-classification attribute surface

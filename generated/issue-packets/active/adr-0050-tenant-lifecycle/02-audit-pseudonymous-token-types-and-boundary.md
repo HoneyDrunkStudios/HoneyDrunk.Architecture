@@ -190,15 +190,15 @@ internal static class PiiRejection
         // Synthetic actor strings (no '@', no IP shape, no phone shape) pass.
         if (Email.IsMatch(actor))
             throw new InvalidOperationException(
-                "Audit emission contains an email-shaped Actor. Per ADR-0050 D6 (invariant {N1} — pseudonymous-token boundary), " +
+                "Audit emission contains an email-shaped Actor. Per ADR-0050 D6 (invariant 67 — pseudonymous-token boundary), " +
                 "the audit substrate accepts only pseudonymous tokens. " +
                 "Resolve the user via HoneyDrunk.Auth.IdentityMap and emit the PseudoUserToken.");
         if (Ipv4.IsMatch(actor) || Ipv6.IsMatch(actor))
             throw new InvalidOperationException(
-                "Audit emission contains an IP-shaped Actor. See ADR-0050 D6 (invariant {N1} — pseudonymous-token boundary).");
+                "Audit emission contains an IP-shaped Actor. See ADR-0050 D6 (invariant 67 — pseudonymous-token boundary).");
         if (Phone.IsMatch(actor))
             throw new InvalidOperationException(
-                "Audit emission contains a phone-shaped Actor. See ADR-0050 D6 (invariant {N1} — pseudonymous-token boundary).");
+                "Audit emission contains a phone-shaped Actor. See ADR-0050 D6 (invariant 67 — pseudonymous-token boundary).");
     }
 }
 ```
@@ -276,7 +276,7 @@ Unit tests:
 - `HoneyDrunk.Standards` is already on every project; no change.
 
 ## Boundary Check
-- [x] `PseudoUserToken` and `PseudoTenantToken` are audit-substrate contracts per ADR-0050 D6 (they are the type-level enforcement of the pseudonymous-token boundary invariant `{N1}` claimed by packet 00 — the audit-side boundary types). Routing rule "audit substrate, IAuditLog, AuditEntry, ... → HoneyDrunk.Audit" maps here.
+- [x] `PseudoUserToken` and `PseudoTenantToken` are audit-substrate contracts per ADR-0050 D6 (they are the type-level enforcement of the pseudonymous-token boundary invariant `67` claimed by packet 00 — the audit-side boundary types). Routing rule "audit substrate, IAuditLog, AuditEntry, ... → HoneyDrunk.Audit" maps here.
 - [x] The PII-rejection helper lives in the runtime/Data package, not Abstractions — invariant 1 (Abstractions have zero runtime dependencies on HoneyDrunk packages; no runtime logic in Abstractions).
 - [x] The runtime PII check is regex-based, not a network call to a PII-detection service — the boundary check is a sanity gate, not a comprehensive scan.
 - [x] No new cross-Node dependency. The new value types are Audit-owned; consuming Nodes (Auth in packet 03, Communications in packet 05) reference `HoneyDrunk.Audit.Abstractions` only.
@@ -348,7 +348,7 @@ None. (No portal action, no secret seeding — this is a pure-code packet.)
 **Acceptance Criteria:** As listed above.
 
 **Dependencies:**
-- `packet:00` — ADR-0050 Accepted; the two new tenant-lifecycle invariants (claimed as `{N1}`/`{N2}` from `constitution/invariant-reservations.md` by packet 00) live before the value types reference them.
+- `packet:00` — ADR-0050 Accepted; the two new tenant-lifecycle invariants (claimed as `67`/`68` from `constitution/invariant-reservations.md` by packet 00) live before the value types reference them.
 
 **Constraints:**
 - **The existing `string Actor` overload stays.** This is a transitional accommodation per the dispatch plan; do not mark `[Obsolete]` or remove. Auth v0.5.0 is a live emitter.
