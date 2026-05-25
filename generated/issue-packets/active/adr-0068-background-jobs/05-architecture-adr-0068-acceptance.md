@@ -4,7 +4,7 @@ type: architecture-decision
 tier: 3
 target_repo: HoneyDrunkStudios/HoneyDrunk.Architecture
 labels: ["chore", "tier-3", "core", "docs", "adr-0068", "wave-4"]
-dependencies: ["packet:02", "packet:03", "packet:04"]
+dependencies: ["packet:00", "packet:01", "packet:02", "packet:03", "packet:04"]
 adrs: ["ADR-0068"]
 accepts: ["ADR-0068"]
 wave: 4
@@ -93,7 +93,7 @@ None.
 **ADR-0068 Catalog obligations — invariant promotion.** "Promote D6 (idempotency on every job), D7 (retry policy defaults), and D8 (observability) into numbered invariants once Accepted — scope agent assigns invariant numbers in the same PR that flips Status." Packet 01 pre-assigned the numbers (the `{N1}`/`{N2}`/`{N3}`/`{N4}` block claimed from `constitution/invariant-reservations.md`); this packet completes the promotion by removing the Proposed marker.
 
 ## Constraints
-- **All five preceding packets must be merged before this packet's PR opens.** Hard `dependencies: ["packet:02", "packet:03", "packet:04"]` (packets 00 and 01 are transitive dependencies of those). The agent verifies merge status on `main`.
+- **All five preceding packets must be merged before this packet's PR opens.** Hard `dependencies: ["packet:00", "packet:01", "packet:02", "packet:03", "packet:04"]` (packets 00 and 01 are transitive dependencies of those). The agent verifies merge status on `main`.
 - **ADR-0063 acceptance is a soft prerequisite.** If ADR-0063 is not yet Accepted at this packet's filing time, the default is to hold — but the operator may flip ADR-0068 ahead of ADR-0063 if the code reality already enforces ADR-0063's rules (packets 03 and 04 cite ADR-0063 D1/D6/D7 inline). Record the choice in the PR description.
 - **No invariant text change.** Only the `**Status:** Proposed ...` marker line is removed. The numbers stay; the text stays; the section heading stays.
 - **No catalog change.** D4's "no `honeydrunk-jobs` entry" remains in force; this packet does not add one. `catalogs/nodes.json`, `catalogs/relationships.json`, `catalogs/contracts.json` are not modified.

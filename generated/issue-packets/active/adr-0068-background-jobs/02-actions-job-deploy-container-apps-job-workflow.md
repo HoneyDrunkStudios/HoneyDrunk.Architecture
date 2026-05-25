@@ -4,7 +4,7 @@ type: repo-feature
 tier: 2
 target_repo: HoneyDrunkStudios/HoneyDrunk.Actions
 labels: ["feature", "tier-2", "ops", "ci-cd", "adr-0068", "wave-2"]
-dependencies: ["packet:00"]
+dependencies: ["packet:00", "packet:01"]
 adrs: ["ADR-0068", "ADR-0015", "ADR-0012", "ADR-0033"]
 wave: 2
 initiative: adr-0068-background-jobs

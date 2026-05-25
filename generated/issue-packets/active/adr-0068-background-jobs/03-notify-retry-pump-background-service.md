@@ -4,7 +4,7 @@ type: repo-feature
 tier: 2
 target_repo: HoneyDrunkStudios/HoneyDrunk.Notify
 labels: ["feature", "tier-2", "ops", "adr-0068", "wave-3"]
-dependencies: ["packet:00"]
+dependencies: ["packet:00", "packet:01"]
 adrs: ["ADR-0068", "ADR-0063", "ADR-0042", "ADR-0030", "ADR-0045"]
 wave: 3
 initiative: adr-0068-background-jobs

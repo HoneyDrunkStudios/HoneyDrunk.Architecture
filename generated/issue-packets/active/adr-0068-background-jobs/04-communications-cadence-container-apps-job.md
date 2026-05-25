@@ -4,7 +4,7 @@ type: repo-feature
 tier: 2
 target_repo: HoneyDrunkStudios/HoneyDrunk.Communications
 labels: ["feature", "tier-2", "ops", "adr-0068", "wave-3"]
-dependencies: ["packet:02"]
+dependencies: ["packet:01", "packet:02"]
 adrs: ["ADR-0068", "ADR-0063", "ADR-0042", "ADR-0030", "ADR-0045", "ADR-0019", "ADR-0015"]
 wave: 3
 initiative: adr-0068-background-jobs
@@ -180,7 +180,7 @@ The cadence scheduler's responsibilities:
 - [ ] The `pr-core.yml` tier-1 gate passes
 
 ## Human Prerequisites
-- [ ] **Packet 02's `job-deploy-container-apps-job.yml` must be merged and on `main` before this packet's deploy step can call it.** Hard same-initiative dependency, encoded in `dependencies: ["packet:02"]`.
+- [ ] **Packet 02's `job-deploy-container-apps-job.yml` must be merged and on `main` before this packet's deploy step can call it.** Hard same-initiative dependency, encoded in `dependencies: ["packet:01", "packet:02"]`.
 - [ ] **HARD GATE — Do not push this packet until ADR-0042 packets 02 and 03 ship NuGet packages on the feed.** This packet's compile depends on `HoneyDrunk.Kernel.Abstractions` (with `IIdempotencyStore` — ADR-0042 packet 02 ships 0.8.0) and `HoneyDrunk.Data.Idempotency.Cosmos` / `HoneyDrunk.Data.Idempotency.InMemory` (ADR-0042 packet 03). ADR-0042 is **Proposed** at the time this packet was authored; its packets have not yet been executed or merged. Until those packages are published, the executor cannot resolve the references and the PR will not build. Cross-initiative — not encoded in `dependencies:` (which only resolves within the initiative folder). The operator confirms package availability on the feed (search `HoneyDrunk.Kernel.Abstractions` version >= 0.8.0 and the `HoneyDrunk.Data.Idempotency.*` family in the package registry) **before** branching for this packet. **Agents never tag or publish — the operator runs that ceremony.**
 - [ ] **Verify the `IErrorReporter` package home against ADR-0045's current state.** The reference text above lists `HoneyDrunk.Telemetry.Abstractions` as the package home; ADR-0045 may have settled the surface differently (e.g. `HoneyDrunk.Pulse.Abstractions`, a dedicated `HoneyDrunk.ErrorReporting.Abstractions`, or kept it under another Node's contracts package). At packet execution time, check ADR-0045's current Status and the latest packet set in `adr-0045-grid-wide-error-tracking/`:
   - If ADR-0045's packet 02 has shipped: use the actual published package name and version; update `## NuGet Dependencies` in this packet body to match.
