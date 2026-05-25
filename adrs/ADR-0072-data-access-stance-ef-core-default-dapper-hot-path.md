@@ -83,7 +83,7 @@ The committed posture:
 
 ### D4 — Per-Node DbContext, scoped composition
 
-Each Node that touches data owns its own `DbContext`(s). Sharing a DbContext across Nodes is forbidden — it would break the Grid's boundary discipline (per [Invariant 3](../constitution/invariants.md) on dependency direction) and produce hidden coupling across deployable surfaces.
+Each Node that touches data owns its own `DbContext`(s). Sharing a DbContext across Nodes is forbidden — it would break the Grid's boundary discipline (a runtime coupling violation under [invariant 2](../constitution/invariants.md) "Runtime packages depend on Abstractions, never on other runtime packages at the same layer" and [invariant 11](../constitution/invariants.md) "One repo per Node") and produce hidden coupling across deployable surfaces.
 
 The composition shape:
 
@@ -102,7 +102,7 @@ Default EF query patterns, applied at code review per [ADR-0044](./ADR-0044-grid
 - **`Include` is explicit; lazy loading is off.** EF Core's lazy loading is disabled in the default DbContext composition. Eager-loading via `Include` is the only navigation-property mechanism; explicit-loading is permitted where it earns its keep.
 - **N+1 queries are caught at review.** The `review` agent's data-quality category checks for the `foreach (var item in list) { var related = ctx.Related.Where(...).ToList(); }` pattern.
 - **Compiled queries (`EF.CompileQuery`)** are permitted for hot-path reads where the compile cost amortizes — these are the boundary cases where Dapper might also be considered. Compiled query is the EF-side first option; Dapper is the EF-side-escape.
-- **Raw SQL via `FromSqlRaw` is parameterized** — never string-interpolated. Per [Invariant 8](../constitution/invariants.md) and standard secure-SQL discipline.
+- **Raw SQL via `FromSqlRaw` is parameterized** — never string-interpolated. Standard secure-SQL discipline; no existing numbered invariant covers parameterized SQL, so this rule is review-enforced via D5 here, with surface checks in `.claude/agents/review.md` D3 category 13 and depth checks in `.claude/agents/database.md`. ([Invariant 8](../constitution/invariants.md) covers secret values in logs/traces — a distinct concern, not parameterized SQL.)
 
 ### D6 — Testing discipline
 
@@ -234,7 +234,7 @@ Rejected. Without an ADR, each Node re-derives the choice and the Grid ends up w
 ## References
 
 - [`constitution/charter.md`](../constitution/charter.md) — enterprise-grade-substrate framing, many-decade horizon, boring-defaults preference
-- [`constitution/invariants.md`](../constitution/invariants.md) — invariant 3 (dependency direction), invariant 8 (no secrets in logs / parameterized SQL discipline)
+- [`constitution/invariants.md`](../constitution/invariants.md) — invariant 2 (runtime packages depend on Abstractions; same-layer rule) and invariant 11 (one repo per Node), together covering the per-Node DbContext rule; invariant 8 (secret values never in logs/traces) covers a distinct concern from parameterized SQL — the `FromSqlRaw` rule is review-enforced under ADR-0072 D5 with no existing numbered invariant home
 - [ADR-0005](./ADR-0005-configuration-and-secrets-strategy.md) — connection strings via Vault
 - [ADR-0012](./ADR-0012-grid-cicd-control-plane.md) — CI migration runner
 - [ADR-0030](./ADR-0030-grid-wide-audit-substrate.md) / [ADR-0031](./ADR-0031-stand-up-honeydrunk-audit-node.md) — Audit Node (primary write path is EF Core; hot-path forensic queries are Dapper-candidates)
