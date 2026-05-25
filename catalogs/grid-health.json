@@ -2,9 +2,10 @@
   "_meta": {
     "description": "Live health snapshot of every Node in the Grid. Written by CI workflows and agents; read by Claude Code, HoneyHub (when live), and the developer. Not a substitute for the Project board — this tracks repo-level readiness, not individual work items.",
     "updated": "2026-05-25",
-    "schema_version": "1.1",
+    "schema_version": "1.2",
     "changelog": [
-      "1.1: added tracked_workflows per repo for ADR-0012 grid-health aggregator"
+      "1.1: added tracked_workflows per repo for ADR-0012 grid-health aggregator",
+      "1.2: aligned tracked_workflows with live repo workflows and excluded legacy/duplicate PR gates"
     ]
   },
   "nodes": [
@@ -19,9 +20,11 @@
       "active_blockers": [],
       "notes": "Kernel v0.7.0 is the current Core baseline: canonical WellKnownNodes, typed TenantId, and Grid/Operation context contracts.",
       "tracked_workflows": [
+        "pr.yml",
         "nightly-security.yml",
         "publish.yml",
-        "weekly-deps.yml"
+        "weekly-deps.yml",
+        "hive-field-mirror.yml"
       ]
     },
     {
@@ -35,9 +38,11 @@
       "active_blockers": [],
       "notes": "Aligned to Kernel 0.7.0 abstractions; full Kernel runtime dependency removed; repo changelog finalized after v0.6.0 tag.",
       "tracked_workflows": [
+        "pr.yml",
         "nightly-security.yml",
         "publish.yml",
-        "weekly-deps.yml"
+        "weekly-deps.yml",
+        "hive-field-mirror.yml"
       ]
     },
     {
@@ -51,9 +56,11 @@
       "active_blockers": [],
       "notes": "Aligned to Kernel 0.7.0; provider facade cancellation behavior and provider-helper consolidation completed.",
       "tracked_workflows": [
+        "pr.yml",
         "nightly-security.yml",
         "publish.yml",
-        "weekly-deps.yml"
+        "weekly-deps.yml",
+        "hive-field-mirror.yml"
       ]
     },
     {
@@ -69,7 +76,7 @@
       ],
       "notes": "Repo scaffolded. Timer jobs establish Kernel Grid/Operation context; placeholder provider rotators consolidated. No release tag required for this pass.",
       "tracked_workflows": [
-        "publish.yml"
+        "deploy.yml"
       ]
     },
     {
@@ -83,9 +90,11 @@
       "active_blockers": [],
       "notes": "Auth emits fail-soft security audit records through HoneyDrunk.Audit.Abstractions 0.1.0 while preserving validation-only boundary and token/claims privacy.",
       "tracked_workflows": [
+        "pr.yml",
         "nightly-security.yml",
         "publish.yml",
-        "weekly-deps.yml"
+        "weekly-deps.yml",
+        "hive-field-mirror.yml"
       ]
     },
     {
@@ -99,9 +108,11 @@
       "active_blockers": [],
       "notes": "Requires Kernel request context at registration and live execution; Kernel operation correlation is authoritative.",
       "tracked_workflows": [
+        "pr.yml",
         "nightly-security.yml",
         "publish.yml",
-        "weekly-deps.yml"
+        "weekly-deps.yml",
+        "hive-field-mirror.yml"
       ]
     },
     {
@@ -115,10 +126,11 @@
       "active_blockers": [],
       "notes": "Aligned to Kernel 0.7.0 and Transport 0.6.0; outbox enrichment requires operation context or explicit CorrelationId/TenantId.",
       "tracked_workflows": [
-        "nightly-deps.yml",
+        "pr.yml",
         "nightly-security.yml",
         "publish.yml",
-        "weekly-deps.yml"
+        "weekly-deps.yml",
+        "hive-field-mirror.yml"
       ]
     },
     {
@@ -132,6 +144,7 @@
       "active_blockers": [],
       "notes": "Initial Audit Node released: Abstractions and Data packages provide append-only-by-interface durable audit records, query surface, redaction-before-append boundary, EF-ready data store, in-memory fixtures, and contract canaries.",
       "tracked_workflows": [
+        "pr.yml",
         "nightly-security.yml",
         "publish.yml",
         "weekly-deps.yml"
@@ -148,9 +161,13 @@
       "active_blockers": [],
       "notes": "Aligned to Kernel canonical Notify identity; queue credential resolution moved behind Vault-backed secret boundary. NuGet/GitHub Release published; changelog hygiene follow-up remains in Notify PR #16.",
       "tracked_workflows": [
+        "pr.yml",
         "nightly-security.yml",
         "publish.yml",
-        "weekly-deps.yml"
+        "weekly-deps.yml",
+        "hive-field-mirror.yml",
+        "release-functions.yml",
+        "release-worker.yml"
       ]
     },
     {
@@ -163,7 +180,11 @@
       "last_release": "2026-05-18",
       "active_blockers": [],
       "notes": "Full Kernel runtime dependency removed; runtime now consumes Kernel abstractions only and Notify.Abstractions 0.3.0. Runtime/Abstractions v0.2.0 release workflows succeeded.",
-      "tracked_workflows": []
+      "tracked_workflows": [
+        "pr.yml",
+        "release-abstractions.yml",
+        "release-runtime.yml"
+      ]
     },
     {
       "id": "honeydrunk-pulse",
@@ -178,9 +199,12 @@
       ],
       "notes": "Aligned to Kernel canonical Pulse identity and Transport 0.6.0; NuGet/GitHub Release published. Container scan blocked only image push, not package release.",
       "tracked_workflows": [
+        "pr.yml",
         "nightly-security.yml",
         "publish.yml",
-        "weekly-deps.yml"
+        "weekly-deps.yml",
+        "hive-field-mirror.yml",
+        "release-collector.yml"
       ]
     },
     {
@@ -196,9 +220,11 @@
       ],
       "notes": "ADR-0010 Phase 1 Node. Contracts and connector provider-slot packages (GitHub, Azure, HTTP) will ship from the Observe repo; no separate connectors Node.",
       "tracked_workflows": [
+        "pr.yml",
         "nightly-security.yml",
         "publish.yml",
-        "weekly-deps.yml"
+        "weekly-deps.yml",
+        "hive-field-mirror.yml"
       ]
     },
     {
@@ -214,11 +240,19 @@
       ],
       "notes": "hive-field-mirror.yml shipped (Actions#22 closed). D6 batch-filer will incorporate mirror step, resolving D5 for the primary flow. hive-backfill-issue.sh exists for manual one-offs.",
       "tracked_workflows": [
+        "actions-ci.yml",
+        "pr-core.yml",
         "nightly-accessibility.yml",
-        "nightly-deps.yml",
         "nightly-security.yml",
         "refresh-hive-project-metadata.yml",
-        "weekly-governance.yml"
+        "weekly-governance.yml",
+        "grid-health-report.yml",
+        "hive-field-mirror.yml",
+        "file-packets.yml",
+        "release.yml",
+        "seed-labels.yml",
+        "seed-labels-fanout.yml",
+        "azure-oidc-deploy.yml"
       ]
     },
     {
@@ -249,7 +283,9 @@
         "ADR-0003 Phase 1 scoping needed"
       ],
       "notes": "Command center. Grid-health.json, contracts.json, sector-interaction-map.md added 2026-04-12.",
-      "tracked_workflows": []
+      "tracked_workflows": [
+        "file-packets.yml"
+      ]
     },
     {
       "id": "honeydrunk-standards",
@@ -291,9 +327,11 @@
       ],
       "notes": "Agent runtime and lifecycle. Designed in ai-sector-architecture.md. Repo context docs in repos/HoneyDrunk.Agents/.",
       "tracked_workflows": [
+        "pr.yml",
         "nightly-security.yml",
         "publish.yml",
-        "weekly-deps.yml"
+        "weekly-deps.yml",
+        "hive-field-mirror.yml"
       ]
     },
     {
@@ -309,9 +347,11 @@
       ],
       "notes": "ADR-0016 standup ADR Accepted 2026-04-19. Catalog surface registered (7 contracts per D3). Awaiting scaffold execution: HoneyDrunk.AI.Abstractions (7 contracts), HoneyDrunk.AI runtime, four provider-slot packages (OpenAI/Anthropic/AzureOpenAI/InMemory), Standards wiring, CI with api-compatibility canary scoped to Abstractions (D8), InMemory provider for Evals/CI determinism.",
       "tracked_workflows": [
+        "pr.yml",
         "nightly-security.yml",
         "publish.yml",
-        "weekly-deps.yml"
+        "weekly-deps.yml",
+        "hive-field-mirror.yml"
       ]
     },
     {
@@ -327,9 +367,11 @@
       ],
       "notes": "Agent memory — short-term, long-term, scoped. Designed in ai-sector-architecture.md.",
       "tracked_workflows": [
+        "pr.yml",
         "nightly-security.yml",
         "publish.yml",
-        "weekly-deps.yml"
+        "weekly-deps.yml",
+        "hive-field-mirror.yml"
       ]
     },
     {
@@ -345,9 +387,11 @@
       ],
       "notes": "External knowledge ingestion, embeddings, RAG pipelines.",
       "tracked_workflows": [
+        "pr.yml",
         "nightly-security.yml",
         "publish.yml",
-        "weekly-deps.yml"
+        "weekly-deps.yml",
+        "hive-field-mirror.yml"
       ]
     },
     {
@@ -377,9 +421,11 @@
       ],
       "notes": "Tool registry, discovery, permissioning, versioning.",
       "tracked_workflows": [
+        "pr.yml",
         "nightly-security.yml",
         "publish.yml",
-        "weekly-deps.yml"
+        "weekly-deps.yml",
+        "hive-field-mirror.yml"
       ]
     },
     {
@@ -395,9 +441,11 @@
       ],
       "notes": "Workflow engine, multi-step pipelines, sagas, compensation.",
       "tracked_workflows": [
+        "pr.yml",
         "nightly-security.yml",
         "publish.yml",
-        "weekly-deps.yml"
+        "weekly-deps.yml",
+        "hive-field-mirror.yml"
       ]
     },
     {
@@ -413,9 +461,11 @@
       ],
       "notes": "Human oversight — approvals, safety, circuit breakers, cost controls, audit.",
       "tracked_workflows": [
+        "pr.yml",
         "nightly-security.yml",
         "publish.yml",
-        "weekly-deps.yml"
+        "weekly-deps.yml",
+        "hive-field-mirror.yml"
       ]
     },
     {
