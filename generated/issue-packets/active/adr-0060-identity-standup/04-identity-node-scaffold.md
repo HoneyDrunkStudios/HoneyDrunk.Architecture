@@ -20,7 +20,7 @@ Bring the empty `HoneyDrunk.Identity` repo from zero to first-shippable state pe
 
 This is the unblocker for the first user-facing app's signup flow (Hearth per PDR-0005, queued behind it Lately per PDR-0003 and Curiosities per PDR-0008) and for Notify.Cloud's prospect signup. After this packet merges and `v0.1.0` tags, Hearth's signup packet can take `HoneyDrunk.Identity.Abstractions 0.1.0` as a PackageReference and wire the first concrete `IExternalIdpClaimMapper` (likely Entra External ID).
 
-**Invariant numbers (substitute via packet 02 pre-filing under invariant 24).** Identity constitutional invariants are **{N-ownership}** (Identity owns user records and IdentityMap, not Auth — D1 / D3), **{N-issuance}** (internal-token issuance exclusivity — D6), **{N-coupling}** (downstream Abstractions-only coupling — D13), and **{N-canary}** (Identity contract-shape canary — D7). Defaults at scoping time (high-water mark 53): 54 / 55 / 56 / 57.
+**Invariant numbers (substitute via packet 02 pre-filing under invariant 24).** Identity constitutional invariants are **{N-ownership}** (Identity owns user records and IdentityMap, not Auth - D1 / D3), **{N-issuance}** (internal-token issuance exclusivity - D6), and **{N-canary}** (Identity contract-shape canary - D7). Default reservation at scoping time: 64 / 65 / 66. ADR-0060 D13 downstream Abstractions-only coupling remains an ADR constraint, not a fourth constitutional invariant.
 
 ## Target Repo
 
@@ -28,7 +28,7 @@ This is the unblocker for the first user-facing app's signup flow (Hearth per PD
 
 ## Motivation
 
-ADR-0060 D12 Phase 1 specifies the first-PR scaffold for HoneyDrunk.Identity. Packet 03 created the GitHub repo and cloned the local tree at `c:/Users/tatte/source/repos/HoneyDrunkStudios/HoneyDrunk.Identity/` (`.gitignore`, `LICENSE`, placeholder `README.md` only). Catalogs and Identity invariants (`{N-ownership}`, `{N-issuance}`, `{N-coupling}`, `{N-canary}`) are already in place after packets 01 and 02. This packet ships the code and freezes a contract shape that supports the user record, the external-IdP seam, internal-token issuance, and the account-deletion fan-out from v0.1.0.
+ADR-0060 D12 Phase 1 specifies the first-PR scaffold for HoneyDrunk.Identity. Packet 03 created the GitHub repo and cloned the local tree at `c:/Users/tatte/source/repos/HoneyDrunkStudios/HoneyDrunk.Identity/` (`.gitignore`, `LICENSE`, placeholder `README.md` only). Catalogs and Identity invariants (`{N-ownership}`, `{N-issuance}`, `{N-canary}`) are already in place after packets 01 and 02. This packet ships the code and freezes a contract shape that supports the user record, the external-IdP seam, internal-token issuance, and the account-deletion fan-out from v0.1.0.
 
 Until this packet ships: Hearth (PDR-0005) has no `HoneyDrunk.Identity.Abstractions 0.1.0` to reference for its signup flow; Lately, Curiosities, and Notify.Cloud have no canonical user-account target; the contract-shape canary has no baseline; the ADR-0050 D6 "Auth-side packet" placeholder for the user-level GDPR Art. 17 path has no Identity-side implementation site to compile against; the user record problem ADR-0060 exists to solve stays unsolved. ADR-0060 D12 Phase 1 explicitly requires the D4 surface + round-trip proof in the first commit so the canary has a coherent baseline.
 
@@ -123,7 +123,7 @@ Per invariant 27 (all projects in a solution share one version and move together
 
 Records drop the `I` prefix per the Grid-wide naming rule; interfaces keep it.
 
-**Single `HoneyDrunk.*` reference: `HoneyDrunk.Kernel.Abstractions`** (for `TenantId` strong type per ADR-0026). Permitted by ADR-0060 D4 / D13 as the same exception ADR-0031 took for Audit — every downstream consumer (Hearth, Lately, Curiosities, Notify.Cloud) already has Kernel.Abstractions in its closure, so no new transitively-pinned package.
+**No `HoneyDrunk.*` references in `HoneyDrunk.Identity.Abstractions`.** Per invariant 1, Abstractions packages carry zero runtime dependencies on other HoneyDrunk packages. Public contract shapes use primitive/string value objects; the runtime `HoneyDrunk.Identity` package adapts them to Kernel context types at composition boundaries.
 
 **`UserId` shape** (D3): 26-char ULID prefixed `usr_`. Define as a `readonly record struct`:
 
@@ -155,7 +155,7 @@ public readonly record struct UserId(string Value)
 }
 ```
 
-`Ulid` is `NUlid` (BSD-3) — already a Grid-common ULID library; verify the Grid's existing ULID convention against `HoneyDrunk.Kernel.Abstractions` and pick the same library Kernel uses. If Kernel does not ship a ULID dependency on the Abstractions surface, take `NUlid` directly here as the implementation choice (the package is a leaf dependency; no transitive `HoneyDrunk` weight).
+`Ulid` is `NUlid` (BSD-3) - already a Grid-common ULID library. Take `NUlid` directly here as a leaf dependency; do not reference Kernel from the Abstractions surface.
 
 **`PrincipalId` shape** (D3): discriminated record wrapping `UserPrincipal` / `ServicePrincipal` / `AgentPrincipal`. Use C# discriminated-shape pattern (private constructor + factory methods + a Kind enum) consistent with the Grid's `MessageDecision` / `AuthorizationDecision` patterns in Communications/Auth.
 
@@ -335,7 +335,7 @@ Every new `.csproj` lists `HoneyDrunk.Standards` (`PrivateAssets="all"`) per inv
 |---|---|
 | `HoneyDrunk.Standards` | `PrivateAssets="all"` |
 | `HoneyDrunk.Kernel.Abstractions` | For `TenantId` strong type (ADR-0026). Deliberate departure from zero-`HoneyDrunk` stance per ADR-0060 D4 / D13 — same exception as Audit (ADR-0031). |
-| `NUlid` | ULID generation for `UserId.New()`. Leaf dependency; no transitive `HoneyDrunk` weight. If Kernel.Abstractions already exposes a ULID library indirectly, defer to that. |
+| `NUlid` | ULID generation for `UserId.New()`. Leaf dependency; no transitive `HoneyDrunk` weight. |
 
 ### `HoneyDrunk.Identity.csproj`
 
@@ -364,7 +364,7 @@ Project reference: `HoneyDrunk.Identity.Abstractions`.
 ## Boundary Check
 
 - [x] All work inside `HoneyDrunk.Identity`. No other Grid repos edited.
-- [x] `HoneyDrunk.Identity.Abstractions` carries exactly ONE `HoneyDrunk.*` ref: `HoneyDrunk.Kernel.Abstractions` (for `TenantId`). Plus `NUlid` for ULID generation; no other Grid-runtime refs.
+- [x] `HoneyDrunk.Identity.Abstractions` carries **zero** `HoneyDrunk.*` runtime refs per invariant 1. `NUlid` is the only non-Microsoft leaf dependency used for ULID generation.
 - [x] `HoneyDrunk.Identity` references Abstractions (project), Kernel.Abstractions, Data.Abstractions, Vault, Auth.Abstractions, Audit.Abstractions. No `HoneyDrunk.Pulse` (telemetry is one-way via Kernel's factory).
 - [x] No secrets in code; signing key resolved via `ISecretStore` per Invariants 8/9.
 - [x] No credential storage — Identity stores zero passwords, passkeys, or OAuth refresh tokens per ADR-0060 D2.
@@ -379,7 +379,7 @@ Project reference: `HoneyDrunk.Identity.Abstractions`.
 
 - [ ] `HoneyDrunk.Identity.slnx` builds clean from a fresh clone via `dotnet build` with no warnings (warnings-as-errors).
 - [ ] D4 public surface present in `HoneyDrunk.Identity.Abstractions` with XML documentation per invariant 13: `IUserDirectory`, `IUserProfileStore`, `IInternalTokenIssuer`, `IExternalIdpClaimMapper`, `IIdentityDeletionFanout`, `IIdentityHealth`, plus the records `UserId`, `PrincipalId`, `ExternalSubject`, `UserProfile`, `InternalToken`, `DeletionIntent`, `DeletionAck`, `UserRecord`, and the enums `UserLifecycleStatus`, `DeletionAckStatus`. Records and enums drop the `I` prefix; interfaces keep it.
-- [ ] `HoneyDrunk.Identity.Abstractions` has exactly ONE `HoneyDrunk.*` PackageReference: `HoneyDrunk.Kernel.Abstractions`. Per ADR-0060 D4 / D13's permitted exception (same as Audit per ADR-0031). No `HoneyDrunk.Kernel` runtime ref; no `HoneyDrunk.Data*` / `HoneyDrunk.Vault*` / `HoneyDrunk.Pulse*` / `HoneyDrunk.Auth*` / `HoneyDrunk.Audit*` refs. Constitutional invariant **{N-coupling}** (downstream Abstractions-only coupling) is satisfied — Abstractions stay near-minimal.
+- [ ] `HoneyDrunk.Identity.Abstractions` has **zero** `HoneyDrunk.*` PackageReferences. No `HoneyDrunk.Kernel*`, `HoneyDrunk.Data*`, `HoneyDrunk.Vault*`, `HoneyDrunk.Pulse*`, `HoneyDrunk.Auth*`, or `HoneyDrunk.Audit*` refs. ADR-0060 D13 is satisfied by keeping Abstractions minimal and dependency-free.
 - [ ] `UserId` is a `readonly record struct` with `Value` (string), `New()` factory (returns `usr_` + 26-char ULID), `Empty` static property, `IsEmpty` instance property, and `ToString()` returning the wrapped string. Asserted by `UserIdShapeTests` (the `Value` starts with `usr_` and has length 30).
 - [ ] `PrincipalId` is a discriminated record with three variants: `User(UserId)`, `Service(string)`, `Agent(string)`. Asserted by `PrincipalIdDiscriminatedTests`.
 - [ ] `IInternalTokenIssuer.IssueAsync` hard-caps the TTL at 5 minutes per ADR-0060 D6. Asserted by `JwksInternalTokenIssuerTests` (callers passing TTL > 5 min get a token with `exp <= now + 5 min`).
@@ -412,7 +412,7 @@ Project reference: `HoneyDrunk.Identity.Abstractions`.
 ## Human Prerequisites
 
 - [ ] Packet 03 of this initiative complete — `HoneyDrunkStudios/HoneyDrunk.Identity` repo exists on GitHub with org-default branch protection, labels seeded, OIDC federated credential wired, and the local working tree cloned at `c:/Users/tatte/source/repos/HoneyDrunkStudios/HoneyDrunk.Identity/`.
-- [ ] Packet 02 of this initiative merged — the four new Identity invariants exist in `constitution/invariants.md` so this packet's acceptance criteria reference them by number. **This packet's source file uses `{N-ownership}`, `{N-issuance}`, `{N-coupling}`, `{N-canary}` placeholders** for the four Identity-related invariant numbers; substitute the real numbers in place pre-push under invariant 24's pre-filing carve-out, **after** packet 02 merges and the assigned numbers are known. Hardcoding 54/55/56/57 is wrong if the high-water mark moved between scoping and packet 02's edit time.
+- [ ] Packet 02 of this initiative merged — the three new Identity invariants exist in `constitution/invariants.md` so this packet's acceptance criteria reference them by number. **This packet's source file uses `{N-ownership}`, `{N-issuance}`, `{N-canary}` placeholders** for the three Identity-related invariant numbers; substitute the real numbers in place pre-push under invariant 24's pre-filing carve-out, **after** packet 02 merges and the assigned numbers are known. Hardcoding 54/55/56/57 is wrong; use the 64/65/66 reservation unless the registry shifts if the high-water mark moved between scoping and packet 02's edit time.
 - [ ] Packet 01 of this initiative merged — the `repos/HoneyDrunk.Identity/` context folder is registered and `honeydrunk-identity` is in `catalogs/nodes.json`; the ADR-0050 amendment is on disk; the Auth context files are amended.
 - [ ] After this packet's PR merges, push tag `v0.1.0` from `main` to trigger the first NuGet publish. Tags are human-pushed per invariant 27.
 - [ ] **`NUGET_API_KEY` repository (or org-level) secret is available to the `HoneyDrunk.Identity` repo before `v0.1.0` is tagged.** Org-level `NUGET_API_KEY` shared with other HoneyDrunk repos publishing to nuget.org is the standard approach — verify it's bound to this repo before tagging.
@@ -424,7 +424,7 @@ Project reference: `HoneyDrunk.Identity.Abstractions`.
 
 ## Referenced Invariants
 
-> **Invariant 1:** Abstractions packages have zero runtime dependencies on other HoneyDrunk packages. Only `Microsoft.Extensions.*` abstractions are permitted. — `HoneyDrunk.Identity.Abstractions` takes a single permitted exception: `HoneyDrunk.Kernel.Abstractions` for `TenantId`. This is the same exception ADR-0031 took for Audit and is justified by the same reasoning — every downstream consumer already has Kernel.Abstractions in its closure, so no new transitively-pinned package.
+> **Invariant 1:** Abstractions packages have zero runtime dependencies on other HoneyDrunk packages. Only `Microsoft.Extensions.*` abstractions are permitted. - `HoneyDrunk.Identity.Abstractions` obeys this directly: no `HoneyDrunk.Kernel.Abstractions`, no other `HoneyDrunk.*` package, and only primitive/value-object contract shapes at the public boundary.
 
 > **Invariant 8:** Secret values never appear in logs, traces, exceptions, or telemetry. Only secret names/identifiers may be traced. — `JwksInternalTokenIssuer` traces the signing-key *name* (e.g., `identity:internal-token-signing-key`), never the value. Audit emission for `InternalTokenIssued` traces the `PrincipalId`, the token's `jti`/`exp`, and the signing-key *name* — never the token string itself.
 
@@ -438,7 +438,7 @@ Project reference: `HoneyDrunk.Identity.Abstractions`.
 
 > **Invariant 13:** All public APIs have XML documentation. — Every interface, record, and enum in `HoneyDrunk.Identity.Abstractions` gets XML doc comments. Enforced by `HoneyDrunk.Standards` analyzers.
 
-> **Invariant 24:** Issue packets are immutable once filed as a GitHub Issue. Pre-filing amendments are permitted; post-filing corrections require a new packet. — This packet's `{N-ownership}` / `{N-issuance}` / `{N-coupling}` / `{N-canary}` placeholders are substituted with the assigned numbers in place pre-push, after packet 02's PR merges. Packets 02 and 04 cannot be filed in the same push.
+> **Invariant 24:** Issue packets are immutable once filed as a GitHub Issue. Pre-filing amendments are permitted; post-filing corrections require a new packet. — This packet's `{N-ownership}` / `{N-issuance}` / `{N-canary}` placeholders are substituted with the assigned numbers in place pre-push, after packet 02's PR merges. Packets 02 and 04 cannot be filed in the same push.
 
 > **Invariant 26:** Issue packets for .NET code work must include an explicit `## NuGet Dependencies` section. — See the §NuGet Dependencies section above.
 
@@ -450,13 +450,12 @@ Project reference: `HoneyDrunk.Identity.Abstractions`.
 
 > **Invariant 48:** Downstream Nodes take a runtime dependency only on `HoneyDrunk.Audit.Abstractions`. — Identity is a downstream consumer of Audit; the runtime references `HoneyDrunk.Audit.Abstractions` only. No `HoneyDrunk.Audit.Data` reference.
 
-> **Invariant {N-ownership}** (assigned by packet 02 of this initiative, default 54): **User identity records, the `IdentityMap`, and the user profile live in `HoneyDrunk.Identity`, not in `HoneyDrunk.Auth`.** — This scaffold is the implementation site for that invariant. The `IdentityMap` table relocation from Auth happens in Phase 3 (a follow-up packet); this scaffold ships the new home so the relocation has a destination.
+> **Invariant {N-ownership}** (assigned by packet 02 of this initiative, default 64): **User identity records, the `IdentityMap`, and the user profile live in `HoneyDrunk.Identity`, not in `HoneyDrunk.Auth`.** — This scaffold is the implementation site for that invariant. The `IdentityMap` table relocation from Auth happens in Phase 3 (a follow-up packet); this scaffold ships the new home so the relocation has a destination.
 
-> **Invariant {N-issuance}** (assigned by packet 02, default 55): **Internal-token issuance for service-to-service `UserPrincipal` flows is the exclusive responsibility of `HoneyDrunk.Identity.IInternalTokenIssuer`.** — `JwksInternalTokenIssuer` is the only implementation in the Grid; no other Node mints JWT bearer tokens for internal use. The 5-minute TTL hard-cap is the structural defense against compromise.
+> **Invariant {N-issuance}** (assigned by packet 02, default 65): **Internal-token issuance for service-to-service `UserPrincipal` flows is the exclusive responsibility of `HoneyDrunk.Identity.IInternalTokenIssuer`.** — `JwksInternalTokenIssuer` is the only implementation in the Grid; no other Node mints JWT bearer tokens for internal use. The 5-minute TTL hard-cap is the structural defense against compromise.
 
-> **Invariant {N-coupling}** (assigned by packet 02, default 56): **Downstream Nodes take a runtime dependency only on `HoneyDrunk.Identity.Abstractions`.** — This scaffold structures the package boundary to enforce that rule. Composition against `HoneyDrunk.Identity` is a host-time concern.
 
-> **Invariant {N-canary}** (assigned by packet 02, default 57): **The HoneyDrunk.Identity Node CI must include a contract-shape canary for the full `HoneyDrunk.Identity.Abstractions` public surface.** — The `api-compatibility.yml` workflow is wired in this packet; the canary covers all six interfaces and all seven records from v0.1.0.
+> **Invariant {N-canary}** (assigned by packet 02, default 66): **The HoneyDrunk.Identity Node CI must include a contract-shape canary for the full `HoneyDrunk.Identity.Abstractions` public surface.** — The `api-compatibility.yml` workflow is wired in this packet; the canary covers all six interfaces and all seven records from v0.1.0.
 
 ## Referenced ADR Decisions
 
@@ -487,7 +486,7 @@ Project reference: `HoneyDrunk.Identity.Abstractions`.
 ## Dependencies
 
 - `packet:01` — Architecture catalog registration + `repos/HoneyDrunk.Identity/` context folder + ADR-0050 amendment + Auth context amendments must be on `main` so the catalogs and the cross-references are correct when the scaffold lands.
-- `packet:02` — Constitutional invariants `{N-ownership}` / `{N-issuance}` / `{N-coupling}` / `{N-canary}` must exist in `constitution/invariants.md` so this packet's acceptance criteria reference them by number. Packet 02 also substitutes this packet's placeholders pre-push (invariant 24's carve-out).
+- `packet:02` — Constitutional invariants `{N-ownership}` / `{N-issuance}` / `{N-canary}` must exist in `constitution/invariants.md` so this packet's acceptance criteria reference them by number. Packet 02 also substitutes this packet's placeholders pre-push (invariant 24's carve-out).
 - `packet:03` — The GitHub repo must exist on `HoneyDrunkStudios` and the local working tree must be cloned at `c:/Users/tatte/source/repos/HoneyDrunkStudios/HoneyDrunk.Identity/` before scaffolding can run.
 
 ## Labels
@@ -513,9 +512,9 @@ Project reference: `HoneyDrunk.Identity.Abstractions`.
 
 - **Invariant 10:** Auth tokens are validated, never issued. HoneyDrunk.Auth validates JWT Bearer tokens. **It is not an identity provider.** — Auth's role in the Phase-2 token flow is validation only. Identity's `JwksInternalTokenIssuer` issues; Auth's `IJwtBearerValidator` validates through its existing JWKS-based path. No new validation primitive lands in Auth.
 - **Invariant 8 / 9:** Secret values never appear in logs/traces/exceptions/telemetry; Vault is the only source of secrets. — The signing key is resolved via `ISecretStore.GetSecretAsync` by name; the name appears in logs/traces, the value never does.
-- **Invariant 1:** Abstractions packages have zero runtime dependencies on other HoneyDrunk packages — with the permitted exception of `HoneyDrunk.Kernel.Abstractions` for `TenantId` per ADR-0060 D4 / D13 (same exception as Audit).
-- **Invariant {N-coupling}** (default 56): Downstream Nodes take a runtime dependency only on `HoneyDrunk.Identity.Abstractions`. — Structure the package boundary so consumers can compile against Abstractions alone.
-- **Invariant {N-canary}** (default 57): The HoneyDrunk.Identity Node CI must include a contract-shape canary for the full `HoneyDrunk.Identity.Abstractions` public surface. — `api-compatibility.yml` covers all six interfaces and all seven records (plus the supporting enums).
+- **Invariant 1:** Abstractions packages have zero runtime dependencies on other HoneyDrunk packages. `HoneyDrunk.Identity.Abstractions` must not reference `HoneyDrunk.Kernel.Abstractions`; runtime packages adapt primitive/value-object identifiers to Kernel context types outside the Abstractions package.
+- **ADR-0060 D13:** Downstream Nodes take a runtime dependency only on `HoneyDrunk.Identity.Abstractions`; composition against `HoneyDrunk.Identity` is host-time only.
+- **Invariant {N-canary}** (default 66): The HoneyDrunk.Identity Node CI must include a contract-shape canary for the full `HoneyDrunk.Identity.Abstractions` public surface. — `api-compatibility.yml` covers all six interfaces and all seven records (plus the supporting enums).
 - **Records drop `I` prefix; interfaces keep it.** Per the Grid-wide naming rule.
 - **`IExternalIdpClaimMapper` is NOT auto-registered.** The host composes its implementation. v0.1.0 ships only the in-memory test fixture (`InMemoryExternalIdpClaimMapper`).
 - **No Entra adapter, no OAuth callback HTTP surface, no full deletion fan-out workflow, no IdentityMap relocation from Auth, no Container App / managed identity / Key Vault provisioning** in this scaffold. Those are Phase 2/3 follow-ups.

@@ -142,7 +142,7 @@ Per invariant 27 (all projects in a solution share one version and move together
 
 Records drop the `I` prefix per the Grid-wide naming rule (memory `project_naming_rule_records`); interfaces keep it.
 
-**Single `HoneyDrunk.*` reference: `HoneyDrunk.Kernel.Abstractions`** (for `TenantId` strong type per ADR-0026, `CorrelationId` if needed, and ambient `IGridContext` context types). This matches the Audit standup precedent (ADR-0031 D2) and the AI standup precedent (ADR-0016 D2). Every downstream consumer already has Kernel.Abstractions in its closure, so no new transitively-pinned package.
+**No `HoneyDrunk.*` references in `HoneyDrunk.Files.Abstractions`.** Per constitutional invariant 1, Abstractions packages carry zero runtime dependencies on other HoneyDrunk packages. Public contract shapes use primitive/string value objects for file, tenant, correlation, classification, and download-url identifiers; the runtime `HoneyDrunk.Files` package adapts those values to Kernel `TenantId` / `CorrelationId` / `IGridContext` concepts at composition boundaries.
 
 **Strong-typed `FileId`** as a `readonly record struct` matching the Kernel `TenantId` / `CorrelationId` template:
 
@@ -559,7 +559,6 @@ Every new `.csproj` lists `HoneyDrunk.Standards` (`PrivateAssets="all"`) per inv
 | Package | Notes |
 |---|---|
 | `HoneyDrunk.Standards` | `PrivateAssets="all"` |
-| `HoneyDrunk.Kernel.Abstractions` | For `TenantId` strong type, `IGridContext` accessor types (ADR-0026). Deliberate departure from zero-`HoneyDrunk` stance per ADR-0061 D3 — single Kernel-Abstractions reference is the same pattern Audit and AI took. |
 
 ### `HoneyDrunk.Files.csproj`
 
@@ -599,12 +598,12 @@ Project reference: `HoneyDrunk.Files.Abstractions`. **No `Azure.Storage.Blobs` r
 
 - `Abstractions.Tests` → `Abstractions`
 - `Tests.Unit` → `Abstractions`, runtime, `InMemory`
-- `Tests.Canary` → `Abstractions`, `Kernel.Abstractions` (canary verifies the Abstractions boundary surface)
+- `Tests.Canary`  `Abstractions` (canary verifies the Abstractions boundary surface and zero-HoneyDrunk dependency rule)
 
 ## Boundary Check
 
 - [x] All work inside `HoneyDrunk.Files`. No other Grid repos edited.
-- [x] `HoneyDrunk.Files.Abstractions` carries exactly ONE `HoneyDrunk.*` ref: `HoneyDrunk.Kernel.Abstractions` (for `TenantId` and ambient context types). No Data/Vault/Audit/Pulse/Kernel-runtime refs.
+- [x] `HoneyDrunk.Files.Abstractions` carries **zero** `HoneyDrunk.*` refs per invariant 1. No Kernel/Data/Vault/Audit/Pulse refs.
 - [x] `HoneyDrunk.Files` references `Abstractions` (project), `Kernel.Abstractions`, `Data.Abstractions`, `Vault`, `Audit.Abstractions`. No `HoneyDrunk.Pulse.*` (telemetry is one-way per ADR-0061 D6).
 - [x] `HoneyDrunk.Files.InMemory` references `Abstractions` (project) only. No cloud SDK references.
 - [x] `HoneyDrunk.Files.AzureBlob` references `Abstractions` (project) only at v0.1.0. **No `Azure.Storage.Blobs` reference** until the first feature packet activates the real implementation.
@@ -619,7 +618,7 @@ Project reference: `HoneyDrunk.Files.Abstractions`. **No `Azure.Storage.Blobs` r
 
 - [ ] `HoneyDrunk.Files.slnx` builds clean from a fresh clone via `dotnet build` with no warnings (warnings-as-errors).
 - [ ] D6 public surface present in `HoneyDrunk.Files.Abstractions` with XML documentation per invariant 13: `IFileStore`, `IFileUploadSession`, `IFileMetadata`, `IFileProcessor`, `IFileQuotaPolicy` (interfaces, keep `I` prefix); `FileId` (record-struct, drops `I`), `FileDescriptor`, `UploadRequest`, `UploadSession`, `UploadDenied`, `SignedDownloadUrl`, `QuotaSnapshot`, `RetentionPolicy` (records, drop `I`); `FilePurpose`, `FileClassification`, `FileProcessingStatus` (enums, drop `I`).
-- [ ] `HoneyDrunk.Files.Abstractions` has exactly ONE `HoneyDrunk.*` PackageReference: `HoneyDrunk.Kernel.Abstractions` (for `TenantId` strong type and ambient context types). Constitutional invariants 1 (Abstractions zero-dependency) and `{N-domain-meaning}` (Files persists bytes + bytes-metadata, never domain meaning) are satisfied — the single Kernel-Abstractions reference is the same intentional, ADR-permitted exception Audit and AI both took.
+- [ ] `HoneyDrunk.Files.Abstractions` has **zero** `HoneyDrunk.*` PackageReferences. Constitutional invariants 1 (Abstractions zero-dependency) and `{N-domain-meaning}` (Files persists bytes + bytes-metadata, never domain meaning) are satisfied.
 - [ ] `IFileStore.GetDownloadUrlAsync` returns `Task<SignedDownloadUrl>`, never `Task<string>`. The reflection test `DownloadShapeTests.cs` asserts this and passes. Constitutional invariant `{N-download-shape}` is satisfied at the type-shape level.
 - [ ] `FileDescriptor` has exactly the byte-metadata allow-list members: `Id`, `TenantId`, `Purpose`, `ContentType`, `SizeBytes`, `Classification`, `UploadedAt`, `ProcessingStatus`, `SoftDeletedAt`, `IsPublic`. The reflection test `DomainMeaningBoundaryTests.cs` asserts this and passes. Constitutional invariant `{N-domain-meaning}` is satisfied at the type-shape level.
 - [ ] `HoneyDrunk.Files` exposes `AddHoneyDrunkFiles()` extension; `IFileUploadSession`, `IFileMetadata`, `IFileQuotaPolicy` all resolve from DI after registration.
@@ -644,7 +643,7 @@ Project reference: `HoneyDrunk.Files.Abstractions`. **No `Azure.Storage.Blobs` r
 - [ ] All four projects in the solution carry the same `Version` (0.1.0), excluding test projects (invariant 27). `HoneyDrunk.Files.AzureBlob` ships at 0.1.0 as a placeholder per invariant 27's "all projects move together" rule.
 - [ ] Manual confirmation that pushing tag `v0.1.0` triggers `release.yml` and produces NuGet packages for all four `src/*` projects (do not actually push the tag in this PR — verify the workflow exists and a tag-push trigger is configured).
 - [ ] **No `.github/dependabot.yml` file exists.** Per ADR-0009, dependency-scanning lives in the nightly workflows; no Dependabot config file is committed.
-- [ ] **`FileDescriptor.TenantId` is the Kernel `TenantId` strong type** (from `HoneyDrunk.Kernel.Abstractions.Identity`), per ADR-0026. `UploadRequest.TenantId` and `QuotaSnapshot.TenantId` use the same strong type. The Files-side per-tenant quota and forensic-listing paths justify the contract dependency on `Kernel.Abstractions` — same trade Audit made.
+- [ ] **`FileDescriptor.TenantId` is a Files-local tenant identifier value object** wrapping the canonical tenant id string. Runtime adapters map it to Kernel `TenantId` at composition boundaries; Abstractions do not reference `HoneyDrunk.Kernel.Abstractions`.
 - [ ] **Repo `README.md` includes a `## For downstream consumers — minimal wiring` section** showing the host-side composition snippet (test-time with `InMemoryFileStore`; production-time placeholder noting `AzureBlobFileStore` lands with the first feature packet), copy-pasteable. This is load-bearing for every downstream consumer (Hearth's first media packet, Notify's optional `file_id` attachment path, Communications digests).
 - [ ] **Repo `README.md` includes a `## Phase-1 honest limitation` section** that explicitly names: (a) `HoneyDrunk.Files.AzureBlob` is a placeholder at v0.1.0 — no implementation; (b) the processing pipeline ships only the `PassThroughVirusScan` stage — real image/audio processing, EXIF stripping, and malware scan integration land with the first feature packet; (c) no Azure resources are provisioned at standup. No language describing the AzureBlob package as "production-ready" or "Azure-backed" appears anywhere in the repo.
 - [ ] **The README does NOT cite "ADR-0061" by number in narrative paragraphs.** Per memory `feedback_no_adr_in_docs`. (Runtime metadata references — CHANGELOG, catalog entries elsewhere — are fine; the README is user-facing narrative.)
@@ -663,7 +662,7 @@ Project reference: `HoneyDrunk.Files.Abstractions`. **No `Azure.Storage.Blobs` r
 
 ## Referenced Invariants
 
-> **Invariant 1:** Abstractions packages have zero runtime dependencies on other HoneyDrunk packages. Only `Microsoft.Extensions.*` abstractions are permitted. — `Abstractions.csproj` carries ONE `HoneyDrunk.*` ref (`Kernel.Abstractions` for `TenantId` and ambient context types) — intentional, ADR-0061 D3-permitted exception. `HoneyDrunk.Standards` uses `PrivateAssets="all"`.
+> **Invariant 1:** Abstractions packages have zero runtime dependencies on other HoneyDrunk packages. Only `Microsoft.Extensions.*` abstractions are permitted. - `Abstractions.csproj` carries zero `HoneyDrunk.*` refs; `HoneyDrunk.Standards` uses `PrivateAssets="all"`.
 
 > **Invariant 2:** Runtime packages depend on Abstractions, never on other runtime packages at the same layer. — `Files.csproj` references `Files.Abstractions` (project), `Kernel.Abstractions`, `Data.Abstractions`, `Vault`, `Audit.Abstractions`.
 
@@ -741,7 +740,7 @@ Project reference: `HoneyDrunk.Files.Abstractions`. **No `Azure.Storage.Blobs` r
 
 **Constraints:**
 
-- **Invariant 1:** Abstractions packages have zero runtime dependencies on other HoneyDrunk packages. Only `Microsoft.Extensions.*` abstractions are normally permitted. — `HoneyDrunk.Files.Abstractions.csproj` carries exactly one intentional ADR-permitted `HoneyDrunk.*` reference: `HoneyDrunk.Kernel.Abstractions` for `TenantId` and ambient context types. The `HoneyDrunk.Standards` reference uses `PrivateAssets="all"`.
+- **Invariant 1:** Abstractions packages have zero runtime dependencies on other HoneyDrunk packages. Only `Microsoft.Extensions.*` abstractions are permitted. - `HoneyDrunk.Files.Abstractions.csproj` carries zero `HoneyDrunk.*` references. The `HoneyDrunk.Standards` reference uses `PrivateAssets="all"`.
 - **Invariant 4:** No circular dependencies. The dependency graph is a DAG. Kernel is always at the root. — Files → Kernel and Files → Data → Kernel and Files → Audit → Data → Kernel are all DAG-consistent. Files does NOT reference Notify, Communications, or any consumer app Node.
 - **Invariant 5/6:** GridContext + CorrelationId + TenantId must be present in every scoped operation. — `DefaultFileUploadSession` enriches the upload request's TenantId from `IGridContextAccessor.GridContext` if the request's TenantId is `default`.
 - **Invariant 9:** Vault is the only source of secrets. — The quota tier-default values are non-secret configuration, sourced via `IConfigProvider` from App Configuration per ADR-0005. No `ISecretStore` calls are needed in this scaffold (Storage account credentials and SAS signing keys land with the first feature packet that wires the AzureBlob adapter).
@@ -752,7 +751,7 @@ Project reference: `HoneyDrunk.Files.Abstractions`. **No `Azure.Storage.Blobs` r
 - **Invariant `{N-domain-meaning}` (Files persists bytes and bytes-metadata, never domain meaning):** The classification of *what a file means* lives in the consuming Node. Files knows the bytes, the size, the content type, the purpose-tag, the tenant, the classification tier, the upload timestamp, the processing status, and the soft-delete state — nothing more. Domain-meaning fields on `FileDescriptor` or any package surface in `HoneyDrunk.Files.Abstractions` are rejected by review. — `FileDescriptor` carries exactly the byte-metadata allow-list; `DomainMeaningBoundaryTests.cs` makes the addition of a domain-meaning field a build failure via reflection.
 - **Invariant `{N-download-shape}` (every Files download is CDN-fronted public or short-lived SAS):** Long-lived storage-account-shared-key URLs are forbidden anywhere in the Grid. The shape of every Files download is auditable from this rule alone. The default TTL is 15 minutes; maximum 4 hours. `IFileStore.GetDownloadUrlAsync` is the only valid download-URL minting site. — `IFileStore.GetDownloadUrlAsync` returns `Task<SignedDownloadUrl>` (envelope type), never `Task<string>`; `DownloadShapeTests.cs` enforces the return shape at the type-shape level.
 - **Canary on the scaffolding PR reports `status: skipped`, not fail.** First PR against near-empty repo: `git worktree add` against the baseline ref fails → `::warning::` + exit 0. Not a misconfiguration. Scaffold merge establishes baseline; verify post-merge via a throwaway breaking-change PR (revert after).
-- **Abstractions stance — exactly ONE `HoneyDrunk.*` ref**, `HoneyDrunk.Kernel.Abstractions` (for `TenantId` per ADR-0026). No `Kernel`-runtime, no `Data*`, no `Vault*`, no `Audit*`, no `Pulse*`.
+- **Abstractions stance — zero `HoneyDrunk.*` refs.** No `Kernel*`, no `Data*`, no `Vault*`, no `Audit*`, no `Pulse*`; runtime packages perform Kernel adaptation outside the public Abstractions surface.
 - **Records drop `I`; interfaces keep it.** `FileId`, `FileDescriptor`, `UploadRequest`, `UploadSession`, `UploadDenied`, `SignedDownloadUrl`, `QuotaSnapshot`, `RetentionPolicy`, `FilePurpose`, `FileClassification`, `FileProcessingStatus` are all records/structs/enums and have no `I` prefix. `IFileStore`, `IFileUploadSession`, `IFileMetadata`, `IFileProcessor`, `IFileQuotaPolicy` are interfaces and keep the `I` prefix.
 - **No `.github/dependabot.yml`** (ADR-0009). Org-default Dependabot security alerts stay enabled.
 - **`HoneyDrunk.Files.AzureBlob` is a deliberate placeholder.** No `Azure.Storage.Blobs` reference. No implementation source beyond `Placeholder.cs` with the deferred-status comment. The README and CHANGELOG name the placeholder status explicitly. Do not be tempted to "stub out" the AzureBlob class shape — the implementation lands with the first feature packet that activates Files. Adding a stub here would lie about the package's status.

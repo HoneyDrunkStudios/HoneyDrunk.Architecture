@@ -112,14 +112,14 @@ Run `rg -n '\{N[123]\}' generated/issue-packets/active/adr-0060-identity-standup
 
 ### `CHANGELOG.md` (Architecture repo)
 
-Append to the current dated SemVer section (substitute the actual assigned numbers): `Architecture: Add invariants 54 (Identity owns user records, IdentityMap, user profile — not Auth), 55 (Internal-token issuance is exclusively HoneyDrunk.Identity.IInternalTokenIssuer's responsibility — affirmative version of Invariant 10), 56 (Downstream Nodes take a runtime dependency only on HoneyDrunk.Identity.Abstractions), and 57 (HoneyDrunk.Identity CI must include a contract-shape canary for the full Abstractions surface) per ADR-0060 D1 / D6 / D13 / D7. New section ## Identity Invariants introduced. ADR-0060 Consequences §Invariants subsection finalized. repos/HoneyDrunk.Identity/invariants.md placeholders substituted. Packet 04 source file (the scaffold) edited in place pre-filing under invariant 24's carve-out to substitute the assigned numbers.`
+Append to the current dated SemVer section (substitute the actual assigned numbers): `Architecture: Add invariants 54 (Identity owns user records, IdentityMap, user profile — not Auth), 55 (Internal-token issuance is exclusively HoneyDrunk.Identity.IInternalTokenIssuer's responsibility — affirmative version of Invariant 10), 56 (Downstream Nodes take a runtime dependency only on HoneyDrunk.Identity.Abstractions), and 57 (HoneyDrunk.Identity CI must include a contract-shape canary for the full Abstractions surface) per ADR-0060 D1 / D6 / D7. New section ## Identity Invariants introduced. ADR-0060 Consequences §Invariants subsection finalized. repos/HoneyDrunk.Identity/invariants.md placeholders substituted. Packet 04 source file (the scaffold) edited in place pre-filing under invariant 24's carve-out to substitute the assigned numbers.`
 
 ## Affected Files
 
 - `constitution/invariants.md` (append new `## Identity Invariants` section after `## Audit Invariants`)
 - `adrs/ADR-0060-stand-up-honeydrunk-identity-node.md` (Consequences `### Invariants` subsection — finalize the numbers, replace the tentative-numbering preamble)
-- `repos/HoneyDrunk.Identity/invariants.md` (substitute `{N1}` / `{N2}` / `{N3}` / `{N4}` placeholders)
-- `generated/issue-packets/active/adr-0060-identity-standup/04-identity-node-scaffold.md` (substitute `{N-ownership}` / `{N-issuance}` / `{N-coupling}` / `{N-canary}` placeholders — pre-filing amendment under invariant 24)
+- `repos/HoneyDrunk.Identity/invariants.md` (substitute `{N1}` / `{N2}` / `{N3}` placeholders)
+- `generated/issue-packets/active/adr-0060-identity-standup/04-identity-node-scaffold.md` (substitute `{N-ownership}` / `{N-issuance}` / `{N-canary}` placeholders — pre-filing amendment under invariant 24)
 - `CHANGELOG.md` (entry under current dated SemVer section)
 
 ## NuGet Dependencies
@@ -129,7 +129,7 @@ None. Architecture is a knowledge repo.
 ## Boundary Check
 
 - [x] All edits inside `HoneyDrunk.Architecture`.
-- [x] No new design decision — invariant text is taken from ADR-0060 D1 / D6 / D13 / D7 with light wordsmithing for the constitution's voice.
+- [x] No new design decision — invariant text is taken from ADR-0060 D1 / D6 / D7 with light wordsmithing for the constitution's voice.
 - [x] No existing invariants modified, only appended.
 - [x] Pre-filing amendment to packet 04 permitted under invariant 24's carve-out.
 - [x] ADR-0060 Status stays Proposed. The Status flip is a separate post-merge housekeeping step.
@@ -138,28 +138,28 @@ None. Architecture is a knowledge repo.
 
 - [ ] **Collision check performed at edit time** using `rg -n '^[0-9]+\.' constitution/invariants.md | tail -n 20`. The actual assigned numbers are recorded in the PR body and substituted into every cross-reference target. **Hardcoding 54/55/56/57 is wrong if the high-water mark has moved.**
 - [ ] `constitution/invariants.md` has a new `## Identity Invariants` section placed immediately after `## Audit Invariants`.
-- [ ] The four new invariants carry text matching ADR-0060 D1 / D6 / D13 / D7 with the `(Proposed — this invariant takes effect when ADR-0060 is accepted)` qualifier.
+- [ ] The three new invariants carry text matching ADR-0060 D1 / D6 / D7 with the `(Proposed — this invariant takes effect when ADR-0060 is accepted)` qualifier.
 - [ ] Invariant 54's text states: user identity records, the `IdentityMap`, and the user profile live in `HoneyDrunk.Identity`, not in `HoneyDrunk.Auth`. References ADR-0050 D6's interim placement and the additive amendment.
 - [ ] Invariant 55's text states: internal-token issuance for service-to-service `UserPrincipal` flows is exclusively `HoneyDrunk.Identity.IInternalTokenIssuer`'s responsibility. References Invariant 10's preservation.
 - [ ] Invariant 56's text states: downstream Nodes take a runtime dependency only on `HoneyDrunk.Identity.Abstractions`. Cites the precedents (AI invariant 44, Communications invariant 40, Audit invariant 48, Operator invariant 47).
 - [ ] Invariant 57's text states: the HoneyDrunk.Identity Node CI must include a contract-shape canary for the full `HoneyDrunk.Identity.Abstractions` public surface. Names all six interfaces + all seven records.
 - [ ] **All cross-reference targets updated in lockstep with the assigned numbers:** ADR-0060 Consequences, `repos/HoneyDrunk.Identity/invariants.md`, packet 04 source file (pre-filing under invariant 24's carve-out).
-- [ ] `adrs/ADR-0060-stand-up-honeydrunk-identity-node.md` Consequences `### Invariants` subsection has its preamble sentence replaced with the assigned-number list. The four "Invariant proposal:" bullets remain unchanged.
-- [ ] `repos/HoneyDrunk.Identity/invariants.md` no longer contains the literal placeholder strings `{N1}`, `{N2}`, `{N3}`, `{N4}`.
-- [ ] `generated/issue-packets/active/adr-0060-identity-standup/04-identity-node-scaffold.md` no longer contains the literal placeholder strings `{N-ownership}`, `{N-issuance}`, `{N-coupling}`, `{N-canary}`.
+- [ ] `adrs/ADR-0060-stand-up-honeydrunk-identity-node.md` Consequences `### Invariants` subsection has its preamble sentence replaced with the assigned-number list. The remaining three "Invariant proposal:" bullets stay after dropping the D13 coupling-restatement proposal.
+- [ ] `repos/HoneyDrunk.Identity/invariants.md` no longer contains the literal placeholder strings `{N1}`, `{N2}`, `{N3}`.
+- [ ] `generated/issue-packets/active/adr-0060-identity-standup/04-identity-node-scaffold.md` no longer contains the literal placeholder strings `{N-ownership}`, `{N-issuance}`, `ADR-0060-D13`, `{N-canary}`.
 - [ ] `CHANGELOG.md` carries an entry under the current dated SemVer section describing the invariant additions and the cross-reference substitutions (not under `## Unreleased`).
-- [ ] PR body explicitly notes: (1) the four new invariants landed at their assigned numbers under `## Identity Invariants`; (2) ADR-0060 Consequences finalized; (3) `repos/HoneyDrunk.Identity/invariants.md` placeholders substituted; (4) packet 04 source file edited in place pre-filing to substitute the assigned numbers.
+- [ ] PR body explicitly notes: (1) the three new invariants landed at their assigned numbers under `## Identity Invariants`; (2) ADR-0060 Consequences finalized; (3) `repos/HoneyDrunk.Identity/invariants.md` placeholders substituted; (4) packet 04 source file edited in place pre-filing to substitute the assigned numbers.
 
 ## Human Prerequisites
 
 - [ ] Packet 01 of this initiative merged to `main` before this packet's PR is opened. Without that merge, this packet has no `repos/HoneyDrunk.Identity/invariants.md` to substitute placeholders into, and no `## Audit Invariants` predecessor section to anchor the new `## Identity Invariants` placement against.
-- [ ] Confirm the assigned-number text in ADR-0060 Consequences matches the user's understanding of D1 / D6 / D13 / D7 — all four are mechanical text edits, but ADR Consequences edits warrant a quick eye before merge.
+- [ ] Confirm the assigned-number text in ADR-0060 Consequences matches the user's understanding of D1 / D6 / D7 — all three are mechanical text edits, but ADR Consequences edits warrant a quick eye before merge.
 
 ## Referenced Invariants
 
 > **Invariant 10:** Auth tokens are validated, never issued. HoneyDrunk.Auth validates JWT Bearer tokens. **It is not an identity provider.** — Survives ADR-0060 intact. Invariant 55 (this packet) is the affirmative version: not only does Auth not issue, but Identity is the only Node that does. The two invariants together pin the validation-vs-issuance boundary unambiguously.
 
-> **Invariant 24:** Issue packets are immutable once filed as a GitHub Issue. Pre-filing amendments are permitted; post-filing corrections require a new packet. — Packet 04 of this initiative cites the four invariant numbers this packet assigns. Packet 04 must be amended in place pre-filing once this packet's PR merges and the actual assigned numbers are known. **Packets 02 and 04 cannot be filed in the same push.**
+> **Invariant 24:** Issue packets are immutable once filed as a GitHub Issue. Pre-filing amendments are permitted; post-filing corrections require a new packet. — Packet 04 of this initiative cites the three invariant numbers this packet assigns. Packet 04 must be amended in place pre-filing once this packet's PR merges and the actual assigned numbers are known. **Packets 02 and 04 cannot be filed in the same push.**
 
 > **Invariant 47:** Durable, attributable security, action, and data-change events are emitted to the `HoneyDrunk.Audit` substrate via `IAuditLog`, on a durable channel separate from observability telemetry. — Identity is a first-class emitter alongside Auth; the new event types (`UserCreated`, `UserVerified`, `UserLocked`, `UserUnlocked`, `UserErased`, `InternalTokenIssued` sampled) flow through `IAuditLog`. Invariant 54 (this packet) is upstream of Invariant 47 — Identity owns the writes that get audited.
 
@@ -187,14 +187,14 @@ None. Architecture is a knowledge repo.
 
 ## Agent Handoff
 
-**Objective:** Add four new invariants — Identity user-record ownership (D1), internal-token issuance exclusivity (D6), downstream Abstractions-only coupling (D13), and Identity contract-shape canary (D7) — to `constitution/invariants.md` under a new `## Identity Invariants` section at the next four free slots identified by collision check at edit time. Finalize the invariant numbers in ADR-0060's Consequences `### Invariants` subsection. Substitute the `{N1}` / `{N2}` / `{N3}` / `{N4}` placeholders in `repos/HoneyDrunk.Identity/invariants.md`. Substitute the `{N-ownership}` / `{N-issuance}` / `{N-coupling}` / `{N-canary}` placeholders in `04-identity-node-scaffold.md`.
+**Objective:** Add three new invariants - Identity user-record ownership (D1), internal-token issuance exclusivity (D6), and Identity contract-shape canary (D7) - to `constitution/invariants.md` under a new `## Identity Invariants` section at the next three free slots identified by collision check at edit time. Finalize the invariant numbers in ADR-0060's Consequences `### Invariants` subsection. Substitute the `{N1}` / `{N2}` / `{N3}` placeholders in `repos/HoneyDrunk.Identity/invariants.md`. Substitute the `{N-ownership}` / `{N-issuance}` / `{N-canary}` placeholders in `04-identity-node-scaffold.md`.
 
 **Target:** HoneyDrunk.Architecture, branch from `main`.
 
 **Context:**
-- Goal: Land the four constitutional invariants ADR-0060 restates so packet 04 of this initiative (the HoneyDrunk.Identity scaffold) can cite them by number, and so the review agent has citable rules for downstream-coupling, canary-requirement, internal-token-issuance, and user-record-ownership enforcement.
+- Goal: Land the three constitutional invariants ADR-0060 restates so packet 04 of this initiative (the HoneyDrunk.Identity scaffold) can cite them by number, and so the review agent has citable rules for canary-requirement, internal-token-issuance, and user-record-ownership enforcement.
 - Feature: ADR-0060 standup initiative — this is packet 02 (constitution side).
-- ADRs: ADR-0060 (this packet finalizes its four restated invariants).
+- ADRs: ADR-0060 (this packet finalizes its three restated invariants).
 
 **Acceptance Criteria:** As listed above.
 
@@ -202,17 +202,17 @@ None. Architecture is a knowledge repo.
 
 **Constraints:**
 
-- **Invariant 24:** Issue packets are immutable once filed as a GitHub Issue. Before a packet is filed, it may be amended to fill in missing operational context without violating this rule. — Packet 04 of this initiative cites the four invariant numbers assigned here. Packet 04 must be amended in place pre-filing once this packet's PR merges and the actual assigned numbers are known. **Packets 02 and 04 cannot be filed in the same push.**
+- **Invariant 24:** Issue packets are immutable once filed as a GitHub Issue. Before a packet is filed, it may be amended to fill in missing operational context without violating this rule. — Packet 04 of this initiative cites the three invariant numbers assigned here. Packet 04 must be amended in place pre-filing once this packet's PR merges and the actual assigned numbers are known. **Packets 02 and 04 cannot be filed in the same push.**
 - **The assignment is dynamic — do NOT hardcode 54/55/56/57.** Use the actual assigned numbers from the §Collision-Check Protocol. At scoping time the high-water mark is 53; if it moved, shift all four together.
-- **Preserve all existing invariants unchanged.** This packet only appends a new section and the four entries within it.
+- **Preserve all existing invariants unchanged.** This packet only appends a new section and the three entries within it.
 - **No `(Proposed)` qualifier removal needed.** The qualifier in parentheses takes effect / lifts when ADR-0060 is flipped to Accepted; no separate edit needed to lift it.
-- **Ordering of the four entries within the section is fixed:** D1 first, then D6, then D13, then D7. The numeric assignment maps in landing order: D1 → first assigned slot, D6 → second, D13 → third, D7 → fourth.
+- **Ordering of the three entries within the section is fixed:** D1 first, then D6, then D7. The numeric assignment maps in landing order: D1 first assigned slot, D6 second, D7 third.
 
 **Key Files:**
-- `constitution/invariants.md` — append new `## Identity Invariants` section with four entries after `## Audit Invariants`
+- `constitution/invariants.md` — append new `## Identity Invariants` section with three entries after `## Audit Invariants`
 - `adrs/ADR-0060-stand-up-honeydrunk-identity-node.md` — Consequences `### Invariants` subsection preamble sentence (replace tentative-numbering preamble with the assigned-number list)
-- `repos/HoneyDrunk.Identity/invariants.md` — substitute `{N1}` / `{N2}` / `{N3}` / `{N4}` placeholders
-- `generated/issue-packets/active/adr-0060-identity-standup/04-identity-node-scaffold.md` — substitute `{N-ownership}` / `{N-issuance}` / `{N-coupling}` / `{N-canary}` placeholders (pre-filing carve-out under invariant 24)
+- `repos/HoneyDrunk.Identity/invariants.md` — substitute `{N1}` / `{N2}` / `{N3}` placeholders
+- `generated/issue-packets/active/adr-0060-identity-standup/04-identity-node-scaffold.md` — substitute `{N-ownership}` / `{N-issuance}` / `{N-canary}` placeholders (pre-filing carve-out under invariant 24)
 - `CHANGELOG.md` — append entry under current dated SemVer section
 
-**Contracts:** This packet does not author any new contracts. It records the four constitutional rules. Authoring the actual `.cs` files happens in packet 04 (the scaffold inside `HoneyDrunk.Identity`).
+**Contracts:** This packet does not author any new contracts. It records the three constitutional rules. Authoring the actual `.cs` files happens in packet 04 (the scaffold inside `HoneyDrunk.Identity`).

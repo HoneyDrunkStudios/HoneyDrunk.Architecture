@@ -107,8 +107,8 @@ The following are explicitly out of scope for this initiative. Each becomes a se
 
 At scoping time (2026-05-24), the `constitution/invariants.md` high-water mark is **49** (the last `## Audit Invariants` entry — `49.` Audit contract-shape canary). The expected assignments for this initiative's packet 02 are:
 
-- **`{N-domain-meaning}` (expected 50)** — Files persists bytes + bytes-metadata, never domain meaning.
-- **`{N-download-shape}` (expected 51)** — every download is CDN-fronted public or short-lived SAS.
+- **`{N-domain-meaning}` (assigned by reservation registry)** — Files persists bytes + bytes-metadata, never domain meaning.
+- **`{N-download-shape}` (assigned by reservation registry)** — every download is CDN-fronted public or short-lived SAS.
 
 The expected numbers will hold unless another invariant-numbering packet lands between this scoping and packet 02's edit time. Packet 02's collision-check protocol is authoritative — the agent reads `rg -n '^[0-9]+\.' constitution/invariants.md | tail -n 20` at edit time and uses the actual high-water + 1 and high-water + 2.
 
