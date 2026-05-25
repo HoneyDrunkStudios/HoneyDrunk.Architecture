@@ -4,7 +4,7 @@
     "nodeId": "honeydrunk-kernel",
     "name": "HoneyDrunk.Kernel.Abstractions",
     "type": "abstractions",
-    "version": "0.4.0",
+    "version": "0.7.0",
     "description": "Pure zero-dependency contracts for the Grid context model, lifecycle, and identity"
   },
   {
@@ -12,7 +12,7 @@
     "nodeId": "honeydrunk-kernel",
     "name": "HoneyDrunk.Kernel",
     "type": "runtime",
-    "version": "0.4.0",
+    "version": "0.7.0",
     "description": "Runtime implementations of GridContext, NodeContext, OperationContext, and lifecycle management"
   },
   {
@@ -20,7 +20,7 @@
     "nodeId": "honeydrunk-transport",
     "name": "HoneyDrunk.Transport",
     "type": "runtime",
-    "version": "0.4.0",
+    "version": "0.6.0",
     "description": "Core messaging abstractions, middleware pipeline, envelope contracts"
   },
   {
@@ -28,7 +28,7 @@
     "nodeId": "honeydrunk-transport",
     "name": "HoneyDrunk.Transport.AzureServiceBus",
     "type": "provider",
-    "version": "0.4.0",
+    "version": "0.6.0",
     "description": "Azure Service Bus transport provider"
   },
   {
@@ -36,7 +36,7 @@
     "nodeId": "honeydrunk-transport",
     "name": "HoneyDrunk.Transport.StorageQueue",
     "type": "provider",
-    "version": "0.4.0",
+    "version": "0.6.0",
     "description": "Azure Storage Queue transport provider"
   },
   {
@@ -44,7 +44,7 @@
     "nodeId": "honeydrunk-transport",
     "name": "HoneyDrunk.Transport.InMemory",
     "type": "testing",
-    "version": "0.4.0",
+    "version": "0.6.0",
     "description": "In-memory broker for testing"
   },
   {
@@ -52,7 +52,7 @@
     "nodeId": "honeydrunk-vault",
     "name": "HoneyDrunk.Vault",
     "type": "runtime",
-    "version": "0.2.0",
+    "version": "0.5.0",
     "description": "Core Vault client, orchestrator, caching, and resilience"
   },
   {
@@ -60,7 +60,7 @@
     "nodeId": "honeydrunk-vault",
     "name": "HoneyDrunk.Vault.Providers.AzureKeyVault",
     "type": "provider",
-    "version": "0.2.0",
+    "version": "0.5.0",
     "description": "Azure Key Vault secrets provider"
   },
   {
@@ -68,7 +68,7 @@
     "nodeId": "honeydrunk-vault",
     "name": "HoneyDrunk.Vault.Providers.Aws",
     "type": "provider",
-    "version": "0.2.0",
+    "version": "0.5.0",
     "description": "AWS Secrets Manager provider"
   },
   {
@@ -76,7 +76,7 @@
     "nodeId": "honeydrunk-vault",
     "name": "HoneyDrunk.Vault.Providers.File",
     "type": "provider",
-    "version": "0.2.0",
+    "version": "0.5.0",
     "description": "File-based secrets provider for development"
   },
   {
@@ -84,7 +84,7 @@
     "nodeId": "honeydrunk-vault",
     "name": "HoneyDrunk.Vault.Providers.Configuration",
     "type": "provider",
-    "version": "0.2.0",
+    "version": "0.5.0",
     "description": "IConfiguration bridge provider"
   },
   {
@@ -92,7 +92,7 @@
     "nodeId": "honeydrunk-vault",
     "name": "HoneyDrunk.Vault.Providers.InMemory",
     "type": "testing",
-    "version": "0.2.0",
+    "version": "0.5.0",
     "description": "In-memory secrets store for testing"
   },
   {
@@ -100,7 +100,7 @@
     "nodeId": "honeydrunk-auth",
     "name": "HoneyDrunk.Auth.Abstractions",
     "type": "abstractions",
-    "version": "0.2.0",
+    "version": "0.5.0",
     "description": "Auth contracts — token validation, policy evaluation interfaces"
   },
   {
@@ -108,7 +108,7 @@
     "nodeId": "honeydrunk-auth",
     "name": "HoneyDrunk.Auth",
     "type": "runtime",
-    "version": "0.2.0",
+    "version": "0.5.0",
     "description": "JWT validation, signing key management, policy evaluation"
   },
   {
@@ -116,7 +116,7 @@
     "nodeId": "honeydrunk-auth",
     "name": "HoneyDrunk.Auth.AspNetCore",
     "type": "hosting",
-    "version": "0.2.0",
+    "version": "0.5.0",
     "description": "ASP.NET Core middleware integration for Auth"
   },
   {
@@ -124,7 +124,7 @@
     "nodeId": "honeydrunk-web-rest",
     "name": "HoneyDrunk.Web.Rest.Abstractions",
     "type": "abstractions",
-    "version": "0.2.0",
+    "version": "0.5.0",
     "description": "REST contracts — ApiResult, pagination, validation models"
   },
   {
@@ -132,7 +132,7 @@
     "nodeId": "honeydrunk-web-rest",
     "name": "HoneyDrunk.Web.Rest.AspNetCore",
     "type": "hosting",
-    "version": "0.2.0",
+    "version": "0.5.0",
     "description": "ASP.NET Core integration — exception mapping, correlation, JSON conventions"
   },
   {
@@ -140,7 +140,7 @@
     "nodeId": "honeydrunk-pulse",
     "name": "HoneyDrunk.Pulse.Contracts",
     "type": "abstractions",
-    "version": "0.1.0",
+    "version": "0.3.0",
     "description": "Shared telemetry event models (multi-target: netstandard2.0, net8.0, net10.0)"
   },
   {
@@ -148,7 +148,7 @@
     "nodeId": "honeydrunk-pulse",
     "name": "HoneyDrunk.Telemetry.Abstractions",
     "type": "abstractions",
-    "version": "0.1.0",
+    "version": "0.3.0",
     "description": "Sink interfaces — ITraceSink, ILogSink, IMetricsSink, IAnalyticsSink, IErrorSink"
   },
   {
@@ -156,7 +156,7 @@
     "nodeId": "honeydrunk-pulse",
     "name": "HoneyDrunk.Telemetry.OpenTelemetry",
     "type": "runtime",
-    "version": "0.1.0",
+    "version": "0.3.0",
     "description": "OpenTelemetry preconfigured pipelines with Grid context enrichment"
   },
   {
@@ -164,7 +164,7 @@
     "nodeId": "honeydrunk-data",
     "name": "HoneyDrunk.Data.Abstractions",
     "type": "abstractions",
-    "version": "0.3.0",
+    "version": "0.6.0",
     "description": "Repository, unit of work, and tenant access contracts"
   },
   {
@@ -172,7 +172,7 @@
     "nodeId": "honeydrunk-data",
     "name": "HoneyDrunk.Data",
     "type": "runtime",
-    "version": "0.3.0",
+    "version": "0.6.0",
     "description": "Provider-neutral data orchestration"
   },
   {
@@ -180,7 +180,7 @@
     "nodeId": "honeydrunk-data",
     "name": "HoneyDrunk.Data.EntityFramework",
     "type": "provider",
-    "version": "0.3.0",
+    "version": "0.6.0",
     "description": "EF Core repository and unit of work implementation"
   },
   {
@@ -188,7 +188,7 @@
     "nodeId": "honeydrunk-data",
     "name": "HoneyDrunk.Data.SqlServer",
     "type": "provider",
-    "version": "0.3.0",
+    "version": "0.6.0",
     "description": "SQL Server / Azure SQL specialization"
   },
   {
@@ -196,7 +196,7 @@
     "nodeId": "honeydrunk-notify",
     "name": "HoneyDrunk.Notify.Abstractions",
     "type": "abstractions",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Notification intake/delivery contracts after ADR-0019 policy-boundary cleanup"
   },
   {
@@ -204,7 +204,7 @@
     "nodeId": "honeydrunk-notify",
     "name": "HoneyDrunk.Notify",
     "type": "runtime",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Notification delivery runtime with intake mechanics, provider dispatch, and no recipient preference/cadence policy evaluation"
   },
   {
@@ -212,7 +212,7 @@
     "nodeId": "honeydrunk-communications",
     "name": "HoneyDrunk.Communications.Abstractions",
     "type": "abstractions",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Communication orchestration contracts — intents, preferences, cadence, recipient resolution, decisions, and decision logs"
   },
   {
@@ -220,7 +220,7 @@
     "nodeId": "honeydrunk-communications",
     "name": "HoneyDrunk.Communications",
     "type": "runtime",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Communication orchestration runtime — welcome flow, preference/cadence checks, decision logging, and Notify delegation"
   },
   {
@@ -236,7 +236,7 @@
     "nodeId": "honeydrunk-audit",
     "name": "HoneyDrunk.Audit.Abstractions",
     "type": "abstractions",
-    "version": "0.0.0",
+    "version": "0.1.0",
     "description": "Zero-HoneyDrunk-dependency contracts for the Grid-wide durable audit record — IAuditLog, IAuditQuery, AuditEntry"
   },
   {
@@ -244,7 +244,7 @@
     "nodeId": "honeydrunk-audit",
     "name": "HoneyDrunk.Audit.Data",
     "type": "runtime",
-    "version": "0.0.0",
+    "version": "0.1.0",
     "description": "Data-backed append-only IAuditLog writer and IAuditQuery reader over HoneyDrunk.Data's IRepository/IUnitOfWork; audit-class retention wiring; DI composition"
   }
 ]
