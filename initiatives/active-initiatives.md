@@ -50,17 +50,17 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 **Description:** Roll out the ADR-0047 Grid testing stack: xUnit v2 + NSubstitute + AwesomeAssertions + coverlet for unit tests; WebApplicationFactory and Testcontainers for integration tiers; Playwright (.NET) for web E2E; Maestro for future mobile E2E; BenchmarkDotNet / Azure Load Testing for performance. Closes ADR-0011 Gap 1 and Gap 3.
 
 **Tracking (Wave 1 — Phase 1: unit-test stack + migrations + coverage gates):**
-- [ ] Architecture#187: Accept ADR-0047 — flip status, close ADR-0011 Gap 1 and Gap 3, register the testing-patterns initiative (packet 00)
+- [x] Architecture#187: Accept ADR-0047 — flip status, close ADR-0011 Gap 1 and Gap 3, register the testing-patterns initiative (packet 00)
 - [ ] Standards: Author shared unit-test-stack `Directory.Build.props` fragment (packet 01)
 - [ ] Standards: Author `coverlet.runsettings` templates for D3 per-tier thresholds (packet 02)
 - [ ] Standards: Add the `Thread.Sleep` analyzer rule for test projects (packet 03)
-- [ ] Architecture#188 / per-Node fan-out: Migrate FluentAssertions → AwesomeAssertions (packet 04)
-- [ ] Architecture#189 / per-Node fan-out: Migrate Moq → NSubstitute (packet 05)
+- [x] Architecture#188 / per-Node fan-out: Migrate FluentAssertions → AwesomeAssertions (packet 04)
+- [x] Architecture#189 / per-Node fan-out: Migrate Moq → NSubstitute (packet 05)
 
 **Tracking (Wave 2 — Phase 2: Tier 2a integration tests):**
 - [ ] Actions: Author `job-integration-tests.yml` and wire it into `pr-core.yml` (packet 06)
-- [ ] Architecture#190: Author the integration-test scaffold template for the `scope` agent (packet 07)
-- [ ] Architecture#191: Update `.claude/agents/review.md` Testing Quality checklist per ADR-0047 D13 (packet 08)
+- [x] Architecture#190: Author the integration-test scaffold template for the `scope` agent (packet 07)
+- [x] Architecture#191: Update `.claude/agents/review.md` Testing Quality checklist per ADR-0047 D13 (packet 08)
 
 **Tracking (Wave 3 — Phase 3: Tier 2b container-backed integration tests):**
 - [ ] Actions: Author `job-integration-tests-containers.yml` (packet 09)
