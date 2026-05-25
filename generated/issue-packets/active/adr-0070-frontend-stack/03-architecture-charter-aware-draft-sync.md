@@ -43,10 +43,10 @@ Locate the cluster 7.7 row (around line 424):
 | 7.7 | **HoneyDrunk.Mobile** | Creator (or Core) | Seed | iOS/Android baseline: GridContext propagation, push wiring, auth flows, file pickers; MAUI vs. native is the first decision |
 ```
 
-Mark it RESOLVED in place (preserving the historical row — do not delete). Suggested form:
+Mark it RESOLVED in place (preserving the historical row — do not delete). Suggested form (ADR links are escaped here because this packet is rendered from a different directory; remove the backslash when applying the row to the draft):
 
 ```
-| 7.7 | **Mobile platform direction** | — | **RESOLVED 2026-05-24 by [ADR-0070](../../adrs/ADR-0070-frontend-platform-stack.md) D3** | Decision: React Native + Expo (MAUI / native / Flutter explicitly rejected). The originally-proposed "HoneyDrunk.Mobile" Node is no longer the correct shape — Expo's managed workflow + the per-PDR consumer-app Node pattern obviates a Grid-level mobile-baseline Node at v1. Per-PDR mobile build pipeline configuration (Expo EAS) lands when the first mobile PDR enters scaffolding. |
+| 7.7 | **Mobile platform direction** | — | **RESOLVED 2026-05-24 by [ADR-0070]\(../../adrs/ADR-0070-frontend-platform-stack.md) D3** | Decision: React Native + Expo (MAUI / native / Flutter explicitly rejected). The originally-proposed "HoneyDrunk.Mobile" Node is no longer the correct shape — Expo's managed workflow + the per-PDR consumer-app Node pattern obviates a Grid-level mobile-baseline Node at v1. Per-PDR mobile build pipeline configuration (Expo EAS) lands when the first mobile PDR enters scaffolding. |
 ```
 
 Also update the "Operator questions" entry (around line 775):
@@ -86,7 +86,7 @@ Locate the cluster 7.8 row (around line 425):
 Annotate with the paired ADRs:
 
 ```
-| 7.8 | **HoneyDrunk.Web.UI** | Creator | Seed | Reusable web frontend kit: design tokens, auth widgets, dashboards — for non-Studios apps. **Paired with [ADR-0070](../../adrs/ADR-0070-frontend-platform-stack.md) (Accepted 2026-05-24) and [ADR-0071](../../adrs/ADR-0071-stand-up-honeydrunk-web-ui-node.md) (Proposed; standup pending).** |
+| 7.8 | **HoneyDrunk.Web.UI** | Creator | Seed | Reusable web frontend kit: design tokens, auth widgets, dashboards — for non-Studios apps. **Paired with [ADR-0070]\(../../adrs/ADR-0070-frontend-platform-stack.md) (Accepted 2026-05-24) and [ADR-0071]\(../../adrs/ADR-0071-stand-up-honeydrunk-web-ui-node.md) (Proposed; standup pending).** |
 ```
 
 Also update the "Web frontend baseline" row in the "Sector candidates" table (around line 380):
@@ -98,7 +98,7 @@ Also update the "Web frontend baseline" row in the "Sector candidates" table (ar
 Annotate:
 
 ```
-| **Web frontend baseline (beyond Studios)** | Notify Cloud admin UI, Hearth web, others | New Node: `HoneyDrunk.Web.UI` — **standup ADR [ADR-0071](../../adrs/ADR-0071-stand-up-honeydrunk-web-ui-node.md) Proposed (paired with [ADR-0070](../../adrs/ADR-0070-frontend-platform-stack.md) Accepted 2026-05-24)** |
+| **Web frontend baseline (beyond Studios)** | Notify Cloud admin UI, Hearth web, others | New Node: `HoneyDrunk.Web.UI` — **standup ADR [ADR-0071]\(../../adrs/ADR-0071-stand-up-honeydrunk-web-ui-node.md) Proposed (paired with [ADR-0070]\(../../adrs/ADR-0070-frontend-platform-stack.md) Accepted 2026-05-24)** |
 ```
 
 ### Part C — Expand cluster 4.1 (DX Baseline) scope note
