@@ -5,26 +5,46 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 ## In Progress
 
 ### Code Review Pipeline (ADR-0011)
-**Status:** In Progress
-**Scope:** Architecture, Actions, plus per-repo SonarQube Cloud onboarding (Wave 2; Wave 3 deferred)
+**Status:** In Progress — rollout machinery complete, gate-cleanup pending before closure
+**Scope:** Architecture, Actions, plus per-repo SonarQube Cloud onboarding across 12 .NET repos
 **Initiative:** `adr-0011-code-review-pipeline`
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
-**Description:** Accept ADR-0011 and ship the pipeline plumbing it requires: SonarQube Cloud reusable workflow in `HoneyDrunk.Actions`, packet-link injection into the cloud execution workflow's PR body (carries invariant 32), `out-of-band` label seeded across active repos, SonarQube Cloud organization setup walkthrough, plus the first two per-repo SonarQube Cloud onboardings as templates (Kernel and Web.Rest). Remaining .NET repos roll out as a follow-up wave once the templates prove out. ADR-0011 is amended by ADR-0044 (cloud-wires the review agent; reverses D10 local-only stance) — this initiative ships the SonarQube Cloud + label + packet-link work that ADR-0044 did not address.
+**Description:** ADR-0011 Accepted 2026-05-25 along with the full SonarQube Cloud rollout to the 12 .NET-active Grid repos. SonarQube Cloud organization provisioned on the OSS plan; `SONAR_TOKEN` GitHub org secret with selected-repository scope; reusable `job-sonarcloud.yml` in `HoneyDrunk.Actions` running both PR-time analysis (after `pr-core` succeeds) and main-branch analysis (with `dotnet test` fallback when no `pr-core` artifact exists). Org-level GitHub ruleset created to require `SonarCloud Code Analysis` as a status check on the 12 onboarded repos (currently Evaluate; flips to Active once gate-cleanup completes). ADR-0011 is amended by ADR-0044 (cloud-wires the review agent; reverses D10 local-only stance).
 
-**Tracking (Wave 1 — foundation):**
-- [x] Architecture: Accept ADR-0011 — flip status, ADR index, invariants 31–33 qualifier strip, `agent_couplings` catalog entry, SonarQube Cloud org walkthrough, register initiative (packet 01 + packet 04 bundled in this PR)
-- [ ] Actions: Author `job-sonarcloud.yml` reusable workflow (packet 02)
-- [ ] Actions: Amend `agent-run.yml` to inject packet link into PR body (packet 03)
-- [ ] Actions: Labels-as-code config + reusable `seed-labels.yml` workflow (packet 05a; superseded in part by ADR-0044 Actions#86 — verify scope before filing)
-- [ ] Actions: Cross-repo fan-out — `out-of-band` label on Grid repos via `seed-labels-fanout.yml` + PAT (packet 05b; superseded in part by ADR-0044 Actions#86 — verify scope before filing)
+**Tracking (Wave 1 — foundation, complete):**
+- [x] Architecture: Accept ADR-0011 — flip status, ADR index, invariants 31–33 qualifier strip, `agent_couplings` catalog entry, SonarQube Cloud org walkthrough (packets 01 + 04 bundled)
+- [x] Actions: `job-sonarcloud.yml` reusable workflow (packet 02; merged Actions PR #130)
+- [x] Actions: `agent-run.yml` packet-link injection — workflow asserts canonical `> Packet: <permalink>` line into PR bodies via `gh pr edit` (packet 03; merged Actions PR #130)
+- [x] Actions: `sonar.cs.opencover.reportsPaths` flag re-added after sonar-project.properties path proved unviable on .NET (merged Actions PR #132)
+- [x] Actions: `push:main` coverage-generation fallback so main-branch analysis has data even when `pr-core` doesn't run (merged Actions PR #133)
+- [x] Packets 05a/05b superseded by ADR-0044 Actions#86 — `out-of-band` label seeded Grid-wide via the labels-as-code fan-out shipped under that initiative; no separate work required here
 
-**Tracking (Wave 2 — template rollout):**
-- [ ] Kernel: Onboard SonarQube Cloud (first canonical .NET template) (packet 06)
-- [ ] Web.Rest: Onboard SonarQube Cloud (ASP.NET Core variant template) (packet 07)
+**Tracking (Wave 2 — per-repo onboarding, complete):**
+- [x] HoneyDrunk.Kernel (#59 + #60 push:main follow-up) — Pattern A canonical template
+- [x] HoneyDrunk.Audit (#12) — Pattern B canonical template + `pr-core.yml` → `pr.yml` rename
+- [x] HoneyDrunk.Transport (#34) — Pattern A
+- [x] HoneyDrunk.Vault (#40) — Pattern A
+- [x] HoneyDrunk.Auth (#31) — Pattern A
+- [x] HoneyDrunk.Web.Rest (#26) — Pattern A (ASP.NET Core variant)
+- [x] HoneyDrunk.Data (#31) — Pattern A
+- [x] HoneyDrunk.Notify (#42) — Pattern A
+- [x] HoneyDrunk.Pulse (#33) — Pattern A
+- [x] HoneyDrunk.Communications (#26) — Pattern B + rename
+- [x] HoneyDrunk.AI (#16) — Pattern B (no rename, already used `pr.yml`)
+- [x] HoneyDrunk.Observe (#5) — Pattern B + rename (Seed-phase Node)
 
-**Deferred (Wave 3 — post-template fan-out, scope after Wave 2 lands):**
-- Transport, Vault, Vault.Rotation, Auth, Data, Pulse, Notify, Communications, Actions, Audit, and the 8 AI-seed Nodes (AI, Capabilities, Agents, Memory, Knowledge, Flow, Operator, Observe) — per-repo SonarQube Cloud onboardings, each a small (~5-line `sonar-project.properties` + branch-protection toggle + reusable-workflow call) packet
-- HoneyDrunk.Studios — TypeScript/Next.js posture, separate from the .NET fan-out; SonarQube-JS onboarding evaluated as a one-off when Studios CI is otherwise wired
+**Pending gate-cleanup (before initiative closure):**
+- [ ] Investigate why SonarCloud Overview shows 0% coverage on onboarded projects even after Actions PR #133's `push:main` coverage fallback merged — could be that consumer PRs merged before #133 landed (first push:main analysis baked-in zero coverage), or that `dotnet test --no-build` fallback isn't actually producing OpenCover output as expected. Diagnose via the next push:main run logs on a representative repo.
+- [ ] Review and clear the existing SonarQube Cloud findings that flagged on the initial scans (e.g., Transport's 2 Reliability + 61 Maintainability findings on legacy code). Per ADR-0011 D11, the quality gate enforces on new code only — but the initiative shouldn't be marked Done with backlog stockpiled. Triage and either fix, mark Won't-fix with rationale, or open follow-up packets.
+- [ ] Review and mark unreviewed Security Hotspots on Communications and Observe (the two repos whose Sonar gate failed on first analysis). Hotspots blocking the gate stay until manually reviewed in the SonarCloud UI.
+- [ ] Flip the org-level GitHub ruleset for SonarCloud from Evaluate → Active once the above are clean. After flip, `SonarCloud Code Analysis` becomes a load-bearing required check on the 12 onboarded repos.
+
+**Deferred (Wave 3 — future onboarding, NOT scoped in this initiative):**
+- HoneyDrunk.Vault.Rotation — non-canonical workflow shape (uses `validate-pr.yml` instead of `pr.yml`); onboard when its CI conforms to the Grid convention
+- HoneyDrunk.Studios — TypeScript/Next.js; SonarQube-JS onboarding evaluated as a separate one-off when Studios CI is otherwise wired
+- HoneyDrunk.Architecture, HoneyDrunk.Lore, HoneyDrunk.Standards — docs / wiki / analyzer pack; no application code to analyze
+- HoneyDrunk.Evals, HoneyDrunk.Sim — GitHub repos don't exist yet (in `catalogs/nodes.json` as Seed Nodes only)
+- 6 empty AI-sector Seed Nodes (HoneyDrunk.Capabilities, .Agents, .Memory, .Knowledge, .Flow, .Operator) — scaffolded repos with zero `csproj` files; onboard when the first .NET code lands
 
 **Out of scope (Unresolved Consequences in the ADR):**
 - Integration tests (Gap 1) — slot defined, ADR-0047 closes this
