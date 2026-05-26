@@ -67,8 +67,8 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [ ] Actions#NN: Refresh `docs/consumer-usage.md` with canonical `permissions:` blocks per D5 (packet 05)
 - [ ] Actions#NN: Author `docs/action-pins.md` inventory (packet 06)
 - [ ] Actions#NN: D4 direct-CLI retrofit audit + re-run nightly-security across 11 repos (packet 07)
-- [ ] Architecture#NN: Caller-workflow `permissions:` audit across 11 Grid repos (packet 08)
-- [ ] Actions#NN: Bump Node 20 deprecated actions, update pin inventory (packet 09)
+- [x] Architecture#NN: Caller-workflow `permissions:` audit across 11 Grid repos (packet 08; local branch `chore/adr-0012-packet-08-caller-permissions-audit`, commit `72d1bd2`; PR not opened yet)
+- [x] Actions#NN: Bump Node 20 deprecated actions, update pin inventory (packet 09; local branch `chore/adr-0012-packet-09-node20-actions`, commit `9d8930a`; PR not opened yet)
 
 ### ADR-0044 Cloud Code Review and AI-Authored PR Discipline
 **Status:** In Progress
