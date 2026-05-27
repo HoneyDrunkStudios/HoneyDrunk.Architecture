@@ -1,11 +1,10 @@
 # Proposed ADR/PDR Queue
 
-**Last Updated:** 2026-05-25
+**Last Updated:** 2026-05-27
 
 ## Awaiting Implementing Packets
 
 - `ADR-0011-CODE-REVIEW-AND-MERGE-FLOW` — ADR-0011: Code Review and Merge Flow (adrs/ADR-0011-code-review-and-merge-flow.md)
-- `ADR-0012-GRID-CICD-CONTROL-PLANE` — ADR-0012: HoneyDrunk.Actions as the Grid CI/CD Control Plane (adrs/ADR-0012-grid-cicd-control-plane.md)
 - `ADR-0017-STAND-UP-HONEYDRUNK-CAPABILITIES-NODE` — ADR-0017: Stand Up the HoneyDrunk.Capabilities Node — Tool Registry and Dispatch Substrate for the AI Sector (adrs/ADR-0017-stand-up-honeydrunk-capabilities-node.md)
 - `ADR-0018-STAND-UP-HONEYDRUNK-OPERATOR-NODE` — ADR-0018: Stand Up the HoneyDrunk.Operator Node — Human-Policy Enforcement and Audit Substrate for the AI Sector (adrs/ADR-0018-stand-up-honeydrunk-operator-node.md)
 - `ADR-0020-STAND-UP-HONEYDRUNK-AGENTS-NODE` — ADR-0020: Stand Up the HoneyDrunk.Agents Node — Agent Runtime Substrate for the AI Sector (adrs/ADR-0020-stand-up-honeydrunk-agents-node.md)
@@ -65,6 +64,7 @@
 - `ADR-0079-MULTI-PERSPECTIVE-PR-REVIEW-STACK` — ADR-0079: Multi-Perspective PR Review Stack — Copilot + CodeRabbit + Grid-Aware Agent (Codex + Claude) (adrs/ADR-0079-multi-perspective-pr-review-stack.md)
 - `ADR-0080-VENDOR-LOCK-IN-POSTURE-AND-EXIT-READINESS-HEDGES` — ADR-0080: Vendor Lock-In Posture and Exit-Readiness Hedges (adrs/ADR-0080-vendor-lock-in-posture-and-exit-readiness-hedges.md)
 - `ADR-0081-HOME-SERVER-FOR-OPENCLAW-AND-LOCAL-AGENT-INFRASTRUCTURE` — ADR-0081: Home Server for OpenClaw and Local Agent Infrastructure (adrs/ADR-0081-home-server-for-openclaw-and-local-agent-infrastructure.md)
+- `ADR-0086-PULL-BASED-LOCAL-WORKER-GRID-REVIEW-RUNNER` — ADR-0086: Pull-Based Local Worker as the Grid Review Runner (adrs/ADR-0086-pull-based-local-worker-grid-review-runner.md)
 - `PDR-0002-NOTIFY-AS-A-SERVICE-FIRST-COMMERCIAL-PRODUCT` — PDR-0002: HoneyDrunk Notify — First Commercial Product on the Grid (pdrs/PDR-0002-notify-as-a-service-first-commercial-product.md)
 - `PDR-0003-LATELY-CURRENTS-BASED-CONNECTION-APP` — PDR-0003: Lately — A Currents-Based Connection App for Regular Humans (pdrs/PDR-0003-lately-currents-based-connection-app.md)
 - `PDR-0005-HEARTH-PERSONAL-GROWTH-AS-A-LIVING-TOWN` — PDR-0005: Hearth — Personal Growth as a Living Town (pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md)

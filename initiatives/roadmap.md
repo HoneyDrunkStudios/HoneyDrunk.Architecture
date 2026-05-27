@@ -25,7 +25,7 @@ The studio is currently building three product threads in 2026 — **Notify Clou
 **Foundation / Substrate** *(structurally important to the workshop, per charter §"What this charter licenses")*
 
 - [ ] **Code Review Pipeline (ADR-0011)** — ADR-0011 Accepted 2026-05-25; SonarQube Cloud rollout completed across all 12 .NET-active Grid repos (Kernel, Transport, Vault, Auth, Web.Rest, Data, Notify, Pulse, Communications, AI, Audit, Observe) the same day; `job-sonarcloud.yml` reusable workflow + `agent-run.yml` packet-link injection shipped in HoneyDrunk.Actions; org-level GitHub ruleset created in Evaluate mode to require `SonarCloud Code Analysis` on the 12 onboarded repos. Closure pending three gate-cleanup items (Sonar Overview coverage diagnosis, legacy findings triage, hotspot review on Communications + Observe) before flipping the ruleset to Active and archiving the initiative.
-- [ ] **ADR-0012 Grid CI/CD Control Plane — In Progress** — `adr-0012-grid-cicd-control-plane`: tracked_workflows catalog, grid-health aggregator, caller-permissions audit, Node 20 action bump.
+- [x] **ADR-0012 Grid CI/CD Control Plane — completed 2026-05-27** — `adr-0012-grid-cicd-control-plane`: tracked_workflows catalog, grid-health aggregator, caller-permissions audit, and Node 20 action bump shipped.
 - [ ] **ADR-0033 environment-gated trigger packets** — unblocks Notify/Pulse dev deploy under ADR-0015
 - [ ] **ADR-0043 Backlog Generation — Phase 1 kickoff** — closes the ADR → packet auto-generation loop; Strategic source feeds on ADR acceptances
 - [ ] **ADR-0015 Container Apps Rollout — underway** *(2/5 issues closed; walkthroughs + reusable deploy workflow complete; Notify/Pulse release work remains; underwrites Notify Cloud deploy substrate)*
