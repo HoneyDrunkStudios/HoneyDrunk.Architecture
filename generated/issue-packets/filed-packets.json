@@ -443,5 +443,12 @@
   "generated/issue-packets/active/adr-0078-entra-external-id/04-architecture-entra-app-registration-walkthrough.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/441",
   "generated/issue-packets/active/adr-0078-entra-external-id/05-architecture-adr-0006-tier2-rotation-extension-proposal.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/442",
   "generated/issue-packets/active/standalone/2026-05-26-actions-multi-metric-coverage-baselines.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/148",
-  "generated/issue-packets/active/adr-0011-code-review-pipeline/08-actions-sonarcloud-quality-gate-enforcement.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/152"
+  "generated/issue-packets/active/adr-0011-code-review-pipeline/08-actions-sonarcloud-quality-gate-enforcement.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/152",
+  "generated/issue-packets/active/adr-0081-home-server/01-architecture-home-server-hardware-brief.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/451",
+  "generated/issue-packets/active/adr-0081-home-server/02-architecture-home-server-os-hardening-playbook.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/452",
+  "generated/issue-packets/active/adr-0081-home-server/03-architecture-home-server-pre-exposure-security-checklist.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/453",
+  "generated/issue-packets/active/adr-0081-home-server/04-architecture-home-server-tunnel-and-webhook-bridge-migration-plan.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/454",
+  "generated/issue-packets/active/adr-0081-home-server/05-architecture-home-server-openclaw-backup-plan.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/455",
+  "generated/issue-packets/active/adr-0081-home-server/06-architecture-home-server-d6-migration-runbook.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/456",
+  "generated/issue-packets/active/adr-0081-home-server/07-architecture-adr-0081-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/457"
 }
