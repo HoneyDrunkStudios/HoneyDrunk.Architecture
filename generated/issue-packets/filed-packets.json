@@ -442,5 +442,6 @@
   "generated/issue-packets/active/adr-0078-entra-external-id/03-architecture-provision-entra-tenant.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/440",
   "generated/issue-packets/active/adr-0078-entra-external-id/04-architecture-entra-app-registration-walkthrough.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/441",
   "generated/issue-packets/active/adr-0078-entra-external-id/05-architecture-adr-0006-tier2-rotation-extension-proposal.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/442",
-  "generated/issue-packets/active/standalone/2026-05-26-actions-multi-metric-coverage-baselines.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/148"
+  "generated/issue-packets/active/standalone/2026-05-26-actions-multi-metric-coverage-baselines.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/148",
+  "generated/issue-packets/active/adr-0011-code-review-pipeline/08-actions-sonarcloud-quality-gate-enforcement.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/152"
 }
