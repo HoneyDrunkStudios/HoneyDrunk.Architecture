@@ -20,6 +20,7 @@ Listed in provisioning order — platform-shared first, per-Node second.
 **GitHub platform (provision once for the org):**
 
 - [GitHub Actions failure notifications](github-notifications.md) - Per-account GitHub notification setup for ADR-0012 D7 failed-workflow email alerts.
+- [Caller workflow permissions audit](caller-permissions-audit.md) - ADR-0012 D5/GAP-3 baseline audit for reusable `HoneyDrunk.Actions` caller permissions.
 
 - [HoneyDrunk Hive GitHub App](walkthroughs/github-app-hive-walkthrough.md) — Dedicated GitHub App that mints scoped installation tokens for the file-packets reusable workflow. Replaces the developer's PAT for control-plane work.
 
