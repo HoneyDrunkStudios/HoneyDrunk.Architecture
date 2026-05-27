@@ -435,3 +435,29 @@ Rejected on cost and operational coupling. The marginal quality gain on routine 
 ### Defer until first AI-authored production regression
 
 Rejected. The regression is the wrong learning signal; by the time it lands, the review-process drift it would surface has been ongoing for weeks. v1 cost is low enough that pre-incident adoption is cheaper than post-incident scrambling. Same argument as ADR-0043: industrialize the cheap process change before it has to be justified under fire.
+
+## Superseded in part by ADR-0086
+
+[ADR-0086](./ADR-0086-pull-based-local-worker-grid-review-runner.md) (Proposed) reshapes this ADR's transport and execution substrate while preserving the discipline halves. The substrate change is invisible to `.claude/agents/review.md`; both substrates consume the same canonical agent file per [ADR-0007](./ADR-0007-claude-agents-as-source-of-truth.md).
+
+**Superseded:**
+
+- **D1 — Build the automatic Grid Review Runner with GitHub Actions as the trigger rail (signed webhook → OpenClaw).** The signed-webhook-to-OpenClaw transport is replaced by a pull-based local worker. The cheap GitHub Action now enqueues review requests via a GitHub-native queue (label `needs-agent-review` + structured queue comment); a local worker on the always-on home server polls GitHub on a 1–5-minute cadence, claims one PR at a time via label swap, runs the agent under subscription-backed Codex CLI / Claude Code CLI, and posts the verdict back to the PR. The Cloudflare Tunnel for review traffic and the OpenClaw process on the review path are decommissioned at cutover per ADR-0086 D10.
+- **D5 — Subscription-backed default = OpenClaw/Codex.** Reframed: the subscription-backed default is now local CLIs (Codex CLI under ChatGPT Pro, Claude Code CLI under Claude Max), invoked by the local worker. The `api-ci` fallback is preserved with the same constraints; the `openclaw-codex` runner enum value is removed from `.honeydrunk-review.yaml` per ADR-0086 D5.
+
+**Preserved verbatim:**
+
+- D2 (context-loading contract — the same eight-item mandatory load).
+- D3 (twenty-category rubric and upstream-awareness clause across `scope`, `adr-composer`, `pdr-composer`, `refine`, execution agents, `review`, `node-audit`).
+- D4 (`.honeydrunk-review.yaml` per-repo config — `enabled`, `severity_floor`, `skip_paths`, `cost_cap_per_pr_usd`), with the `runner` enum updated per ADR-0086 D5.
+- D6 (authorship classification — `Authorship:` line + `pr-core.yml` check).
+- D7 (PR-size discipline for non-`human` PRs at the 400 / 800 line bands).
+- D8 (multi-perspective for high-risk Nodes — two independent passes), with the implementation substrate change per ADR-0086 D8 (two local-worker invocations, one Codex CLI pass + one Claude Code CLI pass; contrarian-prompt fallback preserved).
+- D9 (post-merge sampling audit every Nth PR; audit-mode instruction block in the canonical agent file).
+- D10 (relationship to ADR-0011 — D5 advisory posture preserved, D10 local-only reversal preserved, D11 rejection of CodeRabbit remains moot).
+
+**Phased rollout clock reset:**
+
+- D11's Phase 1–4 progression is moot for the new substrate. ADR-0086 D11 resets the clock: Phase A pilots the worker on `HoneyDrunk.Architecture`; Phase B migrates the other `enabled` repos and triggers the OpenClaw-review-path decommission; Phase C ramps to all 12 live Nodes. The exit criteria from ADR-0044 D11 Phase 1 (verdict quality, reliable triggers, near-zero marginal cost) carry over to ADR-0086 Phase A.
+
+The two invariants added by this ADR's Consequences section are **preserved** under the new transport, with the "requests an automatic review pass" mechanism redefined as "lands in the GitHub-native queue, processed by the local worker."

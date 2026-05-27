@@ -24,7 +24,7 @@ This ADR closes the gap by naming **the canonical standup procedure**, splitting
 
 This ADR is the **process decision** for what every Grid Node standup must do. It is not a per-class walkthrough — those land as follow-ups in `infrastructure/walkthroughs/` once this ADR is Accepted. It is also not a re-litigation of ADR-0044's `.honeydrunk-review.yaml` schema, ADR-0011's tier-1 gate composition, ADR-0012's reusable-workflow factoring, ADR-0007's `.claude/agents/` location, or ADR-0008's packet/issue/board lifecycle. Those are referenced here as *inputs*; this ADR only decides which of them apply to standup and in what order.
 
-This ADR depends on ADR-0007, ADR-0008, ADR-0011 (and specifically D11's SonarCloud gate, which is the forcing example for org-secret repo binding — see D8), ADR-0012, ADR-0014 (hive-sync reconciliation and the `LABELS_FANOUT_PAT` / `HIVE_FIELD_MIRROR_TOKEN` / `HIVE_APP_ID` / `HIVE_APP_PRIVATE_KEY` org-secret stack), ADR-0034 (NuGet publishing and the `NUGET_API_KEY` org secret), ADR-0044 (and `OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET`), ADR-0046, ADR-0083 (drafts — org-secret inventory cross-cuts the D8 list), ADR-0084 (drafts — the seven Discord webhook org secrets that will need binding for any Node emitting operator-actionable events), and on the Audit-standup procedure as the gold-standard worked example (ADR-0031 D11 plus packets 02 and 03).
+This ADR depends on ADR-0007, ADR-0008, ADR-0011 (and specifically D11's SonarCloud gate, which is the forcing example for org-secret repo binding — see D8), ADR-0012, ADR-0014 (hive-sync reconciliation and the `LABELS_FANOUT_PAT` / `HIVE_FIELD_MIRROR_TOKEN` / `HIVE_APP_ID` / `HIVE_APP_PRIVATE_KEY` org-secret stack), ADR-0034 (NuGet publishing and the `NUGET_API_KEY` org secret), ADR-0044 (and `OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET`), ADR-0046, [ADR-0083](./ADR-0083-external-saas-credential-rotation.md) (org-secret inventory cross-cuts the D8 list), [ADR-0084](./ADR-0084-discord-operator-alerts-surface.md) (the seven Discord webhook org secrets that will need binding for any Node emitting operator-actionable events), and on the Audit-standup procedure as the gold-standard worked example (ADR-0031 D11 plus packets 02 and 03).
 
 ## Decision
 
@@ -213,7 +213,7 @@ GitHub organization Actions secrets carry a **Repository access** policy that co
   - `HIVE_FIELD_MIRROR_TOKEN`
   - `HIVE_APP_ID`
   - `HIVE_APP_PRIVATE_KEY`
-- **Conditional on operator-alert emission** (per ADR-0084, in flight at `generated/adr-drafts/2026-05-25-discord-operator-alerts-surface.md` — applies to any Node whose workflows emit operator-actionable events):
+- **Conditional on operator-alert emission** (per [ADR-0084](./ADR-0084-discord-operator-alerts-surface.md) — applies to any Node whose workflows emit operator-actionable events):
   - `DISCORD_WEBHOOK_OPS_ALERTS`
   - `DISCORD_WEBHOOK_SECURITY`
   - `DISCORD_WEBHOOK_AGENT_ACTIVITY`
