@@ -7,6 +7,9 @@ on:
       - 'generated/issue-packets/active/**/*.md'
   workflow_dispatch: {}
 
+permissions:
+  contents: read
+
 jobs:
   file:
     uses: HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/file-packets.yml@main
