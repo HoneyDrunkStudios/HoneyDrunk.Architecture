@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Promoted three ADR drafts to canonical numbered ADRs: ADR-0083 (Sensitive Inventory and External-SaaS Credential Rotation Procedure), ADR-0084 (Discord as the Canonical Operator-Alerts Surface), and ADR-0085 (Grid-Wide Documentation Currency Agent `docs-sync`). All three land as Proposed. Resolves the 0083 numbering conflict — the pre-existing 2026-05-25 drafts hold prior claim per ADR-0082's depends-on prose; the later-authored docs-sync ADR renumbers to 0085. Updates `adrs/README.md` index, ADR-0082's `(drafts —)` cross-references, and rewrites internal links in the promoted ADR bodies from draft filenames to canonical ADR filenames.
 - Accepted ADR-0012 as the Grid CI/CD control-plane decision: finalized invariants 37-41, registered the rollout initiative, and added the review-agent caller-permissions rule.
 - Added the ADR-0012 D7 GitHub Actions failure-notification runbook and linked it from the infrastructure index.
 - Extended `catalogs/grid-health.json` to schema 1.1 with per-repo `tracked_workflows` for the ADR-0012 grid-health aggregator.

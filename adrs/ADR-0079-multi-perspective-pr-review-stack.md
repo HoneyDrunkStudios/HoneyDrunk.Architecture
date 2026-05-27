@@ -275,6 +275,34 @@ Considered. The argument: Copilot + CodeRabbit + Grid-aware-via-Codex is already
 
 Rejected. The ADR captures the substantive-PR classifier (D3), the Invariant 53 satisfaction (D7), the June 15 enablement plan (D2), and the auth-precedence gotcha (D8). All four are new artifacts that prevent specific failure modes. The formalization is the value.
 
+## Superseded in part by ADR-0086
+
+[ADR-0086](./ADR-0086-pull-based-local-worker-grid-review-runner.md) (Proposed) moves the Grid Review Runner from the OpenClaw-hosted signed-webhook transport (per ADR-0044) to a pull-based local worker. The transport change cascades into Reviewer 3's substrate and reshapes Reviewer 4's enablement plan.
+
+**Superseded transport-wise — D1 Reviewer 3 (Grid-aware `review` agent via Codex, OpenClaw-triggered).**
+
+The trigger path is no longer "GitHub webhook → OpenClaw → Codex CLI runtime → `.claude/agents/review.md` → PR comment." Under ADR-0086 D1–D4 it becomes "GitHub PR event → cheap GitHub Action (label + comment enqueue) → local worker poll → Codex CLI (subscription auth) → PR comment + label state transition." OpenClaw is removed from the review path. Billing is unchanged: against the operator's ChatGPT Pro allotment, with API overage if exceeded. The Grid-aware property and the agent-definition source-of-truth rule are preserved verbatim.
+
+**Superseded — D2 Reviewer 4 (Grid-aware `review` agent via Claude, Anthropic-native triggered).**
+
+ADR-0079 D2 committed the path through Anthropic's native Claude Code on the web GitHub integration, billed against the **Claude Max Agent SDK credit pool** from **June 15, 2026**. ADR-0086 D8 reverses this:
+
+Reviewer 4 now runs through the **same local worker** as Reviewer 3, using local **Claude Code CLI** under the operator's existing Claude Max subscription session. This is available **today**, removes the June 15 dependency, removes the auth-precedence gotcha at the worker boundary (no `ANTHROPIC_API_KEY` is ever set in the worker environment per ADR-0086 D4), and uses one substrate (the local worker) for both Reviewer 3 and Reviewer 4. Same Claude Max billing path as ADR-0079 D2 intended — subscription session, no per-token API billing — just executed via the local CLI rather than the web integration. The web-integration path is removed from the Grid Review Runner's design.
+
+The pre-June-15 transition-state degradation of Invariant 53 satisfaction (D7) **collapses to zero** under the new path, because Claude Code CLI under Max is available now.
+
+**Preserved verbatim:**
+
+- D3 (substantive-PR classifier safe-list).
+- D4 (Greptile considered and not selected).
+- D5 (Codex out-of-the-box review considered and not selected).
+- D6 (cost ceiling and posture) — ADR-0086 D6's cost shape is consistent with this accounting.
+- D7 ([Invariant 53](../constitution/invariants.md) satisfaction via dual-model execution of the same Grid-aware agent) — two different model families (GPT-class via Codex CLI, Claude via Claude Code CLI) executing the same `.claude/agents/review.md` definition. The independence is at the model level; the worldview alignment is at the agent-definition level. The substrate (now the local worker) preserves both.
+- D8 (auth-precedence gotcha) — preserved as a general operator-facing landmine, now enforced at the worker env boundary per ADR-0086 D4.
+- D9 (out-of-scope items).
+
+The four invariants proposed in this ADR's Consequences section are **preserved** under the new transport. The "Grid-aware agent's two execution paths (Codex + Claude) must consume the same `.claude/agents/review.md` definition" invariant continues to hold; the two paths are now Codex CLI and Claude Code CLI under the local worker (or, under the alternative, Codex CLI under the local worker plus Claude Code on the web integration post June 15).
+
 ## References
 
 - [`constitution/charter.md`](../constitution/charter.md) — workshop craft, many-decade horizon, anti-performing-visibility warning
