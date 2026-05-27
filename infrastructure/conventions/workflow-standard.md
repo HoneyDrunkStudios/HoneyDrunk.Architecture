@@ -27,7 +27,7 @@ Repo-local workflows must not reimplement reusable mechanics with direct marketp
 
 ## Release Standard
 
-Package and library repositories should use a thin tag/dispatch workflow that computes the release version and calls `HoneyDrunk.Actions/.github/workflows/release.yml@main`. If a GitHub Release is required, pass `create-github-release: true` plus release metadata into the reusable workflow. Do not create a separate repo-local `github-release` job.
+Package and library repositories should use a thin tag/dispatch workflow that computes the release version and calls `HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/release.yml@main`. If a GitHub Release is required, pass `create-github-release: true` plus release metadata into the reusable workflow. Do not create a separate repo-local `github-release` job.
 
 Deployable Function App repositories should call `job-dotnet-publish-artifact.yml` for restore/build/test/publish/upload, then call `job-deploy-function.yml` for deployment. Repo-local workflows may resolve environment-scoped variables, but must not carry local checkout/setup-dotnet/upload-artifact steps.
 

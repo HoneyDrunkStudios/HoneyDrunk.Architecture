@@ -50,6 +50,7 @@ Listed in provisioning order — platform-shared first, per-Node second.
 - [Azure Naming Conventions](conventions/azure-naming-conventions.md) — canonical resource naming rules and per-type constraints.
 - [Azure Identity & Secrets](conventions/azure-identity-and-secrets.md) — OIDC, Key Vault strategy, secret naming, per-service secret lists.
 - [Tag & Release Conventions](conventions/tag-and-release-conventions.md) — how git tags map to releases; NuGet `v*` lockstep vs. per-component deploy tags.
+- [HoneyDrunk Workflow Standard](conventions/workflow-standard.md) — caller/reusable workflow boundaries for Grid CI, release, and deploy automation.
 
 ## Reference
 
