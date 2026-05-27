@@ -10,6 +10,8 @@ Consumer repositories own workflow triggers, version/tag parsing, environment/va
 
 Repo-local workflows must not reimplement reusable mechanics with direct marketplace actions such as `actions/checkout`, `actions/setup-dotnet`, `actions/upload-artifact`, `softprops/action-gh-release`, `docker/login-action`, or Azure deploy actions unless `HoneyDrunk.Actions` is the repository being changed.
 
+Consumer repositories should reference first-party reusable workflows from `HoneyDrunk.Actions@main`. This keeps Node runtime, marketplace action pin, permission, coverage, and release behavior centrally updatable. SonarQube Cloud source analysis excludes consumer `.github/workflows/**` wrapper YAML by default; workflow implementation security is reviewed and scanned in `HoneyDrunk.Actions`, while consumer wrappers remain limited to triggers, permissions, paths, variables, and secrets wiring.
+
 ## Standard Caller Shapes
 
 | Concern | Consumer workflow responsibility | Reusable workflow owner |
