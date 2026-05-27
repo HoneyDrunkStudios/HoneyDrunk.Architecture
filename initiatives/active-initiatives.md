@@ -52,24 +52,6 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - Cost discipline tooling (Gap 4) — review agent's checklist covers it qualitatively
 - Private-repo SonarQube Cloud (Gap 5) — opt-in per repo, no Wave-3 fan-out
 
-### Grid CI/CD Control Plane (ADR-0012)
-**Status:** In Progress
-**Scope:** Architecture, Actions
-**Initiative:** `adr-0012-grid-cicd-control-plane`
-**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
-**Description:** Land the follow-up work for ADR-0012 — `tracked_workflows` catalog extension, `grid-health-report.yml` aggregator, `consumer-usage.md` refresh, `action-pins.md` inventory, D4 direct-CLI retrofit audit, caller-workflow `permissions:` audit across all 11 Grid repos, and the Node 20 deprecated-action bump. The aggregator (D6) is the headline deliverable; the other packets close visibility, documentation, and operational gaps named in the ADR's Unresolved Consequences.
-
-**Tracking:**
-- [ ] Architecture#NN: Accept ADR-0012 — flip status, renumber invariants 34-38 to 37-41, register initiative, amend review.md (packet 01)
-- [ ] Architecture#NN: GitHub profile notifications runbook at `infrastructure/github-notifications.md` (packet 02)
-- [ ] Architecture#NN: Add `tracked_workflows` to repo catalog (packet 03)
-- [ ] Actions#NN: Author `grid-health-report.yml` aggregator (packet 04)
-- [ ] Actions#NN: Refresh `docs/consumer-usage.md` with canonical `permissions:` blocks per D5 (packet 05)
-- [ ] Actions#NN: Author `docs/action-pins.md` inventory (packet 06)
-- [ ] Actions#NN: D4 direct-CLI retrofit audit + re-run nightly-security across 11 repos (packet 07)
-- [x] Architecture#NN: Caller-workflow `permissions:` audit across 11 Grid repos (packet 08; local branch `chore/adr-0012-packet-08-caller-permissions-audit`, commit `72d1bd2`; PR not opened yet)
-- [x] Actions#NN: Bump Node 20 deprecated actions, update pin inventory (packet 09; local branch `chore/adr-0012-packet-09-node20-actions`, commit `9d8930a`; PR not opened yet)
-
 ### ADR-0044 Cloud Code Review and AI-Authored PR Discipline
 **Status:** In Progress
 **Scope:** Architecture, Actions, OpenClaw runtime, and later the live Node repos
