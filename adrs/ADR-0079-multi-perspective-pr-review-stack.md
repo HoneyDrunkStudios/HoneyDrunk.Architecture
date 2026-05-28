@@ -5,6 +5,8 @@
 **Deciders:** HoneyDrunk Studios
 **Sector:** Meta
 
+> **Superseded in part by ADR-0086 (2026-05-26).** D1 Reviewer 3 (Codex via OpenClaw) is superseded transport-wise: same Codex CLI execution against the operator's ChatGPT Pro allotment, triggered via the pull-based local worker rather than via OpenClaw. D2 Reviewer 4 (Anthropic's native Claude Code on the web GitHub integration, post June 15 2026) is superseded: Reviewer 4 runs through the local worker via Claude Code CLI under Claude Max **today**. The June 15 dependency and the Claude-Code-on-the-web GitHub integration are removed from the Grid Review Runner's design. D3 (substantive-PR classifier safe-list), D4-D5 (Greptile/Codex-OOTB watch list), D6 (cost ceiling), D7 (Invariant 53 satisfaction via dual-model execution - now Codex CLI + Claude Code CLI, both under subscription auth, both under the local worker), D8 (auth-precedence gotcha - enforced at the worker env boundary), D9 (out-of-scope items) are preserved. See ADR-0086 D12 for the full relationship table.
+
 ## Context
 
 [ADR-0044](./ADR-0044-grid-aware-cloud-code-review-and-ai-authored-pr-discipline.md) (Accepted) built the **Grid-aware cloud code reviewer** — the OpenClaw-hosted runner that executes the `.claude/agents/review.md` agent definition through Codex on every PR. ADR-0044 also reversed [ADR-0011](./ADR-0011-code-review-and-merge-flow.md)'s rejection of CodeRabbit and Copilot review — both are permitted to operate alongside the Grid-aware reviewer.
@@ -277,7 +279,7 @@ Rejected. The ADR captures the substantive-PR classifier (D3), the Invariant 53 
 
 ## Superseded in part by ADR-0086
 
-[ADR-0086](./ADR-0086-pull-based-local-worker-grid-review-runner.md) (Proposed) moves the Grid Review Runner from the OpenClaw-hosted signed-webhook transport (per ADR-0044) to a pull-based local worker. The transport change cascades into Reviewer 3's substrate and reshapes Reviewer 4's enablement plan.
+[ADR-0086](./ADR-0086-pull-based-local-worker-grid-review-runner.md) (Accepted) moves the Grid Review Runner from the OpenClaw-hosted signed-webhook transport (per ADR-0044) to a pull-based local worker. The transport change cascades into Reviewer 3's substrate and reshapes Reviewer 4's enablement plan.
 
 **Superseded transport-wise — D1 Reviewer 3 (Grid-aware `review` agent via Codex, OpenClaw-triggered).**
 

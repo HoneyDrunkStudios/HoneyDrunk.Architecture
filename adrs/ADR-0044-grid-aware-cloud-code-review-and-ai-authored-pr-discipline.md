@@ -5,6 +5,8 @@
 **Deciders:** HoneyDrunk Studios
 **Sector:** Meta
 
+> **Superseded in part by ADR-0086 (2026-05-26).** D1's GitHub Actions trigger rail + signed webhook -> OpenClaw transport is rewritten as a pull-based local worker (cheap Action emits label + queue comment; local worker on the home server polls and runs the agent under Codex CLI + Claude Code CLI subscription auth). D5's default subscription-backed runtime moves from OpenClaw/Codex to local Codex CLI + Claude Code CLI. D2 (context-loading contract), D3 (twenty-category rubric), D4 (`.honeydrunk-review.yaml` - with the `runner` enum updated per ADR-0086 D5), D6 (authorship classification), D7 (PR-size discipline), D8 (multi-perspective for high-risk Nodes - substrate moves to local worker), D9 (post-merge sampling audit - substrate moves to local worker), D10 (relationship to ADR-0011 - preserved), D11 (phase clock reset per ADR-0086 D11) are otherwise preserved. See ADR-0086 D12 for the full relationship table.
+
 ## Context
 
 ADR-0011 (Proposed) established the Grid's code review pipeline with the Grid-aware `review` agent as **local-only and human-invoked** (D10). The accepted risk was "a distracted solo developer may forget to invoke the review agent." The same ADR (D11) rejected CodeRabbit on the grounds that the automatic-LLM-reviewer slot was already filled by Copilot.
@@ -438,7 +440,7 @@ Rejected. The regression is the wrong learning signal; by the time it lands, the
 
 ## Superseded in part by ADR-0086
 
-[ADR-0086](./ADR-0086-pull-based-local-worker-grid-review-runner.md) (Proposed) reshapes this ADR's transport and execution substrate while preserving the discipline halves. The substrate change is invisible to `.claude/agents/review.md`; both substrates consume the same canonical agent file per [ADR-0007](./ADR-0007-claude-agents-as-source-of-truth.md).
+[ADR-0086](./ADR-0086-pull-based-local-worker-grid-review-runner.md) (Accepted) reshapes this ADR's transport and execution substrate while preserving the discipline halves. The substrate change is invisible to `.claude/agents/review.md`; both substrates consume the same canonical agent file per [ADR-0007](./ADR-0007-claude-agents-as-source-of-truth.md).
 
 **Superseded:**
 

@@ -1,6 +1,6 @@
 # ADR-0086: Pull-Based Local Worker as the Grid Review Runner
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-05-26
 **Deciders:** HoneyDrunk Studios
 **Sector:** Meta
@@ -28,7 +28,7 @@ The forcing function is therefore narrow and clean: **change the transport and t
 
 The new shape is small, boring, and standard: a cheap GitHub Action enqueues a review request by **labelling and commenting** on the PR; a **local worker** on the always-on home server (per [ADR-0081](./ADR-0081-home-server-for-openclaw-and-local-agent-infrastructure.md)) polls GitHub on a 1–5-minute cadence, claims one PR at a time via a label swap, runs the canonical `.claude/agents/review.md` agent locally under subscription auth, and posts the verdict back to the PR. No inbound webhook. No tunnel for review traffic. No OpenClaw on the review path. The substrate change is invisible to the agent prompt — the same `.claude/agents/review.md` runs on either path per [ADR-0007](./ADR-0007-claude-agents-as-source-of-truth.md)'s source-of-truth rule.
 
-This is a **Proposed** ADR. It captures a transport and substrate change the operator wants to make. The poll interval (60–120 s during operator working hours), worker language (PowerShell), Reviewer 4 substrate (Claude Code CLI under Max via the local worker), stale-claim sweep threshold (15 min recommended), and GitHub auth shape (a dedicated `honeydrunk-review-worker` GitHub App, not the operator's `gh` CLI session) are pinned by operator decision at draft time. The precise worker file layout and the App's installation-token caching shape are pinned by the implementing packet once a one-repo pilot runs against `HoneyDrunk.Architecture`.
+This ADR is **Accepted**. It captures the transport and substrate change the operator is making. The poll interval (60–120 s during operator working hours), worker language (PowerShell), Reviewer 4 substrate (Claude Code CLI under Max via the local worker), stale-claim sweep threshold (15 min recommended), and GitHub auth shape (a dedicated `honeydrunk-review-worker` GitHub App, not the operator's `gh` CLI session) are pinned by operator decision. The precise worker file layout and the App's installation-token caching shape are pinned by the implementing packet once a one-repo pilot runs against `HoneyDrunk.Architecture`.
 
 ## Decision
 
