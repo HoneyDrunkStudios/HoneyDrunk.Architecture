@@ -47,14 +47,14 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 **Scope:** Architecture, Actions, the local worker host, and later the live Node repos
 **Initiative:** `adr-0086-pull-based-local-worker-grid-review`
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
-**Description:** Accept ADR-0086 and replace the fragile signed-webhook -> OpenClaw review path with a GitHub-native queue plus local pull worker. GitHub Actions enqueues via labels and a structured queue comment; the home-server worker polls, claims one PR/head SHA at a time, runs Codex CLI and Claude Code CLI under subscription auth, and posts advisory PR verdicts while preserving ADR-0044/ADR-0079 review discipline.
+**Description:** Accept ADR-0086 and replace the fragile signed-webhook -> OpenClaw review path with a GitHub-native queue plus local pull worker. GitHub Actions normalizes managed PR labels and enqueues via labels plus a structured queue comment; the home-server worker polls, claims one PR/head SHA at a time, runs Codex CLI and Claude Code CLI under subscription auth when required, synthesizes their findings into one advisory verdict, and preserves ADR-0044/ADR-0079 review discipline.
 
 **Tracking (Wave 1 — Phase A: Architecture pilot):**
 - [x] Architecture: Accept ADR-0086, append supersession notes to ADR-0044/ADR-0079, register this initiative, and mark ADR-0044 Architecture#182 superseded (packet 01)
-- [ ] Architecture: Create the `honeydrunk-review-worker` GitHub App walkthrough/credential contract (packet 02)
-- [ ] Architecture: Author the PowerShell pull worker under `infrastructure/workers/grid-review-runner/` (packet 03)
+- [ ] Architecture: Audit and reuse the existing ADR-0044 review-agent GitHub App walkthrough/credential contract (packet 02)
+- [ ] Architecture: Author the PowerShell pull worker under `infrastructure/workers/grid-review-runner/`, including dual Codex/Claude synthesis and Task Scheduler startup/restart behavior (packet 03)
 - [ ] Architecture: Update the `.honeydrunk-review.yaml` schema doc for `runner: local-worker` / `api-ci` and removal of `openclaw-codex` (packet 04)
-- [ ] Actions: Rewrite `job-review-request.yml` as the label/comment enqueue workflow (packet 05)
+- [ ] Actions: Rewrite `job-review-request.yml` as the managed-label-normalizing label/comment enqueue workflow (packet 05)
 - [ ] Actions: Add `needs-agent-review`, `agent-review-in-progress`, `agent-reviewed`, and `changes-requested-by-agent` labels Grid-wide (packet 06)
 - [ ] Architecture: Cut over the Architecture pilot to the local worker and record Phase-A go/no-go evidence (packet 07)
 

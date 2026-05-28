@@ -9,7 +9,7 @@
 
 ## Summary
 
-ADR-0086 keeps the **discipline** of ADR-0044/ADR-0079 intact and changes only the **transport** and **execution substrate**. The inbound webhook + Cloudflare Tunnel + OpenClaw-on-the-review-path are removed. A cheap GitHub Action enqueues review requests by labelling and commenting on the PR; a PowerShell pull worker on the always-on home server polls GitHub on a 60–120 s cadence, claims one PR at a time via a label swap, runs the canonical `.claude/agents/review.md` agent locally under Codex CLI / Claude Code CLI subscription auth, and posts the verdict back. Reviewer 4 (Claude Code CLI under Max) runs today through the same local worker — the June 15 2026 dependency and the Claude-Code-on-the-web GitHub integration are removed from the Grid Review Runner's design.
+ADR-0086 keeps the **discipline** of ADR-0044/ADR-0079 intact and changes only the **transport** and **execution substrate**. The inbound webhook + Cloudflare Tunnel + OpenClaw-on-the-review-path are removed. A cheap GitHub Action normalizes managed PR labels, then enqueues review requests by labelling and commenting on the PR; a PowerShell pull worker on the always-on home server polls GitHub on a 60–120 s cadence, claims one PR at a time via a label swap, runs the canonical `.claude/agents/review.md` agent locally under Codex CLI / Claude Code CLI subscription auth, synthesizes independent findings into one verdict when both reviewers run, and posts the verdict back. Reviewer 4 (Claude Code CLI under Max) runs today through the same local worker — the June 15 2026 dependency and the Claude-Code-on-the-web GitHub integration are removed from the Grid Review Runner's design.
 
 This initiative ships **10 packets across 3 waves**, mapped 1:1 to ADR-0086 D11's three phases (A / B / C). Phase A is the critical path: build the new substrate, prove it on `HoneyDrunk.Architecture` only, and decommission the OpenClaw review-runner role. Phase B widens to the 10 remaining live .NET Nodes (superseding ADR-0044 Architecture#182 which was the same fan-out at the old default). Phase C is the narrative-surfacing polish — make worker availability observable through the weekly briefing and hive-sync. Multi-perspective on high-risk Nodes (D8) and post-merge sampling audit (D9) are preserved disciplines whose substrate moves to the local worker — both are wired into the worker by packet 03 ahead of their respective ADR-0044 activation packets (13/14 for D8, 15/16 for D9).
 
@@ -26,7 +26,7 @@ The right move is to change the transport (pull instead of webhook) and the exec
 
 ## Scope Detection
 
-**Multi-repo.** ADR-0086 touches `HoneyDrunk.Architecture` (acceptance, supersession notes, worker source under `infrastructure/workers/`, schema-doc update, Architecture-pilot cutover, OpenClaw decommission, hive-sync/briefing wiring) and `HoneyDrunk.Actions` (the `job-review-request.yml` rewrite, the four worker labels added to labels-as-code and fanned out). Phase B widens to the 10 remaining live .NET Nodes via the same `target_repos` shape ADR-0044 packet 11 used (now superseded by this initiative's packet 09).
+**Multi-repo.** ADR-0086 touches `HoneyDrunk.Architecture` (acceptance, supersession notes, existing GitHub App reuse audit, worker source under `infrastructure/workers/`, schema-doc update, Architecture-pilot cutover, OpenClaw decommission, hive-sync/briefing wiring) and `HoneyDrunk.Actions` (managed PR-label normalization, the `job-review-request.yml` enqueue rewrite, the four worker labels added to labels-as-code and fanned out). Phase B widens to the 10 remaining live .NET Nodes via the same `target_repos` shape ADR-0044 packet 11 used (now superseded by this initiative's packet 09).
 
 **No new-Node scaffolding.** Both Wave-1 target repos are live. The worker source lives in HoneyDrunk.Architecture under `infrastructure/workers/grid-review-runner/` — a directory choice pinned in packet 03 per ADR-0086 D4 Follow-up Work recommendation. No new Node repo is created.
 
@@ -34,13 +34,13 @@ The right move is to change the transport (pull instead of webhook) and the exec
 
 ### Wave 1 — Phase A: MVP on the Architecture pilot
 
-Packet 01 first (the acceptance flip). Then 02 (App provisioning) gates 03 (worker source); 04/05/06 run in parallel after 01; 07 (Phase-A cutover) depends on 02/03/04/05/06.
+Packet 01 first (the acceptance flip). Then 02 (existing App reuse audit) gates 03 (worker source); 04/05/06 run in parallel after 01; 07 (Phase-A cutover) depends on 02/03/04/05/06.
 
 - [ ] **01** — Architecture: **Accept ADR-0086** — flip status, append supersession amendment notes to ADR-0044 and ADR-0079, register initiative, mark ADR-0044 Architecture#182 superseded. `Actor=Agent`.
-- [ ] **02** — Architecture: Create `honeydrunk-review-worker` GitHub App, write its credentials to Vault, author the walkthrough doc. `Actor=Human` (portal work). Blocked by: 01.
-- [ ] **03** — Architecture: Author the pull-based PowerShell worker at `infrastructure/workers/grid-review-runner/` (claim protocol, Task Scheduler installer, env hygiene, multi-perspective dispatch wiring, audit-mode dispatch wiring, README). `Actor=Agent`. Blocked by: 01, 02.
+- [ ] **02** — Architecture: Audit and reuse the existing ADR-0044 review-agent GitHub App, verify/widen permissions only if needed, verify `review-agent-github-app-*` Vault secrets, author the walkthrough doc. `Actor=Human` (portal work). Blocked by: 01.
+- [ ] **03** — Architecture: Author the pull-based PowerShell worker at `infrastructure/workers/grid-review-runner/` (claim protocol, Task Scheduler startup/restart installer, env hygiene, dual Codex/Claude dispatch with synthesis, audit-mode dispatch wiring, README). `Actor=Agent`. Blocked by: 01, 02.
 - [ ] **04** — Architecture: Update `copilot/review-config-schema.md` for the `runner:` enum change (drop `openclaw-codex`, add `local-worker` default, preserve `api-ci`). `Actor=Agent`. Blocked by: 01.
-- [ ] **05** — Actions: Rewrite `job-review-request.yml` from webhook-emitting to label-and-comment-emitting per D2. `Actor=Agent`. Blocked by: 01.
+- [ ] **05** — Actions: Rewrite `job-review-request.yml` from webhook-emitting to managed-label-normalizing plus label-and-comment enqueue per D2. `Actor=Agent`. Blocked by: 01.
 - [ ] **06** — Actions: Add four worker labels (`needs-agent-review`, `agent-review-in-progress`, `agent-reviewed`, `changes-requested-by-agent`) to labels-as-code and fan out Grid-wide. `Actor=Agent`. Blocked by: 01.
 - [ ] **07** — Architecture: Cut `HoneyDrunk.Architecture` over to `runner: local-worker`; update its `pr-review.yml` caller; verify end-to-end on the cutover PR; record Phase-A go/no-go. `Actor=Agent`. Blocked by: 02, 03, 04, 05, 06.
 
@@ -70,10 +70,10 @@ Packets within a wave run in parallel where their `dependencies:` array permits 
 | # | Packet | Repo | Actor | Wave | Blocked by |
 |---|--------|------|-------|------|-----------|
 | 01 | [Accept ADR-0086](./01-architecture-adr-0086-acceptance.md) | Architecture | Agent | 1 | — |
-| 02 | [GitHub App + Vault credentials](./02-architecture-create-review-worker-github-app.md) | Architecture | Human | 1 | 01 |
+| 02 | [Review-agent App reuse audit](./02-architecture-create-review-worker-github-app.md) | Architecture | Human | 1 | 01 |
 | 03 | [Pull-based PowerShell worker](./03-architecture-author-pull-worker.md) | Architecture | Agent | 1 | 01, 02 |
 | 04 | [Schema-doc `runner:` enum update](./04-architecture-update-review-config-schema-doc.md) | Architecture | Agent | 1 | 01 |
-| 05 | [Rewrite `job-review-request.yml`](./05-actions-rewrite-job-review-request-as-label-and-comment.md) | Actions | Agent | 1 | 01 |
+| 05 | [Managed-label enqueue workflow](./05-actions-rewrite-job-review-request-as-label-and-comment.md) | Actions | Agent | 1 | 01 |
 | 06 | [Four worker labels Grid-wide](./06-actions-add-four-worker-labels-grid-wide.md) | Actions | Agent | 1 | 01 |
 | 07 | [Architecture cutover to `runner: local-worker`](./07-architecture-cutover-pilot-to-local-worker.md) | Architecture | Agent | 1 | 02, 03, 04, 05, 06 |
 | 08 | [Decommission OpenClaw review substrate](./08-architecture-decommission-openclaw-review-substrate.md) | Architecture | Agent | 2 | 07 |
@@ -112,7 +112,7 @@ Everything downstream is sequenced behind Phase A's go decision (packet 07). If 
 
 ### Operator-side cutover work
 
-Packet 02 carries portal work (GitHub App creation) as Human Prerequisites. Packet 08 carries the Cloudflare Tunnel hostname removal, the ADR-0044 webhook-signing secret rotation, and the OpenClaw review-role disable as Human Prerequisites. All other packets are pure code/docs delegable to the agent.
+Packet 02 carries portal work (existing GitHub App audit/reuse, permission verification, Vault secret verification) as Human Prerequisites. Packet 08 carries the Cloudflare Tunnel hostname removal, the ADR-0044 webhook-signing secret rotation, and the OpenClaw review-role disable as Human Prerequisites. All other packets are pure code/docs delegable to the agent.
 
 ## Version Bumps
 
@@ -123,7 +123,7 @@ Packet 02 carries portal work (GitHub App creation) as Human Prerequisites. Pack
 ## Rollback Plan
 
 - **Packet 01 (acceptance):** revert the PR. ADR-0086 returns to Proposed; the supersession amendment notes are removed from ADR-0044 and ADR-0079; the initiative is unregistered. No runtime impact.
-- **Packet 02 (GitHub App):** the operator removes the App installation from `HoneyDrunk.Architecture` via the org portal; deletes the three Vault secrets. The walkthrough doc remains as a historical record (or revert that PR too).
+- **Packet 02 (GitHub App reuse audit):** revert the walkthrough PR. If permissions were widened on the existing App, the operator narrows them again in the org portal only if no other active review-agent path still requires them. No new App or secret triplet should exist by default.
 - **Packet 03 (worker):** revert the PR removes the worker source from `infrastructure/workers/grid-review-runner/`. On the home-server host, the operator runs the inverse of `Register-Task.ps1` (an `Unregister-Task.ps1` companion, or removes the Scheduled Task manually) to stop the worker. The repo carries no compiled code, so revert is clean.
 - **Packet 04 (schema doc):** revert the PR. The schema doc returns to its pre-ADR-0086 shape.
 - **Packet 05 (`job-review-request.yml` rewrite):** revert the PR restores the webhook-emitting form. Architecture's caller (packet 07) would then have to re-add the webhook inputs to function. **Note:** if packet 07 has already landed and Architecture's caller no longer passes the webhook inputs, the reverted workflow would skip the webhook-delivery step (`if: ... && inputs.openclaw-webhook-url != ''`) and just leave the artifact fallback — degrading gracefully to the old fallback path. Coordinated revert (07 + 05) returns to the prior state.
