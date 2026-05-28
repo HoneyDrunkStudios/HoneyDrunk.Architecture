@@ -498,5 +498,6 @@
   "generated/issue-packets/active/adr-0086-pull-based-local-worker-grid-review/07-architecture-cutover-pilot-to-local-worker.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/495",
   "generated/issue-packets/active/adr-0086-pull-based-local-worker-grid-review/08-architecture-decommission-openclaw-review-substrate.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/496",
   "generated/issue-packets/active/adr-0086-pull-based-local-worker-grid-review/09-cross-repo-enable-local-worker-ten-nodes.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/497",
-  "generated/issue-packets/active/adr-0086-pull-based-local-worker-grid-review/10-architecture-hive-sync-queue-depth-surfacing.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/498"
+  "generated/issue-packets/active/adr-0086-pull-based-local-worker-grid-review/10-architecture-hive-sync-queue-depth-surfacing.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/498",
+  "generated/issue-packets/active/adr-0086-pull-based-local-worker-grid-review/11-architecture-migrate-scheduled-agent-jobs.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/507"
 }
