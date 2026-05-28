@@ -72,7 +72,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [x] Actions#86: Seed `large-pr`, `audit-sample`, and `skip-review` labels Grid-wide (packet 08; labels-as-code and seed/fanout workflows shipped via Actions PR #100; fanout repair shipped via Actions PR #101; fanout run verified 2026-05-24)
 - [x] Architecture#175: Roll the D3 rubric into upstream authoring agents (packet 09; shipped via PR #279)
 - [x] Architecture#176: Amend execution-surface prompts for `Authorship:` and D3 checklist (packet 10; shipped via PR #279)
-- [ ] Architecture#182: Enable the OpenClaw/Codex reviewer on the 10 remaining live Nodes (packet 11)
+- [ ] Architecture#182: Superseded by ADR-0086 packet 09 — enable the local-worker reviewer on the 10 remaining live Nodes instead of the OpenClaw/Codex runner.
 - [x] Architecture#183: Verify `pr-review-rules.md` severity coverage across all D3 categories (packet 12; shipped via this PR)
 
 **Tracking (Wave 3 — Phase 3: discipline tightening):**
@@ -84,11 +84,36 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [ ] Actions#89: Build the D9 `audit-sample` post-merge labeling and audit job (packet 16)
 - [ ] Architecture#186: Wire `hive-sync` to detect D3 ↔ agent-file drift (packet 17)
 
-**Superseded packets:** Architecture#171, Actions#84, Architecture#173, and Architecture#174 are superseded by the OpenClaw/Codex 02b/03b/05b/06b path and should not be executed. Architecture#173 and Architecture#174 should be closed as superseded by Architecture#180/#181; Architecture#171 remains a gated human/infra item only if webhook/GitHub-App credentials become necessary for the non-cron path.
+**Superseded packets:** Architecture#171, Actions#84, Architecture#173, Architecture#174, and Architecture#182 are superseded and should not be executed. Architecture#173 and Architecture#174 should be closed as superseded by Architecture#180/#181; Architecture#182 is superseded by ADR-0086 packet 09, which fans out the `local-worker` default instead of `openclaw-codex`; Architecture#171 remains a gated human/infra item only if webhook/GitHub-App credentials become necessary for the non-cron path.
 
 **Exit criteria:** ADR-0044 is Accepted; Phase 1 MVP (`job-review-request.yml` + Grid Review Runner) is enabled on `HoneyDrunk.Architecture` only and running on every non-draft PR; each phase's dispatch-plan go/no-go criterion is satisfied before the next wave starts.
 
 > **Sync (2026-05-24):** Phase 1 is functionally complete in artifact-plus-cron/poll mode: ADR-0044 is Accepted, `job-review-request.yml` is live, Architecture has `.honeydrunk-review.yaml` and the caller workflow, and OpenClaw posted advisory PR comments for reviewed head SHAs. Webhook provisioning remains the transport hardening gap; the temporary OpenClaw cron/poll jobs should be disabled after signed webhook delivery is configured and verified. Wave 2 Architecture-side docs/prompts (#175, #176, #183) have landed. Actions#85 is closed via Actions PR #100; Actions#86 is closed after the `seed-labels-fanout.yml` run completed successfully on 2026-05-24. ADR-0044 no longer uses the deprecated multi-agent cloud-review path; broad Node fan-out (#182) is unblocked.
+
+### ADR-0086 Pull-Based Local Worker Grid Review Runner
+**Status:** In Progress
+**Scope:** Architecture, Actions, the local worker host, and later the live Node repos
+**Initiative:** `adr-0086-pull-based-local-worker-grid-review`
+**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
+**Description:** Accept ADR-0086 and replace the fragile signed-webhook -> OpenClaw review path with a GitHub-native queue plus local pull worker. GitHub Actions enqueues via labels and a structured queue comment; the home-server worker polls, claims one PR/head SHA at a time, runs Codex CLI and Claude Code CLI under subscription auth, and posts advisory PR verdicts while preserving ADR-0044/ADR-0079 review discipline.
+
+**Tracking (Wave 1 — Phase A: Architecture pilot):**
+- [x] Architecture: Accept ADR-0086, append supersession notes to ADR-0044/ADR-0079, register this initiative, and mark ADR-0044 Architecture#182 superseded (packet 01)
+- [ ] Architecture: Create the `honeydrunk-review-worker` GitHub App walkthrough/credential contract (packet 02)
+- [ ] Architecture: Author the PowerShell pull worker under `infrastructure/workers/grid-review-runner/` (packet 03)
+- [ ] Architecture: Update the `.honeydrunk-review.yaml` schema doc for `runner: local-worker` / `api-ci` and removal of `openclaw-codex` (packet 04)
+- [ ] Actions: Rewrite `job-review-request.yml` as the label/comment enqueue workflow (packet 05)
+- [ ] Actions: Add `needs-agent-review`, `agent-review-in-progress`, `agent-reviewed`, and `changes-requested-by-agent` labels Grid-wide (packet 06)
+- [ ] Architecture: Cut over the Architecture pilot to the local worker and record Phase-A go/no-go evidence (packet 07)
+
+**Tracking (Wave 2 — Phase B: decommission + fan-out):**
+- [ ] Architecture: Decommission OpenClaw on the review path and document operator-side cutover steps (packet 08; must land before packet 09)
+- [ ] Cross-repo: Enable the local-worker reviewer on the 10 remaining live Nodes, superseding ADR-0044 Architecture#182 (packet 09)
+
+**Tracking (Wave 3 — Phase C: observability polish):**
+- [ ] Architecture: Surface worker queue depth / backlog age through hive-sync and the weekly briefing surfaces (packet 10)
+
+**Exit criteria:** Phase A proves verdict quality, reliable polling/claim semantics, deterministic head-SHA invalidation, and near-zero marginal cost under subscription auth on `HoneyDrunk.Architecture`; Phase B follows only after OpenClaw is decommissioned on the review path; Phase C makes worker availability visible through the existing narrative surfaces without adding a pager or inbound alert.
 
 ### ADR-0047 Testing Patterns and Tooling
 **Status:** In Progress
