@@ -1,6 +1,6 @@
 # ADR-0082: Canonical Node Standup Procedure
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-05-25
 **Deciders:** HoneyDrunk Studios
 **Sector:** Meta
