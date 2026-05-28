@@ -1,10 +1,9 @@
 # Proposed ADR/PDR Queue
 
-**Last Updated:** 2026-05-27
+**Last Updated:** 2026-05-28
 
 ## Awaiting Implementing Packets
 
-- `ADR-0011-CODE-REVIEW-AND-MERGE-FLOW` — ADR-0011: Code Review and Merge Flow (adrs/ADR-0011-code-review-and-merge-flow.md)
 - `ADR-0017-STAND-UP-HONEYDRUNK-CAPABILITIES-NODE` — ADR-0017: Stand Up the HoneyDrunk.Capabilities Node — Tool Registry and Dispatch Substrate for the AI Sector (adrs/ADR-0017-stand-up-honeydrunk-capabilities-node.md)
 - `ADR-0018-STAND-UP-HONEYDRUNK-OPERATOR-NODE` — ADR-0018: Stand Up the HoneyDrunk.Operator Node — Human-Policy Enforcement and Audit Substrate for the AI Sector (adrs/ADR-0018-stand-up-honeydrunk-operator-node.md)
 - `ADR-0020-STAND-UP-HONEYDRUNK-AGENTS-NODE` — ADR-0020: Stand Up the HoneyDrunk.Agents Node — Agent Runtime Substrate for the AI Sector (adrs/ADR-0020-stand-up-honeydrunk-agents-node.md)
