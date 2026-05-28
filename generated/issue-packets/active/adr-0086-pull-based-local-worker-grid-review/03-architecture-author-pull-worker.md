@@ -15,7 +15,7 @@ node: honeydrunk-architecture
 # Author the pull-based Grid Review Runner local worker (PowerShell + Task Scheduler)
 
 ## Summary
-Author the local pull worker that polls GitHub for PRs labelled `needs-agent-review`, claims them via a label swap, runs the canonical `.claude/agents/review.md` agent locally under Codex CLI / Claude Code CLI subscription auth, and posts the verdict back. Implement the D3 claim protocol (list/pick/swap-claim, stale-claim sweep, head-SHA invalidation pre- and post-flight, complete) and the D4 worker shape (PowerShell + Windows Task Scheduler, App-installation-token auth via Vault, env hygiene). Land the worker source under `infrastructure/workers/grid-review-runner/`.
+Author the local pull worker that polls GitHub for PRs labelled `needs-agent-review`, claims them via a label swap, runs the canonical `.claude/agents/review.md` agent locally under Codex CLI / Claude Code CLI subscription auth, synthesizes independent findings into a single PR verdict when both reviewers run, and posts the verdict back. Implement the D3 claim protocol (list/pick/swap-claim, stale-claim sweep, head-SHA invalidation pre- and post-flight, complete), the D4 worker shape (PowerShell + Windows Task Scheduler, App-installation-token auth via Vault, env hygiene), D8 dual-pass synthesis, and Task Scheduler restart/startup behavior. Land the worker source under `infrastructure/workers/grid-review-runner/`.
 
 ## Source location decision
 **Pinned by this packet:** the worker source lives at `infrastructure/workers/grid-review-runner/` in `HoneyDrunk.Architecture`. ADR-0086 D4 / Follow-up Work names this directory as the recommended placement and lets the implementing packet pin the choice. Rationale: keeps the worker source next to its governing ADR and the existing `infrastructure/openclaw/grid-review-runner.md` contract doc (which packet 08 supersedes); avoids creating a new Node repo for what is, structurally, a small operator-machine automation; matches the home of other operator playbooks under `infrastructure/`.
@@ -25,7 +25,7 @@ The worker is operator-machine automation, not a deployable Node — it is inten
 ## Context
 ADR-0086 D1–D4 define the pull-based local worker as the canonical Grid Review Runner transport. The worker polls GitHub on a 1–5-minute cadence (60–120 s recommended during operator working hours per D4), claims one PR at a time via a label swap (D3 step 3), runs the canonical `.claude/agents/review.md` agent locally under Codex CLI / Claude Code CLI subscription auth, and posts the verdict back to the PR. The substrate change is invisible to the agent prompt — the same `.claude/agents/review.md` runs on either path per ADR-0007's source-of-truth rule.
 
-Authentication uses the `honeydrunk-review-worker` GitHub App (packet 02). The operator's `gh` CLI auth is **not** used by the worker. The operator's existing Codex CLI / Claude Code CLI subscription sessions are used for agent execution.
+Authentication uses the existing ADR-0044 review-agent GitHub App and `review-agent-github-app-*` Vault secrets audited by packet 02. The operator's `gh` CLI auth is **not** used by the worker. The operator's existing Codex CLI / Claude Code CLI subscription sessions are used for agent execution.
 
 **This is the load-bearing build of the entire initiative.** Phase-A cutover (packet 07) consumes it.
 
@@ -40,6 +40,7 @@ infrastructure/workers/grid-review-runner/
 │   ├── GitHub.psm1                      # App-token exchange, label/comment APIs
 │   ├── Queue.psm1                       # list/claim/release/complete protocol
 │   ├── Agent.psm1                       # CLI invocation (Codex + Claude Code)
+│   ├── Synthesis.psm1                   # combine Codex/Claude findings into one verdict
 │   ├── State.psm1                       # pending-verdict on-disk cache
 │   └── Logging.psm1                     # structured logs to a rotating file
 ├── config/
@@ -66,17 +67,20 @@ The worker implements the six-step protocol from ADR-0086 D3:
 6. **Complete.** On verdict post, remove `agent-review-in-progress` and add either `agent-reviewed` (no `Block` / `Request Changes` findings) or `changes-requested-by-agent` (one or more findings at those severities). The verdict body posts as a PR comment using the format already defined in `.claude/agents/review.md` (preserved from ADR-0044 D1).
 
 ### Auth (D4)
-- **GitHub auth.** Read `review-worker-github-app-id`, `review-worker-github-app-private-key`, `review-worker-github-app-installation-id` from the CI-surface Key Vault at the start of each tick (one `az keyvault secret show` call per secret, or equivalent). Mint an installation token via `POST /app/installations/{installation_id}/access_tokens`. Use the resulting short-lived token for all GitHub API calls in the tick.
+- **GitHub auth.** Read `review-agent-github-app-id`, `review-agent-github-app-private-key`, `review-agent-github-app-installation-id` from the CI-surface Key Vault at the start of each tick (one `az keyvault secret show` call per secret, or equivalent). Mint an installation token via `POST /app/installations/{installation_id}/access_tokens`. Use the resulting short-lived token for all GitHub API calls in the tick.
 - **Codex CLI auth.** Inherited from the operator's existing ChatGPT Pro CLI session on the worker host. The worker shells out to `codex` (or the canonical CLI binary name per the operator's install).
 - **Claude Code CLI auth.** Inherited from the operator's existing Claude Max session on the worker host. The worker shells out to `claude` (or `claude-code`).
 - **Env hygiene (D4 / D8 / ADR-0079 D8).** The worker process spawns child processes with a deliberately minimal environment block: `ANTHROPIC_API_KEY` and `OPENAI_API_KEY` must NOT be set. If either is present in the operator's shell, the worker explicitly unsets them in the child process environment before invoking the CLI. Document this in the README and the operator setup notes.
 
-### Multi-perspective preparation (D8)
+### Multi-perspective synthesis (D8)
 The worker reads the `review_risk_class` field from `catalogs/grid-health.json` (per ADR-0044 D8, populated by ADR-0044 packet 13 — that packet is preserved and not superseded by ADR-0086). When `review_risk_class` is `high` for a touched Node and the PR's authorship class is non-human:
-- Run Codex CLI as Reviewer 3 — post the verdict as one PR comment.
-- Run Claude Code CLI as Reviewer 4 — post the verdict as a second, separate PR comment.
+- Run Codex CLI as Reviewer 3 and capture a structured raw verdict.
+- Run Claude Code CLI as Reviewer 4 and capture a structured raw verdict.
+- Run `Synthesis.psm1` to combine the two raw verdicts into one PR-facing comment.
 
-Both passes are independent worker invocations, consume the same `.claude/agents/review.md`, and the two model families satisfy [Invariant 53](../../../constitution/invariants.md). The contrarian-prompt fallback (ADR-0044 D8) applies when only one model family is locally available — same model, two passes, the second pass deliberately contrarian (the worker logs which fallback it took).
+Both passes are independent worker invocations, consume the same `.claude/agents/review.md`, and the two model families satisfy [Invariant 53](../../../constitution/invariants.md). The synthesis step deduplicates matching findings, preserves source attribution (`Codex`, `Claude`, or `Both`), calls out material disagreement, chooses the strongest blocking verdict when severities differ, and posts one combined PR comment. The raw per-model verdicts are saved only as transient local artifacts or cache entries for debugging and are not posted as competing PR comments.
+
+The contrarian-prompt fallback (ADR-0044 D8) applies when only one model family is locally available — same model, two passes, the second pass deliberately contrarian. The synthesized verdict explicitly says which fallback was used or which pass was skipped.
 
 **D8 activation in this packet is conditional on `review_risk_class` being present in `catalogs/grid-health.json`.** If the field is absent (ADR-0044 packet 13 has not landed yet), the worker logs a one-line "D8 deferred — `review_risk_class` not present" notice and runs Codex CLI only. This matches ADR-0044 D8's enforceability gate.
 
@@ -92,15 +96,15 @@ Per ADR-0086 D9 the audit is "just another job type the worker dequeues." The wo
 ### Task Scheduler installer
 `scripts/Register-Task.ps1` is a one-shot operator-run script that:
 - Creates a Windows Scheduled Task named `HoneyDrunkGridReviewWorker`.
-- Triggers it on a 60-second repeating interval (configurable in `worker.psd1`).
+- Triggers it at operator logon/startup and on a 60-second repeating interval (configurable in `worker.psd1`).
 - Runs the task under the operator's interactive user (the same account that holds the Codex CLI / Claude Code CLI sessions).
 - Sets the task action to `pwsh.exe -File <path>\Invoke-GridReviewWorker.ps1`.
-- Sets task settings: do not start a new instance if the previous is still running (`MultipleInstances = IgnoreNew`), allow start on demand, stop if the task runs longer than 30 minutes (defensive — a single PR review should never approach that).
+- Sets task settings: restart on failure, do not start a new instance if the previous is still running (`MultipleInstances = IgnoreNew`), allow start on demand, run as soon as possible after a missed start, stop if the task runs longer than 30 minutes (defensive — a single PR review should never approach that), and write a heartbeat/tick log so reboot recovery is visible.
 
 ### README and operator setup notes
 `infrastructure/workers/grid-review-runner/README.md` documents:
 - What the worker does (one-paragraph summary referencing ADR-0086).
-- Prerequisites (packet 02 GitHub App provisioned, Codex CLI installed and authenticated, Claude Code CLI installed and authenticated, local `HoneyDrunk.Architecture` checkout the worker pulls fresh per tick).
+- Prerequisites (packet 02 existing review-agent App audited and Vault credentials verified, Codex CLI installed and authenticated, Claude Code CLI installed and authenticated, local `HoneyDrunk.Architecture` checkout the worker pulls fresh per tick).
 - Env hygiene rules (no `ANTHROPIC_API_KEY`, no `OPENAI_API_KEY`).
 - Installation steps (clone the repo, copy `config/worker.psd1.example` → `worker.psd1`, customize, run `scripts/Register-Task.ps1`).
 - Smoke test (`scripts/Test-WorkerLocally.ps1`).
@@ -117,7 +121,7 @@ Cross-link from `infrastructure/openclaw/grid-review-runner.md` (the legacy cont
 
 ## Affected Files
 - `infrastructure/workers/grid-review-runner/Invoke-GridReviewWorker.ps1` (new)
-- `infrastructure/workers/grid-review-runner/lib/*.psm1` (new — five modules)
+- `infrastructure/workers/grid-review-runner/lib/*.psm1` (new — six modules)
 - `infrastructure/workers/grid-review-runner/config/worker.psd1.example` (new)
 - `infrastructure/workers/grid-review-runner/scripts/Register-Task.ps1` (new)
 - `infrastructure/workers/grid-review-runner/scripts/Test-WorkerLocally.ps1` (new)
@@ -137,15 +141,15 @@ None. This packet creates PowerShell scripts and Markdown docs; no .NET project 
 
 ## Acceptance Criteria
 - [ ] `infrastructure/workers/grid-review-runner/` directory exists with the layout described above
-- [ ] `Invoke-GridReviewWorker.ps1` is a runnable PowerShell entry point that on each tick: (1) runs the stale-claim sweep first; (2) mints a fresh installation token from Vault-stored App credentials; (3) lists `needs-agent-review` PRs Grid-wide via the App-installation token; (4) picks oldest unclaimed; (5) swap-claims via label edit + queue-comment edit (claim records `claimed_by` / `claimed_at` / `head_sha`); (6) pre-flight checks the queue comment's `head_sha`; (7) invokes Codex CLI (and Claude Code CLI if D8 high-risk applies); (8) post-flight re-checks `head_sha`; (9) posts verdict and completes via label swap to `agent-reviewed` or `changes-requested-by-agent`
-- [ ] The worker reads `review-worker-github-app-id`, `review-worker-github-app-private-key`, `review-worker-github-app-installation-id` from the CI-surface Key Vault; does NOT read them from environment variables or config files (invariant 9)
+- [ ] `Invoke-GridReviewWorker.ps1` is a runnable PowerShell entry point that on each tick: (1) runs the stale-claim sweep first; (2) mints a fresh installation token from Vault-stored App credentials; (3) lists `needs-agent-review` PRs Grid-wide via the App-installation token; (4) picks oldest unclaimed; (5) swap-claims via label edit + queue-comment edit (claim records `claimed_by` / `claimed_at` / `head_sha`); (6) pre-flight checks the queue comment's `head_sha`; (7) invokes Codex CLI and, when D8 requires it, Claude Code CLI as independent passes; (8) synthesizes the two raw verdicts into one combined verdict when both ran; (9) post-flight re-checks `head_sha`; (10) posts verdict and completes via label swap to `agent-reviewed` or `changes-requested-by-agent`
+- [ ] The worker reads `review-agent-github-app-id`, `review-agent-github-app-private-key`, `review-agent-github-app-installation-id` from the CI-surface Key Vault; does NOT read them from environment variables or config files (invariant 9)
 - [ ] The worker does NOT use `gh` CLI auth for its GitHub API calls — only the App-installation token
 - [ ] The worker spawns child CLI processes with `ANTHROPIC_API_KEY` and `OPENAI_API_KEY` explicitly unset, even if the parent environment has them set (ADR-0086 D4 / D8; ADR-0079 D8)
 - [ ] The pending-verdict cache survives a worker crash mid-review; verdict for an abandoned SHA is garbage-collected on next claim
 - [ ] The worker never posts a verdict whose `head_sha` differs from the PR's current `head` at post time
-- [ ] D8 multi-perspective dispatch is wired: when `catalogs/grid-health.json` has `review_risk_class: high` for a touched Node, both Codex CLI and Claude Code CLI run as independent passes and post separate comments; when `review_risk_class` is absent, the worker logs "D8 deferred" and runs Codex only
+- [ ] D8 multi-perspective dispatch is wired: when `catalogs/grid-health.json` has `review_risk_class: high` for a touched Node, both Codex CLI and Claude Code CLI run as independent passes, `Synthesis.psm1` combines their findings, and the worker posts one synthesized verdict with source attribution; when `review_risk_class` is absent, the worker logs "D8 deferred" and runs Codex only
 - [ ] D9 audit-mode dispatch is wired: when a PR carries the `audit-sample` label, the worker runs `.claude/agents/review.md` in audit mode (the wiring is in place; ADR-0044 packets 15/16 exercise it)
-- [ ] `scripts/Register-Task.ps1` registers a Windows Scheduled Task `HoneyDrunkGridReviewWorker` with a 60-second repeating trigger (configurable) under the operator's interactive user
+- [ ] `scripts/Register-Task.ps1` registers a Windows Scheduled Task `HoneyDrunkGridReviewWorker` with startup/logon triggers, a 60-second repeating trigger (configurable), restart-on-failure behavior, missed-start recovery, and `MultipleInstances = IgnoreNew` under the operator's interactive user
 - [ ] `scripts/Test-WorkerLocally.ps1` runs a single tick without registering the Task Scheduler entry — for smoke testing
 - [ ] `README.md` documents prerequisites, env hygiene rules, installation steps, smoke test, and troubleshooting
 - [ ] `.claude/agents/review.md` is unchanged (ADR-0086 D1)
@@ -154,7 +158,7 @@ None. This packet creates PowerShell scripts and Markdown docs; no .NET project 
 - [ ] CHANGELOG.md updated noting the worker source landing
 
 ## Human Prerequisites
-- [ ] Packet 02 (GitHub App + Vault credentials) must be complete before the worker can mint installation tokens
+- [ ] Packet 02 (existing review-agent GitHub App audit + Vault credential verification) must be complete before the worker can mint installation tokens
 - [ ] Codex CLI must be installed on the worker host and authenticated against the operator's ChatGPT Pro subscription
 - [ ] Claude Code CLI must be installed on the worker host and authenticated against the operator's Claude Max subscription
 - [ ] The operator's shell environment on the worker host must NOT have `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` set persistently (per ADR-0086 D4 env hygiene). If either is set, remove it from the persistent profile. The worker also unsets them in the child process environment as a defense-in-depth.
@@ -164,7 +168,7 @@ None. This packet creates PowerShell scripts and Markdown docs; no .NET project 
 
 ## Dependencies
 - `packet:01` — ADR-0086 acceptance (soft; references ADR-0086 decisions as live rules).
-- `packet:02` — GitHub App + Vault credentials (**hard** — the worker cannot mint installation tokens without these).
+- `packet:02` — existing review-agent GitHub App audit + Vault credential verification (**hard** — the worker cannot mint installation tokens without these).
 
 ## Referenced ADR Decisions
 
@@ -172,9 +176,9 @@ None. This packet creates PowerShell scripts and Markdown docs; no .NET project 
 
 **ADR-0086 D3** — Claim protocol: List → Pick → Swap-claim → Stale-claim sweep → Head-SHA invalidation (pre- and post-flight) → Complete. The labels carry the protocol state; the queue comment carries the audit trail. The idempotency key `owner/repo#pr@headSha` is preserved from ADR-0044 D1.
 
-**ADR-0086 D4** — Worker shape: PowerShell + Windows Task Scheduler on the always-on home server per ADR-0081 D1; polling cadence 60–120 s during operator working hours; dedicated `honeydrunk-review-worker` GitHub App for auth (not the operator's `gh` CLI); Codex CLI + Claude Code CLI under subscription sessions; `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` must not be set in the worker environment.
+**ADR-0086 D4** — Worker shape: PowerShell + Windows Task Scheduler on the always-on home server per ADR-0081 D1; polling cadence 60–120 s during operator working hours; existing ADR-0044 review-agent GitHub App for auth where possible (not the operator's `gh` CLI); startup/logon and restart-on-failure Task Scheduler posture; Codex CLI + Claude Code CLI under subscription sessions; `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` must not be set in the worker environment.
 
-**ADR-0086 D8** — Multi-perspective for high-risk Nodes: Reviewer 3 (Codex CLI under ChatGPT Pro) + Reviewer 4 (Claude Code CLI under Claude Max). Both passes are independent worker invocations, both consume the same canonical `.claude/agents/review.md`, the dual-model property satisfies invariant 53. Contrarian-prompt fallback when only one model family is locally available.
+**ADR-0086 D8** — Multi-perspective for high-risk Nodes: Reviewer 3 (Codex CLI under ChatGPT Pro) + Reviewer 4 (Claude Code CLI under Claude Max). Both passes are independent worker invocations, both consume the same canonical `.claude/agents/review.md`, the dual-model property satisfies invariant 53, and the worker posts one synthesized verdict. Contrarian-prompt fallback when only one model family is locally available.
 
 **ADR-0086 D9** — Post-merge sampling audit (ADR-0044 D9) preserved: just another job type the worker dequeues. Audit-mode instruction block lives in `.claude/agents/review.md`. Worker selects audit mode based on the `audit-sample` label.
 
@@ -207,7 +211,7 @@ None. This packet creates PowerShell scripts and Markdown docs; no .NET project 
 
 ## Agent Handoff
 
-**Objective:** Author the pull-based Grid Review Runner local worker (PowerShell + Task Scheduler) at `infrastructure/workers/grid-review-runner/`. Implement the D3 claim protocol, the D4 worker shape, the D8 multi-perspective dispatch, the D9 audit-mode dispatch. Auth exclusively via the `honeydrunk-review-worker` App installation token.
+**Objective:** Author the pull-based Grid Review Runner local worker (PowerShell + Task Scheduler) at `infrastructure/workers/grid-review-runner/`. Implement the D3 claim protocol, the D4 worker shape, the D8 multi-perspective dispatch and synthesis, the D9 audit-mode dispatch. Auth exclusively via the existing review-agent App installation token audited in packet 02.
 
 **Target:** `HoneyDrunk.Architecture`, branch from `main`.
 
@@ -220,7 +224,7 @@ None. This packet creates PowerShell scripts and Markdown docs; no .NET project 
 
 **Dependencies:**
 - `packet:01` — ADR-0086 acceptance (soft).
-- `packet:02` — GitHub App + Vault credentials (hard).
+- `packet:02` — existing review-agent GitHub App audit + Vault credential verification (hard).
 
 **Constraints:**
 - No agent-prompt duplication; read `.claude/agents/review.md` from a local Architecture checkout.
@@ -235,6 +239,7 @@ None. This packet creates PowerShell scripts and Markdown docs; no .NET project 
 - `infrastructure/workers/grid-review-runner/lib/GitHub.psm1` (new)
 - `infrastructure/workers/grid-review-runner/lib/Queue.psm1` (new)
 - `infrastructure/workers/grid-review-runner/lib/Agent.psm1` (new)
+- `infrastructure/workers/grid-review-runner/lib/Synthesis.psm1` (new)
 - `infrastructure/workers/grid-review-runner/lib/State.psm1` (new)
 - `infrastructure/workers/grid-review-runner/lib/Logging.psm1` (new)
 - `infrastructure/workers/grid-review-runner/config/worker.psd1.example` (new)

@@ -15,7 +15,7 @@ If multiple Nodes failed and the worker's substrate looks structurally suspect, 
 ## What Wave 2 delivered (upstream changes Wave 3 builds on)
 
 - **OpenClaw is decommissioned on the review path** (packet 08). The legacy `infrastructure/openclaw/grid-review-runner.md` carries the supersession banner pointing at `infrastructure/workers/grid-review-runner/README.md`. The Cloudflare Tunnel hostname `grid-review.honeydrunkstudios.com` is removed. The ADR-0044 webhook-signing secret is rotated out of HoneyDrunk.Vault per ADR-0006, with the rotation logged in Log Analytics. OpenClaw's other workloads — Honeyclaw, ADR-0043 Lore sourcing, scheduled jobs — remain running and verified.
-- **Phase B fan-out shipped on the 10 .NET Nodes** (packet 09). Each Node carries `.honeydrunk-review.yaml` with `enabled: true, runner: local-worker` and a `pr-review.yml` caller declaring the widened `permissions:` block. The four worker labels are present on every repo (packet 06's Grid-wide fan-out covered this). Each per-repo enablement PR was itself reviewed by the worker; per-repo go decisions are in those PR bodies.
+- **Phase B fan-out shipped on the 10 .NET Nodes** (packet 09). Each Node carries `.honeydrunk-review.yaml` with `enabled: true, runner: local-worker` and a `pr-review.yml` caller declaring the widened `permissions:` block. The worker labels and managed PR labels are present on every repo (packet 06's Grid-wide fan-out covered this). Each per-repo enablement PR was itself reviewed by the worker; per-repo go decisions are in those PR bodies.
 - **ADR-0044 Architecture#182 is closed as superseded** by packet 09's tracking issue. `initiatives/active-initiatives.md` reflects the supersession.
 
 ## Contracts Wave 3 consumes
