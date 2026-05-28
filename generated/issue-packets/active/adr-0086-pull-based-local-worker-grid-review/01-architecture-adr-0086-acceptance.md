@@ -93,7 +93,7 @@ None. This is the first packet in the initiative.
 
 **ADR-0086 D8** — Reviewer 4 is committed to the local-CLI path (superseding ADR-0079 D2): runs through the same local worker using Claude Code CLI under Claude Max subscription, today. The June 15 2026 dependency and the web-integration surface are removed from the Grid Review Runner's design.
 
-**ADR-0086 D10** — Decommission OpenClaw on the review path at Phase A → Phase B cutover. OpenClaw's other roles (Honeyclaw, scheduled Lore sourcing per ADR-0043, the other workloads listed in ADR-0081 D1's Implementation Notes) are unaffected.
+**ADR-0086 D10** — Decommission OpenClaw on the review path at Phase A → Phase B cutover. Non-review OpenClaw/Honeyclaw jobs (`hive-sync`, Lore sourcing, Lore ingest, Lore signal review) continue only until their equivalent ADR-0086 runner job specs are smoke-tested and cut over.
 
 **ADR-0086 D11** — Phased rollout resets ADR-0044 D11's clock. Phase A: HoneyDrunk.Architecture pilot. Phase B: enable on the other repos that ADR-0044's Phase 2 had reached. Phase C: all 12 live Nodes; multi-perspective activates once `review_risk_class` is populated per ADR-0044 D8 (preserved).
 

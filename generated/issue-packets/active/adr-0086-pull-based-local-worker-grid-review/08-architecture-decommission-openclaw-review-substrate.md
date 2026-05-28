@@ -15,7 +15,7 @@ node: honeydrunk-architecture
 # Decommission the OpenClaw review-runner substrate at Phase A → Phase B cutover
 
 ## Summary
-Mark the legacy OpenClaw-hosted Grid Review Runner contract doc (`infrastructure/openclaw/grid-review-runner.md`) as superseded by ADR-0086 and the new local-worker doc, with a clear pointer to the new authority. Cross-link from the new `infrastructure/workers/grid-review-runner/README.md` (landed by packet 03). Document the operator-side decommission steps — Cloudflare Tunnel hostname removal, ADR-0044 webhook-signing secret rotation in Vault per ADR-0006, and OpenClaw process cleanup of the review-runner role — as Human Prerequisites. OpenClaw's other workloads (Honeyclaw, ADR-0043 Lore sourcing, scheduled jobs) are explicitly **unaffected**.
+Mark the legacy OpenClaw-hosted Grid Review Runner contract doc (`infrastructure/openclaw/grid-review-runner.md`) as superseded by ADR-0086 and the new scheduled-agent-runner doc, with a clear pointer to the new authority. Cross-link from the new `infrastructure/workers/grid-agent-runner/README.md` (landed by packet 03). Document the operator-side review decommission steps — Cloudflare Tunnel hostname removal, ADR-0044 webhook-signing secret rotation in Vault per ADR-0006, and OpenClaw process cleanup of the review-runner role — as Human Prerequisites. Non-review OpenClaw/Honeyclaw jobs are not killed by this packet; they remain running only until their equivalent ADR-0086 runner job specs are smoke-tested and cut over.
 
 ## Context
 ADR-0086 D10 commits a discrete cutover: "Once the local worker is operating on `HoneyDrunk.Architecture` and Phase A (per D11) is green, the OpenClaw webhook bridge for **review traffic specifically** is taken down." Three concrete actions are enumerated:
@@ -26,7 +26,7 @@ ADR-0086 D10 commits a discrete cutover: "Once the local worker is operating on 
 
 Packet 05 handled (1) at the workflow level. This packet handles (2) and (3) at the operator/infrastructure level — both are portal/manual work — plus the docs-side supersession marking. It is filed at Wave 2 because Phase-A go (packet 07's exit) is the precondition: ADR-0086 D10 is explicit that the decommission is "a discrete cutover at the end of Phase A: the worker proves itself on `HoneyDrunk.Architecture`, then the webhook bridge is taken down, then Phase B begins."
 
-ADR-0086 D10 is also explicit on what is preserved: "OpenClaw's other roles — Honeyclaw, scheduled Lore sourcing per ADR-0043, the other workloads listed in ADR-0081 D1's Implementation Notes — are **unaffected**. This ADR only removes the review-runner role from OpenClaw."
+ADR-0086 D10 is also explicit on the scheduled-job posture: the review bridge is decommissioned at Phase A -> B cutover; `hive-sync` and Lore jobs remain on their current OpenClaw/Honeyclaw schedules until the equivalent ADR-0086 runner job specs are installed, smoke-tested, and recorded, then the old schedules are disabled per job.
 
 This packet is `Actor=Agent` for the docs/markdown work; the operator-side portal work is in Human Prerequisites.
 
@@ -34,13 +34,14 @@ This packet is `Actor=Agent` for the docs/markdown work; the operator-side porta
 
 ### Architecture-repo doc edits (the agent's work)
 - `infrastructure/openclaw/grid-review-runner.md` — add a top-of-document supersession banner pointing at the new authority and at ADR-0086. Do not delete the file (it is the historical record of the OpenClaw runtime contract; the supersession marker is the canonical signal).
-- `infrastructure/workers/grid-review-runner/README.md` — add a cross-link to the now-superseded `infrastructure/openclaw/grid-review-runner.md` for historical context. (The new README was authored in packet 03; this packet adds the back-link.)
+- `infrastructure/workers/grid-agent-runner/README.md` — add a cross-link to the now-superseded `infrastructure/openclaw/grid-review-runner.md` for historical context. (The new README was authored in packet 03; this packet adds the back-link.)
+- `infrastructure/openclaw/hive-sync.md` — add a migration note pointing at ADR-0086 runner job spec `hive-sync` and clarifying that the OpenClaw schedule remains active only until the runner smoke test and cutover packet record success.
 - `infrastructure/README.md` (or whichever index file enumerates `infrastructure/` contents) — update the entry for the OpenClaw review-runner doc to mark it as superseded if such an index exists; if not, no edit there.
 
 ### Operator-side actions (Human Prerequisites)
 - Cloudflare Tunnel: remove the `grid-review.honeydrunkstudios.com` hostname (or whichever hostname currently routes review traffic per `infrastructure/reference/owned-domains.md` and ADR-0081 D6). Other tunnel hosts remain.
 - HoneyDrunk.Vault: rotate out the ADR-0044 webhook-signing secret per ADR-0006 (Tier-2 third-party secret rotation discipline). The secret was named in ADR-0044's CI-surface Key Vault — locate it via `infrastructure/reference/azure-resource-inventory.md` or the existing rotation records; mark the rotation in Log Analytics per invariant 22.
-- OpenClaw host: disable any review-runner role / cron / poll job. Honeyclaw, ADR-0043 Lore sourcing, and other workloads stay running.
+- OpenClaw host: disable any review-runner role / cron / poll job. Leave `hive-sync` and Lore schedules running unless their ADR-0086 runner job specs already have a recorded smoke-test cutover.
 
 ## Proposed Implementation
 
@@ -53,13 +54,12 @@ At the top of `infrastructure/openclaw/grid-review-runner.md`, immediately above
 > The OpenClaw-hosted webhook-bridge runtime described below is the historical
 > Grid Review Runner. As of Phase A → Phase B cutover of the
 > `adr-0086-pull-based-local-worker-grid-review` initiative, the canonical
-> Grid Review Runner is the **pull-based local worker** documented in
-> [`../workers/grid-review-runner/README.md`](../workers/grid-review-runner/README.md).
+> Grid Review Runner is the **pull-based local scheduled agent runner** documented in
+> [`../workers/grid-agent-runner/README.md`](../workers/grid-agent-runner/README.md).
 >
-> This document is preserved as the historical contract record. OpenClaw's
-> other roles — Honeyclaw, scheduled Lore sourcing per ADR-0043, and the other
-> workloads listed in ADR-0081 D1's Implementation Notes — are unaffected by
-> the review-runner decommission.
+> This document is preserved as the historical contract record. Non-review
+> OpenClaw/Honeyclaw jobs remain active only until their equivalent ADR-0086
+> runner job specs are smoke-tested and cut over.
 ```
 
 Also update the existing `**Status:**` line:
@@ -67,7 +67,7 @@ Also update the existing `**Status:**` line:
 - After: `**Status:** Superseded — historical record. See ADR-0086 D10.`
 
 ### Cross-link from the new README
-In `infrastructure/workers/grid-review-runner/README.md` (authored by packet 03), add a "Predecessor / historical record" section at the bottom linking to `infrastructure/openclaw/grid-review-runner.md` for readers who want to understand what the new runtime replaced.
+In `infrastructure/workers/grid-agent-runner/README.md` (authored by packet 03), add a "Predecessor / historical record" section at the bottom linking to `infrastructure/openclaw/grid-review-runner.md` for readers who want to understand what the review runtime replaced. Also link `infrastructure/openclaw/hive-sync.md` as a migration predecessor for the `hive-sync` job spec.
 
 ### CHANGELOG entry
 `CHANGELOG.md` records:
@@ -75,11 +75,12 @@ In `infrastructure/workers/grid-review-runner/README.md` (authored by packet 03)
 - The legacy OpenClaw review-runner doc marked superseded.
 - The Cloudflare Tunnel hostname removed (Human Prerequisite — recorded as completed by the operator before this packet's PR merges).
 - The ADR-0044 webhook-signing secret rotated out per ADR-0006 (Human Prerequisite).
-- OpenClaw's other workloads explicitly preserved.
+- Scheduled OpenClaw/Honeyclaw jobs explicitly left running until equivalent runner-job cutovers are recorded.
 
 ## Affected Files
 - `infrastructure/openclaw/grid-review-runner.md` (in-place edit: banner + status update)
-- `infrastructure/workers/grid-review-runner/README.md` (in-place edit: add back-link section)
+- `infrastructure/workers/grid-agent-runner/README.md` (in-place edit: add back-link section)
+- `infrastructure/openclaw/hive-sync.md` (in-place edit: migration note)
 - `infrastructure/README.md` (in-place edit if it carries an OpenClaw-runner entry)
 - `CHANGELOG.md`
 
@@ -89,17 +90,18 @@ None. Markdown edits only; no .NET project is created or modified.
 ## Boundary Check
 - [x] All Architecture-repo edits live in `infrastructure/` — the established home for portal walkthroughs, infrastructure contracts, and operator playbooks.
 - [x] No code change in any repo.
-- [x] OpenClaw's non-review workloads are explicitly preserved (ADR-0086 D10).
+- [x] OpenClaw/Honeyclaw non-review jobs are not disabled blindly; they remain active until equivalent runner-job smoke tests and cutovers are recorded (ADR-0086 D10).
 - [x] `adrs/ADR-0081-home-server-for-openclaw-and-local-agent-infrastructure.md` is **NOT** edited — ADR-0086 Follow-up Work is explicit that the ADR-0081 D1 review-webhook-bridge bullet edit belongs to ADR-0081's own acceptance/amendment cycle (ADR-0081 is still Proposed). This packet does not touch ADR-0081's body.
 
 ## Acceptance Criteria
 - [ ] `infrastructure/openclaw/grid-review-runner.md` carries the supersession banner at the top and the `**Status:** Superseded` line
-- [ ] The supersession banner cross-links to the new `infrastructure/workers/grid-review-runner/README.md` and references ADR-0086 D10
-- [ ] `infrastructure/workers/grid-review-runner/README.md` carries a "Predecessor / historical record" section linking back to the legacy doc
+- [ ] The supersession banner cross-links to the new `infrastructure/workers/grid-agent-runner/README.md` and references ADR-0086 D10
+- [ ] `infrastructure/workers/grid-agent-runner/README.md` carries a "Predecessor / historical record" section linking back to the legacy review doc and the hive-sync predecessor doc
+- [ ] `infrastructure/openclaw/hive-sync.md` carries a migration note pointing at the ADR-0086 `hive-sync` runner job spec
 - [ ] If `infrastructure/README.md` (or another index) enumerates the OpenClaw runner doc, its entry is updated to mark it superseded
 - [ ] The Cloudflare Tunnel hostname for review traffic (e.g. `grid-review.honeydrunkstudios.com`) has been removed by the operator before this packet's PR merges (recorded in PR body)
 - [ ] The ADR-0044 webhook-signing secret has been rotated out of HoneyDrunk.Vault per ADR-0006 by the operator before this packet's PR merges (recorded in PR body; rotation logged in Log Analytics per invariant 22)
-- [ ] OpenClaw's review-runner role has been disabled on the home-server host by the operator (cron/poll job stopped); Honeyclaw, ADR-0043 Lore sourcing, and other OpenClaw workloads remain running and the PR body records this verification
+- [ ] OpenClaw's review-runner role has been disabled on the home-server host by the operator (cron/poll job stopped); `hive-sync` and Lore schedules remain running unless their ADR-0086 runner-job cutover is already recorded, and the PR body records this verification
 - [ ] `adrs/ADR-0081-home-server-for-openclaw-and-local-agent-infrastructure.md` is unchanged in this packet (the D1 review-webhook-bridge bullet edit is explicitly out of scope per ADR-0086 Follow-up Work — it belongs to ADR-0081's own acceptance cycle)
 - [ ] `.claude/agents/review.md` is unchanged
 - [ ] `constitution/invariants.md` is unchanged
@@ -107,9 +109,9 @@ None. Markdown edits only; no .NET project is created or modified.
 
 ## Human Prerequisites
 - [ ] **Packet 07 (Phase-A cutover) must have shipped with a recorded go decision.** If Phase A failed verification, do not file this packet; diagnose and re-run Phase A first.
-- [ ] **Remove the Cloudflare Tunnel hostname for review traffic.** The hostname is `grid-review.honeydrunkstudios.com` per ADR-0081 D6 (line 151) — verify against `infrastructure/reference/owned-domains.md` and the Cloudflare portal. Remove only this hostname; leave all other tunnel hosts (the ones serving Honeyclaw, ADR-0043 Lore sourcing, etc.) untouched.
+- [ ] **Remove the Cloudflare Tunnel hostname for review traffic.** The hostname is `grid-review.honeydrunkstudios.com` per ADR-0081 D6 (line 151) — verify against `infrastructure/reference/owned-domains.md` and the Cloudflare portal. Remove only this hostname; leave all other tunnel hosts untouched.
 - [ ] **Rotate out the ADR-0044 webhook-signing secret in HoneyDrunk.Vault** per ADR-0006. The secret name is whatever ADR-0044 packet 02b (or its predecessor) wrote into the CI-surface Key Vault — check `infrastructure/reference/azure-resource-inventory.md` and the rotation records. Rotation steps: generate a new value (or simply delete the secret if no replacement is needed since the webhook bridge is dead), log the rotation in Log Analytics per invariant 22, and confirm nothing else in the Grid still references the secret (a `gh code search` for the secret name across the org confirms).
-- [ ] **Disable OpenClaw's review-runner role.** Stop any cron/poll job that polls for review-request artifacts or comments. Confirm Honeyclaw, ADR-0043 Lore sourcing, and other workloads continue running normally — `journalctl` / OpenClaw dashboard inspection per the operator's usual procedure.
+- [ ] **Disable OpenClaw's review-runner role.** Stop any cron/poll job that polls for review-request artifacts or comments. Confirm `hive-sync` and Lore schedules are either still running or have explicit ADR-0086 runner cutover records — `journalctl` / OpenClaw dashboard inspection per the operator's usual procedure.
 - [ ] **Document the operator-side actions in this packet's PR body** as a short checklist (Cloudflare hostname removed at YYYY-MM-DD HH:MM; secret rotated at YYYY-MM-DD HH:MM with rotation-log link; OpenClaw review-runner disabled at YYYY-MM-DD HH:MM; other workloads verified running). The PR is the audit record.
 
 ## Dependencies
@@ -134,7 +136,7 @@ None. Markdown edits only; no .NET project is created or modified.
 
 > **Invariant 22:** Every Key Vault must have diagnostic settings routed to the shared Log Analytics workspace. The rotation logs there.
 
-- **OpenClaw's non-review workloads are preserved.** ADR-0086 D10 is explicit — Honeyclaw, ADR-0043 Lore sourcing, and other workloads continue running. Operator verifies before merge.
+- **Do not disable non-review OpenClaw/Honeyclaw jobs here.** ADR-0086 D10 is explicit — `hive-sync` and Lore schedules cut over only after equivalent runner jobs are smoke-tested and recorded.
 - **Do not edit `adrs/ADR-0081-home-server-for-openclaw-and-local-agent-infrastructure.md`.** ADR-0086 Follow-up Work and ADR-0081's Proposed status make this explicit. The one-line D1 Implementation Notes edit belongs to ADR-0081's own acceptance cycle, not here.
 - **Do not delete `infrastructure/openclaw/grid-review-runner.md`.** It is preserved as the historical contract record with a supersession banner.
 - **Cloudflare hostname removal is surgical.** Remove only the review-traffic hostname; leave every other tunnel host alone.
@@ -160,7 +162,7 @@ None. Markdown edits only; no .NET project is created or modified.
 - `packet:07` — Phase-A cutover (hard).
 
 **Constraints:**
-- OpenClaw's non-review workloads preserved.
+- Non-review OpenClaw/Honeyclaw jobs preserved until runner-job cutover.
 - Do NOT edit ADR-0081.
 - Do NOT delete the legacy doc; mark it superseded.
 - Cloudflare hostname removal is surgical (only the review hostname).
@@ -168,7 +170,8 @@ None. Markdown edits only; no .NET project is created or modified.
 
 **Key Files:**
 - `infrastructure/openclaw/grid-review-runner.md`
-- `infrastructure/workers/grid-review-runner/README.md`
+- `infrastructure/workers/grid-agent-runner/README.md`
+- `infrastructure/openclaw/hive-sync.md`
 - `infrastructure/README.md` (if it carries an OpenClaw-runner entry)
 - `CHANGELOG.md`
 

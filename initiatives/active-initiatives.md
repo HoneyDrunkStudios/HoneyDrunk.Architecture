@@ -44,15 +44,15 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 ### ADR-0086 Pull-Based Local Worker Grid Review Runner
 **Status:** In Progress
-**Scope:** Architecture, Actions, the local worker host, and later the live Node repos
+**Scope:** Architecture, Actions, the local runner host, HoneyDrunk.Lore scheduled jobs, and later the live Node repos
 **Initiative:** `adr-0086-pull-based-local-worker-grid-review`
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
-**Description:** Accept ADR-0086 and replace the fragile signed-webhook -> OpenClaw review path with a GitHub-native queue plus local pull worker. GitHub Actions normalizes managed PR labels and enqueues via labels plus a structured queue comment; the home-server worker polls, claims one PR/head SHA at a time, runs Codex CLI and Claude Code CLI under subscription auth when required, synthesizes their findings into one advisory verdict, and preserves ADR-0044/ADR-0079 review discipline.
+**Description:** Accept ADR-0086 and replace the fragile signed-webhook -> OpenClaw review path with a GitHub-native queue plus a portable scheduled agent runner. GitHub Actions normalizes managed PR labels and enqueues via labels plus a structured queue comment; the home-server runner polls, claims one PR/head SHA at a time, runs Codex CLI and Claude Code CLI under subscription auth when required, synthesizes their findings into one advisory verdict, and preserves ADR-0044/ADR-0079 review discipline. The same runner framework also owns scheduled agent job specs for `hive-sync`, Lore sourcing, Lore ingest/compile, and Lore signal review so those jobs can move off OpenClaw/Honeyclaw with smoke-tested cutovers.
 
 **Tracking (Wave 1 — Phase A: Architecture pilot):**
 - [x] Architecture: Accept ADR-0086, append supersession notes to ADR-0044/ADR-0079, register this initiative, and mark ADR-0044 Architecture#182 superseded (packet 01)
 - [ ] Architecture: Audit and reuse the existing ADR-0044 review-agent GitHub App walkthrough/credential contract (packet 02)
-- [ ] Architecture: Author the PowerShell pull worker under `infrastructure/workers/grid-review-runner/`, including dual Codex/Claude synthesis and Task Scheduler startup/restart behavior (packet 03)
+- [ ] Architecture: Author the portable PowerShell scheduled agent runner under `infrastructure/workers/grid-agent-runner/`, including job specs, dual Codex/Claude synthesis, Task Scheduler startup/restart behavior, and initial hive-sync/Lore job specs (packet 03)
 - [ ] Architecture: Update the `.honeydrunk-review.yaml` schema doc for `runner: local-worker` / `api-ci` and removal of `openclaw-codex` (packet 04)
 - [ ] Actions: Rewrite `job-review-request.yml` as the managed-label-normalizing label/comment enqueue workflow (packet 05)
 - [ ] Actions: Add worker labels and the managed PR-label vocabulary Grid-wide (packet 06)
@@ -62,10 +62,13 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [ ] Architecture: Decommission OpenClaw on the review path and document operator-side cutover steps (packet 08; must land before packet 09)
 - [ ] Cross-repo: Enable the local-worker reviewer on the 10 remaining live Nodes, superseding ADR-0044 Architecture#182 (packet 09)
 
-**Tracking (Wave 3 — Phase C: observability polish):**
-- [ ] Architecture: Surface worker queue depth / backlog age through hive-sync and the weekly briefing surfaces (packet 10)
+**Tracking (Wave 3 — Phase C: scheduled agent job migration):**
+- [ ] Architecture: Migrate `hive-sync`, Lore sourcing, Lore ingest/compile, and Lore signal review from OpenClaw/Honeyclaw schedules to ADR-0086 runner jobs with smoke-test and rollback records (packet 11)
 
-**Exit criteria:** Phase A proves verdict quality, reliable polling/claim semantics, deterministic head-SHA invalidation, and near-zero marginal cost under subscription auth on `HoneyDrunk.Architecture`; Phase B follows only after OpenClaw is decommissioned on the review path; Phase C makes worker availability visible through the existing narrative surfaces without adding a pager or inbound alert.
+**Tracking (Wave 4 — Phase D: observability polish):**
+- [ ] Architecture: Surface runner health through hive-sync and the weekly briefing surfaces, including review queue backlog and scheduled-job freshness (packet 10)
+
+**Exit criteria:** Phase A proves verdict quality, reliable polling/claim semantics, deterministic head-SHA invalidation, and near-zero marginal cost under subscription auth on `HoneyDrunk.Architecture`; Phase B follows only after OpenClaw is decommissioned on the review path; Phase C migrates scheduled agent jobs only after runner smoke tests; Phase D makes runner availability visible through the existing narrative surfaces without adding a pager or inbound alert.
 
 ### ADR-0047 Testing Patterns and Tooling
 **Status:** In Progress

@@ -75,7 +75,7 @@ After the cutover PR is open and the workflow has run on it, the implementing ag
 4. **Head-SHA invalidation handles a push.** Push a no-op commit to the cutover PR (e.g., a CHANGELOG line). Observe: the queue-comment `head_sha` is updated; if the worker was mid-review when the push landed, the stale verdict is discarded and the next tick reviews the new SHA. Record the observed behavior.
 5. **Quality vs the local agent.** Run `.claude/agents/review.md` locally on the same PR diff (the manual invocation path). Compare the verdicts. Phase-A exit requires "at least as useful as the manual local-agent invocation" per D11.
 6. **Cost.** Confirm marginal LLM cost is $0 (subscription-backed; no `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` set in the worker environment per D4).
-7. **Stale-claim sweep.** Either induce a stale claim (manually swap labels and skip the verdict) and observe the next tick recover, or document the stale-claim path was exercised in packet 03's smoke test (`scripts/Test-WorkerLocally.ps1`).
+7. **Stale-claim sweep.** Either induce a stale claim (manually swap labels and skip the verdict) and observe the next tick recover, or document the stale-claim path was exercised in packet 03's smoke test (`scripts/Test-JobLocally.ps1 -JobId grid-review`).
 
 If any of these fail, **stop** — do not merge the cutover PR. Diagnose against packet 03 (worker), packet 05 (workflow), or packet 02 (App provisioning); revert the cutover PR if necessary. Phase B does not start until the Phase-A bar is met.
 
@@ -107,7 +107,7 @@ If any of these fail, **stop** — do not merge the cutover PR. Diagnose against
 - [ ] CHANGELOG.md updated noting the Architecture-repo cutover to `runner: local-worker`
 
 ## Human Prerequisites
-- [ ] All Wave-1 packets 02–06 must be complete: existing review-agent GitHub App audited and Vault credentials verified (02), worker source landed + installed on the home server + Task Scheduler entry registered (03), schema doc updated (04), `job-review-request.yml` rewritten (05), worker labels and managed PR labels fanned out (06)
+- [ ] All Wave-1 packets 02–06 must be complete: existing review-agent GitHub App audited and Vault credentials verified (02), runner source landed + installed on the home server + review Task Scheduler entry registered (03), schema doc updated (04), `job-review-request.yml` rewritten (05), worker labels and managed PR labels fanned out (06)
 - [ ] The local worker on the home server must be running (Task Scheduler entry from packet 03 active)
 - [ ] Confirm the pinned `job-review-request.yml` ref the Architecture caller invokes — this is the tag/SHA after packet 05 merged
 - [ ] After the cutover PR opens, manually observe the end-to-end flow (queue comment appears → worker claims → verdict posts → labels transition) before recording the Phase-A go decision
