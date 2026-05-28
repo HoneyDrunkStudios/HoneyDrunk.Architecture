@@ -61,7 +61,7 @@ An optional richer payload via a tiny workflow artifact is permitted as a polish
 
 The PR body's `Packet:` / `Out-of-band reason:` metadata (per the user's PR metadata convention, memory-pinned) is the source of truth for packet linking. The Action extracts it; the comment carries it forward; the worker re-reads it from the comment rather than the PR body (idempotent against later body edits during the review window).
 
-The same Action also performs **managed PR-label normalization** before enqueue. It reads the PR title/body, linked packet metadata/frontmatter when present, changed-file paths, and existing labels, then applies the deterministic managed labels the rest of the Grid already expects: `adr-*`, `tier-*`, `wave-*`, initiative labels, `docs`, `ci`, `bug`, `enhancement`, `dependencies`, `chore`, `meta`, and the review-state labels above. Missing managed labels are created from labels-as-code before application. The normalizer must not remove arbitrary human-applied labels outside its managed set; it only reconciles labels the Grid owns. This belongs in HoneyDrunk.Actions because labels are PR metadata, not worker execution state. The worker consumes the resulting labels; it does not infer or repair them.
+The same Action also performs **managed PR-label normalization** before enqueue. It reads the PR title/body, linked packet metadata/frontmatter when present, changed-file paths, and existing labels, then applies the deterministic managed labels the rest of the Grid already expects: `adr-*`, `tier-*`, `wave-*`, initiative labels, `meta`, `docs`, `ci`, `bug`, `enhancement`, `dependencies`, `chore`, `security`, `breaking-change`, `refactor`, `test`, `infra`, `automation`, `human-only`, `blocked`, `superseded`, `new-node`, `catalog`, `contracts`, `scaffolding`, and the review-state labels above. Missing managed labels are created from labels-as-code before application; packet 06 expands labels-as-code from "four worker labels only" to the full managed-label vocabulary. The normalizer must not remove arbitrary human-applied labels outside its managed set; it only reconciles labels the Grid owns. This belongs in HoneyDrunk.Actions because labels are PR metadata, not worker execution state. The worker consumes the resulting labels; it does not infer or repair them.
 
 ### D3 — Claim protocol prevents double-processing
 
@@ -180,7 +180,7 @@ Once the local worker is operating on `HoneyDrunk.Architecture` and Phase A (per
 
 - **`job-review-request.yml`'s webhook-emitting form** in `HoneyDrunk.Actions` is rewritten as the label-and-comment form per D2 (or replaced with a sibling workflow at the implementing packet's discretion; the contract is what matters, not the YAML file's name).
 - **The Cloudflare Tunnel hostname for review traffic** (e.g., the `grid-review.honeydrunkstudios.com` host listed in ADR-0081 D6) is removed. Tunnels for other workloads are unaffected.
-- **The webhook-signing secret** used for ADR-0044's primary path is rotated out per [ADR-0006](./ADR-0006-secret-rotation-policy.md)'s secret-rotation discipline. The rotation is a follow-up packet, not part of this ADR.
+- **The webhook-signing secret** used for ADR-0044's primary path is rotated out per [ADR-0006](./ADR-0006-secret-rotation-and-lifecycle.md)'s secret-rotation discipline. The rotation is a follow-up packet, not part of this ADR.
 - **OpenClaw's other roles** — Honeyclaw, scheduled Lore sourcing per ADR-0043, the other workloads listed in ADR-0081 D1's Implementation Notes — are **unaffected**. This ADR only removes the review-runner role from OpenClaw.
 
 The decommission is a **discrete cutover** at the end of Phase A: the worker proves itself on `HoneyDrunk.Architecture`, then the webhook bridge is taken down, then Phase B begins. No long parallel-run period.
@@ -233,7 +233,7 @@ Each phase is a discrete go/no-go; missing Phase A's bar pauses Phase B. The Ope
 - **`.claude/agents/review.md`** — **no change**. The substrate change is invisible to the prompt; this is intentional per the source-of-truth discipline.
 - **`.honeydrunk-review.yaml` schema doc** (at `copilot/review-config-schema.md` or wherever ADR-0044's follow-up landed) — updated for the `runner` enum change per D5. Flagged in Follow-up Work.
 - **OpenClaw workspace/runtime** — review-runner workload is removed; Honeyclaw, Lore sourcing per ADR-0043, and other workloads listed in ADR-0081 D1 are unaffected.
-- **HoneyDrunk.Vault** — the webhook-signing secret used for ADR-0044's primary path is rotated out per [ADR-0006](./ADR-0006-secret-rotation-policy.md) discipline at cutover. No new App secret is required if the existing ADR-0044 `review-agent-github-app-*` secret triplet can be reused; packet 02 audits those secret names and documents any permission widening. The worker reads the App credentials at tick startup, exchanges them for an installation token via `POST /app/installations/{installation_id}/access_tokens`, and uses the resulting short-lived token for the tick. Rotation remains the App's native key-rotation flow per ADR-0006.
+- **HoneyDrunk.Vault** — the webhook-signing secret used for ADR-0044's primary path is rotated out per [ADR-0006](./ADR-0006-secret-rotation-and-lifecycle.md) discipline at cutover. No new App secret is required if the existing ADR-0044 `review-agent-github-app-*` secret triplet can be reused; packet 02 audits those secret names and documents any permission widening. The worker reads the App credentials at tick startup, exchanges them for an installation token via `POST /app/installations/{installation_id}/access_tokens`, and uses the resulting short-lived token for the tick. Rotation remains the App's native key-rotation flow per ADR-0006.
 - **GitHub org (`HoneyDrunkStudios`)** — reuses the existing ADR-0044 review-agent GitHub App where possible. App permissions for the worker path: `pull_requests: write`, `issues: write`, `contents: read`; any additional repo-content write permission must be justified by the existing audit-artifact workflow and bounded to enabled repos. Installation scope: `enabled` repos only (additive as new repos are enabled per D11 Phase B/C).
 
 ### Invariants
@@ -275,7 +275,7 @@ No new invariants are required by this ADR. Invariant numbers reconcile via `hiv
 - **Implement the head-SHA invalidation logic** in the worker per D3 step 5 (pre-flight comment re-read, post-flight comment re-read, verdict discard on SHA mismatch). Pin a small on-disk pending-verdict cache keyed on `head_sha` for crash recovery.
 - **Remove the OpenClaw webhook-bridge code paths** for review traffic. Tunnels and bridges for other workloads remain.
 - **Author the local worker** (PowerShell or .NET console — implementing packet pins the language). Land it in a directory under HoneyDrunk.Architecture (recommended: `infrastructure/workers/grid-review-runner/`) or a sibling Node, at implementing packet's discretion.
-- **Add the four labels** (`needs-agent-review`, `agent-review-in-progress`, `agent-reviewed`, `changes-requested-by-agent`) to each `enabled` repo's label set via the existing label-setup pattern.
+- **Add the worker labels and managed PR-label vocabulary** to each `enabled` repo's label set via the existing label-setup pattern.
 - **Update `.honeydrunk-review.yaml` schema doc** with the new `runner` enum (drop `openclaw-codex`, add `local-worker` as default, preserve `api-ci`).
 - **Rotate out the ADR-0044 webhook-signing secret** per ADR-0006 discipline at Phase A → Phase B cutover.
 - **Update ADR-0081 D1's Implementation Notes** to remove the review-webhook-bridge workload bullet. **Not performed in this ADR pass** because ADR-0081 is still Proposed and the edit shape is one line — leave it to ADR-0081's acceptance/amendment cycle.
@@ -330,7 +330,7 @@ Rejected. The **GitHub PR is the system of record** per ADR-0011 D1. A separate 
 
 - [`constitution/charter.md`](../constitution/charter.md) — anti-performing-visibility warning; the substrate change in this ADR removes plumbing, not adds it
 - [`constitution/invariants.md`](../constitution/invariants.md) — Invariant 53 (two independent perspectives on high-risk Nodes per ADR-0046)
-- [ADR-0006](./ADR-0006-secret-rotation-policy.md) — secret-rotation discipline used to rotate out the ADR-0044 webhook-signing secret at cutover
+- [ADR-0006](./ADR-0006-secret-rotation-and-lifecycle.md) — secret-rotation discipline used to rotate out the ADR-0044 webhook-signing secret at cutover
 - [ADR-0007](./ADR-0007-claude-agents-as-source-of-truth.md) — `.claude/agents/review.md` as source of truth; both old and new substrates consume the same agent file
 - [ADR-0011](./ADR-0011-code-review-and-merge-flow.md) — base code-review-and-merge flow; D5 advisory posture preserved
 - [ADR-0012](./ADR-0012-grid-cicd-control-plane.md) — HoneyDrunk.Actions, the cheap-trigger-rail host

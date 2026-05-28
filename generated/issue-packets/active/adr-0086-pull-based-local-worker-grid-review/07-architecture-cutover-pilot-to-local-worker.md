@@ -107,7 +107,7 @@ If any of these fail, **stop** — do not merge the cutover PR. Diagnose against
 - [ ] CHANGELOG.md updated noting the Architecture-repo cutover to `runner: local-worker`
 
 ## Human Prerequisites
-- [ ] All Wave-1 packets 02–06 must be complete: existing review-agent GitHub App audited and Vault credentials verified (02), worker source landed + installed on the home server + Task Scheduler entry registered (03), schema doc updated (04), `job-review-request.yml` rewritten (05), four worker labels fanned out (06)
+- [ ] All Wave-1 packets 02–06 must be complete: existing review-agent GitHub App audited and Vault credentials verified (02), worker source landed + installed on the home server + Task Scheduler entry registered (03), schema doc updated (04), `job-review-request.yml` rewritten (05), worker labels and managed PR labels fanned out (06)
 - [ ] The local worker on the home server must be running (Task Scheduler entry from packet 03 active)
 - [ ] Confirm the pinned `job-review-request.yml` ref the Architecture caller invokes — this is the tag/SHA after packet 05 merged
 - [ ] After the cutover PR opens, manually observe the end-to-end flow (queue comment appears → worker claims → verdict posts → labels transition) before recording the Phase-A go decision
@@ -118,7 +118,7 @@ If any of these fail, **stop** — do not merge the cutover PR. Diagnose against
 - `packet:03` — Worker source + Task Scheduler installation (**hard** — there's no runtime to handle the claim without the worker).
 - `packet:04` — Schema doc updated (soft — the `.honeydrunk-review.yaml` edit aligns with the schema; the workflow doesn't strictly require the doc but the operator does).
 - `packet:05` — `job-review-request.yml` rewritten to label+comment form (**hard** — the caller's input shape change depends on the reusable workflow's input shape change).
-- `packet:06` — Four worker labels fanned out (**hard** for stable behavior — packet 05's `gh label create --force` safety net works on first use but the pre-seed is the canonical path; the worker's label-swap depends on `agent-review-in-progress` existing on the repo when the worker tries to add it).
+- `packet:06` — Worker labels and managed PR labels fanned out (**hard** for stable behavior — packet 05's `gh label create --force` safety net works on first use but the pre-seed is the canonical path; the worker's label-swap depends on `agent-review-in-progress` existing on the repo when the worker tries to add it).
 
 ## Referenced ADR Decisions
 

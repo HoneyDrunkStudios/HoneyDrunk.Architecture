@@ -58,7 +58,7 @@ For each Node repo, in a single PR per repo (one-PR-per-repo-per-initiative disc
 
 3. **Verify the repo's PR template carries the `Authorship:` line** (already mandatory Grid-wide per ADR-0044 packet 07 / authorship-check). If missing, add it as part of this PR.
 
-4. **Verify the four worker labels are present on the repo** — should already be true after packet 06's Grid-wide fan-out. If any are missing on a particular repo (rare; idempotent fan-out is robust), the rewritten Action's `gh label create --force` will create them at first use.
+4. **Verify the worker labels and managed PR labels are present on the repo** — should already be true after packet 06's Grid-wide fan-out. If any are missing on a particular repo (rare; idempotent fan-out is robust), the rewritten Action's `gh label create --force` will create them at first use.
 
 5. **CHANGELOG.md** in the repo carries an entry noting the local-worker review enablement (CI tooling change).
 

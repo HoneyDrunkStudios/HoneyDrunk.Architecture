@@ -26,7 +26,7 @@ The right move is to change the transport (pull instead of webhook) and the exec
 
 ## Scope Detection
 
-**Multi-repo.** ADR-0086 touches `HoneyDrunk.Architecture` (acceptance, supersession notes, existing GitHub App reuse audit, worker source under `infrastructure/workers/`, schema-doc update, Architecture-pilot cutover, OpenClaw decommission, hive-sync/briefing wiring) and `HoneyDrunk.Actions` (managed PR-label normalization, the `job-review-request.yml` enqueue rewrite, the four worker labels added to labels-as-code and fanned out). Phase B widens to the 10 remaining live .NET Nodes via the same `target_repos` shape ADR-0044 packet 11 used (now superseded by this initiative's packet 09).
+**Multi-repo.** ADR-0086 touches `HoneyDrunk.Architecture` (acceptance, supersession notes, existing GitHub App reuse audit, worker source under `infrastructure/workers/`, schema-doc update, Architecture-pilot cutover, OpenClaw decommission, hive-sync/briefing wiring) and `HoneyDrunk.Actions` (managed PR-label normalization, the `job-review-request.yml` enqueue rewrite, worker labels plus managed PR labels added to labels-as-code and fanned out). Phase B widens to the 10 remaining live .NET Nodes via the same `target_repos` shape ADR-0044 packet 11 used (now superseded by this initiative's packet 09).
 
 **No new-Node scaffolding.** Both Wave-1 target repos are live. The worker source lives in HoneyDrunk.Architecture under `infrastructure/workers/grid-review-runner/` — a directory choice pinned in packet 03 per ADR-0086 D4 Follow-up Work recommendation. No new Node repo is created.
 
@@ -41,7 +41,7 @@ Packet 01 first (the acceptance flip). Then 02 (existing App reuse audit) gates 
 - [ ] **03** — Architecture: Author the pull-based PowerShell worker at `infrastructure/workers/grid-review-runner/` (claim protocol, Task Scheduler startup/restart installer, env hygiene, dual Codex/Claude dispatch with synthesis, audit-mode dispatch wiring, README). `Actor=Agent`. Blocked by: 01, 02.
 - [ ] **04** — Architecture: Update `copilot/review-config-schema.md` for the `runner:` enum change (drop `openclaw-codex`, add `local-worker` default, preserve `api-ci`). `Actor=Agent`. Blocked by: 01.
 - [ ] **05** — Actions: Rewrite `job-review-request.yml` from webhook-emitting to managed-label-normalizing plus label-and-comment enqueue per D2. `Actor=Agent`. Blocked by: 01.
-- [ ] **06** — Actions: Add four worker labels (`needs-agent-review`, `agent-review-in-progress`, `agent-reviewed`, `changes-requested-by-agent`) to labels-as-code and fan out Grid-wide. `Actor=Agent`. Blocked by: 01.
+- [ ] **06** — Actions: Add worker labels and the managed PR-label vocabulary to labels-as-code and fan out Grid-wide. `Actor=Agent`. Blocked by: 01.
 - [ ] **07** — Architecture: Cut `HoneyDrunk.Architecture` over to `runner: local-worker`; update its `pr-review.yml` caller; verify end-to-end on the cutover PR; record Phase-A go/no-go. `Actor=Agent`. Blocked by: 02, 03, 04, 05, 06.
 
 **Wave 1 exit criterion (Phase A go/no-go):** Per ADR-0086 D11 Phase A — verdict quality at least as useful as the manual local-agent invocation, reliable polling and claim semantics, head-SHA invalidation deterministically handles pushes mid-review, near-zero marginal cost under subscription auth. **If this bar is missed, Wave 2 does not start.**
@@ -74,7 +74,7 @@ Packets within a wave run in parallel where their `dependencies:` array permits 
 | 03 | [Pull-based PowerShell worker](./03-architecture-author-pull-worker.md) | Architecture | Agent | 1 | 01, 02 |
 | 04 | [Schema-doc `runner:` enum update](./04-architecture-update-review-config-schema-doc.md) | Architecture | Agent | 1 | 01 |
 | 05 | [Managed-label enqueue workflow](./05-actions-rewrite-job-review-request-as-label-and-comment.md) | Actions | Agent | 1 | 01 |
-| 06 | [Four worker labels Grid-wide](./06-actions-add-four-worker-labels-grid-wide.md) | Actions | Agent | 1 | 01 |
+| 06 | [Worker and managed PR labels Grid-wide](./06-actions-add-four-worker-labels-grid-wide.md) | Actions | Agent | 1 | 01 |
 | 07 | [Architecture cutover to `runner: local-worker`](./07-architecture-cutover-pilot-to-local-worker.md) | Architecture | Agent | 1 | 02, 03, 04, 05, 06 |
 | 08 | [Decommission OpenClaw review substrate](./08-architecture-decommission-openclaw-review-substrate.md) | Architecture | Agent | 2 | 07 |
 | 09 | [Enable `runner: local-worker` on 10 Nodes](./09-cross-repo-enable-local-worker-ten-nodes.md) | Cross-repo | Agent | 2 | 07, 08 |

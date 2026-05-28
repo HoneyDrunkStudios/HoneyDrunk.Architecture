@@ -55,7 +55,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [ ] Architecture: Author the PowerShell pull worker under `infrastructure/workers/grid-review-runner/`, including dual Codex/Claude synthesis and Task Scheduler startup/restart behavior (packet 03)
 - [ ] Architecture: Update the `.honeydrunk-review.yaml` schema doc for `runner: local-worker` / `api-ci` and removal of `openclaw-codex` (packet 04)
 - [ ] Actions: Rewrite `job-review-request.yml` as the managed-label-normalizing label/comment enqueue workflow (packet 05)
-- [ ] Actions: Add `needs-agent-review`, `agent-review-in-progress`, `agent-reviewed`, and `changes-requested-by-agent` labels Grid-wide (packet 06)
+- [ ] Actions: Add worker labels and the managed PR-label vocabulary Grid-wide (packet 06)
 - [ ] Architecture: Cut over the Architecture pilot to the local worker and record Phase-A go/no-go evidence (packet 07)
 
 **Tracking (Wave 2 — Phase B: decommission + fan-out):**
