@@ -26,9 +26,11 @@ What ADR-0044 got *right* — the load-bearing parts — is unaffected by transp
 
 The forcing function is therefore narrow and clean: **change the transport and the execution substrate; preserve the discipline.** This ADR proposes to do exactly that — pull the trigger inward (the operator's worker polls GitHub for PRs that need review) instead of receiving it outward (GitHub posts a webhook into operator infrastructure), and to run the agent under the operator's existing subscription CLIs (Codex CLI under ChatGPT Pro, Claude Code CLI under Claude Max) instead of through the OpenClaw process.
 
-The new shape is small, boring, and standard: a cheap GitHub Action normalizes managed PR labels, then enqueues a review request by **labelling and commenting** on the PR; a **local worker** on the always-on home server (per [ADR-0081](./ADR-0081-home-server-for-openclaw-and-local-agent-infrastructure.md)) polls GitHub on a 1–5-minute cadence, claims one PR at a time via a label swap, runs the canonical `.claude/agents/review.md` agent locally under subscription auth, synthesizes independent Codex CLI and Claude Code CLI findings when both are required, and posts the verdict back to the PR. No inbound webhook. No tunnel for review traffic. No OpenClaw on the review path. The substrate change is invisible to the agent prompt — the same `.claude/agents/review.md` runs on either path per [ADR-0007](./ADR-0007-claude-agents-as-source-of-truth.md)'s source-of-truth rule.
+The new shape is small, boring, and standard: a cheap GitHub Action normalizes managed PR labels, then enqueues a review request by **labelling and commenting** on the PR; a **local scheduled agent runner** on the always-on home server (per [ADR-0081](./ADR-0081-home-server-for-openclaw-and-local-agent-infrastructure.md)) polls GitHub on a 1–5-minute cadence, claims one PR at a time via a label swap, runs the canonical `.claude/agents/review.md` agent locally under subscription auth, synthesizes independent Codex CLI and Claude Code CLI findings when both are required, and posts the verdict back to the PR. No inbound webhook. No tunnel for review traffic. No OpenClaw on the review path. The substrate change is invisible to the agent prompt — the same `.claude/agents/review.md` runs on either path per [ADR-0007](./ADR-0007-claude-agents-as-source-of-truth.md)'s source-of-truth rule.
 
-This ADR is **Accepted**. It captures the transport and substrate change the operator is making. The poll interval (60–120 s during operator working hours), worker language (PowerShell), Reviewer 4 substrate (Claude Code CLI under Max via the local worker), stale-claim sweep threshold (15 min recommended), GitHub auth shape (reuse the existing ADR-0044 `review-agent` GitHub App identity where possible, not the operator's `gh` CLI session), managed PR-label normalization in HoneyDrunk.Actions, dual Codex/Claude review with synthesis for substantive high-risk work, and Task Scheduler auto-start/restart posture are pinned by operator decision. The precise worker file layout and the App's installation-token caching shape are pinned by the implementing packet once a one-repo pilot runs against `HoneyDrunk.Architecture`.
+The operator also wants to stop treating OpenClaw as the permanent home for other scheduled agent work. The same reliability and portability concerns apply to `hive-sync` and the HoneyDrunk.Lore sourcing / ingest / signal-review jobs: they are scheduled or manually-invoked agent jobs, they need durable logs/state, they sometimes edit repos or open PRs, and they should be movable from a workstation to the home server or a cloud VM without rewriting the job. ADR-0086 therefore commits the **runner framework**, not merely a one-off review script. The Grid Review Runner is the first job type on that framework; `hive-sync`, Lore sourcing, Lore ingest/compile, and Lore signal review are first-class job specs in the same initiative.
+
+This ADR is **Accepted**. It captures the transport and substrate change the operator is making. The poll interval (60–120 s during operator working hours), runner language (PowerShell), Reviewer 4 substrate (Claude Code CLI under Max via the local runner), stale-claim sweep threshold (15 min recommended), GitHub auth shape (reuse the existing ADR-0044 `review-agent` GitHub App identity where possible, not the operator's `gh` CLI session), managed PR-label normalization in HoneyDrunk.Actions, dual Codex/Claude review with synthesis for substantive high-risk work, portable job specs for review / hive-sync / Lore scheduled work, and Task Scheduler auto-start/restart posture are pinned by operator decision. The precise runner file layout and the App's installation-token caching shape are pinned by the implementing packet once a one-repo pilot runs against `HoneyDrunk.Architecture`.
 
 ## Decision
 
@@ -82,15 +84,23 @@ The **labels carry the protocol state**; the **queue comment carries the audit t
 
 Recommended values pinned by the implementing packet, not this ADR: the stale-claim N (15 min is a starting recommendation), the per-tick PR-list limit (e.g., 25), and the worker host identifier shape (recommend `<hostname>:<pid>:<workerVersion>`).
 
-### D4 — Local worker is a boring artifact, not a service
+### D4 — Local scheduled agent runner is a portable job framework, not one script
 
-The worker is intentionally small and stateless across ticks. Recommended baseline shape:
+The runner is intentionally small and stateless across ticks. It is a **job framework** with a boring local scheduler adapter, not a bespoke review script. Recommended baseline shape:
 
 - **Host:** the always-on home server per [ADR-0081](./ADR-0081-home-server-for-openclaw-and-local-agent-infrastructure.md) D1. Workstation hosting is acceptable for prototyping but the home server is the steady-state target because it survives operator travel.
 - **Form factor:** a **PowerShell script** invoked by **Windows Task Scheduler** on a periodic trigger. PowerShell is the recommended language because it has the lowest resource footprint on the target host — `pwsh` is already installed on Windows 11, there is no compile step, no runtime DLL deployment, and per-tick boot is sub-second. A long-running daemon/tray variant is permitted but not required; the scheduled-task shape is the lowest-operational-burden option and the recommended default. The user explicitly favored boring plumbing here.
 - **Polling cadence: 60–120 seconds during the operator's working hours is the recommended default.** Off-hours cadence tuning (e.g., 60 s during 08:00–22:00 local, 5-minute cadence 22:00–08:00) is supported trivially by two time-bounded Task Scheduler triggers, but is **not recommended at v1** — the marginal `gh api` cost between continuous and reduced cadence is negligible (1,440 vs. ~250 calls/day, both well inside GitHub's rate limit), and Strategic/scheduled agent PRs per ADR-0043 can still fire overnight, so a quieter night cadence delays those reviews without saving anything meaningful. Revisit only if observed queue throughput or API-quota pressure justifies it.
 - **Startup and restart posture:** the Task Scheduler entry is installed for automatic start at logon/startup, repeats on the configured interval, restarts on failure, refuses overlapping runs (`IgnoreNew`), and writes a lightweight heartbeat/tick log. If the machine is powered off, the durable queue remains in GitHub labels/comments; when the machine returns, the next scheduled tick resumes from GitHub state and the stale-claim sweep recovers any interrupted claim. The design intentionally has no hidden local queue that can be lost on reboot.
 - **Language choice may diverge from the recommendation** if the implementing packet has a specific reason (Node-equivalent tooling, an existing .NET console shape the operator wants to reuse). The contract is what matters (the claim protocol per D3, the agent invocation per D8, the verdict-posting format already pinned by `.claude/agents/review.md`). PowerShell is the lowest-resource default; alternatives must justify the additional weight.
+- **Job specs:** every runnable unit is declared as data, not embedded in the scheduler. A job spec names the job id, repo checkout, trigger kind (`poll`, `schedule`, `manual`, or `label-queue`), schedule, concurrency key, timeout, prompt/agent file, agent command sequence (Codex, Claude Code, or both), allowed repo write mode (`none`, `commit`, `pr`, `comment-only`), required secrets by Vault name, expected outputs, log/state retention, and portability notes. The initial specs are:
+  - `grid-review` — GitHub label/comment queue -> Codex/Claude review -> synthesized PR verdict.
+  - `post-merge-audit` — audit-sample queue -> review agent audit mode -> PR comment and audit artifact.
+  - `hive-sync` — scheduled/manual Architecture reconciliation job using `.claude/agents/hive-sync.md`, branch/PR output, and no direct Hive board mutations.
+  - `lore-source` — scheduled Lore sourcing pass using `HoneyDrunk.Lore/tools/openclaw-lore-sourcing-prompt.md`, raw-source writes, and run summary output.
+  - `lore-ingest` — scheduled Lore ingest/compile pass using `HoneyDrunk.Lore/tools/openclaw-lore-ingest-prompt.md`, `raw/` -> `wiki/` updates, index rebuilds, and safe commits.
+  - `lore-signal-review` — scheduled or manual Lore signal review using `HoneyDrunk.Lore/tools/openclaw-lore-signal-review-prompt.md`, output report only, no strategy or GitHub mutations.
+- **Adapter boundary:** Task Scheduler is the v1 scheduler adapter. The core runner takes a job id and a host config and can run the same job under Task Scheduler, cron/systemd, a cloud VM, or a future container host without changing the job spec. Machine-specific paths live only in host config; committed job specs use repo-relative paths and logical runtime directories.
 - **Auth surfaces:**
   - **The existing ADR-0044 review-agent GitHub App identity is reused where possible** rather than creating a second app. The operator already completed that portal work; this ADR amends the existing App's use from webhook bridge to local worker. Required permissions are the minimum needed: `pull_requests: write`, `issues: write` (for labels and queue/verdict comments), and `contents: read` (for the PR diff and repo checkout). If the existing App already has additional Architecture-only write scope for ADR-0044 D9 audit-artifact follow-up work, that scope is documented and left bounded to the repos that need it; no broad content-write grant is introduced by this ADR. The existing `review-agent-github-app-*` Vault secret triplet remains the credential source unless the audit in packet 02 proves the App cannot safely be amended, in which case creating a second App requires an explicit follow-up note.
   - **Reasons the App identity is committed, not just recommended:**
@@ -101,9 +111,9 @@ The worker is intentionally small and stateless across ticks. Recommended baseli
     - **Rate-limit separation.** The App's installation token gets its own 5,000-REST-calls/hour and 5,000-GraphQL-points/hour budgets, independent of the operator's interactive `gh` usage. Not load-bearing at v1 volume (worker peak is ~80 calls/hour) but cheap insurance against future bursts (post-merge audits per ADR-0044 D9, agent-driven PR storms, a second worker on the laptop for testing).
     - **Future-proofing for multi-worker.** Two workers (e.g., home server + laptop for testing) can share the same App installation without contending for `gh` session state.
   - **Codex CLI** and **Claude Code CLI** authenticated via the operator's existing subscription sessions. **`ANTHROPIC_API_KEY` and `OPENAI_API_KEY` must not be set in the worker environment** — see ADR-0079 D8's auth-precedence gotcha (preserved). The worker process inherits a deliberately minimal environment block; the implementing packet documents the env hygiene. Note that `gh` CLI auth on the worker host is **not** the worker's GitHub auth path — it may still be present for the operator's interactive use, but the worker uses the App installation token exclusively.
-- **State:** the worker is per-tick stateless — every tick re-reads the queue from GitHub. A small on-disk cache of `(head_sha → verdict)` is optional and survives crashes; the source of truth is the PR's comments and labels on GitHub.
+- **State:** the runner is per-tick stateless for queue reads — every tick re-reads the durable queue from the source of truth for that job (GitHub labels/comments for reviews, schedule + repo state for hive/Lore). Small on-disk caches are allowed for idempotency and crash recovery, but they are never the only source of work. Logs, locks, checkouts, and cache files live under a configurable runtime directory so the runner can move hosts with minimal friction.
 
-The home server is the recommended host because of its always-on posture, but the worker is also valid on the workstation. The home server's review-webhook-bridge workload listed in [ADR-0081](./ADR-0081-home-server-for-openclaw-and-local-agent-infrastructure.md) D1's Implementation Notes is **removed** by this ADR in favor of the pull-based worker; that edit is flagged in Follow-up Work below and is intentionally not performed in this pass because ADR-0081 is still Proposed.
+The home server is the recommended host because of its always-on posture, but the runner is also valid on the workstation or a small cloud VM. The home server's review-webhook-bridge workload listed in [ADR-0081](./ADR-0081-home-server-for-openclaw-and-local-agent-infrastructure.md) D1's Implementation Notes is **removed** by this ADR in favor of the pull-based runner; that edit is flagged in Follow-up Work below and is intentionally not performed in this pass because ADR-0081 is still Proposed.
 
 ### D5 — `.honeydrunk-review.yaml` runner enum update
 
@@ -145,7 +155,7 @@ If the worker is offline — operator traveling, home server down, scheduled-tas
 
 - **GitHub mobile notifications** on label-state changes and PR comments — the operator already gets these for free.
 - **The weekly ADR-0043 briefing** surfaces PRs in `needs-agent-review` older than 24 h as a backlog signal. This earns its keep because a backlog older than 24 h is exactly the case where the operator wants to know the worker is down.
-- **`hive-sync` / `netrunner` queue-depth reporting** (per ADR-0014's reconciliation mandate) can flag queue depth as a Grid-health metric.
+- **`hive-sync` / `netrunner` runner-health reporting** (per ADR-0014's reconciliation mandate) can flag review queue depth and scheduled-job freshness as Grid-health metrics.
 
 No pager, no alarm, no Telegram, no inbound tunnel. The queue itself is durable in GitHub and survives every worker outage.
 
@@ -170,30 +180,31 @@ The web-integration path (ADR-0079 D2 as originally written) is **rejected for t
 
 ### D9 — Post-merge sampling audit (ADR-0044 D9) preserved
 
-Implementation note only: the audit (every Nth agent-authored merged PR per ADR-0044 D9) is just another **job type** the worker dequeues. The audit-mode instruction block remains in the canonical `.claude/agents/review.md` per ADR-0044 D9's source-of-truth discipline; the worker selects audit mode based on a separate label (`audit-sample`, already pinned by ADR-0044) and supplies the merged PR diff plus original review artifacts.
+Implementation note only: the audit (every Nth agent-authored merged PR per ADR-0044 D9) is just another **job spec** the runner dequeues. The audit-mode instruction block remains in the canonical `.claude/agents/review.md` per ADR-0044 D9's source-of-truth discipline; the runner selects audit mode based on a separate label (`audit-sample`, already pinned by ADR-0044) and supplies the merged PR diff plus original review artifacts.
 
-No substrate-specific change. The audit is end-to-end the same — only the execution host moves from OpenClaw to the local worker.
+No substrate-specific change. The audit is end-to-end the same — only the execution host moves from OpenClaw to the local scheduled agent runner.
 
-### D10 — Decommission OpenClaw on the review path at cutover
+### D10 — Decommission OpenClaw review traffic first, then migrate scheduled agent jobs
 
-Once the local worker is operating on `HoneyDrunk.Architecture` and Phase A (per D11) is green, the OpenClaw webhook bridge for **review traffic specifically** is taken down:
+Once the local runner is operating on `HoneyDrunk.Architecture` and Phase A (per D11) is green, the OpenClaw webhook bridge for **review traffic specifically** is taken down:
 
 - **`job-review-request.yml`'s webhook-emitting form** in `HoneyDrunk.Actions` is rewritten as the label-and-comment form per D2 (or replaced with a sibling workflow at the implementing packet's discretion; the contract is what matters, not the YAML file's name).
 - **The Cloudflare Tunnel hostname for review traffic** (e.g., the `grid-review.honeydrunkstudios.com` host listed in ADR-0081 D6) is removed. Tunnels for other workloads are unaffected.
 - **The webhook-signing secret** used for ADR-0044's primary path is rotated out per [ADR-0006](./ADR-0006-secret-rotation-and-lifecycle.md)'s secret-rotation discipline. The rotation is a follow-up packet, not part of this ADR.
-- **OpenClaw's other roles** — Honeyclaw, scheduled Lore sourcing per ADR-0043, the other workloads listed in ADR-0081 D1's Implementation Notes — are **unaffected**. This ADR only removes the review-runner role from OpenClaw.
+- **OpenClaw's other roles** continue until their replacement job specs have been installed and smoke-tested under this runner. This ADR does not rip out `hive-sync` or Lore jobs during the review cutover, but it does make their migration part of the same ADR-0086 implementation work rather than future undefined scope.
 
-The decommission is a **discrete cutover** at the end of Phase A: the worker proves itself on `HoneyDrunk.Architecture`, then the webhook bridge is taken down, then Phase B begins. No long parallel-run period.
+The review decommission is a **discrete cutover** at the end of Phase A: the runner proves itself on `HoneyDrunk.Architecture`, then the webhook bridge is taken down, then Phase B begins. The scheduled-job migration is separate and explicit: `hive-sync`, Lore sourcing, Lore ingest/compile, and Lore signal review move to runner job specs only after each job has a smoke-test record, rollback note, and output comparison against the current OpenClaw/Honeyclaw behavior. No long parallel-run period after a job is verified, but no blind cutover either.
 
 ### D11 — Phased rollout (resets ADR-0044 D11's clock)
 
 The transport change is large enough that ADR-0044 D11's Phase 1–4 progression is **moot for the new substrate**, and the phase clock resets:
 
-- **Phase A (new Phase 1)** — build the worker; pilot on `HoneyDrunk.Architecture` only (lowest blast radius, same rationale as ADR-0044 D11 Phase 1). Verify the four labels function, the claim protocol behaves under deliberate worker-restart and stale-claim scenarios, verdict quality matches the OpenClaw-hosted runner's, and marginal cost stays at $0. **Phase A's exit criterion is the same as ADR-0044 D11 Phase 1's**: verdict quality at least as useful as the manual local-agent invocation, reliable triggers (now meaning "reliable polling and claim semantics" instead of "reliable webhook delivery"), and near-zero marginal cost under subscription auth.
-- **Phase B (new Phase 2)** — enable on the other repos that ADR-0044's Phase 2 had reached (whichever those ended up being at this ADR's acceptance time). Each repo's `.honeydrunk-review.yaml` migrates from `runner: openclaw-codex` to `runner: local-worker`. The four new labels (`needs-agent-review`, `agent-review-in-progress`, `agent-reviewed`, `changes-requested-by-agent`) are added to each repo's label set via the existing label-setup pattern.
-- **Phase C (new Phase 3)** — ramp to all 12 live Nodes. Multi-perspective (D8) activates once `review_risk_class` is populated per ADR-0044 D8 (preserved). Post-merge sampling audit (D9) activates per ADR-0044 D9's preserved discipline.
+- **Phase A (new Phase 1)** — build the runner; pilot on `HoneyDrunk.Architecture` only (lowest blast radius, same rationale as ADR-0044 D11 Phase 1). Verify the four labels function, the claim protocol behaves under deliberate runner-restart and stale-claim scenarios, verdict quality matches the OpenClaw-hosted runner's, and marginal cost stays at $0. **Phase A's exit criterion is the same as ADR-0044 D11 Phase 1's**: verdict quality at least as useful as the manual local-agent invocation, reliable triggers (now meaning "reliable polling and claim semantics" instead of "reliable webhook delivery"), and near-zero marginal cost under subscription auth.
+- **Phase B (new Phase 2)** — enable PR review on the other repos that ADR-0044's Phase 2 had reached (whichever those ended up being at this ADR's acceptance time). Each repo's `.honeydrunk-review.yaml` migrates from `runner: openclaw-codex` to `runner: local-worker`. The four new labels (`needs-agent-review`, `agent-review-in-progress`, `agent-reviewed`, `changes-requested-by-agent`) are added to each repo's label set via the existing label-setup pattern.
+- **Phase C (new Phase 3)** — migrate scheduled agent jobs onto the same runner: `hive-sync`, Lore sourcing, Lore ingest/compile, and Lore signal review. The job specs land beside the review specs; Task Scheduler entries (or host-specific scheduler entries) invoke jobs by id; each migration records smoke-test output, rollback steps, and whether the previous OpenClaw/Honeyclaw schedule is disabled.
+- **Phase D (new Phase 4)** — ramp and observability polish. Multi-perspective (D8) activates once `review_risk_class` is populated per ADR-0044 D8 (preserved). Post-merge sampling audit (D9) activates per ADR-0044 D9's preserved discipline. Runner health surfaces cover both review queue depth and scheduled-job freshness.
 
-Each phase is a discrete go/no-go; missing Phase A's bar pauses Phase B. The OpenClaw webhook bridge is decommissioned at Phase A→Phase B cutover per D10.
+Each phase is a discrete go/no-go; missing Phase A's bar pauses Phase B, and missing any scheduled-job smoke test pauses that job's cutover. The OpenClaw webhook bridge is decommissioned at Phase A→Phase B cutover per D10; OpenClaw/Honeyclaw scheduled jobs are disabled per job after the corresponding ADR-0086 runner job is proven.
 
 ### D12 — Relationship to prior ADRs
 
@@ -220,19 +231,20 @@ Each phase is a discrete go/no-go; missing Phase A's bar pauses Phase B. The Ope
 | [ADR-0079](./ADR-0079-multi-perspective-pr-review-stack.md) D7 | Invariant 53 satisfaction via dual-model execution | **Preserved.** Dual-model execution is now Codex CLI + Claude Code CLI, both under subscription auth, both under the local worker. |
 | [ADR-0079](./ADR-0079-multi-perspective-pr-review-stack.md) D8 | Auth-precedence gotcha | **Preserved.** Enforced at the worker env boundary per D4 of this ADR. |
 | [ADR-0079](./ADR-0079-multi-perspective-pr-review-stack.md) D9 | Out-of-scope items | **Preserved.** |
-| [ADR-0081](./ADR-0081-home-server-for-openclaw-and-local-agent-infrastructure.md) D1 | Home server as automation host | **Recommended as the worker host.** The review-webhook-bridge workload listed in ADR-0081 D1's Implementation Notes is removed in favor of the pull-based worker. Other workloads on the home server are unaffected. ADR-0081's edit is flagged as Follow-up Work and intentionally not performed in this ADR pass because ADR-0081 is still Proposed. |
+| [ADR-0081](./ADR-0081-home-server-for-openclaw-and-local-agent-infrastructure.md) D1 | Home server as automation host | **Recommended as the runner host.** The review-webhook-bridge workload listed in ADR-0081 D1's Implementation Notes is removed in favor of the pull-based runner. Scheduled agent workloads remain on their current OpenClaw/Honeyclaw schedules until the equivalent ADR-0086 runner job spec is installed and smoke-tested; then they migrate to the runner. ADR-0081's edit is flagged as Follow-up Work and intentionally not performed in this ADR pass because ADR-0081 is still Proposed. |
 
 ## Consequences
 
 ### Affected Nodes
 
 - **HoneyDrunk.Actions** — primary affected Node. The reusable workflow that ADR-0044 D1 named `job-review-request.yml` (webhook-emitting form) is replaced by a managed-label-normalizing, label-and-comment-emitting form (sibling workflow or in-place rewrite, at the implementing packet's discretion). The webhook-bridge code paths are removed. The existing `pr-size-check`, `authorship-check`, and `audit-sample` labelling jobs (per ADR-0044 D6/D7/D9) are composed with, not replaced by, the central label normalizer.
-- **HoneyDrunk.Architecture** — pilot for Phase A; OpenClaw review-runner runbook/config decommissioned; new worker config/runbook authored; new directory shape for any local worker state-cache file (recommended: under operator-machine-local path, not committed to the repo).
-- **Home server / workstation host (per [ADR-0081](./ADR-0081-home-server-for-openclaw-and-local-agent-infrastructure.md))** — runs the worker process. Adds a Windows Task Scheduler entry (or equivalent) for the worker.
+- **HoneyDrunk.Architecture** — pilot for Phase A; OpenClaw review-runner runbook/config decommissioned; new runner config/runbook authored; job specs for review, post-merge audit, `hive-sync`, and Lore jobs documented; new directory shape for local runner state/cache/log files (recommended: under operator-machine-local path, not committed to the repo).
+- **HoneyDrunk.Lore** — scheduled sourcing, ingest/compile, and signal-review prompts remain the canonical job instructions; their scheduler/runtime moves from OpenClaw/Honeyclaw to ADR-0086 runner job specs after smoke tests.
+- **Home server / workstation host (per [ADR-0081](./ADR-0081-home-server-for-openclaw-and-local-agent-infrastructure.md))** — runs the runner process. Adds Windows Task Scheduler entries (or equivalent) for the runner's review tick and scheduled agent jobs.
 - **Every `enabled` repo** — gets four new labels added (`needs-agent-review`, `agent-review-in-progress`, `agent-reviewed`, `changes-requested-by-agent`) via the existing label-setup pattern used for `large-pr` / `audit-sample` / `skip-review`. Existing labels are preserved.
 - **`.claude/agents/review.md`** — **no change**. The substrate change is invisible to the prompt; this is intentional per the source-of-truth discipline.
 - **`.honeydrunk-review.yaml` schema doc** (at `copilot/review-config-schema.md` or wherever ADR-0044's follow-up landed) — updated for the `runner` enum change per D5. Flagged in Follow-up Work.
-- **OpenClaw workspace/runtime** — review-runner workload is removed; Honeyclaw, Lore sourcing per ADR-0043, and other workloads listed in ADR-0081 D1 are unaffected.
+- **OpenClaw workspace/runtime** — review-runner workload is removed at Phase A -> B cutover; `hive-sync` and Lore scheduled jobs are retired only after their ADR-0086 runner job specs are installed, smoke-tested, and recorded.
 - **HoneyDrunk.Vault** — the webhook-signing secret used for ADR-0044's primary path is rotated out per [ADR-0006](./ADR-0006-secret-rotation-and-lifecycle.md) discipline at cutover. No new App secret is required if the existing ADR-0044 `review-agent-github-app-*` secret triplet can be reused; packet 02 audits those secret names and documents any permission widening. The worker reads the App credentials at tick startup, exchanges them for an installation token via `POST /app/installations/{installation_id}/access_tokens`, and uses the resulting short-lived token for the tick. Rotation remains the App's native key-rotation flow per ADR-0006.
 - **GitHub org (`HoneyDrunkStudios`)** — reuses the existing ADR-0044 review-agent GitHub App where possible. App permissions for the worker path: `pull_requests: write`, `issues: write`, `contents: read`; any additional repo-content write permission must be justified by the existing audit-artifact workflow and bounded to enabled repos. Installation scope: `enabled` repos only (additive as new repos are enabled per D11 Phase B/C).
 
@@ -256,16 +268,16 @@ No new invariants are required by this ADR. Invariant numbers reconcile via `hiv
 
 - **No public ingress for review traffic.** The attack surface around the review path collapses to GitHub auth (for the worker's PR read/write) plus the worker's local filesystem. Cloudflare Tunnel exposure for review traffic is removed at cutover.
 - **Operator notifications come from GitHub mobile** — label changes, PR comments. No Telegram, no Discord-via-tunnel, no OpenClaw dashboard required for review-runner status.
-- **Queue depth is the worker-health metric.** Backlog older than 24 h is the backlog signal; surfaced via the weekly ADR-0043 briefing per D7.
+- **Runner health is split by job type.** For review jobs, queue depth and backlog older than 24 h are the health signal; for scheduled jobs, last-success timestamp, last-output path, and missed-schedule count are the health signal.
 - **The worker stale-claim sweep prevents zombie reviews.** Worker crashes mid-review are recovered automatically within N minutes per D3.
-- **Machine restarts are boring.** Task Scheduler restarts the worker at logon/startup and on failure; GitHub labels/comments remain the durable queue while the machine is off.
+- **Machine restarts are boring.** Task Scheduler restarts the runner at logon/startup and on failure; GitHub labels/comments remain the durable review queue while the machine is off, and scheduled jobs resume from repo state on the next configured trigger.
 - **Pushes during in-flight review are handled deterministically.** A push that lands while the worker is reviewing the prior SHA invalidates the in-flight claim via D3 step 5; the worker discards the now-stale verdict and the next tick re-reviews against the new head. The cost is one wasted CLI run (operator-machine CPU only — marginal LLM cost is $0 under subscription auth).
 - **The worker uses the existing review-agent GitHub App identity**, not the operator's account. PR timelines show review activity under the App bot, scope is bounded to the worker permissions above, and the App's installation token rotates hourly from a private key stored in HoneyDrunk.Vault per ADR-0006.
 - **Review comments are consolidated.** Dual Codex/Claude runs produce one synthesized PR verdict that deduplicates findings and names disagreements instead of posting two competing comment threads.
 - **The discipline-half of ADR-0044 is fully preserved.** Authorship classification, PR-size discipline, multi-perspective on high-risk Nodes, post-merge sampling audit, advisory posture — all unchanged.
 - **The pre-June-15 Reviewer 4 transition state from ADR-0079 D7 collapses to nothing** under the recommended local-CLI path: Claude Code CLI under Max is available today, so Invariant 53 is fully satisfiable today. If the operator chooses the web-integration alternative, the transition state per ADR-0079 D7 persists until June 15.
 - **The auth-precedence gotcha (ADR-0079 D8)** becomes a worker env-hygiene rule — easier to enforce than across a webhook bridge.
-- **OpenClaw's other workloads continue to operate.** Honeyclaw, Lore sourcing per ADR-0043, scheduled jobs, local agent sandboxes — unaffected. This ADR only removes OpenClaw's review-runner role.
+- **OpenClaw becomes a migration source, not the permanent scheduled-agent substrate.** Non-review OpenClaw/Honeyclaw jobs keep running until each equivalent runner job has a smoke test and rollback note; after that job-specific cutover, the old schedule is disabled.
 
 ### Follow-up Work
 
@@ -274,7 +286,10 @@ No new invariants are required by this ADR. Invariant numbers reconcile via `hiv
 - **Implement dual-pass synthesis** in the worker: run independent Codex and Claude passes when D8 requires both, preserve raw findings in transient artifacts, post one synthesized verdict with source attribution, and explicitly note fallback/skipped passes.
 - **Implement the head-SHA invalidation logic** in the worker per D3 step 5 (pre-flight comment re-read, post-flight comment re-read, verdict discard on SHA mismatch). Pin a small on-disk pending-verdict cache keyed on `head_sha` for crash recovery.
 - **Remove the OpenClaw webhook-bridge code paths** for review traffic. Tunnels and bridges for other workloads remain.
-- **Author the local worker** (PowerShell or .NET console — implementing packet pins the language). Land it in a directory under HoneyDrunk.Architecture (recommended: `infrastructure/workers/grid-review-runner/`) or a sibling Node, at implementing packet's discretion.
+- **Author the local scheduled agent runner** (PowerShell or .NET console — implementing packet pins the language). Land it in a directory under HoneyDrunk.Architecture (recommended: `infrastructure/workers/grid-agent-runner/`) or a sibling Node, at implementing packet's discretion.
+- **Author portable job specs** for `grid-review`, `post-merge-audit`, `hive-sync`, `lore-source`, `lore-ingest`, and `lore-signal-review`, with host-specific paths confined to local host config.
+- **Migrate `hive-sync` to the runner** with schedule/manual triggers, branch/PR output, no direct Hive board mutations, and a smoke-test comparison against the current OpenClaw job.
+- **Migrate HoneyDrunk.Lore scheduled jobs to the runner** for sourcing, ingest/compile, and signal review, preserving the existing prompt files and run-output contracts.
 - **Add the worker labels and managed PR-label vocabulary** to each `enabled` repo's label set via the existing label-setup pattern.
 - **Update `.honeydrunk-review.yaml` schema doc** with the new `runner` enum (drop `openclaw-codex`, add `local-worker` as default, preserve `api-ci`).
 - **Rotate out the ADR-0044 webhook-signing secret** per ADR-0006 discipline at Phase A → Phase B cutover.
@@ -282,7 +297,7 @@ No new invariants are required by this ADR. Invariant numbers reconcile via `hiv
 - **Wire the worker stale-claim sweep** and pin the recommended N (start at 15 minutes; tune based on observed worker-tick durations).
 - **Install the worker through Task Scheduler** with startup/logon triggers, interval repetition, restart-on-failure, no-overlap settings, heartbeat/tick logging, and a documented recovery story after machine shutdown.
 - **Document worker env-hygiene** (no `ANTHROPIC_API_KEY`, no `OPENAI_API_KEY`) in the operator-facing setup doc per ADR-0079 D8's auth-precedence gotcha discipline.
-- **Wire `hive-sync` / `netrunner` queue-depth surfacing** per ADR-0014's reconciliation mandate.
+- **Wire runner health surfacing** per ADR-0014's reconciliation mandate: review queue depth/backlog, scheduled-job last success, missed runs, and latest output artifact path.
 - **Decommission the `grid-review.honeydrunkstudios.com` (or equivalent) Cloudflare Tunnel hostname** at cutover. Other tunnel hosts are unaffected.
 - **Do not edit `.claude/agents/review.md`** — the agent file is unaffected by this transport change.
 - **Do not edit `constitution/invariants.md`** — invariant numbers reconcile via `hive-sync` per ADR-0014.
@@ -314,6 +329,18 @@ Considered. The argument: OpenClaw is improving; another few months of stability
 
 Rejected. The operator has lived with OpenClaw's unreliability for weeks and is making a direct request to change substrate; "wait for maturity" prioritizes a tool we don't control over the review discipline we depend on. The review discipline is more important than the substrate choice; a substrate that does not impede the discipline is the right move now, even if OpenClaw matures later (OpenClaw's other roles continue regardless).
 
+### Keep OpenClaw for hive-sync and Lore while only reviews move
+
+Considered. The argument: review reliability is the acute problem, while `hive-sync` and Lore jobs already run on schedules and can remain on OpenClaw/Honeyclaw until a later cleanup.
+
+Rejected as the steady state. Those jobs are the same class of work as the review runner: scheduled/manual agent execution with repo checkouts, durable output, secrets, logs, and an operator-host dependency. Keeping two substrates would leave the Grid with two scheduler stories and two recovery stories. ADR-0086 therefore builds the common runner now and migrates those jobs by spec, with smoke tests before each old schedule is disabled.
+
+### Use GitHub Actions cron for hive-sync and Lore jobs
+
+Considered. The argument: GitHub Actions already provides schedules, logs, and repo checkout, so scheduled agent jobs could move there instead of to the local runner.
+
+Rejected for the jobs that require subscription-backed Codex/Claude Code sessions or local operator context. Actions is still the right place for cheap trigger rails and deterministic metadata work, but not for the LLM-agent execution that this ADR deliberately moves under subscription CLIs and portable host config. A future cloud VM can host the same runner without changing job specs; moving the jobs into GitHub Actions would couple them to a different execution and auth model.
+
 ### Move to Anthropic's Claude Code on the web GitHub integration for everything (drop Codex entirely)
 
 Considered. The argument: single-vendor simplicity; one execution surface to maintain; the June 15 credit-pool launch makes this affordable.
@@ -341,3 +368,4 @@ Rejected. The **GitHub PR is the system of record** per ADR-0011 D1. A separate 
 - [ADR-0052](./ADR-0052-cost-governance-budget-alerts-and-kill-switches.md) — cost governance (reviewer-stack cost monitoring)
 - [ADR-0079](./ADR-0079-multi-perspective-pr-review-stack.md) — multi-perspective PR review stack (partially superseded by this ADR; D1 Reviewer 3 transport, D2 Reviewer 4 recommendation)
 - [ADR-0081](./ADR-0081-home-server-for-openclaw-and-local-agent-infrastructure.md) — home server (recommended worker host; D1 review-webhook-bridge workload removed as Follow-up Work)
+- [`../infrastructure/openclaw/hive-sync.md`](../infrastructure/openclaw/hive-sync.md) — current OpenClaw-hosted hive-sync runtime contract migrated by this ADR's runner framework
