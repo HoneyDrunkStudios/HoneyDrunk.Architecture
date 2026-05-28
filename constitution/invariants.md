@@ -201,3 +201,22 @@ Rules that must never be violated across the HoneyDrunk Grid. Canary tests enfor
 
 49. **The HoneyDrunk.Audit Node CI must include a contract-shape canary for the full `HoneyDrunk.Audit.Abstractions` public surface.**
     Shape drift on `IAuditLog`, `IAuditQuery`, `AuditEntry`, or the supporting query/category/outcome/target/change value types is a build failure unless paired with an intentional version bump. The implementation may be the existing `job-api-compatibility.yml` reusable workflow scoped to `HoneyDrunk.Audit.Abstractions`; the obligation is to keep the gate, not to use any specific implementation. See ADR-0031 D8.
+
+## Standup Procedure Invariants
+
+102. **Node registration is mandatory before the first non-bootstrap PR merges.**
+    Every Node repo must have, before its first non-bootstrap PR merges:
+    1. an entry in `catalogs/nodes.json` (Node row),
+    2. a corresponding edges section in `catalogs/relationships.json`,
+    3. an entry in `catalogs/grid-health.json`,
+    4. a context folder at `repos/{NodeName}/` with all five files (`overview.md`, `boundaries.md`, `invariants.md`, `active-work.md`, `integration-points.md`),
+    5. a sector row in `constitution/sectors.md`,
+    6. a `repo-to-node.yml` mapping in `HoneyDrunk.Actions/.github/config/`,
+    7. a `.honeydrunk-review.yaml` at the repo root with `enabled: true` or `enabled: false` explicitly declared,
+    8. a `pr.yml` workflow calling `HoneyDrunk.Actions`'s `pr-core.yml`,
+    9. branch protection on `main` requiring the `pr-core / core` status check, **and**
+    10. **org-secret repo binding** — the org admin has bound the new repo to every org Actions secret the repo's workflows reference. Minimum set for any Node consuming `pr-core.yml` is `SONAR_TOKEN` (ADR-0011 D11). Per-class conditional additions (`NUGET_API_KEY`, `LABELS_FANOUT_PAT`, `HIVE_FIELD_MIRROR_TOKEN`, `HIVE_APP_ID`, `HIVE_APP_PRIVATE_KEY`, the ADR-0084 Discord webhook stack, `OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET`) follow the matrix in `constitution/node-standup.md`. GitHub does not auto-propagate org secrets with `Selected repositories` access policy, so without this step the new repo's first non-bootstrap PR consuming any of those secrets hard-fails — silently in the case of empty-string substitution, loudly for explicit-required wiring.
+
+    A "bootstrap PR" is the scaffold PR itself (the first PR after repo creation, landing the scaffold packet — exemplar `03-{node}-node-scaffold.md`). A bootstrap PR is permitted to introduce items 7, 8, 9, and 10 in the same commit as the rest of the scaffold; the invariant binds the *second* PR (the first feature PR). Items 1–6 must exist before the scaffold PR (they are Phase A; the scaffold is Phase C; Phase A merges first per D3's prerequisite gate).
+
+    Enforcement is procedural — human review at PR time, supplemented by the `review` agent per ADR-0044 D3 category 10 (Enterprise readiness / supportability) for items 1–9 (catalog rows, context folder, sectors row, repo-to-node mapping, `.honeydrunk-review.yaml`, `pr.yml`, branch protection), the `node-audit` agent per ADR-0043's Tactical source, and the `hive-sync` agent's reconciliation pass per invariant 38. **Item 10 — org-secret repo binding — is NOT checkable by the `review` agent at v1**: the GitHub org-secret repository-access policy is admin-only API surface, and the `review` agent runs without an admin token. Item-10 enforcement reduces to operator memory and the per-class binding matrix in `constitution/node-standup.md` at v1. A future packet may add a manual `gh secret list` operator checklist step or a dedicated admin-token cron, but neither is committed by ADR-0082. No CI gate at this time (the catalogs and the new repo are in different repositories — a cross-repo CI gate is an unblocked follow-up, not committed by ADR-0082). See ADR-0082 D6, D8.
