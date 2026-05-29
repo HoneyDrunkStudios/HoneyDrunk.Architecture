@@ -71,7 +71,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 **Exit criteria:** Phase A proves verdict quality, reliable polling/claim semantics, deterministic head-SHA invalidation, and near-zero marginal cost under subscription auth on `HoneyDrunk.Architecture`; Phase B follows only after OpenClaw is decommissioned on the review path; Phase C migrates scheduled agent jobs only after runner smoke tests; Phase D makes runner availability visible through the existing narrative surfaces without adding a pager or inbound alert.
 
 ### ADR-0082 Canonical Node Standup Procedure
-**Status:** In Progress
+**Status:** In Progress — all deliverables shipped to `main`; GitHub issue closure lagging (see sync note)
 **Scope:** Architecture only (one canonical procedure document + five per-class walkthroughs + one org-secret repo-binding walkthrough)
 **Initiative:** `adr-0082-node-standup`
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
@@ -84,12 +84,14 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [ ] Architecture#460: Author `constitution/node-standup.md` per D1 — three-phase chain, eighteen mandatory steps, class-specific steps a–z, per-class org-secret binding matrix (packet 01; blocked by #459)
 
 **Tracking (Wave 3 — per-class walkthroughs + org-secret repo-binding walkthrough, parallel):**
-- [ ] Architecture#461: Author `infrastructure/walkthroughs/node-standup-core-dotnet.md` (packet 02; blocked by #460)
-- [ ] Architecture#462: Author `infrastructure/walkthroughs/node-standup-ops-deployable-dotnet.md` (packet 03; blocked by #460)
-- [ ] Architecture#463: Author `infrastructure/walkthroughs/node-standup-meta-docs.md` (packet 04; blocked by #460)
-- [ ] Architecture#464: Author `infrastructure/walkthroughs/node-standup-ai-seed.md` (packet 05; blocked by #460)
-- [ ] Architecture#465: Author `infrastructure/walkthroughs/node-standup-studios-typescript.md` (packet 06; blocked by #460)
-- [ ] Architecture#466: Author `infrastructure/walkthroughs/org-secret-repo-binding.md` (packet 07; blocked by #460)
+- [x] Architecture#461: Author `infrastructure/walkthroughs/node-standup-core-dotnet.md` (packet 02; shipped via PR #510, issue closed 2026-05-29; packet moved to `completed/`)
+- [ ] Architecture#462: Author `infrastructure/walkthroughs/node-standup-ops-deployable-dotnet.md` (packet 03; file shipped via PR #510, **issue still OPEN — needs closing**)
+- [ ] Architecture#463: Author `infrastructure/walkthroughs/node-standup-meta-docs.md` (packet 04; file shipped via PR #510, **issue still OPEN — needs closing**)
+- [ ] Architecture#464: Author `infrastructure/walkthroughs/node-standup-ai-seed.md` (packet 05; file shipped via PR #510, **issue still OPEN — needs closing**)
+- [ ] Architecture#465: Author `infrastructure/walkthroughs/node-standup-studios-typescript.md` (packet 06; file shipped via PR #510, **issue still OPEN — needs closing**)
+- [ ] Architecture#466: Author `infrastructure/walkthroughs/org-secret-repo-binding.md` (packet 07; file shipped via PR #510, **issue still OPEN — needs closing**)
+
+> **Sync (2026-05-29):** 1/8 issues closed on GitHub (#461 only) — but **all eight deliverables are verifiably present on `main`**: `constitution/node-standup.md` (PR #508, e9d6b02), invariant 102 + `## Standup Procedure Invariants` section (PR #505, e53fdae), and all six `infrastructure/walkthroughs/*.md` (PR #510, b23b1b6). The merge PRs did not carry effective `Closes #` keywords — PR #505 and #508 have empty `closingIssuesReferences`, and PR #510 auto-closed only #461 of the six it shipped. **Action for human / netrunner:** close #459, #460, #462, #463, #464, #465, #466 on GitHub (the work is done), then a follow-up sync can move their packets to `completed/` and the initiative can be archived. Packet 02 (#461) already moved to `completed/`. Not archiving this initiative yet — gating on GitHub issue closure to keep the tracker honest.
 
 **Cross-cutting amendments queued (not in this initiative):** ADR-0083's Architecture#473 amends `constitution/node-standup.md` for the sensitive-inventory onboarding hook and Vault.Rotation cross-link once both ADRs are Accepted; ADR-0084's Architecture#480 amends it to add the operator-alert routing step. Both queue behind packet 01 of this initiative landing the file.
 

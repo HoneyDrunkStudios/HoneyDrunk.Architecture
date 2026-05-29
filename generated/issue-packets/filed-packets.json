@@ -453,7 +453,7 @@
   "generated/issue-packets/active/adr-0081-home-server/07-architecture-adr-0081-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/457",
   "generated/issue-packets/active/adr-0082-node-standup/00-architecture-adr-0082-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/459",
   "generated/issue-packets/active/adr-0082-node-standup/01-architecture-node-standup-procedure-doc.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/460",
-  "generated/issue-packets/active/adr-0082-node-standup/02-architecture-walkthrough-node-standup-core-dotnet.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/461",
+  "generated/issue-packets/completed/adr-0082-node-standup/02-architecture-walkthrough-node-standup-core-dotnet.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/461",
   "generated/issue-packets/active/adr-0082-node-standup/03-architecture-walkthrough-node-standup-ops-deployable-dotnet.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/462",
   "generated/issue-packets/active/adr-0082-node-standup/04-architecture-walkthrough-node-standup-meta-docs.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/463",
   "generated/issue-packets/active/adr-0082-node-standup/05-architecture-walkthrough-node-standup-ai-seed.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/464",
