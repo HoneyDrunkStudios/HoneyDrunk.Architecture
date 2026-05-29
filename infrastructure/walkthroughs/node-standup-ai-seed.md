@@ -29,7 +29,7 @@ This is the entire AI Seed procedure. One Architecture packet:
    - `signal: "seed"`
    - `done: false`
    - the planned `cluster`, `energy`, `priority`, `flow`, `tags`, `long_description`, `foundational`, `strategy_base`, `tier`, `time_pressure`, `cooldown_days` per existing AI-sector precedent;
-   - `repo`: leave `null` or omit until the post-promotion scaffold packet adds the GitHub URL.
+   - `links.repo`: leave `null` or omit until the post-promotion scaffold packet adds the GitHub URL (the catalog stores the repository URL under `links.repo`, not a top-level `repo` field).
 2. **Relationships edges.** Add `consumes`/`consumed_by` edges to `catalogs/relationships.json` for every planned dependency. Edges must be ADR-pinned and acyclic (Invariant 4 — DAG only). For AI-sector Seeds the typical upstream is `HoneyDrunk.AI.Abstractions` (Invariant 44 — downstream AI-sector Nodes take a runtime dependency only on `HoneyDrunk.AI.Abstractions`); downstream consumers depend on the Seed's planned `.Abstractions`.
 3. **Grid-health row.** Add the Node row to `catalogs/grid-health.json` with the planned contract surface, canary expectation, and DR tier per ADR-0036.
 4. **Context folder.** Create the five-file folder at `repos/{NodeName}/`:
@@ -50,7 +50,7 @@ When the AI Seed is ready to be stood up:
 1. The operator (or the `scope` agent for an initiative) decides the target class — almost always **Core .NET Abstractions+Runtime** for AI-sector Nodes (per the downstream-AI-`Abstractions`-only coupling rule in Invariant 44).
 2. A new initiative is opened with a per-Node scaffold packet (`03-{node}-node-scaffold.md` shape, ADR-0031 precedent).
 3. Phase B and Phase C run from `node-standup-core-dotnet.md` (or the appropriate target-class walkthrough).
-4. The scaffold PR flips the catalog Node row from `signal: "seed"` / `done: false` to `signal: "Live"` / `done: true` and sets the `repo` field to the new GitHub URL. The sector row flips from `Signal: Seed` to `Signal: Live`.
+4. The scaffold PR flips the catalog Node row from `signal: "seed"` / `done: false` to `signal: "Live"` / `done: true` and sets `links.repo` to the new GitHub URL. The sector row flips from `Signal: Seed` to `Signal: Live`.
 5. Invariant 102 (node-registration-mandatory) is now load-bearing — the *first non-bootstrap PR* after the scaffold merges binds it.
 
 ## Promotion gate — explicit checks before scaffolding
