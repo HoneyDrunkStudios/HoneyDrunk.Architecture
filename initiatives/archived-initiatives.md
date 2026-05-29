@@ -6,6 +6,35 @@ Completed and cancelled initiatives. Active and planned work lives in [active-in
 
 ## Completed
 
+### ADR-0082 Canonical Node Standup Procedure
+**Status:** Complete
+**Scope:** Architecture only (one canonical procedure document + five per-class walkthroughs + one org-secret repo-binding walkthrough)
+**Completed:** 2026-05-29
+**Initiative:** `adr-0082-node-standup`
+**Description:** Accept ADR-0082 and commit the canonical Grid Node standup procedure — the single source of truth every standup packet, ADR, and AI agent references instead of re-deriving the checklist from the most recent precedent. Wave 1 lands acceptance + invariant 102 (the node-registration-mandatory rule from D6). Wave 2 lands `constitution/node-standup.md` — the load-bearing deliverable defining the three-phase chain (D3), the eighteen mandatory steps (D4), the class-specific steps a–z (D5), and the per-class org-secret binding matrix (D8). Wave 3 lands the six per-class walkthroughs in `infrastructure/walkthroughs/`. No code change in any other repo; no catalog or relationships edges added by this initiative — the procedure governs how future catalog entries land, not its own.
+
+**Tracking (Wave 1 — governance / acceptance):**
+- [x] Architecture#459: Accept ADR-0082, write invariant 102 (D6 node-registration-mandatory rule under the new `## Standup Procedure Invariants` section), flip the `adrs/README.md` row, mark the reservation accepted, register this initiative (packet 00; shipped via PR #505, closed 2026-05-29)
+
+**Tracking (Wave 2 — canonical procedure document):**
+- [x] Architecture#460: Author `constitution/node-standup.md` per D1 — three-phase chain, eighteen mandatory steps, class-specific steps a–z, per-class org-secret binding matrix (packet 01; shipped via PR #508, closed 2026-05-29)
+
+**Tracking (Wave 3 — per-class walkthroughs + org-secret repo-binding walkthrough, parallel):**
+- [x] Architecture#461: Author `infrastructure/walkthroughs/node-standup-core-dotnet.md` (packet 02; shipped via PR #510, closed 2026-05-29)
+- [x] Architecture#462: Author `infrastructure/walkthroughs/node-standup-ops-deployable-dotnet.md` (packet 03; shipped via PR #510, closed 2026-05-29)
+- [x] Architecture#463: Author `infrastructure/walkthroughs/node-standup-meta-docs.md` (packet 04; shipped via PR #510, closed 2026-05-29)
+- [x] Architecture#464: Author `infrastructure/walkthroughs/node-standup-ai-seed.md` (packet 05; shipped via PR #510, closed 2026-05-29)
+- [x] Architecture#465: Author `infrastructure/walkthroughs/node-standup-studios-typescript.md` (packet 06; shipped via PR #510, closed 2026-05-29)
+- [x] Architecture#466: Author `infrastructure/walkthroughs/org-secret-repo-binding.md` (packet 07; shipped via PR #510, closed 2026-05-29)
+
+> **Sync (2026-05-29):** 8/8 issues closed (100%). All eight deliverables verified present on `main`: `constitution/node-standup.md` (PR #508), invariant 102 + `## Standup Procedure Invariants` section (PR #505), and all six `infrastructure/walkthroughs/*.md` (PR #510). The earlier issue-tracker lag (#459, #460, #462–#466 merged but not auto-closed by their PRs) was resolved on 2026-05-29 by closing the issues manually; all eight packets moved to `completed/adr-0082-node-standup/`. Initiative archived.
+
+**Cross-cutting amendments queued (not in this initiative):** ADR-0083's Architecture#473 amends `constitution/node-standup.md` for the sensitive-inventory onboarding hook and Vault.Rotation cross-link once both ADRs are Accepted; ADR-0084's Architecture#480 amends it to add the operator-alert routing step. Both queue behind packet 01 of this initiative landing the file (which it now has).
+
+**Exit criteria:** ADR-0082 is Accepted with invariant 102 live in `constitution/invariants.md`; `constitution/node-standup.md` exists as the single canonical procedure source; all five per-class walkthroughs plus the org-secret repo-binding walkthrough exist in `infrastructure/walkthroughs/`; every future Node standup packet references this initiative's deliverables instead of re-deriving from precedent. **All met.**
+
+---
+
 ### Code Review Pipeline (ADR-0011)
 **Status:** Complete
 **Scope:** Architecture, Actions, plus per-repo SonarQube Cloud onboarding across 12 .NET repos

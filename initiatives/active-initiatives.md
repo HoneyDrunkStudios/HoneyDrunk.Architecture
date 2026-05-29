@@ -70,33 +70,6 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 **Exit criteria:** Phase A proves verdict quality, reliable polling/claim semantics, deterministic head-SHA invalidation, and near-zero marginal cost under subscription auth on `HoneyDrunk.Architecture`; Phase B follows only after OpenClaw is decommissioned on the review path; Phase C migrates scheduled agent jobs only after runner smoke tests; Phase D makes runner availability visible through the existing narrative surfaces without adding a pager or inbound alert.
 
-### ADR-0082 Canonical Node Standup Procedure
-**Status:** In Progress — all deliverables shipped to `main`; GitHub issue closure lagging (see sync note)
-**Scope:** Architecture only (one canonical procedure document + five per-class walkthroughs + one org-secret repo-binding walkthrough)
-**Initiative:** `adr-0082-node-standup`
-**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
-**Description:** Accept ADR-0082 and commit the canonical Grid Node standup procedure — the single source of truth every standup packet, ADR, and AI agent references instead of re-deriving the checklist from the most recent precedent. Wave 1 lands acceptance + invariant 102 (the node-registration-mandatory rule from D6). Wave 2 lands `constitution/node-standup.md` — the load-bearing deliverable defining the three-phase chain (D3), the eighteen mandatory steps (D4), the class-specific steps a–z (D5), and the per-class org-secret binding matrix (D8). Wave 3 lands the six per-class walkthroughs in `infrastructure/walkthroughs/`. No code change in any other repo; no catalog or relationships edges added by this initiative — the procedure governs how future catalog entries land, not its own.
-
-**Tracking (Wave 1 — governance / acceptance):**
-- [x] Architecture#459: Accept ADR-0082, write invariant 102 (D6 node-registration-mandatory rule under the new `## Standup Procedure Invariants` section), flip the `adrs/README.md` row, mark the reservation accepted, register this initiative (packet 00; shipped via this PR)
-
-**Tracking (Wave 2 — canonical procedure document):**
-- [ ] Architecture#460: Author `constitution/node-standup.md` per D1 — three-phase chain, eighteen mandatory steps, class-specific steps a–z, per-class org-secret binding matrix (packet 01; blocked by #459)
-
-**Tracking (Wave 3 — per-class walkthroughs + org-secret repo-binding walkthrough, parallel):**
-- [x] Architecture#461: Author `infrastructure/walkthroughs/node-standup-core-dotnet.md` (packet 02; shipped via PR #510, issue closed 2026-05-29; packet moved to `completed/`)
-- [ ] Architecture#462: Author `infrastructure/walkthroughs/node-standup-ops-deployable-dotnet.md` (packet 03; file shipped via PR #510, **issue still OPEN — needs closing**)
-- [ ] Architecture#463: Author `infrastructure/walkthroughs/node-standup-meta-docs.md` (packet 04; file shipped via PR #510, **issue still OPEN — needs closing**)
-- [ ] Architecture#464: Author `infrastructure/walkthroughs/node-standup-ai-seed.md` (packet 05; file shipped via PR #510, **issue still OPEN — needs closing**)
-- [ ] Architecture#465: Author `infrastructure/walkthroughs/node-standup-studios-typescript.md` (packet 06; file shipped via PR #510, **issue still OPEN — needs closing**)
-- [ ] Architecture#466: Author `infrastructure/walkthroughs/org-secret-repo-binding.md` (packet 07; file shipped via PR #510, **issue still OPEN — needs closing**)
-
-> **Sync (2026-05-29):** 1/8 issues closed on GitHub (#461 only) — but **all eight deliverables are verifiably present on `main`**: `constitution/node-standup.md` (PR #508, e9d6b02), invariant 102 + `## Standup Procedure Invariants` section (PR #505, e53fdae), and all six `infrastructure/walkthroughs/*.md` (PR #510, b23b1b6). The merge PRs did not carry effective `Closes #` keywords — PR #505 and #508 have empty `closingIssuesReferences`, and PR #510 auto-closed only #461 of the six it shipped. **Action for human / netrunner:** close #459, #460, #462, #463, #464, #465, #466 on GitHub (the work is done), then a follow-up sync can move their packets to `completed/` and the initiative can be archived. Packet 02 (#461) already moved to `completed/`. Not archiving this initiative yet — gating on GitHub issue closure to keep the tracker honest.
-
-**Cross-cutting amendments queued (not in this initiative):** ADR-0083's Architecture#473 amends `constitution/node-standup.md` for the sensitive-inventory onboarding hook and Vault.Rotation cross-link once both ADRs are Accepted; ADR-0084's Architecture#480 amends it to add the operator-alert routing step. Both queue behind packet 01 of this initiative landing the file.
-
-**Exit criteria:** ADR-0082 is Accepted with invariant 102 live in `constitution/invariants.md`; `constitution/node-standup.md` exists as the single canonical procedure source; all five per-class walkthroughs plus the org-secret repo-binding walkthrough exist in `infrastructure/walkthroughs/`; every future Node standup packet references this initiative's deliverables instead of re-deriving from precedent.
-
 ### ADR-0047 Testing Patterns and Tooling
 **Status:** In Progress
 **Scope:** Architecture, Standards, Actions, Data, Kernel, Studios, and every Node repo with test projects
