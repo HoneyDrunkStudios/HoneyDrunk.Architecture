@@ -1,0 +1,19 @@
+@{
+    HostId = "home-server:operator:grid-agent-runner"
+    RuntimeRoot = "C:\HoneyDrunk\Runtime\grid-agent-runner"
+    LogRoot = "C:\HoneyDrunk\Runtime\grid-agent-runner\logs"
+    StateRoot = "C:\HoneyDrunk\Runtime\grid-agent-runner\state"
+    CacheRoot = "C:\HoneyDrunk\Runtime\grid-agent-runner\cache"
+    LockRoot = "C:\HoneyDrunk\Runtime\grid-agent-runner\locks"
+    ArtifactRoot = "C:\HoneyDrunk\Runtime\grid-agent-runner\artifacts"
+
+    Repositories = @{
+        "HoneyDrunk.Architecture" = "C:\Users\operator\source\repos\HoneyDrunkStudios\HoneyDrunk.Architecture"
+        "HoneyDrunk.Lore" = "C:\Users\operator\source\repos\HoneyDrunkStudios\HoneyDrunk.Lore"
+    }
+
+    Vault = @{
+        Name = "honeydrunk-ci-kv"
+        AzCliPath = "az"
+    }
+}
