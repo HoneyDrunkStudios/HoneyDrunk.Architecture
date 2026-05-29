@@ -1,0 +1,43 @@
+@{
+    JobId = "grid-review"
+    Description = "Poll GitHub for PRs carrying needs-agent-review and run the Grid-aware review agent."
+    Enabled = $true
+    TriggerKind = "label-queue"
+    Schedule = @{
+        Type = "interval"
+        IntervalSeconds = 60
+        AtStartup = $true
+        AtLogon = $true
+    }
+    ConcurrencyKey = "grid-review"
+    TimeoutMinutes = 30
+    MaxMissedRuns = 5
+    Repo = "HoneyDrunk.Architecture"
+    WorkingDirectory = "."
+    PromptPath = ".claude/agents/review.md"
+    AgentCommands = @(
+        @{
+            Name = "codex"
+            Executable = "codex"
+            Arguments = @("exec", "--file", "{PromptPath}")
+        }
+    )
+    WriteMode = "comment-only"
+    OutputContract = @{
+        LatestOutput = "github-pr-comment"
+        Summary = "Posts one synthesized advisory review verdict to the PR."
+    }
+    RequiredSecrets = @(
+        "review-agent-github-app-id",
+        "review-agent-github-app-private-key",
+        "review-agent-github-app-installation-id"
+    )
+    AllowedTools = @("read", "git", "github-api", "codex", "claude")
+    RetainArtifactsDays = 14
+    PortabilityNotes = "Requires host config for Architecture checkout, Vault access, Codex CLI, and optional Claude Code CLI."
+    Queue = @{
+        SearchQuery = "is:pr is:open label:needs-agent-review org:HoneyDrunkStudios"
+        StaleClaimMinutes = 15
+        QueueCommentMarker = "honeydrunk-grid-review-queue:v1"
+    }
+}

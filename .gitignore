@@ -10,6 +10,7 @@
 *.userosscache
 *.sln.docstates
 *.env
+infrastructure/workers/grid-agent-runner/config/host.psd1
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
