@@ -183,6 +183,7 @@ GitHub does **not** auto-propagate org Actions secrets with the `Selected reposi
 | `DISCORD_WEBHOOK_ANNOUNCEMENTS` | Announcement events (ADR-0084) | Any Node emitting announcement events |
 | `DISCORD_WEBHOOK_AUDIT_SENSITIVE` | Audit-sensitive events (ADR-0084) | Any Node emitting audit-sensitive events |
 | `OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET` | ADR-0044 review-pipeline upstream emission | Any Node whose `.honeydrunk-review.yaml` has `enabled: true` and posts review results upstream |
+| `NPM_TOKEN` | `release.yml` npm publishing (ADR-0057 SDK packaging) — or the OIDC-trusted-publishing equivalent once the org adopts it | Studios/TypeScript Nodes publishing an npm package (SDK packages, per-stack Web.UI packages) |
 
 **Standing access-policy:** `Selected repositories` is the Grid default for org secrets containing live credentials, tokens, webhooks, or signing material — i.e. every org secret currently in use. `All repositories` is reserved for benign org constants (none currently exist). Promoting any secret from `Selected repositories` to `All repositories` requires an ADR amendment.
 
