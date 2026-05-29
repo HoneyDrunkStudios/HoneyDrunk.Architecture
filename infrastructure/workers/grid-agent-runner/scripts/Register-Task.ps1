@@ -1,6 +1,6 @@
 param(
     [string]$ConfigPath = (Join-Path (Split-Path -Parent $PSScriptRoot) "config/host.psd1"),
-    [string[]]$JobId = @("grid-review", "hive-sync", "lore-source", "lore-ingest", "lore-signal-review"),
+    [string[]]$JobId = @("grid-review", "post-merge-audit", "hive-sync", "lore-source", "lore-ingest", "lore-signal-review"),
     [switch]$WhatIf
 )
 
@@ -38,12 +38,11 @@ function New-RunnerTaskTriggers {
             $triggers += $trigger
         }
         "daily" {
-            $time = [datetime]::Parse($schedule.TimeLocal)
+            $time = Get-ScheduledTaskLocalTime -Schedule $schedule
             $triggers += New-ScheduledTaskTrigger -Daily -At $time
         }
         "weekly" {
-            $timeText = if ($schedule.ContainsKey("TimeLocal")) { $schedule.TimeLocal } else { $schedule.TimeUtc }
-            $time = [datetime]::Parse($timeText)
+            $time = Get-ScheduledTaskLocalTime -Schedule $schedule
             $triggers += New-ScheduledTaskTrigger -Weekly -DaysOfWeek $schedule.DaysOfWeek -At $time
         }
         default {
@@ -54,6 +53,21 @@ function New-RunnerTaskTriggers {
     }
 
     return $triggers
+}
+
+function Get-ScheduledTaskLocalTime {
+    param([hashtable]$Schedule)
+
+    if ($Schedule.ContainsKey("TimeLocal")) {
+        return [datetime]::Parse($Schedule.TimeLocal)
+    }
+
+    if ($Schedule.ContainsKey("TimeUtc")) {
+        $utc = [datetime]::SpecifyKind([datetime]::Parse($Schedule.TimeUtc), [DateTimeKind]::Utc)
+        return $utc.ToLocalTime()
+    }
+
+    throw "Schedule type '$($Schedule.Type)' requires TimeLocal or TimeUtc."
 }
 
 if (-not $IsWindows) {

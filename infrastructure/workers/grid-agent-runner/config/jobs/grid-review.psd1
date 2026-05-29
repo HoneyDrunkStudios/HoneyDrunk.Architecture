@@ -39,5 +39,10 @@
         SearchQuery = "is:pr is:open label:needs-agent-review org:HoneyDrunkStudios"
         StaleClaimMinutes = 15
         QueueCommentMarker = "honeydrunk-grid-review-queue:v1"
+        PendingLabel = "needs-agent-review"
+        InProgressLabel = "agent-review-in-progress"
+        SuccessLabel = "agent-reviewed"
+        FailureLabel = "changes-requested-by-agent"
+        RemoveOnCompletionLabels = @("needs-agent-review")
     }
 }

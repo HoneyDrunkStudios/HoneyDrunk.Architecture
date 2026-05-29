@@ -1,5 +1,5 @@
 param(
-    [string[]]$JobId = @("grid-review", "hive-sync", "lore-source", "lore-ingest", "lore-signal-review"),
+    [string[]]$JobId = @("grid-review", "post-merge-audit", "hive-sync", "lore-source", "lore-ingest", "lore-signal-review"),
     [switch]$WhatIf
 )
 

@@ -6,6 +6,8 @@ function Invoke-GridReviewQueueTick {
         [switch]$DryRun
     )
 
+    $labels = Get-ReviewQueueLabels -JobSpec $JobSpec
+
     if ($DryRun) {
         Write-RunnerLog -Logger $Logger -Level "INFO" -Message "Dry-run review queue tick validated job spec."
         return @{
@@ -17,14 +19,14 @@ function Invoke-GridReviewQueueTick {
     }
 
     $token = Get-GitHubInstallationToken -HostConfig $HostConfig -RequiredSecretNames $JobSpec.RequiredSecrets -Logger $Logger
-    Invoke-StaleClaimSweep -HostConfig $HostConfig -JobSpec $JobSpec -Logger $Logger -Token $token
-    $items = Get-ReviewQueueItems -JobSpec $JobSpec -Token $token
+    Invoke-StaleClaimSweep -HostConfig $HostConfig -JobSpec $JobSpec -Logger $Logger -Token $token -Labels $labels
+    $items = Get-ReviewQueueItems -JobSpec $JobSpec -Token $token -Labels $labels
 
     if ($items.Count -eq 0) {
         Write-RunnerLog -Logger $Logger -Level "INFO" -Message "Review queue is empty."
         return @{
             status = "empty"
-            message = "No PRs carried needs-agent-review."
+            message = "No PRs carried $($labels.PendingLabel)."
             latest_output = $JobSpec.OutputContract.LatestOutput
             artifacts = @()
         }
@@ -36,14 +38,14 @@ function Invoke-GridReviewQueueTick {
     }
 
     $context = Get-ReviewQueueContext -IssueItem $item -Token $token -QueueCommentMarker $JobSpec.Queue.QueueCommentMarker
-    $claim = Claim-ReviewQueueItem -Context $context -HostConfig $HostConfig -Token $token
+    $claim = Claim-ReviewQueueItem -Context $context -HostConfig $HostConfig -Token $token -Labels $labels
     $preflight = Get-ReviewQueueContext -IssueItem $item -Token $token -QueueCommentMarker $JobSpec.Queue.QueueCommentMarker
 
-    if ($preflight.QueueHeadSha -ne $claim.HeadSha) {
-        Release-ReviewQueueItem -Context $preflight -Token $token -Reason "claim invalidated; head advanced to $($preflight.QueueHeadSha)"
+    if (($preflight.QueueHeadSha -ne $claim.HeadSha) -or ($preflight.CurrentHeadSha -ne $claim.HeadSha)) {
+        Release-ReviewQueueItem -Context $preflight -Token $token -Labels $labels -Reason "claim invalidated; current head is $($preflight.CurrentHeadSha) and queue head is $($preflight.QueueHeadSha)"
         return @{
             status = "empty"
-            message = "Claim invalidated before agent invocation because head advanced."
+            message = "Claim invalidated before agent invocation because the PR head changed."
             latest_output = $JobSpec.OutputContract.LatestOutput
             artifacts = @($item.html_url)
         }
@@ -51,8 +53,8 @@ function Invoke-GridReviewQueueTick {
 
     $verdict = Invoke-ReviewAgentPasses -HostConfig $HostConfig -JobSpec $JobSpec -Logger $Logger -Context $context
     $postflight = Get-ReviewQueueContext -IssueItem $item -Token $token -QueueCommentMarker $JobSpec.Queue.QueueCommentMarker
-    if ($postflight.QueueHeadSha -ne $claim.HeadSha) {
-        Release-ReviewQueueItem -Context $postflight -Token $token -Reason "claim invalidated after agent invocation; head advanced to $($postflight.QueueHeadSha)"
+    if (($postflight.QueueHeadSha -ne $claim.HeadSha) -or ($postflight.CurrentHeadSha -ne $claim.HeadSha)) {
+        Release-ReviewQueueItem -Context $postflight -Token $token -Labels $labels -Reason "claim invalidated after agent invocation; current head is $($postflight.CurrentHeadSha) and queue head is $($postflight.QueueHeadSha)"
         return @{
             status = "empty"
             message = "Verdict discarded because PR head advanced during review."
@@ -61,7 +63,7 @@ function Invoke-GridReviewQueueTick {
         }
     }
 
-    Complete-ReviewQueueItem -Context $postflight -Token $token -VerdictBody $verdict
+    Complete-ReviewQueueItem -Context $postflight -Token $token -Labels $labels -VerdictBody $verdict
 
     return @{
         status = "completed"
@@ -74,17 +76,27 @@ function Invoke-GridReviewQueueTick {
 function Get-ReviewQueueItems {
     param(
         [hashtable]$JobSpec,
-        [string]$Token
+        [string]$Token,
+        [hashtable]$Labels
     )
 
     $query = if ($JobSpec.ContainsKey("Queue") -and $JobSpec.Queue.ContainsKey("SearchQuery")) {
         $JobSpec.Queue.SearchQuery
     }
     else {
-        "is:pr is:open label:needs-agent-review org:HoneyDrunkStudios"
+        "is:pr is:open label:$($Labels.PendingLabel) org:HoneyDrunkStudios"
     }
 
-    $uri = "https://api.github.com/search/issues?q=$([System.Uri]::EscapeDataString($query))&sort=updated&order=asc"
+    return Get-ReviewQueueItemsByQuery -Query $query -Token $Token
+}
+
+function Get-ReviewQueueItemsByQuery {
+    param(
+        [string]$Query,
+        [string]$Token
+    )
+
+    $uri = "https://api.github.com/search/issues?q=$([System.Uri]::EscapeDataString($Query))&sort=updated&order=asc"
     $response = Invoke-GitHubApi -Method "GET" -Uri $uri -Token $Token
     return @($response.items)
 }
@@ -94,16 +106,61 @@ function Invoke-StaleClaimSweep {
         [hashtable]$HostConfig,
         [hashtable]$JobSpec,
         [hashtable]$Logger,
-        [string]$Token
+        [string]$Token,
+        [hashtable]$Labels
     )
 
     $minutes = if ($JobSpec.Queue.ContainsKey("StaleClaimMinutes")) { $JobSpec.Queue.StaleClaimMinutes } else { 15 }
+    $staleQuery = Get-StaleClaimSearchQuery -JobSpec $JobSpec -Labels $Labels
     Write-RunnerLog -Logger $Logger -Level "INFO" -Message "Stale-claim sweep starting." -Data @{
         stale_claim_minutes = $minutes
+        query = $staleQuery
     }
 
-    # The v1 sweep intentionally logs the configured threshold here. The claim-comment
-    # mutation path is kept with the queue protocol implementation so it can share parsing.
+    $items = Get-ReviewQueueItemsByQuery -Query $staleQuery -Token $Token
+    $threshold = [DateTimeOffset]::UtcNow.AddMinutes(-1 * [int]$minutes)
+
+    foreach ($item in $items) {
+        $context = Get-ReviewQueueContext -IssueItem $item -Token $Token -QueueCommentMarker $JobSpec.Queue.QueueCommentMarker
+        $claimedAt = Get-ClaimedAtFromQueueComment -Body $context.QueueComment.body
+        if ($null -eq $claimedAt) {
+            Write-RunnerLog -Logger $Logger -Level "WARN" -Message "Skipping stale claim without parseable claim timestamp." -Data @{
+                url = $item.html_url
+            }
+            continue
+        }
+
+        if ($claimedAt -gt $threshold) {
+            continue
+        }
+
+        Release-ReviewQueueItem -Context $context -Token $Token -Labels $Labels -Reason "stale claim recovered after $minutes minutes"
+        Write-RunnerLog -Logger $Logger -Level "WARN" -Message "Recovered stale queue claim." -Data @{
+            url = $item.html_url
+            claimed_at = $claimedAt.ToString("o")
+        }
+    }
+}
+
+function Get-StaleClaimSearchQuery {
+    param(
+        [hashtable]$JobSpec,
+        [hashtable]$Labels
+    )
+
+    if ($JobSpec.Queue.ContainsKey("StaleSearchQuery")) {
+        return $JobSpec.Queue.StaleSearchQuery
+    }
+
+    if ($JobSpec.Queue.ContainsKey("SearchQuery")) {
+        $pendingPattern = "label:$([regex]::Escape($Labels.PendingLabel))"
+        $query = $JobSpec.Queue.SearchQuery -replace $pendingPattern, "label:$($Labels.InProgressLabel)"
+        if ($query -ne $JobSpec.Queue.SearchQuery) {
+            return $query
+        }
+    }
+
+    return "is:pr label:$($Labels.InProgressLabel) org:HoneyDrunkStudios"
 }
 
 function Get-ReviewQueueContext {
@@ -143,6 +200,10 @@ function Get-ReviewQueueContext {
 function Get-HeadShaFromQueueComment {
     param([string]$Body)
 
+    if ([string]::IsNullOrWhiteSpace($Body)) {
+        return $null
+    }
+
     if ($Body -match "(?im)head_sha\s*[:=]\s*`?([a-f0-9]{7,40})`?") {
         return $Matches[1]
     }
@@ -154,11 +215,68 @@ function Get-HeadShaFromQueueComment {
     return $null
 }
 
+function Get-ClaimedAtFromQueueComment {
+    param([string]$Body)
+
+    if ([string]::IsNullOrWhiteSpace($Body)) {
+        return $null
+    }
+
+    if ($Body -match "(?im)claimed_at\s*[:=]\s*`?(.+?)`?\s*$") {
+        $value = $Matches[1].Trim().Trim([char]0x60)
+        $claimedAt = [DateTimeOffset]::MinValue
+        if ([DateTimeOffset]::TryParse($value, [ref]$claimedAt)) {
+            return $claimedAt.ToUniversalTime()
+        }
+    }
+
+    return $null
+}
+
+function Get-ReviewQueueLabels {
+    param([hashtable]$JobSpec)
+
+    $queue = if ($JobSpec.ContainsKey("Queue")) { $JobSpec.Queue } else { @{} }
+    $pending = Get-QueueLabelValue -Queue $queue -Key "PendingLabel" -DefaultValue "needs-agent-review"
+    $inProgress = Get-QueueLabelValue -Queue $queue -Key "InProgressLabel" -DefaultValue "agent-review-in-progress"
+    $success = Get-QueueLabelValue -Queue $queue -Key "SuccessLabel" -DefaultValue "agent-reviewed"
+    $failure = Get-QueueLabelValue -Queue $queue -Key "FailureLabel" -DefaultValue "changes-requested-by-agent"
+    $removeOnCompletion = if ($queue.ContainsKey("RemoveOnCompletionLabels")) {
+        @($queue.RemoveOnCompletionLabels)
+    }
+    else {
+        @($pending)
+    }
+
+    return @{
+        PendingLabel = $pending
+        InProgressLabel = $inProgress
+        SuccessLabel = $success
+        FailureLabel = $failure
+        RemoveOnCompletionLabels = @($removeOnCompletion | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique)
+    }
+}
+
+function Get-QueueLabelValue {
+    param(
+        [hashtable]$Queue,
+        [string]$Key,
+        [string]$DefaultValue
+    )
+
+    if ($Queue.ContainsKey($Key) -and -not [string]::IsNullOrWhiteSpace([string]$Queue[$Key])) {
+        return [string]$Queue[$Key]
+    }
+
+    return $DefaultValue
+}
+
 function Claim-ReviewQueueItem {
     param(
         [hashtable]$Context,
         [hashtable]$HostConfig,
-        [string]$Token
+        [string]$Token,
+        [hashtable]$Labels
     )
 
     $owner = $Context.Owner
@@ -166,14 +284,8 @@ function Claim-ReviewQueueItem {
     $number = $Context.Number
     $headSha = $Context.QueueHeadSha
 
-    try {
-        Invoke-GitHubApi -Method "DELETE" -Uri "https://api.github.com/repos/$owner/$repo/issues/$number/labels/needs-agent-review" -Token $Token | Out-Null
-    }
-    catch {
-        # Missing label means another runner probably raced this one; the follow-up add/comment edit still converges.
-    }
-
-    Invoke-GitHubApi -Method "POST" -Uri "https://api.github.com/repos/$owner/$repo/issues/$number/labels" -Token $Token -Body @{ labels = @("agent-review-in-progress") } | Out-Null
+    Remove-IssueLabel -Owner $owner -Repo $repo -Number $number -Token $Token -Label $Labels.PendingLabel
+    Add-IssueLabels -Owner $owner -Repo $repo -Number $number -Token $Token -Labels @($Labels.InProgressLabel)
 
     if ($null -ne $Context.QueueComment) {
         $body = $Context.QueueComment.body.TrimEnd() + @"
@@ -194,6 +306,7 @@ function Release-ReviewQueueItem {
     param(
         [hashtable]$Context,
         [string]$Token,
+        [hashtable]$Labels,
         [string]$Reason
     )
 
@@ -201,13 +314,8 @@ function Release-ReviewQueueItem {
     $repo = $Context.Repo
     $number = $Context.Number
 
-    try {
-        Invoke-GitHubApi -Method "DELETE" -Uri "https://api.github.com/repos/$owner/$repo/issues/$number/labels/agent-review-in-progress" -Token $Token | Out-Null
-    }
-    catch {
-    }
-
-    Invoke-GitHubApi -Method "POST" -Uri "https://api.github.com/repos/$owner/$repo/issues/$number/labels" -Token $Token -Body @{ labels = @("needs-agent-review") } | Out-Null
+    Remove-IssueLabel -Owner $owner -Repo $repo -Number $number -Token $Token -Label $Labels.InProgressLabel
+    Add-IssueLabels -Owner $owner -Repo $repo -Number $number -Token $Token -Labels @($Labels.PendingLabel)
 
     if ($null -ne $Context.QueueComment) {
         $body = $Context.QueueComment.body.TrimEnd() + "`n`nrelease_reason: $Reason"
@@ -254,13 +362,14 @@ function Complete-ReviewQueueItem {
     param(
         [hashtable]$Context,
         [string]$Token,
+        [hashtable]$Labels,
         [string]$VerdictBody
     )
 
     $owner = $Context.Owner
     $repo = $Context.Repo
     $number = $Context.Number
-    $completionLabel = if ($VerdictBody -match "(?im)\b(Block|Request Changes)\b") { "changes-requested-by-agent" } else { "agent-reviewed" }
+    $completionLabel = if ($VerdictBody -match "(?im)\b(Block|Request Changes)\b") { $Labels.FailureLabel } else { $Labels.SuccessLabel }
 
     $body = @"
 <!-- honeydrunk-grid-review-verdict:v1 -->
@@ -272,13 +381,51 @@ _Reviewed head SHA: `$($Context.QueueHeadSha)`._
 
     Invoke-GitHubApi -Method "POST" -Uri "https://api.github.com/repos/$owner/$repo/issues/$number/comments" -Token $Token -Body @{ body = $body } | Out-Null
 
-    try {
-        Invoke-GitHubApi -Method "DELETE" -Uri "https://api.github.com/repos/$owner/$repo/issues/$number/labels/agent-review-in-progress" -Token $Token | Out-Null
-    }
-    catch {
+    Remove-IssueLabel -Owner $owner -Repo $repo -Number $number -Token $Token -Label $Labels.InProgressLabel
+    foreach ($label in $Labels.RemoveOnCompletionLabels) {
+        Remove-IssueLabel -Owner $owner -Repo $repo -Number $number -Token $Token -Label $label
     }
 
-    Invoke-GitHubApi -Method "POST" -Uri "https://api.github.com/repos/$owner/$repo/issues/$number/labels" -Token $Token -Body @{ labels = @($completionLabel) } | Out-Null
+    Add-IssueLabels -Owner $owner -Repo $repo -Number $number -Token $Token -Labels @($completionLabel)
+}
+
+function Add-IssueLabels {
+    param(
+        [string]$Owner,
+        [string]$Repo,
+        [int]$Number,
+        [string]$Token,
+        [string[]]$Labels
+    )
+
+    $labelsToAdd = @($Labels | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique)
+    if ($labelsToAdd.Count -eq 0) {
+        return
+    }
+
+    Invoke-GitHubApi -Method "POST" -Uri "https://api.github.com/repos/$Owner/$Repo/issues/$Number/labels" -Token $Token -Body @{ labels = $labelsToAdd } | Out-Null
+}
+
+function Remove-IssueLabel {
+    param(
+        [string]$Owner,
+        [string]$Repo,
+        [int]$Number,
+        [string]$Token,
+        [string]$Label
+    )
+
+    if ([string]::IsNullOrWhiteSpace($Label)) {
+        return
+    }
+
+    $encodedLabel = [System.Uri]::EscapeDataString($Label)
+    try {
+        Invoke-GitHubApi -Method "DELETE" -Uri "https://api.github.com/repos/$Owner/$Repo/issues/$Number/labels/$encodedLabel" -Token $Token | Out-Null
+    }
+    catch {
+        # Missing labels are expected when another runner or maintainer touched the queue first.
+    }
 }
 
 Export-ModuleMember -Function Invoke-GridReviewQueueTick

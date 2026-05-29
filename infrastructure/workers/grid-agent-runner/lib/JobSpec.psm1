@@ -12,7 +12,7 @@ function Get-GridAgentHostConfig {
     $config = Import-PowerShellDataFile -LiteralPath $Path
     $defaults = @{
         HostId = "$env:COMPUTERNAME:$PID"
-        RuntimeRoot = Join-Path $env:TEMP "HoneyDrunkGridAgentRunner"
+        RuntimeRoot = Join-Path ([System.IO.Path]::GetTempPath()) "HoneyDrunkGridAgentRunner"
     }
 
     foreach ($key in $defaults.Keys) {

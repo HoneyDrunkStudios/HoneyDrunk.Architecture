@@ -20,7 +20,7 @@ $runnerRoot = Split-Path -Parent $PSScriptRoot
 $repoRoot = (Resolve-Path (Join-Path $runnerRoot "../../..")).Path
 
 if ([string]::IsNullOrWhiteSpace($ConfigPath)) {
-    $runtimeRoot = Join-Path $env:TEMP "HoneyDrunkGridAgentRunnerSmoke"
+    $runtimeRoot = Join-Path ([System.IO.Path]::GetTempPath()) "HoneyDrunkGridAgentRunnerSmoke"
     $candidateLorePaths = @(
         (Join-Path (Split-Path -Parent $repoRoot) "HoneyDrunk.Lore"),
         (Join-Path (Split-Path -Parent (Split-Path -Parent $repoRoot)) "HoneyDrunk.Lore")

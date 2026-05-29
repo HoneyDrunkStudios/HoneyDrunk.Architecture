@@ -81,14 +81,17 @@ function Invoke-AgentCommand {
     [void]$startInfo.Environment.Remove("OPENAI_API_KEY")
 
     $process = [System.Diagnostics.Process]::Start($startInfo)
+    $stdoutTask = $process.StandardOutput.ReadToEndAsync()
+    $stderrTask = $process.StandardError.ReadToEndAsync()
     $timeoutMs = [Math]::Max(1, $TimeoutMinutes) * 60 * 1000
     if (-not $process.WaitForExit($timeoutMs)) {
         $process.Kill()
         throw "Agent command '$executable' timed out after $TimeoutMinutes minutes."
     }
 
-    $stdout = $process.StandardOutput.ReadToEnd()
-    $stderr = $process.StandardError.ReadToEnd()
+    $process.WaitForExit()
+    $stdout = $stdoutTask.GetAwaiter().GetResult()
+    $stderr = $stderrTask.GetAwaiter().GetResult()
 
     if ($process.ExitCode -ne 0) {
         throw "Agent command '$executable' failed with exit code $($process.ExitCode): $stderr"

@@ -39,5 +39,10 @@
         SearchQuery = "is:pr is:merged label:audit-sample org:HoneyDrunkStudios"
         StaleClaimMinutes = 30
         QueueCommentMarker = "honeydrunk-grid-audit-queue:v1"
+        PendingLabel = "audit-sample"
+        InProgressLabel = "agent-review-in-progress"
+        SuccessLabel = "agent-reviewed"
+        FailureLabel = "changes-requested-by-agent"
+        RemoveOnCompletionLabels = @("audit-sample")
     }
 }
