@@ -4,7 +4,7 @@
 
 **Binding invariant:** [Invariant 102](./invariants.md) — *Node registration is mandatory before the first non-bootstrap PR merges.* Every Node repo must carry the ten registration items (three catalog rows, the five-file context folder, a sector row, the `repo-to-node.yml` mapping, `.honeydrunk-review.yaml`, a `pr.yml` calling `pr-core.yml`, branch protection on `pr-core / core`, and org-secret repo binding) before its first non-bootstrap PR merges, with the bootstrap-PR carve-out described under Phase C.
 
-**Related invariants** (each restated inline where it appears below): 4, 11, 12, 17, 19, 22, 24, 26, 27, 31, 32, 33, 34, 35, 36, 41, 46, 49, 50, 52, 53.
+**Related invariants** (each restated inline where it appears below): 4, 12, 17, 19, 24, 26, 27, 31, 32, 33, 34, 35, 36, 38, 39, 41, 46, 49, 50, 52.
 
 **Edit discipline:** This document is PR-reviewed against ADR-0082. Edits that change the D2 taxonomy (the six Node classes) or the invariant-102 wording require an **ADR amendment**; all other edits — including extending the per-class org-secret matrix as the org-secret inventory grows (per ADR-0083 D5/D6) — land via normal PR review. This is the same lightweight discipline that governs `constitution/sectors.md`, not ADR ceremony.
 
