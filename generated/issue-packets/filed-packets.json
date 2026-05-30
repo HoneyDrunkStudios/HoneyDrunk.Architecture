@@ -504,5 +504,14 @@
   "generated/issue-packets/active/adr-0087-per-change-risk-scoring/01-architecture-accept-adr-0087-catalog-and-invariant.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/536",
   "generated/issue-packets/active/adr-0087-per-change-risk-scoring/02-actions-deterministic-risk-scorer-step.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/175",
   "generated/issue-packets/active/adr-0087-per-change-risk-scoring/03-architecture-worker-dual-pass-substrate.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/537",
-  "generated/issue-packets/active/adr-0087-per-change-risk-scoring/04-architecture-worker-trigger-and-enforce.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/538"
+  "generated/issue-packets/active/adr-0087-per-change-risk-scoring/04-architecture-worker-trigger-and-enforce.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/538",
+  "generated/issue-packets/active/adr-0088-openclaw-decommission/00-architecture-adr-0088-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/539",
+  "generated/issue-packets/active/adr-0088-openclaw-decommission/00a-architecture-author-docs-sync-job-spec.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/540",
+  "generated/issue-packets/active/adr-0088-openclaw-decommission/01-architecture-remove-openclaw-reference-files.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/541",
+  "generated/issue-packets/active/adr-0088-openclaw-decommission/02-ops-teardown-runtime-and-tunnel.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/542",
+  "generated/issue-packets/active/adr-0088-openclaw-decommission/03-ops-delete-org-secret.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/543",
+  "generated/issue-packets/active/adr-0088-openclaw-decommission/04-architecture-retire-inventory-row.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/544",
+  "generated/issue-packets/active/adr-0088-openclaw-decommission/05-architecture-reconcile-adr-prose.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/545",
+  "generated/issue-packets/active/adr-0088-openclaw-decommission/06-actions-remove-deprecated-inputs.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/176",
+  "generated/issue-packets/active/adr-0088-openclaw-decommission/07-architecture-retire-openclaw-skills-rule.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/546"
 }
