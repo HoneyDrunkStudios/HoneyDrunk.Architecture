@@ -567,7 +567,19 @@ function Invoke-ReviewAgentPasses {
     $promptPath = Join-Path $repoPath $JobSpec.PromptPath
     $artifactPrefix = "$($JobSpec.JobId)-$($Context.Owner)-$($Context.Repo)-$($Context.Number)-$($Context.QueueHeadSha)"
     $artifactPath = Join-Path $HostConfig.ArtifactRoot "$artifactPrefix.prompt.md"
-    $Context.ReviewRiskClass = Get-TrustedReviewRiskClass -RepoPath $repoPath -Context $Context -Logger $Logger
+    try {
+        $Context.ReviewRiskClass = Get-TrustedReviewRiskClass -RepoPath $repoPath -Context $Context -Logger $Logger
+    }
+    catch {
+        $Context.ReviewRiskClass = "unknown"
+        Write-RunnerLog -Logger $Logger -Level "ERROR" -Message "Trusted review risk metadata could not be resolved; failing closed." -Data @{
+            reason = "trusted-risk-metadata-invalid"
+        }
+
+        return New-ReviewRunnerGuardrailVerdict -Context $Context `
+            -Summary "The runner could not safely resolve trusted review risk metadata for this PR. The review cannot continue because high-risk routing must not fail open to a normal Codex-only pass." `
+            -Finding "Trusted review risk metadata could not be parsed or read; fail closed and repair `catalogs/grid-health.json` before rerunning the review."
+    }
 
     $prompt = @"
 You are running the HoneyDrunk Grid review agent.
@@ -629,8 +641,9 @@ Load the canonical review prompt, ADR-0086 context, the PR diff from GitHub, and
                 throw
             }
 
+            $failureReason = Get-ReviewAgentFailureReason -Message $_.Exception.Message -DefaultReason "unavailable"
             $passStatus.Unavailable = $true
-            $passStatus.Reason = Get-ReviewAgentFailureReason -Message $_.Exception.Message -DefaultReason "unavailable"
+            $passStatus.Reason = $failureReason
 
             if (($Context.ReviewRiskClass -eq "high") -and $command.ContainsKey("FallbackCommand")) {
                 $fallback = $command.FallbackCommand
@@ -638,7 +651,7 @@ Load the canonical review prompt, ADR-0086 context, the PR diff from GitHub, and
                     agent = $command.Name
                     fallback_agent = $fallback.Name
                     review_risk_class = $Context.ReviewRiskClass
-                    reason = $_.Exception.Message
+                    reason = $failureReason
                 }
 
                 try {
@@ -653,16 +666,17 @@ Load the canonical review prompt, ADR-0086 context, the PR diff from GitHub, and
                     $passStatus.ResultName = $fallbackName
                 }
                 catch {
+                    $fallbackFailureReason = Get-ReviewAgentFailureReason -Message $_.Exception.Message -DefaultReason "fallback-failed"
                     Write-RunnerLog -Logger $Logger -Level "ERROR" -Message "Contrarian fallback review agent failed; continuing without optional secondary result." -Data @{
                         agent = $command.Name
                         fallback_agent = $fallback.Name
                         review_risk_class = $Context.ReviewRiskClass
-                        reason = $_.Exception.Message
+                        reason = $fallbackFailureReason
                     }
                     $passStatus.Status = "fallback-failed"
                     $passStatus.FallbackUsed = $true
                     $passStatus.FallbackName = $fallback.Name
-                    $passStatus.Reason = Get-ReviewAgentFailureReason -Message $_.Exception.Message -DefaultReason "fallback-failed"
+                    $passStatus.Reason = $fallbackFailureReason
                     [void]$passStatuses.Add([pscustomobject]$passStatus)
                     continue
                 }
@@ -671,7 +685,7 @@ Load the canonical review prompt, ADR-0086 context, the PR diff from GitHub, and
                 Write-RunnerLog -Logger $Logger -Level "WARN" -Message "Optional review agent deferred." -Data @{
                     agent = $command.Name
                     review_risk_class = $Context.ReviewRiskClass
-                    reason = $_.Exception.Message
+                    reason = $failureReason
                 }
                 $passStatus.Status = "unavailable"
                 [void]$passStatuses.Add([pscustomobject]$passStatus)
@@ -740,10 +754,10 @@ function Get-TrustedReviewRiskClass {
         $gridHealth = Get-Content -LiteralPath $gridHealthPath -Raw | ConvertFrom-Json
     }
     catch {
-        Write-RunnerLog -Logger $Logger -Level "ERROR" -Message "D8 deferred - failed to parse catalogs/grid-health.json." -Data @{
-            error = $_.Exception.Message
+        Write-RunnerLog -Logger $Logger -Level "ERROR" -Message "D8 blocked - failed to parse trusted catalogs/grid-health.json." -Data @{
+            reason = "trusted-risk-metadata-invalid"
         }
-        return "normal"
+        throw "trusted-risk-metadata-invalid"
     }
     $nodes = @($gridHealth.nodes)
     $nodesWithRiskClass = @($nodes | Where-Object { $null -ne $_.review_risk_class })
