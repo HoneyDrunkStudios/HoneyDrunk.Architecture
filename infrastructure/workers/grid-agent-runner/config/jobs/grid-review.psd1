@@ -19,7 +19,8 @@
         @{
             Name = "codex"
             Executable = "codex"
-            Arguments = @("exec", "--file", "{PromptPath}")
+            Arguments = @("exec", "--sandbox", "read-only", "--ignore-rules", "--ephemeral", "-")
+            PromptStdin = $true
         }
     )
     WriteMode = "comment-only"
@@ -32,7 +33,7 @@
         "GitHub--AgentRunner--PrivateKey",
         "GitHub--AgentRunner--InstallationId"
     )
-    AllowedTools = @("read", "git", "github-api", "codex", "claude")
+    AllowedTools = @("read", "github-api", "codex")
     RetainArtifactsDays = 14
     PortabilityNotes = "Requires host config for Architecture checkout, Vault access, Codex CLI, and optional Claude Code CLI."
     Queue = @{

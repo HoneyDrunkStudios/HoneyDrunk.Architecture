@@ -35,6 +35,10 @@ Write-RunnerLog -Logger $logger -Level "INFO" -Message "Starting runner job '$Jo
     write_mode = $jobSpec.WriteMode
 }
 
+if (-not $DryRun) {
+    Assert-RunnerSafetyConfig -HostConfig $hostConfig -JobSpec $jobSpec -RunnerRoot $PSScriptRoot -ConfigPath $ConfigPath
+}
+
 Invoke-WithRunnerLock -HostConfig $hostConfig -JobSpec $jobSpec -ScriptBlock {
     param($lockedHostConfig, $lockedJobSpec)
 

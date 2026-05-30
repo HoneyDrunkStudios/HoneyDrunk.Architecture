@@ -16,4 +16,17 @@
         Name = "kv-hd-automation-dev"
         AzCliPath = "az"
     }
+
+    Safety = @{
+        Enabled = $false
+        OperatorAcknowledgedUntrustedInputs = $false
+        AllowedReviewRepositories = @(
+            "HoneyDrunkStudios/HoneyDrunk.Architecture"
+        )
+        AllowForkPullRequests = $false
+        AllowPrivateHeadRepositories = $false
+        RequireQueueComment = $true
+        RequireNonRepositoryRunnerRoot = $true
+        TrustedRunnerRoot = "C:\HoneyDrunk\Runtime\grid-agent-runner\runner"
+    }
 }
