@@ -612,7 +612,7 @@ Load the canonical review prompt, ADR-0086 context, the PR diff from GitHub, and
         if (-not (Test-ReviewAgentCommandEnabled -CommandSpec $command -Context $Context -Logger $Logger)) {
             $passStatus.Status = "skipped-risk-gate"
             $passStatus.SkippedByRiskGate = $true
-            $passStatus.Reason = "review_risk_class '$($Context.ReviewRiskClass)' is outside enabled risk classes: $($commandRiskClasses -join ', ')"
+            $passStatus.Reason = "risk-gate-skipped"
             [void]$passStatuses.Add([pscustomobject]$passStatus)
             continue
         }
@@ -630,7 +630,7 @@ Load the canonical review prompt, ADR-0086 context, the PR diff from GitHub, and
             }
 
             $passStatus.Unavailable = $true
-            $passStatus.Reason = $_.Exception.Message
+            $passStatus.Reason = Get-ReviewAgentFailureReason -Message $_.Exception.Message -DefaultReason "unavailable"
 
             if (($Context.ReviewRiskClass -eq "high") -and $command.ContainsKey("FallbackCommand")) {
                 $fallback = $command.FallbackCommand
@@ -662,7 +662,7 @@ Load the canonical review prompt, ADR-0086 context, the PR diff from GitHub, and
                     $passStatus.Status = "fallback-failed"
                     $passStatus.FallbackUsed = $true
                     $passStatus.FallbackName = $fallback.Name
-                    $passStatus.Reason = $_.Exception.Message
+                    $passStatus.Reason = Get-ReviewAgentFailureReason -Message $_.Exception.Message -DefaultReason "fallback-failed"
                     [void]$passStatuses.Add([pscustomobject]$passStatus)
                     continue
                 }
@@ -760,6 +760,31 @@ function Get-TrustedReviewRiskClass {
     }
 
     return "normal"
+}
+
+function Get-ReviewAgentFailureReason {
+    param(
+        [string]$Message,
+        [string]$DefaultReason
+    )
+
+    if ([string]::IsNullOrWhiteSpace($Message)) {
+        return $DefaultReason
+    }
+
+    if ($Message -match "(?i)\b(timed out|timeout)\b") {
+        return "timeout"
+    }
+
+    if ($Message -match "(?i)(not recognized|not found|could not find|cannot find|no such file)") {
+        return "executable-unavailable"
+    }
+
+    if ($Message -match "(?i)exit code") {
+        return "nonzero-exit"
+    }
+
+    return $DefaultReason
 }
 
 function Get-TouchedReviewNodeNames {
