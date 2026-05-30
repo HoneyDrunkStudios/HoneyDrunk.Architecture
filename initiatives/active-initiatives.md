@@ -42,6 +42,31 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 **Exit criteria:** ADR-0052 Accepted; cost-governance invariants live; `cost-budgets.json` seeded; report format + review-agent cost gating in place; rollout playbook captures every deferred surface with its gating event. Full enforcement (the kill-switch) goes live when the AI Node scaffolds (ADR-0016 Phase 1) and the Kernel contracts release.
 
+### ADR-0083 Sensitive Inventory and External-SaaS Credential Rotation
+**Status:** In Progress
+**Scope:** Architecture (inventory, walkthroughs, invariant, onboarding hook, cross-links) + Actions (drift-detection workflow)
+**Initiative:** `adr-0083-external-saas-credentials`
+**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
+**Description:** Build a registry of everything load-bearing the Grid holds — credentials, identifiers, OIDC bindings, resource identifiers — at `infrastructure/reference/sensitive-inventory.md`, with rotation discipline (walkthroughs, standing issues, T-30/T-7/T+0 escalation) applied only to the `Rotates: yes` subset. Closes the silent-CI-degradation failure mode (SONAR_TOKEN's 60-day cap) and the lottery-bus-factor risk of forgotten credentials. `HoneyDrunk.Vault.Rotation` does **not** expand to cover external-SaaS PATs (D1).
+
+**Tracking:**
+- [x] Architecture#467: Accept ADR-0083 — flip status, add the unified sensitive-inventory invariant (103), register the initiative (packet 00; PR #518)
+- [x] Architecture#468: Seed `infrastructure/reference/sensitive-inventory.md` with the live/imminent rows (packet 01; PR #518) — labels seeded separately via `gh label create` (held)
+- [x] Architecture#469: Author `sonarcloud-token-rotation.md` — the SONAR_TOKEN forcing-function walkthrough (packet 02; PR #518)
+- [x] Architecture#470: Author `nuget-api-key-rotation.md` (packet 03; PR #518)
+- [x] Architecture#471: Author `github-pat-rotation.md` (packet 04; PR #518)
+- [x] Architecture#473: D6 onboarding hook in `node-standup.md` + Vault.Rotation/vendor-inventory cross-links (packet 07; PR #518)
+- [x] Actions: Author `external-credentials-check.yml` scheduled drift-detection workflow + supporting scripts (packet 05; Actions PR #171)
+
+**Live side-effects (done — required so invariant 103 is satisfied on merge, per the Grid review agent's BLOCK on PR #518):**
+- [x] Seeded the 3 repo labels (`external-credential-rotation` #D93F0B, `urgent` #B60205, `imminent` #9B0000).
+- [x] Architecture#472: Opened standing rotation issues for the 7 non-exempt live `Rotates: yes` rows — #520 `SONAR_TOKEN`, #521 `NUGET_API_KEY`, #522 `GH_ISSUE_TOKEN`, #523 `HIVE_FIELD_MIRROR_TOKEN`, #524 `LABELS_FANOUT_PAT`, #525 `INITIATIVES_SYNC_TOKEN`, #526 `GRID_HEALTH_PAT`. `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` (planned) and `OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET` (walkthrough pending) are exempt per the invariant-103 planned/pending carve-out.
+
+**Still pending operator input:**
+- [ ] **Confirm 2 provisional dates** — `NUGET_API_KEY` (issue #521) and `GH_ISSUE_TOKEN` (issue #522); the latter also needs **existence verified** (not in the 2026-05-30 PAT enumeration; the drift workflow reuses it). Confirmed: `SONAR_TOKEN` 2026-07-27, `HIVE_FIELD_MIRROR_TOKEN`, `LABELS_FANOUT_PAT`, `INITIATIVES_SYNC_TOKEN`, `GRID_HEALTH_PAT`.
+
+**Exit criteria:** ADR-0083 Accepted; invariant 103 live; the inventory + three walkthroughs + onboarding hook landed; the drift-detection workflow live in Actions; labels + standing issues created; real expiration dates filled in by the operator.
+
 ### ADR-0044 Cloud Code Review and AI-Authored PR Discipline
 **Status:** In Progress
 **Scope:** Architecture, Actions, OpenClaw runtime, and later the live Node repos

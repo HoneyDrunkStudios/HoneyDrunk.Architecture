@@ -187,6 +187,17 @@ GitHub does **not** auto-propagate org Actions secrets with the `Selected reposi
 
 **Standing access-policy:** `Selected repositories` is the Grid default for org secrets containing live credentials, tokens, webhooks, or signing material — i.e. every org secret currently in use. `All repositories` is reserved for benign org constants (none currently exist). Promoting any secret from `Selected repositories` to `All repositories` requires an ADR amendment.
 
+### Sensitive-inventory onboarding (per ADR-0083 D6)
+
+If a Node's standup introduces **any** artifact governed by ADR-0083's inventory — an external-SaaS credential, a non-rotating identifier, a webhook signing secret, an OIDC federated-credential configuration, a resource identifier, or any other entry in the ADR-0083 D2 `Kind` taxonomy — that does not already appear in `infrastructure/reference/sensitive-inventory.md`, the standup packet must, **before the artifact enters any CI surface or workflow file:**
+
+1. **Add a row** to `infrastructure/reference/sensitive-inventory.md` per ADR-0083 D2, including the `Kind`, `Use Cases`, and `Rotates` columns.
+2. **If `Rotates: yes`:** land the per-provider rotation walkthrough at `infrastructure/walkthroughs/{provider}-{credential}-rotation.md` per ADR-0083 D4, and open the initial standing rotation issue with the `external-credential-rotation` label per ADR-0083 D3.
+3. **If `Rotates: yes`:** verify the artifact's `Current Expiration` date is picked up by `external-credentials-check.yml` on its next scheduled run.
+4. **If `Rotates: no` or `Rotates: automated-elsewhere`:** no walkthrough or standing issue is required — the inventory row itself is the deliverable.
+
+The inventory row exists **before** the integration ships. Procedural enforcement is the `review` agent per ADR-0044 D3 category 9 (Security): a PR that introduces a workflow consuming a new GitHub org secret, repo secret, or environment variable without a matching inventory row is a `Request Changes` finding. This is bound by invariant 103.
+
 ---
 
 ## Per-class walkthroughs

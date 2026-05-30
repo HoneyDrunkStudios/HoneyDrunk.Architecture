@@ -1,6 +1,6 @@
 # ADR-0083: Sensitive Inventory and External-SaaS Credential Rotation Procedure
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-05-25
 **Deciders:** HoneyDrunk Studios
 **Sector:** Infrastructure / cross-cutting
