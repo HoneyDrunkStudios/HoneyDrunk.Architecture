@@ -19,7 +19,7 @@ Committed job specs live in `config/jobs/*.psd1`. Machine-specific paths and Vau
 2. Set `RuntimeRoot` and repository paths for `HoneyDrunk.Architecture` and `HoneyDrunk.Lore`.
 3. Confirm Codex CLI and Claude Code CLI are installed and authenticated through subscription sessions.
 4. Confirm `ANTHROPIC_API_KEY` and `OPENAI_API_KEY` are not set persistently on the runner host.
-5. Confirm the host can read the `review-agent-github-app-*` Vault secrets before running `grid-review` without `-DryRun`.
+5. Confirm the host can read the shared automation Vault, `kv-hd-automation-dev`, and its `GitHub--AgentRunner--*` secrets before running `grid-review` without `-DryRun`.
 
 ## Smoke Tests
 

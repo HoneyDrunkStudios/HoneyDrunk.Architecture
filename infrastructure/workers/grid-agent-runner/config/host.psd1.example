@@ -13,7 +13,7 @@
     }
 
     Vault = @{
-        Name = "honeydrunk-ci-kv"
+        Name = "kv-hd-automation-dev"
         AzCliPath = "az"
     }
 }

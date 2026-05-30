@@ -27,7 +27,7 @@ ADR-0086 D1–D4 define the local scheduled agent runner as the canonical Grid R
 
 The non-review jobs are equivalent scheduled-agent jobs, not GitHub webhook jobs: `hive-sync` reconciles Architecture state and opens/updates a PR; Lore sourcing writes qualifying sources into `raw/`; Lore ingest compiles `raw/` into `wiki/` and indexes; Lore signal review writes a sparse report. Their existing prompt files remain canonical. This packet builds the framework and committed job specs so the jobs can be registered on the home server or moved to another host/cloud VM with only host-config changes.
 
-Authentication uses the existing ADR-0044 review-agent GitHub App and `review-agent-github-app-*` Vault secrets audited by packet 02. The operator's `gh` CLI auth is **not** used by the runner. The operator's existing Codex CLI / Claude Code CLI subscription sessions are used for agent execution.
+Authentication uses the existing ADR-0044 review-agent GitHub App and the shared automation Vault secrets audited by packet 02: `GitHub--AgentRunner--AppId`, `GitHub--AgentRunner--PrivateKey`, and `GitHub--AgentRunner--InstallationId` in `kv-hd-automation-dev`. The operator's `gh` CLI auth is **not** used by the runner. The operator's existing Codex CLI / Claude Code CLI subscription sessions are used for agent execution.
 
 **This is the load-bearing build of the entire initiative.** Phase-A cutover (packet 07) consumes it.
 
@@ -93,7 +93,7 @@ The worker implements the six-step protocol from ADR-0086 D3:
 6. **Complete.** On verdict post, remove `agent-review-in-progress` and add either `agent-reviewed` (no `Block` / `Request Changes` findings) or `changes-requested-by-agent` (one or more findings at those severities). The verdict body posts as a PR comment using the format already defined in `.claude/agents/review.md` (preserved from ADR-0044 D1).
 
 ### Auth (D4)
-- **GitHub auth.** Read `review-agent-github-app-id`, `review-agent-github-app-private-key`, `review-agent-github-app-installation-id` from the CI-surface Key Vault at the start of each tick (one `az keyvault secret show` call per secret, or equivalent). Mint an installation token via `POST /app/installations/{installation_id}/access_tokens`. Use the resulting short-lived token for all GitHub API calls in the tick.
+- **GitHub auth.** Read `GitHub--AgentRunner--AppId`, `GitHub--AgentRunner--PrivateKey`, and `GitHub--AgentRunner--InstallationId` from `kv-hd-automation-dev` at the start of each tick (one `az keyvault secret show` call per secret, or equivalent). Mint an installation token via `POST /app/installations/{installation_id}/access_tokens`. Use the resulting short-lived token for all GitHub API calls in the tick.
 - **Codex CLI auth.** Inherited from the operator's existing ChatGPT Pro CLI session on the runner host. The runner shells out to `codex` (or the canonical CLI binary name per the operator's install).
 - **Claude Code CLI auth.** Inherited from the operator's existing Claude Max session on the runner host. The runner shells out to `claude` (or `claude-code`).
 - **Env hygiene (D4 / D8 / ADR-0079 D8).** The runner process spawns child processes with a deliberately minimal environment block: `ANTHROPIC_API_KEY` and `OPENAI_API_KEY` must NOT be set. If either is present in the operator's shell, the runner explicitly unsets them in the child process environment before invoking the CLI. Document this in the README and the operator setup notes.
@@ -181,7 +181,7 @@ None. This packet creates PowerShell scripts and Markdown docs; no .NET project 
 - [ ] `JobSpec.psm1` validates all committed job specs and rejects host-specific absolute paths inside committed specs
 - [ ] Initial job specs exist for `grid-review`, `post-merge-audit`, `hive-sync`, `lore-source`, `lore-ingest`, and `lore-signal-review`
 - [ ] `hive-sync`, `lore-source`, `lore-ingest`, and `lore-signal-review` specs point at their existing canonical prompt files and declare schedule, concurrency key, timeout, write mode, output contract, required secrets by name, and rollback notes
-- [ ] The runner reads `review-agent-github-app-id`, `review-agent-github-app-private-key`, `review-agent-github-app-installation-id` from the CI-surface Key Vault; does NOT read them from environment variables or config files (invariant 9)
+- [ ] The runner reads `GitHub--AgentRunner--AppId`, `GitHub--AgentRunner--PrivateKey`, and `GitHub--AgentRunner--InstallationId` from `kv-hd-automation-dev`; does NOT read them from environment variables or config files (invariant 9)
 - [ ] The runner does NOT use `gh` CLI auth for GitHub API calls — only the App-installation token
 - [ ] The runner spawns child CLI processes with `ANTHROPIC_API_KEY` and `OPENAI_API_KEY` explicitly unset, even if the parent environment has them set (ADR-0086 D4 / D8; ADR-0079 D8)
 - [ ] The pending-verdict cache survives a worker crash mid-review; verdict for an abandoned SHA is garbage-collected on next claim
