@@ -60,7 +60,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 **Live side-effects (done — required so invariant 103 is satisfied on merge, per the Grid review agent's BLOCK on PR #518):**
 - [x] Seeded the 3 repo labels (`external-credential-rotation` #D93F0B, `urgent` #B60205, `imminent` #9B0000).
-- [x] Architecture#472: Opened standing rotation issues for the 7 non-exempt live `Rotates: yes` rows — #520 `SONAR_TOKEN`, #521 `NUGET_API_KEY`, #522 `GH_ISSUE_TOKEN`, #523 `HIVE_FIELD_MIRROR_TOKEN`, #524 `LABELS_FANOUT_PAT`, #525 `INITIATIVES_SYNC_TOKEN`, #526 `GRID_HEALTH_PAT`. `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` (planned) and `OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET` (walkthrough pending) are exempt per the invariant-103 planned/pending carve-out.
+- [x] Architecture#472: Opened standing rotation issues for the 8 live `Rotates: yes` rows — #520 `SONAR_TOKEN`, #521 `NUGET_API_KEY`, #522 `GH_ISSUE_TOKEN`, #523 `HIVE_FIELD_MIRROR_TOKEN`, #524 `LABELS_FANOUT_PAT`, #525 `INITIATIVES_SYNC_TOKEN`, #526 `GRID_HEALTH_PAT`, #527 `OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET`. Per the Grid agent's narrowing, the carve-out is **planned-only** — `OPENCLAW_…WEBHOOK` is live so it got its `openclaw-webhook-secret-rotation.md` walkthrough + a standing issue; only `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` (`status: planned`) are exempt.
 
 **Still pending operator input:**
 - [ ] **Confirm 2 provisional dates** — `NUGET_API_KEY` (issue #521) and `GH_ISSUE_TOKEN` (issue #522); the latter also needs **existence verified** (not in the 2026-05-30 PAT enumeration; the drift workflow reuses it). Confirmed: `SONAR_TOKEN` 2026-07-27, `HIVE_FIELD_MIRROR_TOKEN`, `LABELS_FANOUT_PAT`, `INITIATIVES_SYNC_TOKEN`, `GRID_HEALTH_PAT`.
