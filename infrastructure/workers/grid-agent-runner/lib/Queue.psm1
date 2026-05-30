@@ -196,7 +196,7 @@ function Get-ReviewQueueContext {
     $owner, $repo = $repoPath -split "/", 2
     $number = [int]$IssueItem.number
     $pull = Invoke-GitHubApi -Method "GET" -Uri "https://api.github.com/repos/$owner/$repo/pulls/$number" -Token $Token
-    $files = Invoke-GitHubApi -Method "GET" -Uri "https://api.github.com/repos/$owner/$repo/pulls/$number/files?per_page=100" -Token $Token
+    $files = Get-PullRequestFiles -Owner $owner -Repo $repo -Number $number -Token $Token
     $comments = Invoke-GitHubApi -Method "GET" -Uri "https://api.github.com/repos/$owner/$repo/issues/$number/comments?per_page=100" -Token $Token
     $queueComment = @($comments) | Where-Object { $_.body -match [regex]::Escape($QueueCommentMarker) } | Select-Object -Last 1
 
@@ -217,9 +217,36 @@ function Get-ReviewQueueContext {
         ChangedFiles = @($files | ForEach-Object { [string]$_.filename })
         CurrentHeadSha = $pull.head.sha
         QueueHeadSha = $queueHeadSha
-        AuthorshipClass = Get-ReviewAuthorshipClass -Body $pull.body
+        AuthorshipClass = Get-ReviewAuthorshipClass -Body $queueComment.body
         QueueComment = $queueComment
     }
+}
+
+function Get-PullRequestFiles {
+    param(
+        [string]$Owner,
+        [string]$Repo,
+        [int]$Number,
+        [string]$Token
+    )
+
+    $files = New-Object System.Collections.Generic.List[object]
+    $page = 1
+
+    while ($true) {
+        $pageItems = @(Invoke-GitHubApi -Method "GET" -Uri "https://api.github.com/repos/$Owner/$Repo/pulls/$Number/files?per_page=100&page=$page" -Token $Token)
+        foreach ($item in $pageItems) {
+            $files.Add($item)
+        }
+
+        if ($pageItems.Count -lt 100) {
+            break
+        }
+
+        $page += 1
+    }
+
+    return @($files)
 }
 
 function Get-ReviewAuthorshipClass {
@@ -540,7 +567,15 @@ function Get-TrustedReviewRiskClass {
         return "normal"
     }
 
-    $gridHealth = Get-Content -LiteralPath $gridHealthPath -Raw | ConvertFrom-Json
+    try {
+        $gridHealth = Get-Content -LiteralPath $gridHealthPath -Raw | ConvertFrom-Json
+    }
+    catch {
+        Write-RunnerLog -Logger $Logger -Level "ERROR" -Message "D8 deferred - failed to parse catalogs/grid-health.json." -Data @{
+            error = $_.Exception.Message
+        }
+        return "normal"
+    }
     $nodes = @($gridHealth.nodes)
     $nodesWithRiskClass = @($nodes | Where-Object { $null -ne $_.review_risk_class })
     if ($nodesWithRiskClass.Count -eq 0) {
