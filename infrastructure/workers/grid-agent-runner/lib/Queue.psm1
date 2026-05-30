@@ -586,19 +586,51 @@ Load the canonical review prompt, ADR-0086 context, the PR diff from GitHub, and
     $prompt | Set-Content -LiteralPath $artifactPath -Encoding UTF8
 
     $results = @()
+    $passStatuses = [System.Collections.Generic.List[object]]::new()
     foreach ($command in $JobSpec.AgentCommands) {
+        $commandRiskClasses = if ($command.ContainsKey("RiskClasses")) {
+            @($command.RiskClasses | ForEach-Object { ([string]$_).ToLowerInvariant() })
+        }
+        else {
+            @()
+        }
+        $passStatus = [ordered]@{
+            Name = [string]$command.Name
+            ReviewRiskClass = [string]$Context.ReviewRiskClass
+            EnabledRiskClasses = $commandRiskClasses
+            Optional = Test-OptionalReviewAgentCommand -CommandSpec $command
+            Status = "pending"
+            Ran = $false
+            ResultName = $null
+            SkippedByRiskGate = $false
+            Unavailable = $false
+            FallbackUsed = $false
+            FallbackName = $null
+            Reason = $null
+        }
+
         if (-not (Test-ReviewAgentCommandEnabled -CommandSpec $command -Context $Context -Logger $Logger)) {
+            $passStatus.Status = "skipped-risk-gate"
+            $passStatus.SkippedByRiskGate = $true
+            $passStatus.Reason = "review_risk_class '$($Context.ReviewRiskClass)' is outside enabled risk classes: $($commandRiskClasses -join ', ')"
+            [void]$passStatuses.Add([pscustomobject]$passStatus)
             continue
         }
 
         $resultName = $command.Name
         try {
             $stdout = Invoke-AgentCommand -CommandSpec $command -PromptPath $artifactPath -WorkingDirectory $repoPath -Logger $Logger -TimeoutMinutes $JobSpec.TimeoutMinutes
+            $passStatus.Status = "completed"
+            $passStatus.Ran = $true
+            $passStatus.ResultName = $resultName
         }
         catch {
             if (-not (Test-OptionalReviewAgentCommand -CommandSpec $command)) {
                 throw
             }
+
+            $passStatus.Unavailable = $true
+            $passStatus.Reason = $_.Exception.Message
 
             if (($Context.ReviewRiskClass -eq "high") -and $command.ContainsKey("FallbackCommand")) {
                 $fallback = $command.FallbackCommand
@@ -615,6 +647,10 @@ Load the canonical review prompt, ADR-0086 context, the PR diff from GitHub, and
                     (New-ContrarianReviewPrompt -BasePrompt $prompt -UnavailableAgent $command.Name) | Set-Content -LiteralPath $fallbackPromptPath -Encoding UTF8
                     $stdout = Invoke-AgentCommand -CommandSpec $fallback -PromptPath $fallbackPromptPath -WorkingDirectory $repoPath -Logger $Logger -TimeoutMinutes $JobSpec.TimeoutMinutes
                     $resultName = $fallbackName
+                    $passStatus.Status = "fallback-completed"
+                    $passStatus.FallbackUsed = $true
+                    $passStatus.FallbackName = $fallbackName
+                    $passStatus.ResultName = $fallbackName
                 }
                 catch {
                     Write-RunnerLog -Logger $Logger -Level "ERROR" -Message "Contrarian fallback review agent failed; continuing without optional secondary result." -Data @{
@@ -623,6 +659,11 @@ Load the canonical review prompt, ADR-0086 context, the PR diff from GitHub, and
                         review_risk_class = $Context.ReviewRiskClass
                         reason = $_.Exception.Message
                     }
+                    $passStatus.Status = "fallback-failed"
+                    $passStatus.FallbackUsed = $true
+                    $passStatus.FallbackName = $fallback.Name
+                    $passStatus.Reason = $_.Exception.Message
+                    [void]$passStatuses.Add([pscustomobject]$passStatus)
                     continue
                 }
             }
@@ -632,6 +673,8 @@ Load the canonical review prompt, ADR-0086 context, the PR diff from GitHub, and
                     review_risk_class = $Context.ReviewRiskClass
                     reason = $_.Exception.Message
                 }
+                $passStatus.Status = "unavailable"
+                [void]$passStatuses.Add([pscustomobject]$passStatus)
                 continue
             }
         }
@@ -644,6 +687,7 @@ Load the canonical review prompt, ADR-0086 context, the PR diff from GitHub, and
             Output = $stdout
             Path = $outputPath
         }
+        [void]$passStatuses.Add([pscustomobject]$passStatus)
     }
 
     if (($Context.ReviewRiskClass -eq "high") -and ($results.Count -lt 2)) {
@@ -658,7 +702,7 @@ Load the canonical review prompt, ADR-0086 context, the PR diff from GitHub, and
     }
 
     if ($JobSpec.ContainsKey("SynthesisCommand") -and $results.Count -ge 1) {
-        $synthesisPrompt = New-ReviewSynthesisPrompt -Context $Context -CanonicalPromptPath $promptPath -AgentResults $results
+        $synthesisPrompt = New-ReviewSynthesisPrompt -Context $Context -CanonicalPromptPath $promptPath -AgentResults $results -PassStatus $passStatuses.ToArray()
         $synthesisPath = Join-Path $HostConfig.ArtifactRoot "$artifactPrefix.synthesis-prompt.md"
         $synthesisPrompt | Set-Content -LiteralPath $synthesisPath -Encoding UTF8
 
