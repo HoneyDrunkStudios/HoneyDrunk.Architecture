@@ -240,8 +240,9 @@ skip_paths:                  # globs excluded from review
   - "**/*.g.cs"
   - "**/generated/**"
 runner: local-worker         # local-worker | api-ci; default ADR-0086 local worker
-cost_cap_per_pr_usd: 0.00    # subscription-backed default; API-backed fallback must set an explicit cap
 ```
+
+`cost_cap_per_pr_usd` is omitted for `local-worker` because ADR-0086's subscription-backed path has no per-token API spend. Repos using the preserved `api-ci` fallback must set an explicit non-zero `cost_cap_per_pr_usd` alongside the provider/model configuration.
 
 Per-path review-instruction overrides (the `path_instructions`-style surface CodeRabbit offers) are **explicitly deferred to a polish phase** (D11). v1 relies on the agent's built-in context loading and the prompt definition in `.claude/agents/review.md`. If per-path overrides earn their keep based on observed v1 gaps, they land in v2 with a documented schema; until then the configuration surface stays small.
 
