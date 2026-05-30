@@ -30,6 +30,191 @@ function Get-GridAgentHostConfig {
     return $config
 }
 
+function Get-RunnerSafetyConfig {
+    param([hashtable]$HostConfig)
+
+    $defaults = @{
+        Enabled = $false
+        OperatorAcknowledgedUntrustedInputs = $false
+        AllowedReviewRepositories = @()
+        AllowForkPullRequests = $false
+        AllowPrivateHeadRepositories = $false
+        RequireQueueComment = $true
+        RequireNonRepositoryRunnerRoot = $true
+        TrustedRunnerRoot = $null
+    }
+
+    $safety = @{}
+    foreach ($key in $defaults.Keys) {
+        $safety[$key] = $defaults[$key]
+    }
+
+    if ($HostConfig.ContainsKey("Safety") -and $null -ne $HostConfig.Safety) {
+        foreach ($key in $HostConfig.Safety.Keys) {
+            $safety[$key] = $HostConfig.Safety[$key]
+        }
+    }
+
+    foreach ($key in @("Enabled", "OperatorAcknowledgedUntrustedInputs", "AllowForkPullRequests", "AllowPrivateHeadRepositories", "RequireQueueComment", "RequireNonRepositoryRunnerRoot")) {
+        $safety[$key] = Convert-RunnerSafetyBoolean -Value $safety[$key] -Name "Safety.$key"
+    }
+
+    return $safety
+}
+
+function Assert-RunnerSafetyConfig {
+    param(
+        [hashtable]$HostConfig,
+        [hashtable]$JobSpec,
+        [string]$RunnerRoot,
+        [string]$ConfigPath
+    )
+
+    $safety = Get-RunnerSafetyConfig -HostConfig $HostConfig
+    if (-not $safety.Enabled) {
+        throw "Runner safety gate is disabled for job '$($JobSpec.JobId)'. Set Safety.Enabled to true in host.psd1 only on the operator-controlled runner host."
+    }
+
+    if (-not $safety.OperatorAcknowledgedUntrustedInputs) {
+        throw "Runner safety gate for job '$($JobSpec.JobId)' requires Safety.OperatorAcknowledgedUntrustedInputs=true after reviewing the hostile-input rules."
+    }
+
+    if ($JobSpec.TriggerKind -eq "label-queue") {
+        $allowed = @($safety.AllowedReviewRepositories | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) })
+        if ($allowed.Count -eq 0) {
+            throw "Label-queue job '$($JobSpec.JobId)' requires Safety.AllowedReviewRepositories to be explicit."
+        }
+
+        if (-not $safety.RequireQueueComment) {
+            throw "Label-queue job '$($JobSpec.JobId)' requires Safety.RequireQueueComment=true so runner claims can be recovered after interrupted runs."
+        }
+    }
+
+    if (-not [string]::IsNullOrWhiteSpace($RunnerRoot)) {
+        Assert-RunnerSourceTrust -HostConfig $HostConfig -Safety $safety -RunnerRoot $RunnerRoot -ConfigPath $ConfigPath
+    }
+}
+
+function Convert-RunnerSafetyBoolean {
+    param(
+        [object]$Value,
+        [string]$Name
+    )
+
+    if ($Value -is [bool]) {
+        return $Value
+    }
+
+    if ($Value -is [string]) {
+        $trimmed = $Value.Trim()
+        if ($trimmed.Equals("true", [System.StringComparison]::OrdinalIgnoreCase)) {
+            return $true
+        }
+
+        if ($trimmed.Equals("false", [System.StringComparison]::OrdinalIgnoreCase)) {
+            return $false
+        }
+    }
+
+    throw "Invalid runner safety configuration '$Name'. Expected boolean true/false, got '$Value'."
+}
+
+function Assert-RunnerSourceTrust {
+    param(
+        [hashtable]$HostConfig,
+        [hashtable]$Safety,
+        [string]$RunnerRoot,
+        [string]$ConfigPath
+    )
+
+    $runnerFullPath = ConvertTo-RunnerFullPath -Path $RunnerRoot
+    if (-not [string]::IsNullOrWhiteSpace([string]$Safety.TrustedRunnerRoot)) {
+        $trustedFullPath = ConvertTo-RunnerFullPath -Path ([string]$Safety.TrustedRunnerRoot)
+        if (-not $runnerFullPath.Equals($trustedFullPath, [System.StringComparison]::OrdinalIgnoreCase)) {
+            throw "Runner root '$runnerFullPath' does not match Safety.TrustedRunnerRoot '$trustedFullPath'. Register scheduled tasks from the operator-installed runner copy."
+        }
+    }
+
+    if ($Safety.RequireNonRepositoryRunnerRoot) {
+        $gitControlPath = Find-RunnerGitControlPath -Path $runnerFullPath
+        if (-not [string]::IsNullOrWhiteSpace($gitControlPath)) {
+            throw "Runner root '$runnerFullPath' is inside a Git worktree controlled by '$gitControlPath'. Install the runner into an operator-controlled runtime directory before enabling non-dry-run jobs."
+        }
+
+        if ($HostConfig.ContainsKey("Repositories") -and $null -ne $HostConfig.Repositories) {
+            foreach ($repoKey in $HostConfig.Repositories.Keys) {
+                $repoPath = [string]$HostConfig.Repositories[$repoKey]
+                if (-not [string]::IsNullOrWhiteSpace($repoPath) -and (Test-RunnerPathInside -ChildPath $runnerFullPath -ParentPath $repoPath)) {
+                    throw "Runner root '$runnerFullPath' is inside configured repository '$repoKey'. Install the runner into an operator-controlled runtime directory before enabling non-dry-run jobs."
+                }
+            }
+        }
+    }
+
+    if (-not [string]::IsNullOrWhiteSpace($ConfigPath)) {
+        $configFullPath = ConvertTo-RunnerFullPath -Path $ConfigPath
+        if ($Safety.RequireNonRepositoryRunnerRoot -and (Test-RunnerPathInside -ChildPath $configFullPath -ParentPath $runnerFullPath)) {
+            throw "Host config '$configFullPath' is inside the runner code directory. Keep host.psd1 outside cloned source and outside the installed runner code."
+        }
+    }
+}
+
+function ConvertTo-RunnerFullPath {
+    param([string]$Path)
+
+    if ([string]::IsNullOrWhiteSpace($Path)) {
+        return ""
+    }
+
+    try {
+        $resolved = Resolve-Path -LiteralPath $Path -ErrorAction Stop
+        $fullPath = $resolved.Path
+    }
+    catch {
+        $fullPath = [System.IO.Path]::GetFullPath($Path)
+    }
+
+    return $fullPath.TrimEnd([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar)
+}
+
+function Test-RunnerPathInside {
+    param(
+        [string]$ChildPath,
+        [string]$ParentPath
+    )
+
+    $childFullPath = ConvertTo-RunnerFullPath -Path $ChildPath
+    $parentFullPath = ConvertTo-RunnerFullPath -Path $ParentPath
+
+    if ([string]::IsNullOrWhiteSpace($childFullPath) -or [string]::IsNullOrWhiteSpace($parentFullPath)) {
+        return $false
+    }
+
+    if ($childFullPath.Equals($parentFullPath, [System.StringComparison]::OrdinalIgnoreCase)) {
+        return $true
+    }
+
+    $prefix = $parentFullPath + [System.IO.Path]::DirectorySeparatorChar
+    return $childFullPath.StartsWith($prefix, [System.StringComparison]::OrdinalIgnoreCase)
+}
+
+function Find-RunnerGitControlPath {
+    param([string]$Path)
+
+    $item = Get-Item -LiteralPath $Path -ErrorAction Stop
+    $directory = if ($item.PSIsContainer) { $item } else { $item.Directory }
+    while ($null -ne $directory) {
+        $gitPath = Join-Path $directory.FullName ".git"
+        if (Test-Path -LiteralPath $gitPath) {
+            return $gitPath
+        }
+
+        $directory = $directory.Parent
+    }
+
+    return $null
+}
+
 function Get-GridAgentJobSpec {
     param(
         [string]$RunnerRoot,
@@ -104,4 +289,4 @@ function Resolve-RunnerRepoPath {
     return $HostConfig.Repositories[$JobSpec.Repo]
 }
 
-Export-ModuleMember -Function Get-GridAgentHostConfig, Get-GridAgentJobSpec, Assert-GridAgentJobSpec, Resolve-RunnerRepoPath
+Export-ModuleMember -Function Get-GridAgentHostConfig, Get-GridAgentJobSpec, Assert-GridAgentJobSpec, Resolve-RunnerRepoPath, Get-RunnerSafetyConfig, Assert-RunnerSafetyConfig

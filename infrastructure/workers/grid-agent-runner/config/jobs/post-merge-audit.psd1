@@ -19,7 +19,8 @@
         @{
             Name = "codex"
             Executable = "codex"
-            Arguments = @("exec", "--file", "{PromptPath}")
+            Arguments = @("exec", "--sandbox", "read-only", "--ignore-rules", "--ephemeral", "-")
+            PromptStdin = $true
         }
     )
     WriteMode = "pr"
@@ -32,7 +33,7 @@
         "GitHub--AgentRunner--PrivateKey",
         "GitHub--AgentRunner--InstallationId"
     )
-    AllowedTools = @("read", "git", "github-api", "codex")
+    AllowedTools = @("read", "github-api", "codex")
     RetainArtifactsDays = 30
     PortabilityNotes = "Uses the same review agent prompt in audit mode; artifact directory is governed by ADR-0044 packets 15/16."
     Queue = @{

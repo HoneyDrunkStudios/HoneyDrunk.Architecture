@@ -75,7 +75,8 @@ After the cutover PR is open and the workflow has run on it, the implementing ag
 4. **Head-SHA invalidation handles a push.** Push a no-op commit to the cutover PR (e.g., a CHANGELOG line). Observe: the queue-comment `head_sha` is updated; if the worker was mid-review when the push landed, the stale verdict is discarded and the next tick reviews the new SHA. Record the observed behavior.
 5. **Quality vs the local agent.** Run `.claude/agents/review.md` locally on the same PR diff (the manual invocation path). Compare the verdicts. Phase-A exit requires "at least as useful as the manual local-agent invocation" per D11.
 6. **Cost.** Confirm marginal LLM cost is $0 (subscription-backed; no `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` set in the worker environment per D4).
-7. **Stale-claim sweep.** Either induce a stale claim (manually swap labels and skip the verdict) and observe the next tick recover, or document the stale-claim path was exercised in packet 03's smoke test (`scripts/Test-JobLocally.ps1 -JobId grid-review`).
+7. **Safety gate.** Confirm the runner host has local `Safety.Enabled = true`, `Safety.OperatorAcknowledgedUntrustedInputs = true`, `Safety.RequireNonRepositoryRunnerRoot = true`, `Safety.RequireQueueComment = true`, an exact `Safety.AllowedReviewRepositories` entry for `HoneyDrunkStudios/HoneyDrunk.Architecture`, fork/private-head PR review disabled, and child-agent execution in non-mutating/read-only mode. Confirm the scheduled task runs from the operator-installed `Safety.TrustedRunnerRoot` copy, not a Git worktree or configured repository path, and confirm the worker did not check out or execute the PR head or load arbitrary PR-body packet links.
+8. **Stale-claim sweep.** Either induce a stale claim (manually swap labels and skip the verdict) and observe the next tick recover, or document the stale-claim path was exercised in packet 03's smoke test (`scripts/Test-JobLocally.ps1 -JobId grid-review`).
 
 If any of these fail, **stop** — do not merge the cutover PR. Diagnose against packet 03 (worker), packet 05 (workflow), or packet 02 (App provisioning); revert the cutover PR if necessary. Phase B does not start until the Phase-A bar is met.
 
@@ -103,6 +104,7 @@ If any of these fail, **stop** — do not merge the cutover PR. Diagnose against
 - [ ] A head-SHA invalidation scenario was exercised on the cutover PR (push a no-op commit; observe the queue-comment `head_sha` updates; observe the stale verdict is discarded if mid-review)
 - [ ] Verdict quality is at least as useful as the manual local-agent invocation on the same diff (comparison recorded in the PR body)
 - [ ] Marginal LLM cost confirmed $0 (subscription-backed CLIs; no `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` set in the worker environment)
+- [ ] Runner safety gate confirmed: local opt-in enabled only in operator-local `host.psd1`, scheduled task runs from `Safety.TrustedRunnerRoot` outside cloned source, repo allowlist limited to Architecture for Phase A, fork/private-head PR review disabled, queue comment required, no PR-body packet links, no PR-head checkout/execution, child-agent env scrubbed
 - [ ] The Phase-A go/no-go decision is recorded in the PR body — explicit go or stop
 - [ ] CHANGELOG.md updated noting the Architecture-repo cutover to `runner: local-worker`
 

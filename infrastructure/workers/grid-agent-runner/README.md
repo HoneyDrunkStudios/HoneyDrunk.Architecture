@@ -13,13 +13,23 @@ Portable scheduled agent runner for ADR-0086. The runner is operator-machine aut
 
 Committed job specs live in `config/jobs/*.psd1`. Machine-specific paths and Vault settings live in `config/host.psd1`, which is intentionally not committed.
 
+## Safety Model
+
+The runner is clone-safe by default. A fresh checkout has no `config/host.psd1`, and the example config keeps `Safety.Enabled = $false`; non-dry-run jobs refuse to start until the operator explicitly enables the local safety gate.
+
+For PR review, treat every PR field as hostile input. The runner does not check out PR heads or run PR code. It reviews GitHub diff/context only, rejects repositories outside `Safety.AllowedReviewRepositories`, rejects fork PRs unless `Safety.AllowForkPullRequests` is explicitly enabled, rejects private head repositories unless `Safety.AllowPrivateHeadRepositories` is explicitly enabled, requires the queue comment marker for claim recovery, launches child agents with common cloud/source-control/API-token environment variables removed, and runs Codex review passes with an ephemeral read-only sandbox that ignores repo-local rules.
+
+The scheduled runner code must also be isolated from repository updates. With `Safety.RequireNonRepositoryRunnerRoot = $true`, non-dry-run jobs and Task Scheduler registration refuse to run from a Git worktree or from a configured repository path. Install or copy the runner into the operator-controlled `Safety.TrustedRunnerRoot`, keep `host.psd1` outside cloned source, then register scheduled tasks from that installed copy. If a malicious Architecture PR ever lands, the scheduled task continues running the previously installed runner copy until an operator intentionally updates it.
+
 ## Setup
 
-1. Copy `config/host.psd1.example` to `config/host.psd1`.
+1. Copy `config/host.psd1.example` to an operator-local config path outside cloned source and outside the installed runner code, for example `C:\HoneyDrunk\Runtime\grid-agent-runner\host.psd1`.
 2. Set `RuntimeRoot` and repository paths for `HoneyDrunk.Architecture` and `HoneyDrunk.Lore`.
 3. Confirm Codex CLI and Claude Code CLI are installed and authenticated through subscription sessions.
 4. Confirm `ANTHROPIC_API_KEY` and `OPENAI_API_KEY` are not set persistently on the runner host.
 5. Confirm the host can read the shared automation Vault, `kv-hd-automation-dev`, and its `GitHub--AgentRunner--*` secrets before running `grid-review` without `-DryRun`.
+6. Copy the runner directory into `Safety.TrustedRunnerRoot`, keep host config outside cloned source, and register scheduled tasks from that installed copy.
+7. Set `Safety.Enabled = $true` and `Safety.OperatorAcknowledgedUntrustedInputs = $true` only on the operator-controlled runner host after verifying the repository allowlist, fork policy, private-head policy, queue marker requirement, and trusted runner root.
 
 ## Smoke Tests
 
@@ -33,13 +43,13 @@ pwsh ./scripts/Test-JobLocally.ps1 -JobId hive-sync
 Run against a real host config:
 
 ```powershell
-pwsh ./scripts/Test-JobLocally.ps1 -JobId grid-review -ConfigPath ./config/host.psd1
+pwsh ./scripts/Test-JobLocally.ps1 -JobId grid-review -ConfigPath C:\HoneyDrunk\Runtime\grid-agent-runner\host.psd1
 ```
 
 Invoke agents intentionally:
 
 ```powershell
-pwsh ./scripts/Test-JobLocally.ps1 -JobId hive-sync -ConfigPath ./config/host.psd1 -InvokeAgents
+pwsh ./scripts/Test-JobLocally.ps1 -JobId hive-sync -ConfigPath C:\HoneyDrunk\Runtime\grid-agent-runner\host.psd1 -InvokeAgents
 ```
 
 ## Task Scheduler
@@ -47,13 +57,13 @@ pwsh ./scripts/Test-JobLocally.ps1 -JobId hive-sync -ConfigPath ./config/host.ps
 Preview registration:
 
 ```powershell
-pwsh ./scripts/Register-Task.ps1 -ConfigPath ./config/host.psd1 -WhatIf
+pwsh ./scripts/Register-Task.ps1 -ConfigPath C:\HoneyDrunk\Runtime\grid-agent-runner\host.psd1 -WhatIf
 ```
 
 Register default jobs:
 
 ```powershell
-pwsh ./scripts/Register-Task.ps1 -ConfigPath ./config/host.psd1
+pwsh ./scripts/Register-Task.ps1 -ConfigPath C:\HoneyDrunk\Runtime\grid-agent-runner\host.psd1
 ```
 
 Rollback:

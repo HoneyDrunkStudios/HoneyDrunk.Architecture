@@ -74,13 +74,23 @@ function Invoke-AgentCommand {
     }
 
     $startInfo.WorkingDirectory = $WorkingDirectory
+    $startInfo.RedirectStandardInput = $CommandSpec.ContainsKey("PromptStdin") -and [bool]$CommandSpec.PromptStdin
     $startInfo.RedirectStandardOutput = $true
     $startInfo.RedirectStandardError = $true
     $startInfo.UseShellExecute = $false
-    [void]$startInfo.Environment.Remove("ANTHROPIC_API_KEY")
-    [void]$startInfo.Environment.Remove("OPENAI_API_KEY")
+    Protect-AgentChildEnvironment -StartInfo $startInfo
+
+    $promptText = $null
+    if ($startInfo.RedirectStandardInput) {
+        $promptText = Get-Content -LiteralPath $PromptPath -Raw
+    }
 
     $process = [System.Diagnostics.Process]::Start($startInfo)
+    if ($startInfo.RedirectStandardInput) {
+        $process.StandardInput.Write($promptText)
+        $process.StandardInput.Close()
+    }
+
     $stdoutTask = $process.StandardOutput.ReadToEndAsync()
     $stderrTask = $process.StandardError.ReadToEndAsync()
     $timeoutMs = [Math]::Max(1, $TimeoutMinutes) * 60 * 1000
@@ -98,6 +108,61 @@ function Invoke-AgentCommand {
     }
 
     return $stdout
+}
+
+function Protect-AgentChildEnvironment {
+    param([System.Diagnostics.ProcessStartInfo]$StartInfo)
+
+    $exactNames = @(
+        "ANTHROPIC_API_KEY",
+        "OPENAI_API_KEY",
+        "GITHUB_TOKEN",
+        "GH_TOKEN",
+        "AZURE_CLIENT_ID",
+        "AZURE_CLIENT_SECRET",
+        "AZURE_TENANT_ID",
+        "AZURE_SUBSCRIPTION_ID",
+        "ARM_CLIENT_ID",
+        "ARM_CLIENT_SECRET",
+        "ARM_TENANT_ID",
+        "ARM_SUBSCRIPTION_ID",
+        "AWS_ACCESS_KEY_ID",
+        "AWS_SECRET_ACCESS_KEY",
+        "AWS_SESSION_TOKEN",
+        "GOOGLE_APPLICATION_CREDENTIALS",
+        "HF_TOKEN",
+        "HUGGINGFACE_HUB_TOKEN",
+        "NPM_TOKEN",
+        "NUGET_API_KEY",
+        "SONAR_TOKEN",
+        "SENTRY_AUTH_TOKEN",
+        "SLACK_BOT_TOKEN"
+    )
+
+    foreach ($name in $exactNames) {
+        [void]$StartInfo.Environment.Remove($name)
+    }
+
+    $prefixes = @(
+        "AZURE_",
+        "ARM_",
+        "AWS_",
+        "GOOGLE_",
+        "GCLOUD_",
+        "HONEYDRUNK_SECRET_"
+    )
+
+    $keys = @($StartInfo.Environment.Keys)
+    foreach ($key in $keys) {
+        foreach ($prefix in $prefixes) {
+            if ($key.StartsWith($prefix, [System.StringComparison]::OrdinalIgnoreCase)) {
+                [void]$StartInfo.Environment.Remove($key)
+                break
+            }
+        }
+    }
+
+    $StartInfo.Environment["HONEYDRUNK_RUNNER_CHILD_AGENT"] = "1"
 }
 
 Export-ModuleMember -Function Invoke-ScheduledAgentJob, Invoke-AgentCommand

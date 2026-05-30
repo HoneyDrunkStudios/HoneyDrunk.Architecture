@@ -77,6 +77,7 @@ if (-not $IsWindows) {
 $runnerRoot = Split-Path -Parent $PSScriptRoot
 $jobSpecModule = Join-Path $runnerRoot "lib/JobSpec.psm1"
 Import-Module $jobSpecModule -Force
+$hostConfig = Get-GridAgentHostConfig -Path $ConfigPath -RunnerRoot $runnerRoot
 
 foreach ($id in $JobId) {
     $spec = Get-GridAgentJobSpec -RunnerRoot $runnerRoot -JobId $id
@@ -101,6 +102,7 @@ foreach ($id in $JobId) {
         continue
     }
 
+    Assert-RunnerSafetyConfig -HostConfig $hostConfig -JobSpec $spec -RunnerRoot $runnerRoot -ConfigPath $ConfigPath
     Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $triggers -Settings $settings -Description $spec.Description -Force | Out-Null
     Write-Host "Registered scheduled task '$taskName'."
 }

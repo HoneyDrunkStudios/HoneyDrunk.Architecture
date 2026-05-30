@@ -98,6 +98,20 @@ The worker implements the six-step protocol from ADR-0086 D3:
 - **Claude Code CLI auth.** Inherited from the operator's existing Claude Max session on the runner host. The runner shells out to `claude` (or `claude-code`).
 - **Env hygiene (D4 / D8 / ADR-0079 D8).** The runner process spawns child processes with a deliberately minimal environment block: `ANTHROPIC_API_KEY` and `OPENAI_API_KEY` must NOT be set. If either is present in the operator's shell, the runner explicitly unsets them in the child process environment before invoking the CLI. Document this in the README and the operator setup notes.
 
+### Open-source safety gate
+The review runner must be safe both when a malicious public PR lands and when someone clones `HoneyDrunk.Architecture` and reads or copies the worker source.
+
+- A fresh clone is inert: `config/host.psd1` is uncommitted, `host.psd1.example` leaves `Safety.Enabled = $false`, and every non-dry-run job refuses to start until the operator explicitly enables the safety gate in local host config.
+- `Safety.OperatorAcknowledgedUntrustedInputs = $true` is required before non-dry-run execution. That opt-in means the operator has reviewed the hostile-input model and repository allowlist on that machine.
+- `Safety.RequireNonRepositoryRunnerRoot = $true` is required by default. Non-dry-run jobs and Task Scheduler registration must refuse to run the worker directly from a Git worktree or configured repository path; the scheduled task runs only from an operator-installed `Safety.TrustedRunnerRoot` copy with `host.psd1` kept outside cloned source.
+- Label-queue jobs require `Safety.AllowedReviewRepositories`; the runner rejects queued PRs outside that exact `owner/repo` allowlist.
+- Fork PRs are rejected by default (`Safety.AllowForkPullRequests = $false`). Enabling fork review is a host-local policy choice and must not be inherited from committed defaults.
+- Private-head PRs are rejected by default (`Safety.AllowPrivateHeadRepositories = $false`), and the queue comment marker remains mandatory for recoverable runner claims.
+- The runner treats PR title/body/comments, branch names, filenames, diffs, generated files, and linked docs as hostile prompt input. It must not check out the PR head, run PR code, install dependencies, execute repository scripts from the PR branch, or load arbitrary packet/context links supplied in the PR body.
+- The runner reviews GitHub diff/context only, posts an advisory comment only, and keeps the GitHub App permissions bounded to `contents: read`, `pull_requests: write`, and `issues: write`.
+- Child agent processes run with common cloud/source-control/API-token environment variables removed, including `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GITHUB_TOKEN`, `GH_TOKEN`, Azure/ARM variables, AWS variables, Google variables, package-publish tokens, and service tokens.
+- Codex review passes run ephemeral, ignore repo-local rules, and use read-only sandboxing. Claude passes must use the equivalent non-mutating permission mode and disallow shell/edit tools when enabled.
+
 ### Multi-perspective synthesis (D8)
 The worker reads the `review_risk_class` field from `catalogs/grid-health.json` (per ADR-0044 D8, populated by ADR-0044 packet 13 — that packet is preserved and not superseded by ADR-0086). When `review_risk_class` is `high` for a touched Node and the PR's authorship class is non-human:
 - Run Codex CLI as Reviewer 3 and capture a structured raw verdict.
@@ -140,7 +154,7 @@ This packet seeds the job specs but does not disable the current OpenClaw/Honeyc
 - What the runner does (one-paragraph summary referencing ADR-0086).
 - Prerequisites (packet 02 existing review-agent App audited and Vault credentials verified, Codex CLI installed and authenticated, Claude Code CLI installed and authenticated, local repo checkouts the runner pulls fresh per job).
 - Env hygiene rules (no `ANTHROPIC_API_KEY`, no `OPENAI_API_KEY`).
-- Installation steps (clone the repo, copy `config/host.psd1.example` -> `host.psd1`, customize, run `scripts/Register-Task.ps1`).
+- Installation steps (clone the repo, copy the runner to `Safety.TrustedRunnerRoot`, copy `config/host.psd1.example` to an operator-local host config outside cloned source, customize, run `scripts/Register-Task.ps1` from the installed runner copy).
 - Smoke test (`scripts/Test-JobLocally.ps1 -JobId grid-review`, plus one dry run for each scheduled job).
 - Troubleshooting (where logs land, how to read pending-verdict cache, how to manually unstick a stale claim).
 
@@ -183,7 +197,11 @@ None. This packet creates PowerShell scripts and Markdown docs; no .NET project 
 - [ ] `hive-sync`, `lore-source`, `lore-ingest`, and `lore-signal-review` specs point at their existing canonical prompt files and declare schedule, concurrency key, timeout, write mode, output contract, required secrets by name, and rollback notes
 - [ ] The runner reads `GitHub--AgentRunner--AppId`, `GitHub--AgentRunner--PrivateKey`, and `GitHub--AgentRunner--InstallationId` from `kv-hd-automation-dev`; does NOT read them from environment variables or config files (invariant 9)
 - [ ] The runner does NOT use `gh` CLI auth for GitHub API calls — only the App-installation token
-- [ ] The runner spawns child CLI processes with `ANTHROPIC_API_KEY` and `OPENAI_API_KEY` explicitly unset, even if the parent environment has them set (ADR-0086 D4 / D8; ADR-0079 D8)
+- [ ] Non-dry-run jobs refuse to start unless local `host.psd1` explicitly sets `Safety.Enabled = $true` and `Safety.OperatorAcknowledgedUntrustedInputs = $true`
+- [ ] Non-dry-run jobs and Task Scheduler registration refuse to run the runner from a Git worktree or configured repository path when `Safety.RequireNonRepositoryRunnerRoot = $true`
+- [ ] `grid-review` rejects queued PRs outside `Safety.AllowedReviewRepositories`, rejects fork/private-head PRs by default, requires the queue comment marker, ignores arbitrary PR-body packet links, and does not check out or execute PR-head code
+- [ ] The runner spawns child CLI processes with `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, GitHub tokens, Azure/ARM variables, AWS variables, Google variables, package-publish tokens, and service tokens explicitly removed even if the parent environment has them set (ADR-0086 D4 / D8; ADR-0079 D8)
+- [ ] Codex review passes run with an ephemeral read-only sandbox that ignores repo-local rules; Claude review passes use an equivalent non-mutating permission/tool profile when enabled
 - [ ] The pending-verdict cache survives a worker crash mid-review; verdict for an abandoned SHA is garbage-collected on next claim
 - [ ] The runner never posts a verdict whose `head_sha` differs from the PR's current `head` at post time
 - [ ] D8 multi-perspective dispatch is wired: when `catalogs/grid-health.json` has `review_risk_class: high` for a touched Node, both Codex CLI and Claude Code CLI run as independent passes, `Synthesis.psm1` combines their findings, and the worker posts one synthesized verdict with source attribution; when `review_risk_class` is absent, the worker logs "D8 deferred" and runs Codex only
@@ -202,6 +220,7 @@ None. This packet creates PowerShell scripts and Markdown docs; no .NET project 
 - [ ] Claude Code CLI must be installed on the runner host and authenticated against the operator's Claude Max subscription
 - [ ] The operator's shell environment on the runner host must NOT have `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` set persistently (per ADR-0086 D4 env hygiene). If either is set, remove it from the persistent profile. The runner also unsets them in the child process environment as a defense-in-depth.
 - [ ] The operator's Azure CLI session on the runner host must be able to read the three new Vault secrets (or the chosen Vault-CLI binding works equivalently)
+- [ ] The operator must install the runner into `Safety.TrustedRunnerRoot`, keep `host.psd1` outside cloned source, and set `Safety.Enabled = $true`, `Safety.OperatorAcknowledgedUntrustedInputs = $true`, `Safety.RequireNonRepositoryRunnerRoot = $true`, and the exact `Safety.AllowedReviewRepositories` allowlist before any non-dry-run review job is registered
 - [ ] After packet 03 lands, run `scripts/Test-JobLocally.ps1 -JobId grid-review` once on the home server to smoke-test before registering the review Scheduled Task
 - [ ] Run dry/smoke tests for `hive-sync`, `lore-source`, `lore-ingest`, and `lore-signal-review` before disabling any current OpenClaw/Honeyclaw schedule
 - [ ] After smoke-test passes, run `scripts/Register-Task.ps1` on the home server (per ADR-0081 D1) to install the Scheduled Task
