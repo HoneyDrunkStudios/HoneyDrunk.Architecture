@@ -110,61 +110,85 @@ Return only the final PR comment body. Do not include per-agent sections. Do not
 Preserve source attribution for retained findings using these normalized labels: $sourceAttributionOptions. Raw agent names may include suffixes such as `codex-contrarian`; normalize any source containing `codex` to `Codex`, any source containing `claude` to `Claude`, and overlapping agreement to `Both`.
 The final verdict must explicitly disclose review pass status in the Reviewed Scope / Evidence Checked section: list which independent agents ran, whether Claude was skipped by risk gate, whether Claude was unavailable, and whether a fallback such as `codex-contrarian` was used. Do not hide fallback use behind the normalized source label.
 
-Use the canonical review-agent output format from the agent file:
+Use this exact Grid Review output format. Preserve every section header, emoji, and top metadata field. These sections are the review checklist; do not collapse them into a generic Findings/Checklist format.
 
-# PR Review: <PR title>
+Risk Level: <Low | Medium | High>
+Review Confidence: <Low | Medium | High>
+Change Type: <Docs | Code | Infra | CI | Config | Mixed>
+Blast Radius: <None | Local | Node | Cross-node | Platform-wide>
+Operational Sensitivity: <Low | Medium | High>
+Requires ADR: <Yes | No>
 
-**Repo:** $($Context.Owner)/$($Context.Repo)
-**Reviewer:** review agent
-**Verdict:** <Approved | Request Changes | Block>
+✅ Verdict: <Approved | Request Changes | Block>
 
-## Summary
+🔎 Summary
 <One paragraph: what this PR does and overall assessment. If clean, explicitly say no blocking findings, requested changes, or suggestions were found.>
 
-## Reviewed Scope / Evidence Checked
+🚫 Blockers
+<None. Or concrete blocking findings. Each non-None finding must include one normalized source label from: $sourceAttributionOptions.>
 
-- **Packet / PR scope:** <packet path or out-of-band label status; acceptance criteria checked; independent agent/fallback/skipped-pass status>
-- **Governing ADRs:** <ADR-0011 and ADR-0044 always, plus packet-referenced ADR ids or "no additional ADRs referenced">
-- **Grid invariants:** <all numbered invariants checked; implicated invariants>
-- **Repo boundaries:** <boundary evidence>
-- **Contracts / downstream:** <catalog files checked; downstream Nodes affected or "none detected">
-- **Security / secrets:** <secret, auth, tenant, permission, and data-classification checks performed>
-- **Cost / CI discipline:** <workflow/model/API/Azure/resource cost checks performed>
-- **Testing / verification:** <tests, CI, docs-only rationale, or verification gap>
-- **Idempotency / review state:** <head SHA reviewed; duplicate-review behavior considered when relevant>
-- **Files inspected:** <concise list of key changed files reviewed>
+⚠️ Risks / Request Changes
+<None. Or concrete requested changes. Each non-None finding must include one normalized source label from: $sourceAttributionOptions.>
 
-## Findings
+🧱 Architectural Alignment
+<Boundary, ADR, invariant, packet, and design-alignment assessment.>
 
-### Blocking
-- <"None." or valid blocking findings. Each non-None finding must include one normalized source label from: $sourceAttributionOptions.>
+🧭 Domain Integrity
+<Node ownership, repo boundary, packet scope, and cross-Node responsibility assessment.>
 
-### Changes Requested
-- <"None." or valid requested changes. Each non-None finding must include one normalized source label from: $sourceAttributionOptions.>
+📦 Dependency Review
+<Dependencies introduced/removed/changed, package graph effects, vendor/SDK posture, or "None introduced.">
 
-### Suggestions
-- <"None." or non-blocking suggestions. Each non-None finding must include one normalized source label from: $sourceAttributionOptions.>
+📊 Observability
+<Logging, metrics, diagnostics, auditability, and alerting assessment.>
 
-### Material Disagreements
-- <"None." or material disagreement between agents, including how the synthesis resolved it.>
+⚡ Performance & Scale Signals
+<Hot paths, async/blocking, loops, scale, resource, and cost-scale assessment.>
 
-## Downstream Impact
-<List of downstream Nodes affected, or "None detected">
+🔄 Backward Compatibility
+<API, schema, serialized contract, workflow, runbook, and downstream compatibility assessment.>
 
-## Checklist
-- [x] Packet resolved and scope verified (or PR marked out-of-band)
-- [x] Boundary compliance checked
-- [x] Contract safety checked
-- [x] Relevant invariants checked
-- [x] ADR-0044 D3 rubric applied
-- [x] Cost discipline checked
-- [x] Security/secrets checked
-- [x] Tests/verification assessed
-- [x] Downstream impact assessed
-- [x] Clean PR does not get manufactured findings
-- [x] Tests/verification assessed
-- [x] Downstream impact assessed
-- [x] Clean PR does not get manufactured findings
+🛡️ Failure Handling
+<Retries, idempotency, partial failure, recovery, stale state, rollback, and cancellation assessment.>
+
+🧵 Concurrency / State Safety
+<Concurrent mutation, ordering, race, queue, lock, and state transition assessment.>
+
+🧪 Test Strategy Review
+<Tests/CI/verification performed or expected; for docs-only PRs say why runtime tests were not required.>
+
+🚀 Deployment / Rollout
+<Rollout, operations, scheduler, workflow, migration, cutover, rollback, and human setup assessment.>
+
+🧠 Maintainability Horizon
+<Complexity, readability, future-change risk, debt, ownership, and whether follow-up is tracked.>
+
+🧬 Reusability Potential
+<Reusable patterns/components/prompts/jobs surfaced, or why none.>
+
+📚 Knowledge Capture
+<Docs, ADRs, walkthroughs, catalogs, changelog, packet trace, and whether the change preserves institutional knowledge.>
+
+💡 Suggestions
+<None. Or non-blocking suggestions. Each non-None finding must include one normalized source label from: $sourceAttributionOptions.>
+
+🧹 Nitpicks
+<None. Or tiny non-blocking polish items.>
+
+🔐 Auth path
+<Authorship class, GitHub App / token / Vault / permission path, out-of-band label status, and relevant auth safety notes.>
+
+✅ Reviewed Scope / Evidence Checked
+
+Packet / PR scope: <packet path or out-of-band label status; acceptance criteria checked; independent agent/fallback/skipped-pass status>
+Governing ADRs: <ADR-0011 and ADR-0044 always, plus packet-referenced ADR ids or "no additional ADRs referenced">
+Grid invariants: <all numbered invariants checked; implicated invariants>
+Contracts / downstream: <catalog files checked; downstream Nodes affected or "none detected">
+Security / secrets: <secret, auth, tenant, permission, and data-classification checks performed>
+Cost / CI discipline: <workflow/model/API/Azure/resource cost checks performed>
+Validation: <tests, CI, docs-only rationale, or verification gap>
+Material disagreements: <None. Or material disagreement between agents, including how the synthesis resolved it.>
+Files inspected: <concise list of key changed files reviewed>
 
 Raw independent review outputs:
 
