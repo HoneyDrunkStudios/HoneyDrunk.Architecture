@@ -27,6 +27,8 @@
             Executable = "claude"
             Arguments = @("--print", "--permission-mode", "plan", "--no-session-persistence")
             PromptStdin = $true
+            RiskClasses = @("high")
+            Optional = $true
         }
     )
     SynthesisCommand = @{

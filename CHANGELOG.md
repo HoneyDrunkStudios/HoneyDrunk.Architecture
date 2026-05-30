@@ -1,3 +1,10 @@
+---
+title: Changelog
+description: Architecture repository change history and ADR implementation notes.
+type: documentation/changelog
+slug: architecture-changelog
+---
+
 # Changelog
 
 ## Unreleased

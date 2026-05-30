@@ -207,6 +207,8 @@ function Get-ReviewQueueContext {
         }
     }
 
+    $queueCommentBody = if ($null -eq $queueComment) { $null } else { $queueComment.body }
+
     return @{
         Owner = $owner
         Repo = $repo
@@ -215,8 +217,23 @@ function Get-ReviewQueueContext {
         Pull = $pull
         CurrentHeadSha = $pull.head.sha
         QueueHeadSha = $queueHeadSha
+        RiskClass = Get-RiskClassFromQueueComment -Body $queueCommentBody
         QueueComment = $queueComment
     }
+}
+
+function Get-RiskClassFromQueueComment {
+    param([string]$Body)
+
+    if ([string]::IsNullOrWhiteSpace($Body)) {
+        return "normal"
+    }
+
+    if ($Body -match "(?im)risk_class\s*[:=]\s*`?([A-Za-z0-9_.-]+)`?") {
+        return $Matches[1].ToLowerInvariant()
+    }
+
+    return "normal"
 }
 
 function Get-HeadShaFromQueueComment {
@@ -441,7 +458,26 @@ Load the canonical review prompt, ADR-0086 context, the PR diff from GitHub, and
 
     $results = @()
     foreach ($command in $JobSpec.AgentCommands) {
-        $stdout = Invoke-AgentCommand -CommandSpec $command -PromptPath $artifactPath -WorkingDirectory $repoPath -Logger $Logger -TimeoutMinutes $JobSpec.TimeoutMinutes
+        if (-not (Test-ReviewAgentCommandEnabled -CommandSpec $command -Context $Context -Logger $Logger)) {
+            continue
+        }
+
+        try {
+            $stdout = Invoke-AgentCommand -CommandSpec $command -PromptPath $artifactPath -WorkingDirectory $repoPath -Logger $Logger -TimeoutMinutes $JobSpec.TimeoutMinutes
+        }
+        catch {
+            if (-not (Test-OptionalReviewAgentCommand -CommandSpec $command)) {
+                throw
+            }
+
+            $stdout = "Optional agent '$($command.Name)' deferred: $($_.Exception.Message)"
+            Write-RunnerLog -Logger $Logger -Level "WARN" -Message "Optional review agent deferred." -Data @{
+                agent = $command.Name
+                risk_class = $Context.RiskClass
+                reason = $_.Exception.Message
+            }
+        }
+
         $name = Get-SafeArtifactName -Value $command.Name
         $outputPath = Join-Path $HostConfig.ArtifactRoot "$artifactPrefix.$name.md"
         $stdout | Set-Content -LiteralPath $outputPath -Encoding UTF8
@@ -452,7 +488,7 @@ Load the canonical review prompt, ADR-0086 context, the PR diff from GitHub, and
         }
     }
 
-    if ($JobSpec.ContainsKey("SynthesisCommand")) {
+    if ($JobSpec.ContainsKey("SynthesisCommand") -and $results.Count -gt 1) {
         $synthesisPrompt = New-ReviewSynthesisPrompt -Context $Context -CanonicalPromptPath $promptPath -AgentResults $results
         $synthesisPath = Join-Path $HostConfig.ArtifactRoot "$artifactPrefix.synthesis-prompt.md"
         $synthesisPrompt | Set-Content -LiteralPath $synthesisPath -Encoding UTF8
@@ -470,6 +506,37 @@ Load the canonical review prompt, ADR-0086 context, the PR diff from GitHub, and
     return ($results | ForEach-Object { "## $($_.Name)`n`n$($_.Output)" }) -join "`n`n"
 }
 
+function Test-ReviewAgentCommandEnabled {
+    param(
+        [hashtable]$CommandSpec,
+        [hashtable]$Context,
+        [hashtable]$Logger
+    )
+
+    if (-not $CommandSpec.ContainsKey("RiskClasses")) {
+        return $true
+    }
+
+    $riskClasses = @($CommandSpec.RiskClasses | ForEach-Object { ([string]$_).ToLowerInvariant() })
+    $currentRiskClass = if ([string]::IsNullOrWhiteSpace([string]$Context.RiskClass)) { "normal" } else { ([string]$Context.RiskClass).ToLowerInvariant() }
+    if ($currentRiskClass -in $riskClasses) {
+        return $true
+    }
+
+    Write-RunnerLog -Logger $Logger -Level "INFO" -Message "D8 deferred for review agent command outside configured risk class." -Data @{
+        agent = $CommandSpec.Name
+        risk_class = $currentRiskClass
+        enabled_risk_classes = $riskClasses
+    }
+    return $false
+}
+
+function Test-OptionalReviewAgentCommand {
+    param([hashtable]$CommandSpec)
+
+    return $CommandSpec.ContainsKey("Optional") -and [bool]$CommandSpec.Optional
+}
+
 function Get-SafeArtifactName {
     param([string]$Value)
 
@@ -479,6 +546,34 @@ function Get-SafeArtifactName {
     }
 
     return $safe
+}
+
+function Get-ReviewCompletionLabel {
+    param(
+        [string]$VerdictBody,
+        [hashtable]$Labels
+    )
+
+    if ([string]::IsNullOrWhiteSpace($VerdictBody)) {
+        return $Labels.FailureLabel
+    }
+
+    $patterns = @(
+        "(?im)^\s*\*\*Verdict:\*\*\s*(Block|Request Changes|Approved)\b",
+        "(?im)^\s*Verdict\s*:\s*(Block|Request Changes|Approved)\b"
+    )
+
+    foreach ($pattern in $patterns) {
+        if ($VerdictBody -match $pattern) {
+            if ($Matches[1] -in @("Block", "Request Changes")) {
+                return $Labels.FailureLabel
+            }
+
+            return $Labels.SuccessLabel
+        }
+    }
+
+    return $Labels.FailureLabel
 }
 
 function Complete-ReviewQueueItem {
@@ -492,7 +587,7 @@ function Complete-ReviewQueueItem {
     $owner = $Context.Owner
     $repo = $Context.Repo
     $number = $Context.Number
-    $completionLabel = if ($VerdictBody -match "(?im)\b(Block|Request Changes)\b") { $Labels.FailureLabel } else { $Labels.SuccessLabel }
+    $completionLabel = Get-ReviewCompletionLabel -VerdictBody $VerdictBody -Labels $Labels
 
     $body = @"
 <!-- honeydrunk-grid-review-verdict:v1 -->

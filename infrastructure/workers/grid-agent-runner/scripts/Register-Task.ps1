@@ -71,6 +71,21 @@ function Get-ScheduledTaskLocalTime {
     throw "Schedule type '$($Schedule.Type)' requires TimeLocal or TimeUtc."
 }
 
+function Get-TaskExecutionLimitMinutes {
+    param([hashtable]$Spec)
+
+    if ($Spec.ContainsKey("ExecutionTimeLimitMinutes")) {
+        return [int]$Spec.ExecutionTimeLimitMinutes
+    }
+
+    $childProcessCount = @($Spec.AgentCommands).Count
+    if ($Spec.ContainsKey("SynthesisCommand")) {
+        $childProcessCount += 1
+    }
+
+    return [Math]::Max([int]$Spec.TimeoutMinutes, [int]$Spec.TimeoutMinutes * [Math]::Max(1, $childProcessCount))
+}
+
 if (-not $IsWindows) {
     throw "Register-Task.ps1 requires Windows Task Scheduler. Use the job specs with cron/systemd on non-Windows hosts."
 }
@@ -104,7 +119,8 @@ foreach ($id in $JobId) {
     }
 
     $triggers = New-RunnerTaskTriggers -Spec $spec
-    $settings = New-ScheduledTaskSettingsSet -MultipleInstances IgnoreNew -RestartCount 3 -RestartInterval (New-TimeSpan -Minutes 1) -StartWhenAvailable -ExecutionTimeLimit (New-TimeSpan -Minutes $spec.TimeoutMinutes)
+    $executionLimitMinutes = Get-TaskExecutionLimitMinutes -Spec $spec
+    $settings = New-ScheduledTaskSettingsSet -MultipleInstances IgnoreNew -RestartCount 3 -RestartInterval (New-TimeSpan -Minutes 1) -StartWhenAvailable -ExecutionTimeLimit (New-TimeSpan -Minutes $executionLimitMinutes)
 
     if ($WhatIf) {
         Write-Host "Would register scheduled task '$taskName' for job '$id'."
