@@ -1,0 +1,105 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+# ==============================================================================
+# HoneyDrunk Grid — canonical CodeRabbit configuration
+# ==============================================================================
+# Source of truth: HoneyDrunk.Architecture/templates/.coderabbit.yaml
+# Bound by:        ADR-0079 D1 — CodeRabbit is Reviewer 2, the third-party-AI
+#                  perspective (not Microsoft Copilot, not Anthropic Claude).
+#
+# HOW THIS IS DEPLOYED — read before copying anywhere:
+#   This file is the Grid baseline. It is applied org-wide via CodeRabbit
+#   **Global Overrides** (Organization Settings -> Global Overrides), which
+#   enforces it across every current AND future HoneyDrunk repo automatically.
+#   You do NOT need to copy this file into each repo. A per-repo .coderabbit.yaml
+#   is only warranted when a repo wants to *refine* the baseline (e.g. stricter
+#   path_instructions on Vault/Audit paths). Global Overrides deep-merge with any
+#   per-repo file, so a repo file only states its delta.
+#   Setup walkthrough: infrastructure/walkthroughs/coderabbit-org-setup.md
+#
+# WHAT CODERABBIT IS NOT — it is not Grid-aware. It does not load invariants,
+#   ADRs, or catalogs. The authoritative invariant-/ADR-enforcing reviewer is the
+#   Grid-aware `review` agent (Reviewers 3/4 per ADR-0079, run by the local
+#   worker per ADR-0086). CodeRabbit's job here is vendor-independent generic AI
+#   review — a different model, a different vendor, a different set of blind spots.
+#
+# Invariant 8: no secrets, DSNs, connection strings, or API keys in this file.
+#   It is a public-repo artifact; CodeRabbit authenticates via its GitHub App.
+# ==============================================================================
+
+language: en-US
+
+# Keep CodeRabbit terse and high-signal. Architecture/invariant judgment is the
+# Grid-aware agent's job, not CodeRabbit's — don't have two reviewers fight over it.
+tone_instructions: >-
+  Be concise and technical. Prioritize correctness, security, reliability, and
+  maintainability over style nits. Do not restate what the diff obviously does.
+  Defer architecture, boundary, and invariant judgments to the Grid-aware review
+  agent. Skip praise-only and decorative comments.
+
+reviews:
+  # `chill` = fewer, higher-confidence comments. `assertive` is noisier; the Grid
+  # optimizes for signal over thoroughness-theater (charter: anti-performing-visibility).
+  profile: chill
+
+  # Advisory only. The merge gate is operator approval (ADR-0011 D5); CodeRabbit
+  # must never be able to block a merge on its own. Do NOT set this to true without
+  # an ADR amendment — it would post blocking "Request changes" reviews.
+  request_changes_workflow: false
+
+  high_level_summary: true
+  review_status: true
+  collapse_walkthrough: true
+
+  # No decorative poem / fortune comments — pure review-noise.
+  poem: false
+
+  auto_review:
+    enabled: true
+    # No review on draft PRs (ADR-0044 D1 cost discipline; mirrors the Grid-aware
+    # reviewer, which also skips drafts).
+    drafts: false
+    auto_incremental_review: true
+    base_branches:
+      - main
+
+  # Machine-generated, vendored, and build-output paths are never worth reviewing.
+  # `!pattern` excludes. These patterns hold across every Grid stack (.NET, TS, docs).
+  path_filters:
+    - "!**/generated/**"
+    - "!**/*.Designer.cs"
+    - "!**/*.g.cs"
+    - "!**/*.generated.cs"
+    - "!**/bin/**"
+    - "!**/obj/**"
+    - "!**/node_modules/**"
+    - "!**/dist/**"
+    - "!**/*.lock"
+    - "!**/package-lock.json"
+    - "!docs/assets/**"
+
+  # Lens hints per language. These steer CodeRabbit toward the Grid's standing
+  # conventions; they do not replace the Grid-aware agent's invariant enforcement.
+  path_instructions:
+    - path: "**/*.cs"
+      instructions: >-
+        Enterprise C#. Check nullable-reference correctness, async/await and
+        ConfigureAwait usage, IDisposable/IAsyncDisposable handling, and that time
+        is read via TimeProvider rather than DateTime.UtcNow/DateTimeOffset.UtcNow
+        (Grid clock policy). Flag secrets, connection strings, or tokens in source.
+    - path: "**/*.bicep"
+      instructions: >-
+        Infrastructure as code. Secrets must flow via Key Vault references, never
+        inline literals. Check Grid resource naming/tagging conventions and
+        least-privilege role assignments.
+    - path: ".github/workflows/**"
+      instructions: >-
+        CI/CD. Verify least-privilege `permissions:` blocks, pinned action/runtime
+        versions, and that tool CLIs are invoked directly rather than wrapped in a
+        third-party marketplace action when a stable CLI exists.
+    - path: "**/*.md"
+      instructions: >-
+        Documentation. Flag broken relative links and stale version/date references.
+        Do not nitpick prose style.
+
+chat:
+  auto_reply: true
