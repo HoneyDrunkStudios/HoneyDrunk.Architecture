@@ -60,8 +60,9 @@
 - `ADR-0077-INFRASTRUCTURE-AS-CODE-BICEP` — ADR-0077: Infrastructure-as-Code — Bicep (Azure-native) (adrs/ADR-0077-infrastructure-as-code-bicep.md)
 - `ADR-0078-END-USER-IDENTITY-ENTRA-EXTERNAL-ID` — ADR-0078: End-User Identity — Microsoft Entra External ID (adrs/ADR-0078-end-user-identity-entra-external-id.md)
 - `ADR-0079-MULTI-PERSPECTIVE-PR-REVIEW-STACK` — ADR-0079: Multi-Perspective PR Review Stack — Copilot + CodeRabbit + Grid-Aware Agent (Codex + Claude) (adrs/ADR-0079-multi-perspective-pr-review-stack.md)
-- `ADR-0081-HOME-SERVER-FOR-OPENCLAW-AND-LOCAL-AGENT-INFRASTRUCTURE` — ADR-0081: Home Server for OpenClaw and Local Agent Infrastructure (adrs/ADR-0081-home-server-for-openclaw-and-local-agent-infrastructure.md)
+- `ADR-0081-HOME-SERVER-FOR-OPENCLAW-AND-LOCAL-AGENT-INFRASTRUCTURE` — ADR-0081: Home Server for OpenClaw and Local Agent Infrastructure (adrs/ADR-0081-home-server-for-openclaw-and-local-agent-infrastructure.md) — **pending supersession by ADR-0088 at its acceptance; remove this row in ADR-0088 packet 00**
 - `ADR-0087-PER-CHANGE-RISK-SCORING-FOR-DOUBLE-REVIEW` — ADR-0087: Per-Change Risk Scoring for the Double-Review Gate (adrs/ADR-0087-per-change-risk-scoring-for-double-review.md)
+- `ADR-0088-DECOMMISSION-OPENCLAW-FROM-THE-GRID` — ADR-0088: Decommission OpenClaw from the HoneyDrunk Grid (adrs/ADR-0088-decommission-openclaw-from-the-grid.md)
 - `PDR-0002-NOTIFY-AS-A-SERVICE-FIRST-COMMERCIAL-PRODUCT` — PDR-0002: HoneyDrunk Notify — First Commercial Product on the Grid (pdrs/PDR-0002-notify-as-a-service-first-commercial-product.md)
 - `PDR-0003-LATELY-CURRENTS-BASED-CONNECTION-APP` — PDR-0003: Lately — A Currents-Based Connection App for Regular Humans (pdrs/PDR-0003-lately-currents-based-connection-app.md)
 - `PDR-0005-HEARTH-PERSONAL-GROWTH-AS-A-LIVING-TOWN` — PDR-0005: Hearth — Personal Growth as a Living Town (pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md)
