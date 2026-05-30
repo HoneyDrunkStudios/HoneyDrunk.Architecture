@@ -29,7 +29,7 @@ The charter framing makes the Azure-deep honesty load-bearing ([`constitution/ch
 
 > Build-in-public here means showing the **whole shape**, including … honest assessments of what's working and what isn't.
 
-This ADR's Azure-deep commitment is honest about the lock-in cost. A vendor-exit playbook ([`charter-aware draft cluster 2.1`](../generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md)) is the right complement; this ADR pre-stages the modularization that makes that playbook cheaper.
+This ADR's Azure-deep commitment is honest about the lock-in cost. A vendor-exit playbook ([`governance/vendor-postures/azure.md`](../governance/vendor-postures/azure.md), authorized by [ADR-0080](./ADR-0080-vendor-lock-in-posture-and-exit-readiness-hedges.md)) is the right complement; this ADR pre-stages the modularization that makes that playbook cheaper.
 
 ## Decision
 
@@ -97,7 +97,7 @@ The follow-up packet for this ADR (filed at acceptance time) provisions `acrhdbi
 
 **Why modularize by concern, not by Node:**
 
-- **A future Terraform port has module boundaries to mirror.** Per the vendor-exit posture (D5), if the Grid ever migrates to Terraform, the per-concern module structure maps directly onto Terraform modules. Per-Node templates would have to be unpicked into per-concern shape during the migration.
+- **A future Terraform port has module boundaries to mirror.** Per the vendor-exit posture (D5; the Grid's umbrella posture is [ADR-0080](./ADR-0080-vendor-lock-in-posture-and-exit-readiness-hedges.md) and the canonical Azure governance file is [`governance/vendor-postures/azure.md`](../governance/vendor-postures/azure.md)), if the Grid ever migrates to Terraform, the per-concern module structure maps directly onto Terraform modules. Per-Node templates would have to be unpicked into per-concern shape during the migration.
 - **Cross-Node reuse.** Every Node provisions a Key Vault, a Container App, a managed identity. The per-concern module is written once; per-Node consumption is per-Node parameters.
 - **Per-concern review and discipline.** Networking changes have different review concerns than data-layer changes; the module structure makes the concern explicit in the file path.
 
@@ -144,7 +144,7 @@ This ADR is **Azure-deep**. Bicep is Azure-only by construction; Bicep templates
 - **The Grid is Azure-only by current design.** No multi-cloud aspiration; no multi-cloud constraint.
 - **A future cloud-migration ADR would be expensive.** Migrating from Azure to AWS or GCP would require: re-authoring every Bicep template in the new cloud's IaC tool; re-implementing every Azure-specific contract backing (Key Vault, App Configuration, Service Bus, Event Grid, App Insights); re-running the entire deployment substrate. This is months-of-engineering work, not weeks.
 - **The hedges this ADR pre-pays:** Modularization by concern (D2) means a Terraform port mirrors the module structure 1:1, reducing the per-module migration cost. Per-concern modules are smaller migration units than per-Node monoliths.
-- **A vendor-exit playbook for Azure** (per [`charter-aware draft cluster 2.1`](../generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md)) is named as follow-up work. This ADR explicitly does not author the playbook (out of scope); it pre-pays the part of the migration cost that modularization addresses.
+- **A vendor-exit playbook for Azure** (authorized by [ADR-0080](./ADR-0080-vendor-lock-in-posture-and-exit-readiness-hedges.md); canonical home [`governance/vendor-postures/azure.md`](../governance/vendor-postures/azure.md)) is the complement. This ADR explicitly does not author the playbook (out of scope); it pre-pays the part of the migration cost that modularization addresses.
 
 **Why this is the right trade today:**
 
@@ -177,7 +177,7 @@ This is consistent with [Invariant 8](../constitution/invariants.md) (secrets ne
 
 The following are explicitly **not** decided by this ADR:
 
-- **Vendor-exit playbook content.** Named as follow-up per [`charter-aware draft cluster 2.1`](../generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md); separate ADR when authored.
+- **Vendor-exit playbook content.** The umbrella is authorized by [ADR-0080](./ADR-0080-vendor-lock-in-posture-and-exit-readiness-hedges.md) and the canonical Azure home is [`governance/vendor-postures/azure.md`](../governance/vendor-postures/azure.md) (stub at acceptance); the full per-surface content remains deferred per ADR-0080 D8.
 - **Multi-region deployment topology.** Disaster-recovery cross-region deployment is per [ADR-0036](./ADR-0036-disaster-recovery-and-backup-policy.md); the Bicep templates support per-region parameterization but the topology decision is per-Node.
 - **Specific Azure Policy / Azure Blueprints adoption.** Higher-order governance via Azure Policy is a future concern; this ADR's scope is the IaC tool.
 - **Cost-allocation tagging beyond D3's `hd:cost-center` baseline.** Detailed cost analytics are a future operational concern.
@@ -220,7 +220,7 @@ The following are proposed for `constitution/invariants.md` (numbering finalized
 - Ship `job-deploy-bicep.yml` reusable workflow in HoneyDrunk.Actions.
 - Author the per-concern Bicep modules library under `HoneyDrunk.Actions/bicep/modules/`.
 - Per-Node Bicep templates land as part of each Node's scaffolding (or are added at the first significant infrastructure touchpoint per D6).
-- Author the vendor-exit playbook for Azure per [`charter-aware draft cluster 2.1`](../generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md) (separate ADR).
+- ~~Author the vendor-exit playbook for Azure per [`charter-aware draft cluster 2.1`](../generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md) (separate ADR).~~ **Resolved 2026-05-24:** authorized by [ADR-0080](./ADR-0080-vendor-lock-in-posture-and-exit-readiness-hedges.md); the Azure canonical home is [`governance/vendor-postures/azure.md`](../governance/vendor-postures/azure.md). Full per-surface content remains deferred per ADR-0080 D8.
 - Bicep linter configuration (`bicepconfig.json`) carries the naming + tagging rules per D3.
 - Existing infrastructure imports happen opportunistically per D6.
 - DR-rehearsal exercise (per [ADR-0036](./ADR-0036-disaster-recovery-and-backup-policy.md)) validates the Bicep-driven re-provisioning path.
@@ -300,5 +300,7 @@ Rejected per [ADR-0076](./ADR-0076-cache-backing-azure-cache-for-redis.md), [ADR
 - [ADR-0053](./ADR-0053-environments-branching-and-release-cadence.md) — per-environment cadence
 - [ADR-0059](./ADR-0059-stand-up-honeydrunk-cache-node.md), [ADR-0060](./ADR-0060-stand-up-honeydrunk-identity-node.md), [ADR-0061](./ADR-0061-stand-up-honeydrunk-files-node.md) — Node standups requiring infrastructure provisioning
 - [ADR-0076](./ADR-0076-cache-backing-azure-cache-for-redis.md) — Redis provisioning (first major Bicep-managed resource)
-- [`generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md`](../generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md) cluster 2.1 — vendor-exit playbook (follow-up)
+- [ADR-0080](./ADR-0080-vendor-lock-in-posture-and-exit-readiness-hedges.md) — vendor lock-in posture umbrella (resolves the future-playbook footnote)
+- [`governance/vendor-postures/azure.md`](../governance/vendor-postures/azure.md) — Azure exit-playbook canonical home (stub at acceptance; full per-surface content deferred)
+- [`generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md`](../generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md) cluster 2.1 — vendor-exit playbook surfacing observation (resolved by ADR-0080)
 - [`generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md`](../generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md) cluster 11.2 — bus-factor concern (this ADR addresses the infrastructure layer)

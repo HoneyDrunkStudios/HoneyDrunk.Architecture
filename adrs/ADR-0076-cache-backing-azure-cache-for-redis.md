@@ -87,7 +87,7 @@ The discipline:
 
 **Why protocol-only:** This is the **cheap vendor-exit hedge**. Redis-the-protocol is widely implemented (open-source Redis, KeyDB, Dragonfly, Garnet, Valkey, Redis Cloud, every cloud-managed Redis offering); Azure's specific module set is not portable. Restricting consumer code to standard Redis commands means a future migration off Azure Cache for Redis (to Redis on Container Apps, to KeyDB, to Valkey when its trajectory matures) is a managed-service swap, not a code rewrite.
 
-This matches the broader Azure-deep-but-protocol-portable posture the Grid will adopt across vendor lock-in concerns (per the future vendor-exit playbooks named in [`charter-aware draft`](../generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md) cluster 2.1).
+This matches the broader Azure-deep-but-protocol-portable posture the Grid adopts across vendor lock-in concerns, now committed as the Grid's chosen vendor posture in [ADR-0080](./ADR-0080-vendor-lock-in-posture-and-exit-readiness-hedges.md); the canonical Azure governance file is [`governance/vendor-postures/azure.md`](../governance/vendor-postures/azure.md), which resolves the future-playbook pointer the [`charter-aware draft`](../generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md) cluster 2.1 named.
 
 ### D4 — Default eviction policy is `allkeys-lru`
 
@@ -185,7 +185,7 @@ No new Grid-wide invariants introduced. Conventions enforced at packet authoring
 - Notify Cloud multi-replica deployment composes `HoneyDrunk.Cache.Redis` at host time (Notify Cloud packet).
 - Communications preference cache composes `HoneyDrunk.Cache.Redis` when introduced.
 - Per-Node operational dashboards (hit rate, miss rate, latency) land via Pulse per [ADR-0040](./ADR-0040-telemetry-backend-and-retention.md).
-- The vendor-exit playbook for Azure Cache for Redis (when authored per [`charter-aware draft`](../generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md) cluster 2.1) cites D3 as the hedge that pre-pays the migration cost.
+- The vendor-exit playbook for Azure (per [ADR-0080](./ADR-0080-vendor-lock-in-posture-and-exit-readiness-hedges.md), canonical home [`governance/vendor-postures/azure.md`](../governance/vendor-postures/azure.md)) cites D3 as the hedge that pre-pays the migration cost for the Cache for Redis surface specifically.
 - Watch list: Azure Cache for Redis pricing changes; Valkey project maturity (open-source Redis fork after the Redis license change); managed-Valkey offerings; Premium-tier necessity (current answer: not needed).
 
 ## Alternatives Considered
@@ -268,4 +268,6 @@ Held in watch-list, not adopted. Azure Cache for Redis runs on Redis-the-server 
 - [ADR-0058](./ADR-0058-grid-wide-caching-strategy.md) — caching strategy (this ADR fills D8's deferred backing decision)
 - [ADR-0059](./ADR-0059-stand-up-honeydrunk-cache-node.md) — Cache Node (this ADR ships its first backing)
 - [ADR-0077](./ADR-0077-infrastructure-as-code-bicep.md) — Bicep for IaC (Redis provisioning)
-- [`generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md`](../generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md) cluster 2.1 — vendor-exit playbook (future)
+- [ADR-0080](./ADR-0080-vendor-lock-in-posture-and-exit-readiness-hedges.md) — vendor lock-in posture umbrella (resolves the future-playbook footnote)
+- [`governance/vendor-postures/azure.md`](../governance/vendor-postures/azure.md) — Azure exit-playbook canonical home (stub at acceptance; full per-surface content deferred)
+- [`generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md`](../generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md) cluster 2.1 — vendor-exit playbook surfacing observation (resolved by ADR-0080)
