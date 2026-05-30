@@ -33,7 +33,6 @@
 - `ADR-0049-DATA-CLASSIFICATION-PII-HANDLING-AND-RETENTION-SCHEDULE` — ADR-0049: Data Classification, PII Handling, and Retention Schedule (adrs/ADR-0049-data-classification-pii-handling-and-retention-schedule.md)
 - `ADR-0050-TENANT-LIFECYCLE-PROVISIONING-SUSPENSION-OFFBOARDING-AND-DATA-EXPORT` — ADR-0050: Tenant Lifecycle: Provisioning, Suspension, Offboarding, and Data Export (adrs/ADR-0050-tenant-lifecycle-provisioning-suspension-offboarding-and-data-export.md)
 - `ADR-0051-AI-AGENT-AUTHORIZATION-AND-TOOL-SCOPING-MODEL` — ADR-0051: AI Agent Authorization and Tool Scoping Model (adrs/ADR-0051-ai-agent-authorization-and-tool-scoping-model.md)
-- `ADR-0052-COST-GOVERNANCE-BUDGET-ALERTS-AND-KILL-SWITCHES` — ADR-0052: Cost Governance, Budget Alerts, and Kill-Switches (adrs/ADR-0052-cost-governance-budget-alerts-and-kill-switches.md)
 - `ADR-0053-ENVIRONMENTS-BRANCHING-AND-RELEASE-CADENCE` — ADR-0053: Environments, Branching, and Release Cadence (adrs/ADR-0053-environments-branching-and-release-cadence.md)
 - `ADR-0054-INCIDENT-RESPONSE-AND-ON-CALL-MODEL-FOR-A-ONE-PERSON-STUDIO` — ADR-0054: Incident Response and On-Call Model for a One-Person Studio (adrs/ADR-0054-incident-response-and-on-call-model-for-a-one-person-studio.md)
 - `ADR-0055-FEATURE-FLAG-AND-PROGRESSIVE-ROLLOUT-STRATEGY` — ADR-0055: Feature Flag and Progressive Rollout Strategy (adrs/ADR-0055-feature-flag-and-progressive-rollout-strategy.md)

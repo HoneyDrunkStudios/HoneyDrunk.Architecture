@@ -1,0 +1,29 @@
+{
+  "_meta": {
+    "schema_version": 1,
+    "source_adr": "ADR-0052",
+    "currency": "USD",
+    "window": "monthly",
+    "last_tuned": null,
+    "note": "Production-critical config. See ./cost-budgets-tuning-policy.md. Caps are the ADR-0052 D2 final-state defaults; the Phase-1 loose-cap behaviour is a runtime multiplier (App Configuration), not a value in this file. The slow PR path is the only mechanism that mutates persistent caps; the fast path is the D11 `hd cost unlock` CLI, which issues time-bounded overrides and never edits this file."
+  },
+  "categories": {
+    "ai_inference":          { "soft_cap": 500, "hard_cap": 1500, "kill_switch": "in_process",    "anomaly_hour_over_hour": 5.0, "anomaly_day_over_day": 3.0 },
+    "azure_infrastructure":  { "soft_cap": 300, "hard_cap": 800,  "kill_switch": "azure_suspend",  "anomaly_hour_over_hour": 5.0, "anomaly_day_over_day": 3.0 },
+    "third_party_saas":      { "soft_cap": 200, "hard_cap": null, "kill_switch": "none",           "anomaly_hour_over_hour": 5.0, "anomaly_day_over_day": 3.0 },
+    "domain_cert_registrar": { "soft_cap": 25,  "hard_cap": null, "kill_switch": "none",           "anomaly_hour_over_hour": 5.0, "anomaly_day_over_day": 3.0 },
+    "github_actions":        { "soft_cap": 50,  "hard_cap": 150,  "kill_switch": "github_native",  "anomaly_hour_over_hour": 5.0, "anomaly_day_over_day": 3.0 }
+  },
+  "dev_overlay": {
+    "ai_inference":         { "soft_cap": 50, "hard_cap": 100 },
+    "azure_infrastructure": { "soft_cap": 25, "hard_cap": 50 },
+    "github_actions":       { "soft_cap": 25, "hard_cap": 50 }
+  },
+  "owners": {
+    "ai_inference":          "oleg",
+    "azure_infrastructure":  "oleg",
+    "third_party_saas":      "oleg",
+    "domain_cert_registrar": "oleg",
+    "github_actions":        "oleg"
+  }
+}

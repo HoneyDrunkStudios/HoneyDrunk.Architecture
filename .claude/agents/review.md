@@ -183,6 +183,34 @@ Cost findings follow the normal severity taxonomy:
 - **Request Changes** — hot-path logging without sampling; unguarded CI jobs; LLM calls without cost caps.
 - **Suggest** — outbound HTTP without caching; catalog loops that work today but won't scale.
 
+#### 8a. Cost-Config Changes (`cost-config`)
+
+Per ADR-0052 D2 and Operational Consequences, `business/context/cost-budgets.json` is **production-critical**: a mis-edit can disable a kill-switch (a hard cap raised to infinity) or trigger a spurious shutdown (a hard cap dropped below current month-to-date). Treat any PR that modifies this file as a production-config review.
+
+- **Trigger.** Any PR that modifies `business/context/cost-budgets.json` (or the configured cost-budget JSON path if it moves).
+- **What to look for.**
+  - **Hard cap ≥ soft cap** for every category — a hard cap below the soft cap is nonsensical (defect).
+  - **A removed hard cap pairs with `kill_switch: "none"`** — if `hard_cap` is set to `null`, the category's `kill_switch` must also be `"none"`, else the runtime expects a value and may default permissive (defect).
+  - **Cap value sanity** — within the ADR-0052 D2 bands (AI inference ~$50–$5000; Azure infra ~$300–$1000). A sudden jump (e.g. AI inference hard cap $1500 → $50000 in one PR) requires explicit justification in the PR description.
+  - **Anomaly thresholds in band** — hour-over-hour in `[1.5, 20.0]`, day-over-day in `[1.2, 10.0]`. Outside the band means disabled (too high) or noise-trap (too low) detection.
+  - **Dev-overlay caps smaller than prod** — a dev cap exceeding the prod cap is almost certainly a mistake.
+  - **PR description carries the reasoning** — per ADR-0052 D2 the audit value is "the cap was raised on this date, by this PR, with this reasoning." A cap change without a stated reason is a documentation defect.
+- **Severity.** **Block** — do not approve a `cost-config` change without explicit operator sign-off in the PR description (e.g. "Approved by Oleg, raising cap for the customer-demo window" is sufficient).
+- **Why it matters.** This file is the only mechanism for persistent cap changes (the D11 override CLI is the fast path and does not mutate it); the git history is the audit trail. See ADR-0052 D2 and Operational Consequences.
+
+#### 8b. Cost Kill-Switch Retry (`cost-kill-switch-retry`)
+
+Per ADR-0052 D4 and invariant 105, `BudgetExceededException` carries a no-retry contract — it is sealed and non-transient; catching and retrying within the same billing window defeats the kill-switch.
+
+- **Trigger.** Any PR touching the dispatcher / LLM-call path, OR adding a `catch` referencing `BudgetExceededException`, OR adding a retry policy whose catch-and-retry set includes it.
+- **What to look for.**
+  - **Direct catch-and-retry.** `catch (BudgetExceededException) { /* retry */ }` is a defect — the cap is closed for the window; a retry either throws again or races the cache refresh into further spend.
+  - **Generic exception swallowing.** `catch (Exception)` around LLM calls that continues the loop may swallow `BudgetExceededException` implicitly; ask whether the block excludes sealed non-transient types.
+  - **Polly / retry-library config.** `Policy.Handle<Exception>()` against an LLM-call delegate is a defect unless it explicitly excludes the exception — suggest `Policy.Handle<Exception>(ex => ex is not BudgetExceededException)`.
+  - **Top-level loop catch is ALLOWED.** ADR-0052 D4 permits a single top-level loop handler that logs the breach as a structured event, writes checkpoint state to Audit, and exits — recognize this pattern (it does not re-invoke the LLM-call site in the same process) and approve it. Do not false-positive on it.
+- **Severity.** **Block** — a catch-and-retry on `BudgetExceededException` defeats the kill-switch and is a budgeting defect.
+- **Why it matters.** The no-retry contract is the substrate of the kill-switch; without it the cap is advisory only. See ADR-0052 D4 and invariant 105.
+
 ### 9. CI/CD Workflow Compliance
 
 - **Caller workflow that omits `permissions:` while calling a reusable HoneyDrunk.Actions workflow** — Request Changes. Under `workflow_call`, the callee's `permissions:` block is purely documentary; effective token scope is the caller's. A caller without an explicit `permissions:` block inherits the repository default (`contents: read`, all writes `none`) and any reusable workflow that needs a `write` scope fails at workflow-load time on every scheduled run. The fix is to add a top-level `permissions:` block to the caller that is a superset of the callee's declared needs. Canonical baselines are in `HoneyDrunk.Actions/docs/consumer-usage.md`. See invariant 39 and ADR-0012 D5.
