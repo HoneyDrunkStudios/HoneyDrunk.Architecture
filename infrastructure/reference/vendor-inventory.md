@@ -2,7 +2,9 @@
 
 External vendors, services, and third-party dependencies across the HoneyDrunk Grid.
 
-**Last Updated:** 2026-04-26
+**Last Updated:** 2026-05-30
+
+> **Related:** this file is the **product-level** vendor inventory ("which SaaS products do we use"). The **artifact-level** index ("which credentials, identifiers, and identity bindings do we hold against each vendor, plus everything else load-bearing") lives in [`sensitive-inventory.md`](./sensitive-inventory.md) per ADR-0083. For any vendor below whose credentials the Grid holds — SonarCloud (`SONAR_TOKEN`), NuGet.org (`NUGET_API_KEY`), GitHub (PATs / App keys), Azure (tenant/subscription IDs, OIDC, Key Vault), Anthropic / OpenAI (API keys) — see that file for the rotation posture and expiration tracking.
 
 ---
 

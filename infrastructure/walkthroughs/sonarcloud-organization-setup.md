@@ -3,6 +3,7 @@
 **Applies to:** ADR-0011 (Code Review and Merge Flow), D11.
 **Related invariants:** 8 (secrets never in logs), 31 (tier-1/tier-2 PR gates).
 **Naming note:** SonarSource rebranded "SonarCloud" to **"SonarQube Cloud"** in early 2026. ADR-0011 was drafted under the old name and uses "SonarCloud" throughout; the product is the same.
+**Rotating the token:** the `SONAR_TOKEN` PAT this setup creates expires every 60 days (free tier). To rotate it, see [`sonarcloud-token-rotation.md`](./sonarcloud-token-rotation.md) (ADR-0083 D4).
 
 ## Goal
 
