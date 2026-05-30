@@ -64,7 +64,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 **Reconciliation against live `gh secret list` (2026-05-30; PRs #528 Architecture / #174 Actions):**
 - [x] **`GH_ISSUE_TOKEN` was a phantom** (no such org secret) — removed from the inventory and replaced by **`CREDENTIALS_CHECK_TOKEN`**, the dedicated fine-grained PAT (Architecture-scoped, Issues/Contents/PRs RW, expires 2027-05-30) the operator minted and bound to `HoneyDrunk.Actions`. `external-credentials-check.yml` repointed (PR #174); standing issue #522 closed, #530 opened.
-- [x] **`OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET` retired** — webhook review transport decommissioning under ADR-0086; inventory row + `openclaw-webhook-secret-rotation.md` removed, issue #527 closed.
+- [ ] **`OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET` left tracked** — the secret still exists, so per invariant 103 its row + walkthrough + standing issue #527 remain until **actual** OpenClaw decommission cutover. A dedicated OpenClaw-decommission ADR (superseding ADR-0081) will own deletion of the secret/bridge/files; the inventory row retires there, not here.
 - [x] **Dates corrected** — `NUGET_API_KEY` → ~2026-10-30 (issue #521 retitled); `ANTHROPIC_API_KEY` reclassified live / `Rotates: no`; `LABELS_FANOUT_PAT` + `GRID_HEALTH_PAT` corrected to **repo** secrets on `HoneyDrunk.Actions`.
 - [ ] Minor follow-ups: verify the inferred `Use Cases` for `INITIATIVES_SYNC_TOKEN` / `GRID_HEALTH_PAT`; refine NUGET's exact date at next rotation.
 
