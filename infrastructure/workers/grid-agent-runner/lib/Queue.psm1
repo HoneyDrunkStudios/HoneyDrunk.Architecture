@@ -483,17 +483,16 @@ Blast Radius: Platform-wide
 Operational Sensitivity: High
 Requires ADR: Yes
 
-✅ Verdict: Request Changes
+✅ Verdict: Block
 
 🔎 Summary
 $Summary
 
 🚫 Blockers
-None.
+[Source: Runner] $Finding
 
 ⚠️ Risks / Request Changes
-
-[Source: Runner] $Finding
+None.
 
 🧱 Architectural Alignment
 The runner could not satisfy the ADR-0086 multi-perspective review discipline for this queued item, so the architectural review is incomplete until the secondary pass or fallback succeeds.
@@ -552,7 +551,6 @@ Contracts / downstream: Not evaluated beyond runner control-plane safety because
 Security / secrets: Host credential isolation and no-PR-head-execution posture remain in force.
 Cost / CI discipline: No additional agent pass was launched after the guardrail condition was detected.
 Validation: Runner detected insufficient independent review outputs.
-Material disagreements: None.
 Files inspected: $files
 "@
 }
