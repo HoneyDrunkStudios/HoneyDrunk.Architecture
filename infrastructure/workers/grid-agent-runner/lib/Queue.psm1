@@ -236,7 +236,7 @@ function Get-PullRequestFiles {
     while ($true) {
         $pageItems = @(Invoke-GitHubApi -Method "GET" -Uri "https://api.github.com/repos/$Owner/$Repo/pulls/$Number/files?per_page=100&page=$page" -Token $Token)
         foreach ($item in $pageItems) {
-            $files.Add($item)
+            $null = $files.Add($item)
         }
 
         if ($pageItems.Count -lt 100) {
@@ -246,7 +246,7 @@ function Get-PullRequestFiles {
         $page += 1
     }
 
-    return @($files)
+    return $files.ToArray()
 }
 
 function Get-ReviewAuthorshipClass {
