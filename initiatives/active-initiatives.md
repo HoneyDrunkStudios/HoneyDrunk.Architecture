@@ -68,7 +68,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [x] **Dates corrected** — `NUGET_API_KEY` → ~2026-10-30 (issue #521 retitled); `ANTHROPIC_API_KEY` reclassified live / `Rotates: no`; `LABELS_FANOUT_PAT` + `GRID_HEALTH_PAT` corrected to **repo** secrets on `HoneyDrunk.Actions`.
 - [ ] Minor follow-ups: verify the inferred `Use Cases` for `INITIATIVES_SYNC_TOKEN` / `GRID_HEALTH_PAT`; refine NUGET's exact date at next rotation.
 
-**Remaining to close the initiative:** merge #528 + #174 (the workflow goes live against the right token + reconciled inventory once both land) and #529 (CodeRabbit config mirror). Operator items done: `CREDENTIALS_CHECK_TOKEN` bound, CodeRabbit Global Override updated.
+**Remaining to close the initiative:** merge **#528 + #174** — the workflow goes live against the right token + reconciled inventory once both land. Operator items done: `CREDENTIALS_CHECK_TOKEN` bound, CodeRabbit Global Override updated. *(PR #529 — the CodeRabbit summary-placement fix — is unrelated config hygiene, not an ADR-0083 deliverable, and does not gate this initiative.)*
 
 **Exit criteria:** ADR-0083 Accepted; invariant 103 live; the inventory + walkthroughs + onboarding hook landed; the drift-detection workflow live in Actions; labels + standing issues created; real expiration dates reconciled against ground truth. **All met once #528 + #174 merge.**
 
