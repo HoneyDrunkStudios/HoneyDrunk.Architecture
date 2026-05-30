@@ -92,7 +92,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [x] Actions#86: Seed `large-pr`, `audit-sample`, and `skip-review` labels Grid-wide (packet 08; labels-as-code and seed/fanout workflows shipped via Actions PR #100; fanout repair shipped via Actions PR #101; fanout run verified 2026-05-24)
 - [x] Architecture#175: Roll the D3 rubric into upstream authoring agents (packet 09; shipped via PR #279)
 - [x] Architecture#176: Amend execution-surface prompts for `Authorship:` and D3 checklist (packet 10; shipped via PR #279)
-- [ ] Architecture#182: Superseded by ADR-0086 packet 09 — enable the local-worker reviewer on the 10 remaining live Nodes instead of the OpenClaw/Codex runner.
+- [x] Architecture#182: Superseded by ADR-0086 packet 09 — local-worker reviewer fan-out implementation landed on the 10 remaining live Nodes; repo-local PR templates are not duplicated because `HoneyDrunkStudios/.github` carries the org-wide `Authorship:` default.
 - [x] Architecture#183: Verify `pr-review-rules.md` severity coverage across all D3 categories (packet 12; shipped via this PR)
 
 **Tracking (Wave 3 — Phase 3: discipline tightening):**
@@ -127,8 +127,10 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [ ] Architecture: Cut over the Architecture pilot to the local worker and record Phase-A go/no-go evidence (packet 07)
 
 **Tracking (Wave 2 — Phase B: decommission + fan-out):**
-- [ ] Architecture: Decommission OpenClaw on the review path and document operator-side cutover steps (packet 08; must land before packet 09)
-- [ ] Cross-repo: Enable the local-worker reviewer on the 10 remaining live Nodes, superseding ADR-0044 Architecture#182 (packet 09)
+- [ ] Architecture: Decommission OpenClaw on the review path and document operator-side cutover steps (packet 08; review transport replaced by ADR-0086 local-worker queue, physical teardown/governance reconciliation owned by ADR-0088)
+- [ ] Cross-repo: Enable the local-worker reviewer on the 10 remaining live Nodes, superseding ADR-0044 Architecture#182 (packet 09; implementation landed 2026-05-30, final packet closeout remains open until the Phase-A prerequisite rows are reconciled)
+
+> **Sync (2026-05-30):** ADR-0086 packet 09 implementation landed across Kernel#70, Transport#43, Vault#48, Auth#38, Web.Rest#33, Data#39, Notify#52, Communications#29, Pulse#40, and the Actions queue/caller follow-ups through Actions#177. The `Authorship:` PR-template requirement is satisfied by the org-wide `HoneyDrunkStudios/.github` default template unless a repo deliberately overrides it. Keep packet 09's final tracker checkbox open until the still-open Phase-A prerequisite rows above are reconciled from their merged evidence.
 
 **Tracking (Wave 3 — Phase C: scheduled agent job migration):**
 - [ ] Architecture: Migrate `hive-sync`, Lore sourcing, Lore ingest/compile, and Lore signal review from OpenClaw/Honeyclaw schedules to ADR-0086 runner jobs with smoke-test and rollback records (packet 11)
