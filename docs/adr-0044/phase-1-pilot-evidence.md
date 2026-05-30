@@ -1,9 +1,9 @@
 # ADR-0044 Phase 1 Pilot Evidence
 
-**Status:** Pending pilot PR merge and first live review request
+**Status:** Superseded by ADR-0086 local-worker Phase A pilot
 **Pilot repo:** `HoneyDrunk.Architecture`
-**Runner:** `openclaw-codex`
-**Transport:** cron/poll fallback first; webhook later
+**Runner:** `local-worker`
+**Transport:** GitHub label/comment queue, polled by the ADR-0086 runner
 
 ## Pilot Wiring
 
@@ -18,48 +18,45 @@ The pilot is advisory only. It must not become a required branch-protection chec
 
 ## Current Transport Choice
 
-Phase 1 starts with fallback transport only:
+ADR-0086 replaces the OpenClaw webhook/fallback transport with a GitHub-native queue:
 
-- GitHub Actions emits the `grid-review-request` payload.
-- The OpenClaw webhook URL is intentionally empty until the receiver and signing secret are provisioned.
-- The workflow uploads `review-request.json` as an artifact. Machine-readable replay pointer comments are disabled for the first Architecture pilot run until reusable-workflow token permissions are hardened.
-- OpenClaw cron/poll discovers pending Architecture review requests and runs the Grid Review Runner.
+- GitHub Actions applies `needs-agent-review`.
+- GitHub Actions upserts a `honeydrunk-grid-review-queue:v1` PR comment containing the current `head_sha`.
+- The local worker polls for queued PRs, claims one by replacing `needs-agent-review` with `agent-review-in-progress`, runs the subscribed local CLI review, and posts one advisory verdict.
+- Head-SHA advancement is detected by comparing both the queue comment and the live PR head before posting a verdict.
 
-## OpenClaw Polling Window
+## Local Worker Polling Window
 
-Temporary cron/poll cadence:
+Default Task Scheduler cadence:
 
 ```text
-*/15 8-21 * * * America/New_York
-0 22 * * * America/New_York
+grid-review: every 60 seconds, at startup, and at logon
 ```
 
 Interpretation:
 
-- Poll every 15 minutes.
-- Start at 8:00 AM Eastern.
-- Run the final daily poll at 10:00 PM Eastern.
 - Polling is Architecture-only for the Phase 1 pilot.
+- The workflow is advisory only; branch protection must not require the review verdict during Phase A.
 
-## Webhook Cutover Rule
+## Cutover Rule
 
-When the OpenClaw webhook receiver is live and `OPENCLAW_GRID_REVIEW_WEBHOOK_URL` plus `OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET` are configured:
+When the ADR-0086 local worker is live:
 
-1. Enable webhook delivery for the caller workflow.
-2. Verify a real Architecture PR request reaches OpenClaw by webhook.
-3. Disable the temporary cron/poll job.
+1. Verify a real Architecture PR receives `needs-agent-review` plus the queue comment.
+2. Verify the worker claims the PR and replaces the label with `agent-review-in-progress`.
+3. Verify the worker posts one advisory verdict for the recorded head SHA.
 4. Record the cutover evidence in this file or a follow-up note.
 
-Cron/poll is a temporary fallback transport, not the long-term primary path.
+The old OpenClaw review-path cron/webhook transport is superseded by ADR-0086 and should remain disabled after cutover.
 
 ## Go/No-Go Evidence Checklist
 
-- [ ] `.honeydrunk-review.yaml` exists with `enabled: true` and `runner: openclaw-codex`.
+- [ ] `.honeydrunk-review.yaml` exists with `enabled: true` and `runner: local-worker`.
 - [ ] Architecture PR workflow invokes `job-review-request.yml`.
 - [ ] Draft PRs do not request review.
 - [ ] `skip-review` PRs do not request review.
-- [ ] A real/test Architecture PR receives a Grid Review Runner comment.
+- [ ] A real/test Architecture PR receives `needs-agent-review` plus the queue comment.
+- [ ] The local worker claims the PR and posts a Grid Review Runner comment.
 - [ ] Re-running on the same head SHA does not duplicate review work.
-- [x] OpenClaw-offline behavior is advisory/pending, not a hard failure via artifact fallback.
-- [ ] PR comment fallback is re-enabled after token/permission hardening.
+- [ ] Synchronizing a new commit updates the queue comment `head_sha` and re-adds `needs-agent-review`.
 - [ ] Phase 1 go/no-go result is recorded.
