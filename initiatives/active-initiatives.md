@@ -18,6 +18,29 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [x] Architecture#350: Cross-link ADR-0076 / ADR-0077 / ADR-0078 to `governance/vendor-postures/azure.md` (packet 03)
 
 **Exit criteria:** ADR-0080 is Accepted; invariants 99–101 are live under `## Vendor Posture Invariants`; `governance/vendor-postures/azure.md` and `governance/vendor-postures/github.md` stubs exist; ADR-0076/0077/0078 cite the resolved canonical home instead of the charter-aware draft. **All met by PR #515.**
+### ADR-0052 Cost Governance, Budget Alerts, and Kill-Switches
+**Status:** In Progress — Phase-1 governance substrate landed; contract + implementation packets gated
+**Scope:** Architecture (governance), Kernel (contracts), AI (ledger impl + dispatcher kill-switch); Operator/Communications/Notify/Observe surfaces deferred to ADR-0018 standup
+**Initiative:** `adr-0052-cost-governance`
+**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
+**Description:** Commit the Grid's cost-governance substrate per ADR-0052: five cost categories with per-category soft/hard caps, layered kill-switches (in-process AI-inference, Azure-suspend infra, GitHub-native CI), per-tenant/per-agent attribution, a Cosmos-backed `ICostLedger`, monthly reports, anomaly detection, time-bounded audited overrides, and a phased rollout. **This pass lands the Architecture-side governance substrate** — the policy is the cheap insurance the ADR argues for, ready for when the AI Node scaffolds.
+
+**Tracking (Wave 1 — Architecture governance, shipped via PR #517):**
+- [x] Architecture#354: Accept ADR-0052 — flip status, add cost-governance invariants 104/105/106, register the initiative (packet 00)
+- [x] Architecture#356: Create `business/context/cost-budgets.json` with the D2 defaults + tuning policy (packet 02)
+- [x] Architecture#357: Create `generated/cost-reports/` with the canonical monthly report format (packet 07)
+- [x] Architecture#358: Add `cost-config` + `cost-kill-switch-retry` review categories to `.claude/agents/review.md` (packet 08)
+- [x] Architecture#359: Author the Operator-side rollout playbook for the deferred Phase 2–7 surfaces (packet 09)
+
+**Deferred / gated (NOT in this pass):**
+- [ ] Architecture#355: Catalog registration of the Kernel cost-governance contracts + AI-side `ICostLedger` relocation record (packet 01) — **deferred** to pair with the Kernel code (packet 03), so the catalog never claims contracts the Kernel package doesn't yet expose.
+- [ ] Kernel: Add `ICostLedger`/`CostEvent`/`CostCategory`/`BudgetExceededException`/`BudgetOverride`/`IBudgetConfigProvider`/`BudgetConfig`/`CostQuery` to `HoneyDrunk.Kernel.Abstractions` (packet 03) — Kernel solution version bump (couples with ADR-0042); needs a human NuGet release tag before packet 04.
+- [ ] AI: Relocate `ICostLedger` off the seed AI contract onto Kernel; migrate provider call sites; Phase-1 stub (packet 04) — **blocked** on the human Kernel release.
+- [ ] AI: Cosmos-backed `CostLedger` v1 + cache + `BudgetConfigProvider` (packet 05) — **hard-blocked**: `HoneyDrunk.AI` is at seed v0.1.0; the ADR-0016 Phase-1 scaffold was never executed, so there is no scaffolded Node to host a Cosmos client. Also needs human Cosmos provisioning.
+- [ ] AI: Dispatcher kill-switch wiring + canary (packet 06) — blocked on packet 05 + ADR-0045 `IErrorReporter` (still Proposed; structured-log fallback documented).
+- [ ] **All Operator-side surfaces** (aggregator, `hd cost` CLI, auto-suspend, dashboard, anomaly Bicep, Communications+Notify alert wiring) — gated on ADR-0018 (Operator standup, still Proposed); enumerated in the packet-09 playbook.
+
+**Exit criteria:** ADR-0052 Accepted; cost-governance invariants live; `cost-budgets.json` seeded; report format + review-agent cost gating in place; rollout playbook captures every deferred surface with its gating event. Full enforcement (the kill-switch) goes live when the AI Node scaffolds (ADR-0016 Phase 1) and the Kernel contracts release.
 
 ### ADR-0044 Cloud Code Review and AI-Authored PR Discipline
 **Status:** In Progress

@@ -33,6 +33,10 @@ Rules for agents when reviewing pull requests.
 - [ ] CorrelationId preserved in any new middleware or handlers
 - [ ] New async boundaries maintain context flow
 
+### Cost Governance (ADR-0052)
+- [ ] **`cost-config`** (`block`) — edits to `business/context/cost-budgets.json` are production-config changes: hard cap ≥ soft cap; a removed hard cap pairs with `kill_switch: "none"`; anomaly multipliers in band (hour-over-hour `[1.5, 20.0]`, day-over-day `[1.2, 10.0]`); dev-overlay caps smaller than prod; and a justification in the PR description. Do not approve without operator sign-off. See ADR-0052 D2.
+- [ ] **`cost-kill-switch-retry`** (`block`) — no code path catches `BudgetExceededException` and retries within the same billing window (sealed, non-transient, no-retry contract). Generic `catch (Exception)` around LLM calls and `Policy.Handle<Exception>()` against an LLM delegate are flagged unless they exclude the type; a single top-level loop handler that checkpoints to Audit and exits is allowed. See ADR-0052 D4 and invariant 105.
+
 ## Severity Levels
 
 - **Block:** Invariant violation, security issue, breaking change without version bump

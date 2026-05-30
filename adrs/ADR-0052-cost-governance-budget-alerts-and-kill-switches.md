@@ -1,6 +1,6 @@
 # ADR-0052: Cost Governance, Budget Alerts, and Kill-Switches
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-05-22
 **Deciders:** HoneyDrunk Studios
 **Sector:** Ops / cross-cutting

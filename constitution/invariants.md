@@ -231,3 +231,13 @@ Rules that must never be violated across the HoneyDrunk Grid. Canary tests enfor
 
 101. **"Accept (deep, intentional)" posture vendors have a per-vendor governance file under `governance/vendor-postures/{vendor}.md`.**
     The file documents the lock-in honestly: every surface depended on, the exit cost per surface, the cheap hedges already in place, and the canonical home for "vendor-exit playbook" references from source ADRs. Hedge and Abstract posture vendors use the source ADR as document-of-record; no separate governance file is required at acceptance, with the bar for promotion being "the source ADR's cited hedge is no longer the only relevant context." See ADR-0080 D5.
+## Cost Governance Invariants
+
+104. **Every cost-producing operation in the Grid is recorded as a `CostEvent` in the cost ledger.**
+    Operations that bypass the ledger have undefined kill-switch and attribution behavior and are forbidden. The dispatcher and aggregator code paths must produce a `CostEvent` for every dollar of external spend (Azure, AI provider, SaaS subscription, GitHub Actions minutes, domain/cert renewal). A CI check enforces dispatcher and aggregator coverage. See ADR-0052 D1, D4, D5, D6, D7.
+
+105. **The LLM-dispatch chokepoint checks the cost ledger against the hard cap before each LLM call.**
+    The "chokepoint" is the single seam in the AI Node that every LLM call passes through (the routing decorator or interceptor — the concrete role is named in `HoneyDrunk.AI`, not in this invariant). The check is on the hot path; failure to short-circuit when the cap is breached is a budgeting failure and a defect. `BudgetExceededException` is sealed and non-transient — code that catches it and retries within the same billing window is a defect detected by the `review` agent. Integration test required per ADR-0047 D4. See ADR-0052 D4.
+
+106. **Operator overrides of cost caps are audited.**
+    Overrides without a corresponding audit event are an audit-substrate violation per ADR-0030 (invariant 47) and a cost-governance violation per ADR-0052. The override CLI surface is the only sanctioned override path; direct database writes to `BudgetOverride` are forbidden. Override audit records carry `sensitive=audit` tagging and follow Audit-tier retention from ADR-0030 (invariant 47), not the cost-ledger's 13-month retention. See ADR-0052 D11.
