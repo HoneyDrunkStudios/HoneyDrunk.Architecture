@@ -11,7 +11,7 @@
 
 ADR-0086 keeps the **discipline** of ADR-0044/ADR-0079 intact and changes the **transport** and **execution substrate**. The inbound webhook + Cloudflare Tunnel + OpenClaw-on-the-review-path are removed. A cheap GitHub Action normalizes managed PR labels, then enqueues review requests by labelling and commenting on the PR; a PowerShell scheduled agent runner on the always-on home server polls GitHub on a 60–120 s cadence, claims one PR at a time via a label swap, runs the canonical `.claude/agents/review.md` agent locally under Codex CLI / Claude Code CLI subscription auth, synthesizes independent findings into one verdict when both reviewers run, and posts the verdict back. Reviewer 4 (Claude Code CLI under Max) runs today through the same local runner — the June 15 2026 dependency and the Claude-Code-on-the-web GitHub integration are removed from the Grid Review Runner's design.
 
-This initiative ships **11 packets across 4 waves**, mapped to ADR-0086 D11's phases (A / B / C / D). Phase A is the critical path: build the reusable runner framework, prove the review job on `HoneyDrunk.Architecture` only, and decommission the OpenClaw review-runner role. Phase B widens PR review to the 10 remaining live .NET Nodes (superseding ADR-0044 Architecture#182 which was the same fan-out at the old default). Phase C migrates scheduled agent jobs (`hive-sync`, Lore sourcing, Lore ingest/compile, Lore signal review) to the same runner after smoke tests. Phase D is the narrative-surfacing polish — make runner availability observable through the weekly briefing and hive-sync. Multi-perspective on high-risk Nodes (D8) and post-merge sampling audit (D9) are preserved disciplines whose substrate moves to the local runner — both are wired into the runner by packet 03 ahead of their respective ADR-0044 activation packets (13/14 for D8, 15/16 for D9).
+This initiative ships **12 packets across 4 waves**, mapped to ADR-0086 D11's phases (A / B / C / D). Phase A is the critical path: build the reusable runner framework, prove the review job on `HoneyDrunk.Architecture` only, and decommission the OpenClaw review-runner role. Phase B widens PR review to the 10 remaining live .NET Nodes (superseding ADR-0044 Architecture#182 which was the same fan-out at the old default). Phase C migrates scheduled agent jobs (`hive-sync`, Lore sourcing, Lore ingest/compile, Lore signal review) to the same runner after smoke tests. Phase D is the narrative-surfacing polish — make runner availability observable through the weekly briefing and hive-sync. Multi-perspective on high-risk Nodes (D8) and post-merge sampling audit (D9) are preserved disciplines whose substrate moves to the local runner — both are wired into the runner by packet 03 ahead of their respective ADR-0044 activation packets (13/14 for D8, 15/16 for D9). Packet 12 is a Phase-A follow-on scope correction: it records that the canonical review-agent output contract must own the established Grid Review emoji-section verdict format instead of leaving that contract runner-local.
 
 ## Trigger
 
@@ -43,6 +43,7 @@ Packet 01 first (the acceptance flip). Then 02 (existing App reuse audit) gates 
 - [ ] **05** — Actions: Rewrite `job-review-request.yml` from webhook-emitting to managed-label-normalizing plus label-and-comment enqueue per D2. `Actor=Agent`. Blocked by: 01.
 - [ ] **06** — Actions: Add worker labels and the managed PR-label vocabulary to labels-as-code and fan out Grid-wide. `Actor=Agent`. Blocked by: 01.
 - [ ] **07** — Architecture: Cut `HoneyDrunk.Architecture` over to `runner: local-worker`; update its `pr-review.yml` caller; verify end-to-end on the cutover PR; record Phase-A go/no-go. `Actor=Agent`. Blocked by: 02, 03, 04, 05, 06.
+- [ ] **12** — Architecture: Preserve the canonical Grid Review output contract in `.claude/agents/review.md`; align runner synthesis to that source-of-truth format. `Actor=Agent`. Blocked by: 03, 07.
 
 **Wave 1 exit criterion (Phase A go/no-go):** Per ADR-0086 D11 Phase A — verdict quality at least as useful as the manual local-agent invocation, reliable polling and claim semantics, head-SHA invalidation deterministically handles pushes mid-review, near-zero marginal cost under subscription auth. **If this bar is missed, Wave 2 does not start.**
 
@@ -88,6 +89,7 @@ Packets within a wave run in parallel where their `dependencies:` array permits 
 | 09 | [Enable `runner: local-worker` on 10 Nodes](./09-cross-repo-enable-local-worker-ten-nodes.md) | Cross-repo | Agent | 2 | 07, 08 |
 | 10 | [Runner-health surfacing](./10-architecture-hive-sync-queue-depth-surfacing.md) | Architecture | Agent | 4 | 03, 07, 11 |
 | 11 | [Scheduled agent job migration](./11-architecture-migrate-scheduled-agent-jobs.md) | Architecture | Agent + Human | 3 | 03, 07 |
+| 12 | [Review-agent output contract](./12-architecture-review-agent-output-contract.md) | Architecture | Agent | 1 | 03, 07 |
 
 ## Invariant Numbering
 
@@ -97,9 +99,9 @@ This is a deliberate choice in the ADR and a load-bearing constraint of packet 0
 
 ## Cross-Cutting Concerns
 
-### `.claude/agents/review.md` is unchanged
+### `.claude/agents/review.md` output contract is clarified by packet 12
 
-ADR-0086 D1 and Follow-up Work are explicit: the substrate change is invisible to the prompt. Both the (removed) OpenClaw path and the (new) local-worker path consume the same canonical agent file per ADR-0007. No packet in this initiative edits `.claude/agents/review.md`.
+ADR-0086 D1 and Follow-up Work originally excluded prompt edits because the transport change must not fork agent behavior. Packet 12 is the narrow follow-on correction: `.claude/agents/review.md` remains the canonical source per ADR-0007, and the established Grid Review PR-comment format lives there rather than only in runner synthesis code.
 
 ### ADR-0081 is unchanged
 
@@ -141,12 +143,13 @@ Packet 02 carries portal work (existing GitHub App audit/reuse, permission verif
 - **Packet 08 (decommission):** revert the PR restores the supersession banner removal on the legacy doc. The operator-side work (Cloudflare hostname, secret rotation, OpenClaw process) is more durable — restoring those is operator portal work, recorded in the PR body for traceability.
 - **Packet 09 (Phase B fan-out):** per-repo revert; each of the 10 PRs can be reverted independently. Per-repo `.honeydrunk-review.yaml` flips back to `enabled: false` or removed; the worker stops processing that repo. Per-repo control is the blast-radius mechanism.
 - **Packet 10 (runner-health surfacing):** revert the PR removes the narrative surfacing. No runtime impact.
+- **Packet 12 (review-agent output contract):** revert the PR restores the prior review-agent output block and runner synthesis prompt. The runner still reviews PRs, but output returns to the previous shape until the contract is re-scoped.
 
 **Architectural escape hatch:** at any phase, flipping `.honeydrunk-review.yaml` to `enabled: false` (or removing it) on any repo makes the worker go silent on that repo immediately. The phased rollout (D11) is itself the blast-radius control — each phase is a discrete go/no-go.
 
 ## Out-of-scope items from ADR-0086
 
-- **Editing `.claude/agents/review.md`** — explicitly excluded by ADR-0086 D1 and Follow-up Work. The substrate change is invisible to the prompt.
+- **Broad editing of `.claude/agents/review.md`** — still excluded. Packet 12 is limited to the review-output contract; it does not relax the context-loading contract, severity rules, or ADR-0044 D3 rubric.
 - **Editing `constitution/invariants.md`** — explicitly excluded by ADR-0086's Invariants section. Reconciliation is `hive-sync`'s mandate per ADR-0014.
 - **Editing `adrs/ADR-0081-home-server-for-openclaw-and-local-agent-infrastructure.md` D1 review-webhook-bridge bullet** — explicitly excluded by ADR-0086 Follow-up Work. The edit belongs to ADR-0081's own acceptance/amendment cycle (ADR-0081 is still Proposed).
 - **A cloud queue (Azure Storage Queue / SQS) substitute for the GitHub-native queue** — ADR-0086 Alternatives Considered explicitly rejects this. The GitHub label + comment is sufficient at solo-dev volume; the cloud queue is a follow-up amendment if volume justifies it.
