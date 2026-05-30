@@ -86,6 +86,13 @@ function Get-TaskExecutionLimitMinutes {
     return [Math]::Max([int]$Spec.TimeoutMinutes, [int]$Spec.TimeoutMinutes * [Math]::Max(1, $childProcessCount))
 }
 
+function ConvertTo-PowerShellArgument {
+    param([string]$Value)
+
+    $escaped = $Value.Replace('`', '``').Replace('"', '`"')
+    return "`"$escaped`""
+}
+
 if (-not $IsWindows) {
     throw "Register-Task.ps1 requires Windows Task Scheduler. Use the job specs with cron/systemd on non-Windows hosts."
 }
@@ -104,9 +111,9 @@ foreach ($id in $JobId) {
         $actionArgs = @(
             "-NoProfile",
             "-ExecutionPolicy", "Bypass",
-            "-File", "`"$(Join-Path $runnerRoot "Invoke-GridAgentRunner.ps1")`"",
-            "-JobId", $id,
-            "-ConfigPath", "`"$ConfigPath`"",
+            "-File", (ConvertTo-PowerShellArgument -Value (Join-Path $runnerRoot "Invoke-GridAgentRunner.ps1")),
+            "-JobId", (ConvertTo-PowerShellArgument -Value $id),
+            "-ConfigPath", (ConvertTo-PowerShellArgument -Value $ConfigPath),
             "-Once"
         ) -join " "
 

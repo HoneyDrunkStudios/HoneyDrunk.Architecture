@@ -501,16 +501,29 @@ Load the canonical review prompt, ADR-0086 context, the PR diff from GitHub, and
 
             if (($Context.ReviewRiskClass -eq "high") -and $command.ContainsKey("FallbackCommand")) {
                 $fallback = $command.FallbackCommand
-                $resultName = $fallback.Name
-                $fallbackPromptPath = Join-Path $HostConfig.ArtifactRoot "$artifactPrefix.$(Get-SafeArtifactName -Value $resultName).prompt.md"
-                (New-ContrarianReviewPrompt -BasePrompt $prompt -UnavailableAgent $command.Name) | Set-Content -LiteralPath $fallbackPromptPath -Encoding UTF8
                 Write-RunnerLog -Logger $Logger -Level "WARN" -Message "Optional high-risk review agent unavailable; running contrarian fallback." -Data @{
                     agent = $command.Name
                     fallback_agent = $fallback.Name
                     review_risk_class = $Context.ReviewRiskClass
                     reason = $_.Exception.Message
                 }
-                $stdout = Invoke-AgentCommand -CommandSpec $fallback -PromptPath $fallbackPromptPath -WorkingDirectory $repoPath -Logger $Logger -TimeoutMinutes $JobSpec.TimeoutMinutes
+
+                try {
+                    $fallbackName = $fallback.Name
+                    $fallbackPromptPath = Join-Path $HostConfig.ArtifactRoot "$artifactPrefix.$(Get-SafeArtifactName -Value $fallbackName).prompt.md"
+                    (New-ContrarianReviewPrompt -BasePrompt $prompt -UnavailableAgent $command.Name) | Set-Content -LiteralPath $fallbackPromptPath -Encoding UTF8
+                    $stdout = Invoke-AgentCommand -CommandSpec $fallback -PromptPath $fallbackPromptPath -WorkingDirectory $repoPath -Logger $Logger -TimeoutMinutes $JobSpec.TimeoutMinutes
+                    $resultName = $fallbackName
+                }
+                catch {
+                    Write-RunnerLog -Logger $Logger -Level "ERROR" -Message "Contrarian fallback review agent failed; continuing without optional secondary result." -Data @{
+                        agent = $command.Name
+                        fallback_agent = $fallback.Name
+                        review_risk_class = $Context.ReviewRiskClass
+                        reason = $_.Exception.Message
+                    }
+                    continue
+                }
             }
             else {
                 Write-RunnerLog -Logger $Logger -Level "WARN" -Message "Optional review agent deferred." -Data @{
