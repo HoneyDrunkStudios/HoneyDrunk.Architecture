@@ -38,7 +38,7 @@ The scheduled runner code must also be isolated from repository updates. With `S
 
 1. Copy `config/host.psd1.example` to an operator-local config path outside cloned source and outside the installed runner code, for example `C:\HoneyDrunk\Runtime\grid-agent-runner\host.psd1`.
 2. Set `RuntimeRoot` and repository paths for `HoneyDrunk.Architecture` and `HoneyDrunk.Lore`.
-3. Confirm Codex CLI is installed and authenticated. Install and authenticate Claude Code on hosts that handle high-risk D8 reviews.
+3. Confirm Codex CLI is installed and authenticated. The runner resolves `codex` from PATH or the Codex desktop `%LOCALAPPDATA%\OpenAI\Codex\bin\*\codex.exe` install path for hidden Task Scheduler runs. Install and authenticate Claude Code on hosts that handle high-risk D8 reviews.
 4. Confirm `ANTHROPIC_API_KEY` and `OPENAI_API_KEY` are not set persistently on the runner host.
 5. Confirm the host can read the shared automation Vault, `kv-hd-automation-dev`, and its `GitHub--AgentRunner--*` secrets before running `grid-review` without `-DryRun`.
 6. Copy the runner directory into `Safety.TrustedRunnerRoot`, keep host config outside cloned source, and register scheduled tasks from that installed copy.
