@@ -78,7 +78,14 @@ function Get-TaskExecutionLimitMinutes {
         return [int]$Spec.ExecutionTimeLimitMinutes
     }
 
-    $childProcessCount = @($Spec.AgentCommands).Count
+    $childProcessCount = 0
+    foreach ($command in @($Spec.AgentCommands)) {
+        $childProcessCount += 1
+        if ($command.ContainsKey("FallbackCommand")) {
+            $childProcessCount += 1
+        }
+    }
+
     if ($Spec.ContainsKey("SynthesisCommand")) {
         $childProcessCount += 1
     }
