@@ -29,6 +29,12 @@
             PromptStdin = $true
             RiskClasses = @("high")
             Optional = $true
+            FallbackCommand = @{
+                Name = "codex-contrarian"
+                Executable = "codex"
+                Arguments = @("exec", "--sandbox", "read-only", "--ignore-rules", "--ephemeral", "-")
+                PromptStdin = $true
+            }
         }
     )
     SynthesisCommand = @{
