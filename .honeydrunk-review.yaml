@@ -1,8 +1,7 @@
 enabled: true
-runner: openclaw-codex
+runner: local-worker
 severity_floor: Suggest
 skip_paths:
   - "**/*.Designer.cs"
   - "**/*.g.cs"
   - "**/generated/**"
-cost_cap_per_pr_usd: 0.00
