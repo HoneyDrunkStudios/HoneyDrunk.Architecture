@@ -6,7 +6,7 @@ function Get-GitHubInstallationToken {
     )
 
     foreach ($secretName in $RequiredSecretNames) {
-        if ($secretName -notmatch "^review-agent-github-app-") {
+        if ($secretName -notmatch "^GitHub--AgentRunner--") {
             continue
         }
 
@@ -17,9 +17,9 @@ function Get-GitHubInstallationToken {
         throw "Host config must include a Vault block for GitHub App token minting."
     }
 
-    $appId = Get-RunnerVaultSecret -HostConfig $HostConfig -SecretName "review-agent-github-app-id"
-    $privateKeyPem = Get-RunnerVaultSecret -HostConfig $HostConfig -SecretName "review-agent-github-app-private-key"
-    $installationId = Get-RunnerVaultSecret -HostConfig $HostConfig -SecretName "review-agent-github-app-installation-id"
+    $appId = Get-RunnerVaultSecret -HostConfig $HostConfig -SecretName "GitHub--AgentRunner--AppId"
+    $privateKeyPem = Get-RunnerVaultSecret -HostConfig $HostConfig -SecretName "GitHub--AgentRunner--PrivateKey"
+    $installationId = Get-RunnerVaultSecret -HostConfig $HostConfig -SecretName "GitHub--AgentRunner--InstallationId"
     $jwt = New-GitHubAppJwt -AppId $appId -PrivateKeyPem $privateKeyPem
 
     $headers = @{

@@ -24,6 +24,7 @@ Listed in provisioning order — platform-shared first, per-Node second.
 - [Caller workflow permissions audit](caller-permissions-audit.md) - ADR-0012 D5/GAP-3 baseline audit for reusable `HoneyDrunk.Actions` caller permissions.
 
 - [HoneyDrunk Hive GitHub App](walkthroughs/github-app-hive-walkthrough.md) — Dedicated GitHub App that mints scoped installation tokens for the file-packets reusable workflow. Replaces the developer's PAT for control-plane work.
+- [Review-Agent GitHub App for Local Worker](walkthroughs/review-agent-github-app-local-worker.md) — Reused ADR-0044 review-agent App plus `kv-hd-automation-dev` credentials for the ADR-0086 local runner framework.
 
 **Third-party CI tooling (provision once for the org):**
 

@@ -28,9 +28,9 @@
         Summary = "Posts one synthesized advisory review verdict to the PR."
     }
     RequiredSecrets = @(
-        "review-agent-github-app-id",
-        "review-agent-github-app-private-key",
-        "review-agent-github-app-installation-id"
+        "GitHub--AgentRunner--AppId",
+        "GitHub--AgentRunner--PrivateKey",
+        "GitHub--AgentRunner--InstallationId"
     )
     AllowedTools = @("read", "git", "github-api", "codex", "claude")
     RetainArtifactsDays = 14

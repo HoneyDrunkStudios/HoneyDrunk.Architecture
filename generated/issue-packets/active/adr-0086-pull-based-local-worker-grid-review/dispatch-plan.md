@@ -37,7 +37,7 @@ The right move is to change the transport (pull instead of webhook) and the exec
 Packet 01 first (the acceptance flip). Then 02 (existing App reuse audit) gates 03 (runner source); 04/05/06 run in parallel after 01; 07 (Phase-A cutover) depends on 02/03/04/05/06.
 
 - [ ] **01** — Architecture: **Accept ADR-0086** — flip status, append supersession amendment notes to ADR-0044 and ADR-0079, register initiative, mark ADR-0044 Architecture#182 superseded. `Actor=Agent`.
-- [ ] **02** — Architecture: Audit and reuse the existing ADR-0044 review-agent GitHub App, verify/widen permissions only if needed, verify `review-agent-github-app-*` Vault secrets, author the walkthrough doc. `Actor=Human` (portal work). Blocked by: 01.
+- [ ] **02** — Architecture: Audit and reuse the existing ADR-0044 review-agent GitHub App, verify/widen permissions only if needed, verify `GitHub--AgentRunner--*` secrets in `kv-hd-automation-dev`, author the walkthrough doc. `Actor=Human` (portal work). Blocked by: 01.
 - [ ] **03** — Architecture: Author the portable PowerShell scheduled agent runner at `infrastructure/workers/grid-agent-runner/` (job specs, host config, review claim protocol, Task Scheduler installer, env hygiene, dual Codex/Claude synthesis, audit-mode dispatch, hive-sync/Lore job specs, README). `Actor=Agent`. Blocked by: 01, 02.
 - [ ] **04** — Architecture: Update `copilot/review-config-schema.md` for the `runner:` enum change (drop `openclaw-codex`, add `local-worker` default, preserve `api-ci`). `Actor=Agent`. Blocked by: 01.
 - [ ] **05** — Actions: Rewrite `job-review-request.yml` from webhook-emitting to managed-label-normalizing plus label-and-comment enqueue per D2. `Actor=Agent`. Blocked by: 01.

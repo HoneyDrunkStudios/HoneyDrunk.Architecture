@@ -28,9 +28,9 @@
         Summary = "Posts an audit comment and writes an audit artifact when ADR-0044 audit packets land."
     }
     RequiredSecrets = @(
-        "review-agent-github-app-id",
-        "review-agent-github-app-private-key",
-        "review-agent-github-app-installation-id"
+        "GitHub--AgentRunner--AppId",
+        "GitHub--AgentRunner--PrivateKey",
+        "GitHub--AgentRunner--InstallationId"
     )
     AllowedTools = @("read", "git", "github-api", "codex")
     RetainArtifactsDays = 30
