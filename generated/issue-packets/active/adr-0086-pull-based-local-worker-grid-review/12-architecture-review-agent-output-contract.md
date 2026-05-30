@@ -3,11 +3,11 @@ name: Infrastructure
 type: repo-feature
 tier: 2
 target_repo: HoneyDrunkStudios/HoneyDrunk.Architecture
-labels: ["chore", "tier-2", "meta", "docs", "infrastructure", "adr-0086", "wave-2"]
-dependencies: ["packet:03"]
+labels: ["chore", "tier-2", "meta", "docs", "infrastructure", "adr-0086", "wave-1"]
+dependencies: ["packet:03", "packet:07"]
 adrs: ["ADR-0086", "ADR-0007", "ADR-0044"]
 accepts: []
-wave: 2
+wave: 1
 initiative: adr-0086-pull-based-local-worker-grid-review
 node: honeydrunk-architecture
 ---
@@ -39,6 +39,7 @@ The correction is therefore to make the canonical review agent prompt own the es
 
 ## Dependencies
 - `packet:03` — runner framework and synthesis path.
+- `packet:07` — Architecture local-worker cutover evidence that exposed the PR-facing output-contract mismatch.
 
 ## Referenced ADR Decisions
 
@@ -54,7 +55,7 @@ The correction is therefore to make the canonical review agent prompt own the es
 - Do not mutate filed packets other than adding this follow-on packet.
 
 ## Labels
-`chore`, `tier-2`, `meta`, `docs`, `infrastructure`, `adr-0086`, `wave-2`
+`chore`, `tier-2`, `meta`, `docs`, `infrastructure`, `adr-0086`, `wave-1`
 
 ## Agent Handoff
 
