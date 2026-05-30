@@ -6,7 +6,7 @@ Covers the Grid's fine-grained GitHub Personal Access Tokens. Fine-grained PATs 
 
 | Token | Destination | Smoke-test |
 |-------|-------------|-----------|
-| `GH_ISSUE_TOKEN` | GitHub org secret in `HoneyDrunkStudios` (Settings → Secrets and variables → Actions) | `file-packets.yml` triggers via a packet-manifest push; its `gh issue create` call returns 401 on a bad token. Also reused by `external-credentials-check.yml`. |
+| `CREDENTIALS_CHECK_TOKEN` | GitHub org secret in `HoneyDrunkStudios` (Settings → Secrets and variables → Actions), scoped to `HoneyDrunk.Architecture` | `external-credentials-check.yml` manual `workflow_dispatch`; its `gh issue` calls return 401 on a bad token. Self-referential — this is the one token the drift workflow can't nag about, since its lapse disables the nagger. |
 | `HIVE_FIELD_MIRROR_TOKEN` | GitHub org secret in `HoneyDrunkStudios` | `hive-field-mirror.yml` scheduled run or manual `workflow_dispatch`; the GraphQL field-update call returns 401 on a bad token |
 | `LABELS_FANOUT_PAT` | GitHub org secret in `HoneyDrunkStudios` | `seed-labels-fanout.yml` manual `workflow_dispatch` against one repo; the label-creation call returns 401 on a bad token |
 | `INITIATIVES_SYNC_TOKEN` | GitHub org secret in `HoneyDrunkStudios` | the `hive-sync` reconciliation run (per ADR-0014); a cross-repo API call returns 401 on a bad token — *verify exact consumers* |
@@ -33,7 +33,7 @@ Covers the Grid's fine-grained GitHub Personal Access Tokens. Fine-grained PATs 
 
 ## What breaks if you forget
 
-- **`GH_ISSUE_TOKEN`** — `file-packets.yml` can no longer file new issues from packets in `generated/issue-packets/active/`; packet filing stalls and The Hive misses new items (ADR-0008). **And** `external-credentials-check.yml` itself stops (it reuses this token) — the "watcher who watches the watcher" hole. Prioritize this one.
+- **`CREDENTIALS_CHECK_TOKEN`** — `external-credentials-check.yml` itself can no longer authenticate to read the inventory or open/close rotation issues — the "watcher who watches the watcher" hole. Because the drift workflow is exactly what would otherwise nag about a lapsing credential, **it cannot nag about its own token** — rotate this one proactively ahead of its date. Prioritize it.
 - **`HIVE_FIELD_MIRROR_TOKEN`** — `hive-field-mirror.yml`'s fallback path stops mirroring custom-field updates to The Hive (the GitHub App primary path may still work; the fallback hedges against the App being down/rate-limited per ADR-0014).
 - **`LABELS_FANOUT_PAT`** — `seed-labels-fanout.yml` can no longer apply label-set updates across repos; repos drift from the canonical label set.
 - **`INITIATIVES_SYNC_TOKEN`** — `hive-sync` reconciliation across repos breaks (verify exact consumers).
