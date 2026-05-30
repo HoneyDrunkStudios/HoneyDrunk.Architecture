@@ -500,5 +500,9 @@
   "generated/issue-packets/active/adr-0086-pull-based-local-worker-grid-review/09-cross-repo-enable-local-worker-ten-nodes.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/497",
   "generated/issue-packets/active/adr-0086-pull-based-local-worker-grid-review/10-architecture-hive-sync-queue-depth-surfacing.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/498",
   "generated/issue-packets/active/adr-0086-pull-based-local-worker-grid-review/11-architecture-migrate-scheduled-agent-jobs.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/507",
-  "generated/issue-packets/active/adr-0086-pull-based-local-worker-grid-review/12-architecture-review-agent-output-contract.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/534"
+  "generated/issue-packets/active/adr-0086-pull-based-local-worker-grid-review/12-architecture-review-agent-output-contract.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/534",
+  "generated/issue-packets/active/adr-0087-per-change-risk-scoring/01-architecture-accept-adr-0087-catalog-and-invariant.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/536",
+  "generated/issue-packets/active/adr-0087-per-change-risk-scoring/02-actions-deterministic-risk-scorer-step.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/175",
+  "generated/issue-packets/active/adr-0087-per-change-risk-scoring/03-architecture-worker-dual-pass-substrate.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/537",
+  "generated/issue-packets/active/adr-0087-per-change-risk-scoring/04-architecture-worker-trigger-and-enforce.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/538"
 }
