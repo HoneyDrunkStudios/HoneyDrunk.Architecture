@@ -315,7 +315,7 @@ build the dual-CLI execution substrate itself.
 second pass + synthesis + contrarian-prompt fallback that ADR-0086 D8 describes is
 **not yet implemented**. Verified:
 ADR-0086's own Follow-up Work still lists *"Implement dual-pass synthesis in the
-worker"* as not-done; `infrastructure/workers/grid-agent-runner/lib/Agent.psm1`'s
+worker"* as not-done; `infrastructure/workers/grid-agent-runner/lib/Queue.psm1`'s
 `Invoke-ReviewAgentPasses` runs a flat `foreach ($command in $JobSpec.AgentCommands)`
 loop with **no** risk-conditional second pass; and
 `infrastructure/workers/grid-agent-runner/lib/Synthesis.psm1`'s `Join-ReviewFindings`
@@ -398,19 +398,19 @@ runtime contract.
   the two no longer contradict each other. Proposed new Invariant 53 text:
 
   > 53. **Agent-authored PRs whose changes are scored high-risk receive two
-  >    independent LLM-review perspectives before merge.** "High risk" is computed
-  >    **per change**, on the (PR, head SHA) pair, by the deterministic weighted-signal
-  >    scorer defined in ADR-0087 (signals: sensitivity of touched area, blast radius,
-  >    boundary spread, diff size), evaluated against `catalogs/review-risk-signals.json`
-  >    and `catalogs/relationships.json`. It is **never** a static per-Node or per-repo
-  >    flag; no `review_risk_class` repo field gates this invariant. A change whose
-  >    sensitivity signal trips the most sensitive paths (Vault secret-resolution,
-  >    credentials, `ISecretStore`-class contracts) is forced into the double-review
-  >    gate **regardless of authorship**. The second perspective is the dual Codex CLI +
-  >    Claude Code CLI pass on the local worker, synthesized into one verdict (ADR-0086
-  >    D8); the human may also invoke `refine` for manual escalation. Enforceable once
-  >    ADR-0087 Phase 3 lands **and** the ADR-0086 dual-pass worker substrate it depends
-  >    on is implemented (D8 prerequisite).
+  > independent LLM-review perspectives before merge.** "High risk" is computed
+  > **per change**, on the (PR, head SHA) pair, by the deterministic weighted-signal
+  > scorer defined in ADR-0087 (signals: sensitivity of touched area, blast radius,
+  > boundary spread, diff size), evaluated against `catalogs/review-risk-signals.json`
+  > and `catalogs/relationships.json`. It is **never** a static per-Node or per-repo
+  > flag; no `review_risk_class` repo field gates this invariant. A change whose
+  > sensitivity signal trips the most sensitive paths (Vault secret-resolution,
+  > credentials, `ISecretStore`-class contracts) is forced into the double-review
+  > gate **regardless of authorship**. The second perspective is the dual Codex CLI +
+  > Claude Code CLI pass on the local worker, synthesized into one verdict (ADR-0086
+  > D8); the human may also invoke `refine` for manual escalation. Enforceable once
+  > ADR-0087 Phase 3 lands **and** the ADR-0086 dual-pass worker substrate it depends
+  > on is implemented (D8 prerequisite).
 
   This rewording closes the prior "accepted as the Phase-3 target state but not
   enforceable" caveat at Phase 3 and removes the now-dead `grid-health.json:review_risk_class`

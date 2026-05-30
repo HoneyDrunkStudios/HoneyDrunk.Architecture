@@ -24,7 +24,7 @@ ADR-0087 (corrected) replaces the static-per-Node `review_risk_class` flag (ADR-
 Packet 01 (Architecture, blocking this packet) ships `catalogs/review-risk-signals.json` — the weight-bearing surface, including the `repo_to_node_id` join table the scorer uses to map `github.repository` to a `relationships.json` node id for blast-radius.
 
 **Non-scope (do NOT do here):**
-- Anything the **worker** does with `double_review_required`. The worker reading/acting on it is packet 03; building the dual-pass substrate it triggers is packet 02b. This packet only computes and records the verdict.
+- Anything the **worker** does with `double_review_required`. The worker reading/acting on it is packet 04; building the dual-pass substrate it triggers is packet 03. This packet only computes and records the verdict.
 - Any `review_risk_class` / `risk_class` emission, computation, or retirement contract. (Optional: delete the dead `risk_class:` line; that is cleanup, not a transition.)
 
 ## Proposed Implementation
@@ -122,10 +122,10 @@ None. This packet touches a GitHub Actions workflow (YAML), a JSON label config,
 
 ## Human Prerequisites
 - [ ] After this PR merges, run `seed-labels-fanout.yml` (or let its next scheduled run fire) so `risk-high` is seeded Grid-wide — existing labels-as-code fanout, no new infra. (Operator action; the workflow itself ships here.)
-- [ ] Phase-2 entry on the `HoneyDrunk.Architecture` pilot is an operator edit of that repo's `.honeydrunk-review.yaml` setting `risk-gate-mode: gate`, AFTER observing shadow-mode firing rate (ADR-0087 D7 Phase 2 go/no-go) AND after packet 02b lands the worker dual-pass substrate — not part of this PR.
+- [ ] Phase-2 entry on the `HoneyDrunk.Architecture` pilot is an operator edit of that repo's `.honeydrunk-review.yaml` setting `risk-gate-mode: gate`, AFTER observing shadow-mode firing rate (ADR-0087 D7 Phase 2 go/no-go) AND after packet 03 lands the worker dual-pass substrate — not part of this PR.
 
 ## Dependencies
-Blocked by packet 01 (Architecture): the scorer has nothing to read until `catalogs/review-risk-signals.json` exists with the four-signal grouping, the `forced` flag, and the `repo_to_node_id` join table. The field names packet 01 commits are the contract this scorer parses. Independent of packet 02b (worker substrate) — the scorer ships and runs in shadow regardless of whether the worker can act on the verdict.
+Blocked by packet 01 (Architecture): the scorer has nothing to read until `catalogs/review-risk-signals.json` exists with the four-signal grouping, the `forced` flag, and the `repo_to_node_id` join table. The field names packet 01 commits are the contract this scorer parses. Independent of packet 03 (worker substrate) — the scorer ships and runs in shadow regardless of whether the worker can act on the verdict.
 
 ## Agent Handoff
 
@@ -134,7 +134,7 @@ Blocked by packet 01 (Architecture): the scorer has nothing to read until `catal
 **Context:**
 - Goal: replace the phantom static `review_risk_class` Node-flag with an enforceable per-change risk verdict computed in the cheap GitHub Action.
 - Feature: deterministic, arithmetic-only weighted-signal scorer (no cloud LLM).
-- ADRs: ADR-0087 (pins ordering, defers numbers here), ADR-0086 D2/D6 ($0-cost / no-LLM-in-Action), ADR-0086 D8 (the dual-CLI worker the gate eventually feeds — its substrate is unbuilt, packet 02b), ADR-0044 D8 (superseded static flag), ADR-0083 (sensitive-inventory, a catalog source).
+- ADRs: ADR-0087 (pins ordering, defers numbers here), ADR-0086 D2/D6 ($0-cost / no-LLM-in-Action), ADR-0086 D8 (the dual-CLI worker the gate eventually feeds — its substrate is unbuilt, packet 03), ADR-0044 D8 (superseded static flag), ADR-0083 (sensitive-inventory, a catalog source).
 
 **PR metadata (required by `pr-core` checks):** the PR body must carry `Authorship: <enum>` (one of `human` / `agent-codex` / `agent-copilot` / `agent-claude-code` / `mixed`) and exactly one of `Packet: <issue link>` (this packet's filed issue) or `Out-of-band reason: <text>`. Free-form text breaks the `pr-core` metadata check.
 

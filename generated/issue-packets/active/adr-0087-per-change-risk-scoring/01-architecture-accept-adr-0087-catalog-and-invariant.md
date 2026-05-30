@@ -114,11 +114,11 @@ This removes the now-dead `grid-health.json:review_risk_class` pointer and super
 
 ### 4. Amendment pointers (do NOT mutate the prior decisions' bodies beyond a one-line append)
 - In ADR-0044, at D8: append — "**Amended by ADR-0087 (2026-05-30):** the static `review_risk_class`-per-Node definition is superseded by ADR-0087's per-change weighted-signal scorer; high-risk is computed per (PR, head SHA), not per repo."
-- In ADR-0086, at D8: append — "**Amended by ADR-0087 (2026-05-30):** 'high risk' is defined per-change per ADR-0087; double-review scope is extended to human-authored PRs touching Vault secret-resolution / credentials / `ISecretStore`-class contracts (a narrow named exception, not a blanket reversal). The dual-pass execution substrate this ADR's D8 describes remains ADR-0086 deferred/unbuilt work and is a hard prerequisite for ADR-0087 Phase 2/3 (built under initiative packet 02b)."
+- In ADR-0086, at D8: append — "**Amended by ADR-0087 (2026-05-30):** 'high risk' is defined per-change per ADR-0087; double-review scope is extended to human-authored PRs touching Vault secret-resolution / credentials / `ISecretStore`-class contracts (a narrow named exception, not a blanket reversal). The dual-pass execution substrate this ADR's D8 describes remains ADR-0086 deferred/unbuilt work and is a hard prerequisite for ADR-0087 Phase 2/3 (built under initiative packet 03)."
 
 ### 5. ADR README row + initiative registration
 - Add the ADR-0087 row to `adrs/README.md` with Status `Accepted`, Date `2026-05-30`, Sector `Meta`, and a one-paragraph summary matching the existing row style.
-- Register `### ADR-0087 Per-Change Risk Scoring for the Double-Review Gate` under `## In Progress` in `initiatives/active-initiatives.md`, with Scope (Architecture + Actions), Initiative slug, Board link, Description, and a Tracking section mirroring the dispatch plan's **four** packets (01, 02, 02b, 03).
+- Register `### ADR-0087 Per-Change Risk Scoring for the Double-Review Gate` under `## In Progress` in `initiatives/active-initiatives.md`, with Scope (Architecture + Actions), Initiative slug, Board link, Description, and a Tracking section mirroring the dispatch plan's **four** packets (01, 02, 03, 04).
 
 ## Acceptance Criteria
 - [ ] ADR-0087 Status is `Accepted`; the draft note block is removed.
@@ -132,7 +132,7 @@ This removes the now-dead `grid-health.json:review_risk_class` pointer and super
 - [ ] Invariant 53 is rewritten in place to the exact ADR wording (signal list: sensitivity, blast radius, **boundary spread**, diff size); the `grid-health.json:review_risk_class` pointer is gone; the number is still 53; no new invariant number is added; the closing clause names BOTH Phase 3 landing AND the ADR-0086 dual-pass substrate prerequisite.
 - [ ] One-line amendment pointers appended to ADR-0044 D8 and ADR-0086 D8 (their bodies otherwise unchanged — Invariant-24-style discipline); the ADR-0086 pointer notes the dual-pass substrate is unbuilt/prerequisite.
 - [ ] `adrs/README.md` has the ADR-0087 row (Accepted, 2026-05-30, Meta).
-- [ ] `initiatives/active-initiatives.md` registers the initiative with a four-packet (01/02/02b/03) tracking section.
+- [ ] `initiatives/active-initiatives.md` registers the initiative with a four-packet (01/02/03/04) tracking section.
 - [ ] No `.NET` project, `.csproj`, or package version is touched (this is governance/data only).
 
 ## Human Prerequisites
