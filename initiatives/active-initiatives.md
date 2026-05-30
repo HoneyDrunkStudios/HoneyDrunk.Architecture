@@ -60,12 +60,17 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 **Live side-effects (done — required so invariant 103 is satisfied on merge, per the Grid review agent's BLOCK on PR #518):**
 - [x] Seeded the 3 repo labels (`external-credential-rotation` #D93F0B, `urgent` #B60205, `imminent` #9B0000).
-- [x] Architecture#472: Opened standing rotation issues for the 8 live `Rotates: yes` rows — #520 `SONAR_TOKEN`, #521 `NUGET_API_KEY`, #522 `GH_ISSUE_TOKEN`, #523 `HIVE_FIELD_MIRROR_TOKEN`, #524 `LABELS_FANOUT_PAT`, #525 `INITIATIVES_SYNC_TOKEN`, #526 `GRID_HEALTH_PAT`, #527 `OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET`. Per the Grid agent's narrowing, the carve-out is **planned-only** — `OPENCLAW_…WEBHOOK` is live so it got its `openclaw-webhook-secret-rotation.md` walkthrough + a standing issue; only `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` (`status: planned`) are exempt.
+- [x] Architecture#472: Opened standing rotation issues for the live `Rotates: yes` rows — #520 `SONAR_TOKEN`, #521 `NUGET_API_KEY`, #523 `HIVE_FIELD_MIRROR_TOKEN`, #524 `LABELS_FANOUT_PAT`, #525 `INITIATIVES_SYNC_TOKEN`, #526 `GRID_HEALTH_PAT` (+ #530 `CREDENTIALS_CHECK_TOKEN`, opened during reconciliation). Carve-out is **planned-only** — only `OPENAI_API_KEY` (`status: planned`) is exempt.
 
-**Still pending operator input:**
-- [ ] **Confirm 2 provisional dates** — `NUGET_API_KEY` (issue #521) and `GH_ISSUE_TOKEN` (issue #522); the latter also needs **existence verified** (not in the 2026-05-30 PAT enumeration; the drift workflow reuses it). Confirmed: `SONAR_TOKEN` 2026-07-27, `HIVE_FIELD_MIRROR_TOKEN`, `LABELS_FANOUT_PAT`, `INITIATIVES_SYNC_TOKEN`, `GRID_HEALTH_PAT`.
+**Reconciliation against live `gh secret list` (2026-05-30; PRs #528 Architecture / #174 Actions):**
+- [x] **`GH_ISSUE_TOKEN` was a phantom** (no such org secret) — removed from the inventory and replaced by **`CREDENTIALS_CHECK_TOKEN`**, the dedicated fine-grained PAT (Architecture-scoped, Issues/Contents/PRs RW, expires 2027-05-30) the operator minted and bound to `HoneyDrunk.Actions`. `external-credentials-check.yml` repointed (PR #174); standing issue #522 closed, #530 opened.
+- [x] **`OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET` retired** — webhook review transport decommissioning under ADR-0086; inventory row + `openclaw-webhook-secret-rotation.md` removed, issue #527 closed.
+- [x] **Dates corrected** — `NUGET_API_KEY` → ~2026-10-30 (issue #521 retitled); `ANTHROPIC_API_KEY` reclassified live / `Rotates: no`; `LABELS_FANOUT_PAT` + `GRID_HEALTH_PAT` corrected to **repo** secrets on `HoneyDrunk.Actions`.
+- [ ] Minor follow-ups: verify the inferred `Use Cases` for `INITIATIVES_SYNC_TOKEN` / `GRID_HEALTH_PAT`; refine NUGET's exact date at next rotation.
 
-**Exit criteria:** ADR-0083 Accepted; invariant 103 live; the inventory + three walkthroughs + onboarding hook landed; the drift-detection workflow live in Actions; labels + standing issues created; real expiration dates filled in by the operator.
+**Remaining to close the initiative:** merge #528 + #174 (the workflow goes live against the right token + reconciled inventory once both land) and #529 (CodeRabbit config mirror). Operator items done: `CREDENTIALS_CHECK_TOKEN` bound, CodeRabbit Global Override updated.
+
+**Exit criteria:** ADR-0083 Accepted; invariant 103 live; the inventory + walkthroughs + onboarding hook landed; the drift-detection workflow live in Actions; labels + standing issues created; real expiration dates reconciled against ground truth. **All met once #528 + #174 merge.**
 
 ### ADR-0044 Cloud Code Review and AI-Authored PR Discipline
 **Status:** In Progress
