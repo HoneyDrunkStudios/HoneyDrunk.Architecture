@@ -454,6 +454,78 @@ function Release-ReviewQueueItem {
     }
 }
 
+function New-ReviewRunnerGuardrailVerdict {
+    param(
+        [hashtable]$Context,
+        [string]$Summary,
+        [string]$Finding
+    )
+
+    $title = if ($null -ne $Context.Pull -and -not [string]::IsNullOrWhiteSpace($Context.Pull.title)) {
+        [string]$Context.Pull.title
+    }
+    else {
+        "PR #$($Context.Number)"
+    }
+
+    $files = if ($Context.ChangedFiles.Count -gt 0) {
+        ($Context.ChangedFiles | Select-Object -First 20) -join ", "
+    }
+    else {
+        "none detected"
+    }
+
+    return @"
+# PR Review: $title
+
+**Repo:** $($Context.Owner)/$($Context.Repo)
+**Reviewer:** review agent
+**Verdict:** Request Changes
+
+## Summary
+$Summary
+
+## Reviewed Scope / Evidence Checked
+
+- **Packet / PR scope:** Trusted base-branch review queue metadata and runner job configuration were checked.
+- **Governing ADRs:** ADR-0011, ADR-0044, ADR-0079, ADR-0081, ADR-0086.
+- **Grid invariants:** Review could not complete the required high-risk independent-review discipline.
+- **Repo boundaries:** Base repository and queue claim safety checks ran before this verdict.
+- **Contracts / downstream:** Not evaluated beyond runner control-plane safety because the review guardrail fired.
+- **Security / secrets:** Host credential isolation and no-PR-head-execution posture remain in force.
+- **Cost / CI discipline:** No additional agent pass was launched after the guardrail condition was detected.
+- **Testing / verification:** Runner detected insufficient independent review outputs.
+- **Idempotency / review state:** Head SHA reviewed: $($Context.QueueHeadSha).
+- **Files inspected:** $files
+
+## Findings
+
+### Blocking
+- None.
+
+### Changes Requested
+- [Source: Runner] $Finding
+
+### Suggestions
+- None.
+
+### Material Disagreements
+- None.
+
+## Downstream Impact
+None detected.
+
+## Checklist
+- [x] Packet resolved and scope verified (or PR marked out-of-band)
+- [x] Boundary compliance checked
+- [x] Contract safety checked
+- [x] Relevant invariants checked
+- [x] ADR-0044 D3 rubric applied
+- [x] Cost discipline checked
+- [x] Security/secrets checked
+"@
+}
+
 function Invoke-ReviewAgentPasses {
     param(
         [hashtable]$HostConfig,
@@ -543,6 +615,17 @@ Load the canonical review prompt, ADR-0086 context, the PR diff from GitHub, and
             Output = $stdout
             Path = $outputPath
         }
+    }
+
+    if (($Context.ReviewRiskClass -eq "high") -and ($results.Count -lt 2)) {
+        Write-RunnerLog -Logger $Logger -Level "ERROR" -Message "High-risk review did not produce enough independent review outputs." -Data @{
+            review_risk_class = $Context.ReviewRiskClass
+            result_count = $results.Count
+        }
+
+        return New-ReviewRunnerGuardrailVerdict -Context $Context `
+            -Summary "This PR was classified as high risk, but the runner produced fewer than two independent review outputs. The review cannot be treated as complete until the secondary agent or its configured fallback succeeds." `
+            -Finding "High-risk ADR-0086 review requires two independent perspectives before a PR-facing verdict can pass; rerun after restoring the secondary agent path or fixing the fallback failure."
     }
 
     if ($JobSpec.ContainsKey("SynthesisCommand") -and $results.Count -gt 1) {
@@ -719,6 +802,25 @@ function Get-ReviewCompletionLabel {
     return $Labels.FailureLabel
 }
 
+function ConvertTo-CanonicalReviewVerdictBody {
+    param([string]$VerdictBody)
+
+    if ([string]::IsNullOrWhiteSpace($VerdictBody)) {
+        return $VerdictBody
+    }
+
+    $body = $VerdictBody.Trim()
+    $canonicalStart = [regex]::Match($body, "(?im)^#\s+PR Review:")
+    if ($canonicalStart.Success -and $canonicalStart.Index -gt 0) {
+        $prefix = $body.Substring(0, $canonicalStart.Index).Trim()
+        if ($prefix -match "(?is)^(##\s+[A-Za-z0-9_. -]+\s*)+$") {
+            $body = $body.Substring($canonicalStart.Index).Trim()
+        }
+    }
+
+    return $body
+}
+
 function Complete-ReviewQueueItem {
     param(
         [hashtable]$Context,
@@ -730,6 +832,7 @@ function Complete-ReviewQueueItem {
     $owner = $Context.Owner
     $repo = $Context.Repo
     $number = $Context.Number
+    $VerdictBody = ConvertTo-CanonicalReviewVerdictBody -VerdictBody $VerdictBody
     $completionLabel = Get-ReviewCompletionLabel -VerdictBody $VerdictBody -Labels $Labels
 
     $body = @"
