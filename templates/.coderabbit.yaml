@@ -31,10 +31,9 @@ language: en-US
 # Keep CodeRabbit terse and high-signal. Architecture/invariant judgment is the
 # Grid-aware agent's job, not CodeRabbit's — don't have two reviewers fight over it.
 tone_instructions: >-
-  Be concise and technical. Prioritize correctness, security, reliability, and
-  maintainability over style nits. Do not restate what the diff obviously does.
-  Defer architecture, boundary, and invariant judgments to the Grid-aware review
-  agent. Skip praise-only and decorative comments.
+  Be concise and technical. Prioritize correctness, security, and
+  maintainability over style nits. Defer architecture and invariant judgments
+  to the Grid-aware review agent. Skip praise-only and decorative comments.
 
 reviews:
   # `chill` = fewer, higher-confidence comments. `assertive` is noisier; the Grid
