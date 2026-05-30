@@ -523,6 +523,9 @@ None detected.
 - [x] ADR-0044 D3 rubric applied
 - [x] Cost discipline checked
 - [x] Security/secrets checked
+- [x] Tests/verification assessed
+- [x] Downstream impact assessed
+- [x] Clean PR does not get manufactured findings
 "@
 }
 
