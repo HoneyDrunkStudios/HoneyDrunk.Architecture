@@ -6,6 +6,23 @@ Completed and cancelled initiatives. Active and planned work lives in [active-in
 
 ## Completed
 
+### ADR-0080 Vendor Lock-In Posture and Exit-Readiness Hedges
+**Status:** Complete
+**Completed:** 2026-05-30
+**Scope:** Architecture
+**Initiative:** `adr-0080-vendor-lockin`
+**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
+**Description:** Commit the Grid's vendor posture as a chosen position per ADR-0080 — assign each load-bearing vendor one of three postures (Accept / Hedge / Abstract), restate the cheap Grid-wide hedges as policy, define the decision-point triggers that fire a re-evaluation conversation, and create the `governance/vendor-postures/` canonical home with Azure and GitHub Accept-posture stubs. Governance-only; no code changes (all D3 hedges already hold at the code level via the source ADRs and invariants 1/2/3/44).
+
+**Tracking (all shipped via PR #515):**
+- [x] Architecture#347: Accept ADR-0080 — flip status, add the three vendor-posture invariants (99–101), register the initiative (packet 00)
+- [x] Architecture#348: Create `governance/vendor-postures/` and ship the Azure exit-playbook stub (packet 01)
+- [x] Architecture#349: Ship the GitHub exit-playbook stub (packet 02)
+- [x] Architecture#350: Cross-link ADR-0076 / ADR-0077 / ADR-0078 to `governance/vendor-postures/azure.md` (packet 03)
+
+**Exit criteria:** ADR-0080 is Accepted; invariants 99–101 are live under `## Vendor Posture Invariants`; `governance/vendor-postures/azure.md` and `governance/vendor-postures/github.md` stubs exist; ADR-0076/0077/0078 cite the resolved canonical home instead of the charter-aware draft. **All met by PR #515.**
+
+
 ### ADR-0082 Canonical Node Standup Procedure
 **Status:** Complete
 **Scope:** Architecture only (one canonical procedure document + five per-class walkthroughs + one org-secret repo-binding walkthrough)

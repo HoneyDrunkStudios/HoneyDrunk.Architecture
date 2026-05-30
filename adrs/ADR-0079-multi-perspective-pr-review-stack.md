@@ -1,6 +1,6 @@
 # ADR-0079: Multi-Perspective PR Review Stack — Copilot + CodeRabbit + Grid-Aware Agent (Codex + Claude)
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-05-23
 **Deciders:** HoneyDrunk Studios
 **Sector:** Meta

@@ -1,9 +1,13 @@
 # Hive Sync Drift Report
 
-**Last Updated:** 2026-05-25
+**Last Updated:** 2026-05-30
 
 Fully rewritten by `hive-sync`; First Surfaced dates are sticky for persistent findings.
 
+- **Category 3: agent file missing capability matrix row**
+  - **Item:** marketing-strategist
+  - **First Surfaced:** 2026-05-30
+  - **Detail:** `.claude/agents/marketing-strategist.md` exists without a capability matrix row.
 - **Category 4: node GitHub repo missing**
   - **Item:** HoneyDrunk.Evals
   - **First Surfaced:** 2026-05-25
@@ -80,3 +84,7 @@ Fully rewritten by `hive-sync`; First Surfaced dates are sticky for persistent f
   - **Item:** honeydrunk-pulse: mapped novel status blocked
   - **First Surfaced:** 2026-05-25
   - **Detail:** honeydrunk-pulse: mapped novel status blocked
+- **Category 14: current-focus read-only drift**
+  - **Item:** ADR-0079
+  - **First Surfaced:** 2026-05-30
+  - **Detail:** `initiatives/current-focus.md` still shows ADR-0079 as Proposed; hive-sync flipped it to Accepted.
