@@ -7,7 +7,7 @@ function Get-GitHubInstallationToken {
 
     foreach ($secretName in $RequiredSecretNames) {
         if ($secretName -notmatch "^GitHub--AgentRunner--") {
-            continue
+            throw "Invalid GitHub secret name '$secretName'. Expected prefix 'GitHub--AgentRunner--'."
         }
 
         Write-RunnerLog -Logger $Logger -Level "DEBUG" -Message "GitHub App secret required." -Data @{ secret_name = $secretName }

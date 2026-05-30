@@ -1,3 +1,16 @@
+---
+title: Review-Agent GitHub App For Local Worker
+description: Reuse the ADR-0044 review-agent GitHub App with normalized automation Vault credentials for the ADR-0086 local runner.
+applies_to:
+  - ADR-0086
+  - ADR-0044
+  - ADR-0005
+  - ADR-0006
+scope: Operator-internal automation infrastructure
+type: documentation/walkthrough
+slug: review-agent-github-app-local-worker
+---
+
 # Review-Agent GitHub App For Local Worker
 
 **Applies to:** ADR-0086, ADR-0044, ADR-0005, ADR-0006.  
