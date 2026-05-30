@@ -46,6 +46,13 @@ reviews:
   request_changes_workflow: false
 
   high_level_summary: true
+  # Keep the summary OUT of the PR description — post it inside the walkthrough
+  # comment instead. CodeRabbit's default writes the summary into the PR body,
+  # which clobbers the Grid's required `Authorship:` / `Packet:` metadata block
+  # that pr-core parses. With this true, CodeRabbit never edits the description;
+  # the body stays exactly as the author wrote it. (ADR-0079 Reviewer 2 is
+  # advisory only — its summary belongs in a comment, not the contract metadata.)
+  high_level_summary_in_walkthrough: true
   review_status: true
   collapse_walkthrough: true
 
