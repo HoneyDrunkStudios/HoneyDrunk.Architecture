@@ -1,6 +1,7 @@
 param(
     [string]$ConfigPath = (Join-Path (Split-Path -Parent $PSScriptRoot) "config/host.psd1"),
     [string[]]$JobId = @("grid-review", "post-merge-audit", "hive-sync", "lore-source", "lore-ingest", "lore-signal-review"),
+    [switch]$VisibleWindow,
     [switch]$WhatIf
 )
 
@@ -70,6 +71,35 @@ function Get-ScheduledTaskLocalTime {
     throw "Schedule type '$($Schedule.Type)' requires TimeLocal or TimeUtc."
 }
 
+function Get-TaskExecutionLimitMinutes {
+    param([hashtable]$Spec)
+
+    if ($Spec.ContainsKey("ExecutionTimeLimitMinutes")) {
+        return [int]$Spec.ExecutionTimeLimitMinutes
+    }
+
+    $childProcessCount = 0
+    foreach ($command in @($Spec.AgentCommands)) {
+        $childProcessCount += 1
+        if ($command.ContainsKey("FallbackCommand")) {
+            $childProcessCount += 1
+        }
+    }
+
+    if ($Spec.ContainsKey("SynthesisCommand")) {
+        $childProcessCount += 1
+    }
+
+    return [Math]::Max([int]$Spec.TimeoutMinutes, [int]$Spec.TimeoutMinutes * [Math]::Max(1, $childProcessCount))
+}
+
+function ConvertTo-PowerShellArgument {
+    param([string]$Value)
+
+    $escaped = $Value.Replace('`', '``').Replace('"', '`"')
+    return "`"$escaped`""
+}
+
 if (-not $IsWindows) {
     throw "Register-Task.ps1 requires Windows Task Scheduler. Use the job specs with cron/systemd on non-Windows hosts."
 }
@@ -84,18 +114,27 @@ foreach ($id in $JobId) {
     Assert-GridAgentJobSpec -Spec $spec
 
     $taskName = Get-TaskName -JobId $id
-    $actionArgs = @(
-        "-NoProfile",
-        "-ExecutionPolicy", "Bypass",
-        "-File", "`"$(Join-Path $runnerRoot "Invoke-GridAgentRunner.ps1")`"",
-        "-JobId", $id,
-        "-ConfigPath", "`"$ConfigPath`"",
-        "-Once"
-    ) -join " "
+    if ($VisibleWindow) {
+        $actionArgs = @(
+            "-NoProfile",
+            "-ExecutionPolicy", "Bypass",
+            "-File", (ConvertTo-PowerShellArgument -Value (Join-Path $runnerRoot "Invoke-GridAgentRunner.ps1")),
+            "-JobId", (ConvertTo-PowerShellArgument -Value $id),
+            "-ConfigPath", (ConvertTo-PowerShellArgument -Value $ConfigPath),
+            "-Once"
+        ) -join " "
 
-    $action = New-ScheduledTaskAction -Execute "pwsh.exe" -Argument $actionArgs
+        $action = New-ScheduledTaskAction -Execute "pwsh.exe" -Argument $actionArgs
+    }
+    else {
+        $launcherPath = Join-Path $runnerRoot "scripts/Run-JobHidden.vbs"
+        $actionArgs = "//B //Nologo `"$launcherPath`" `"$id`" `"$ConfigPath`""
+        $action = New-ScheduledTaskAction -Execute "wscript.exe" -Argument $actionArgs
+    }
+
     $triggers = New-RunnerTaskTriggers -Spec $spec
-    $settings = New-ScheduledTaskSettingsSet -MultipleInstances IgnoreNew -RestartCount 3 -RestartInterval (New-TimeSpan -Minutes 1) -StartWhenAvailable -ExecutionTimeLimit (New-TimeSpan -Minutes $spec.TimeoutMinutes)
+    $executionLimitMinutes = Get-TaskExecutionLimitMinutes -Spec $spec
+    $settings = New-ScheduledTaskSettingsSet -MultipleInstances IgnoreNew -RestartCount 3 -RestartInterval (New-TimeSpan -Minutes 1) -StartWhenAvailable -ExecutionTimeLimit (New-TimeSpan -Minutes $executionLimitMinutes)
 
     if ($WhatIf) {
         Write-Host "Would register scheduled task '$taskName' for job '$id'."

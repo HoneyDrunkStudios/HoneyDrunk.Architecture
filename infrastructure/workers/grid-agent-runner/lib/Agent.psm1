@@ -54,7 +54,8 @@ function Invoke-AgentCommand {
         [int]$TimeoutMinutes
     )
 
-    $executable = $CommandSpec.Executable
+    $configuredExecutable = [string]$CommandSpec.Executable
+    $executable = Resolve-AgentExecutable -Executable $configuredExecutable
     $arguments = @()
     if ($CommandSpec.ContainsKey("Arguments")) {
         $arguments = @($CommandSpec.Arguments)
@@ -64,6 +65,7 @@ function Invoke-AgentCommand {
 
     Write-RunnerLog -Logger $Logger -Level "INFO" -Message "Invoking agent command." -Data @{
         executable = $executable
+        configured_executable = $configuredExecutable
         working_directory = $WorkingDirectory
     }
 
@@ -78,6 +80,12 @@ function Invoke-AgentCommand {
     $startInfo.RedirectStandardOutput = $true
     $startInfo.RedirectStandardError = $true
     $startInfo.UseShellExecute = $false
+    $utf8NoBom = [System.Text.UTF8Encoding]::new($false)
+    $startInfo.StandardOutputEncoding = $utf8NoBom
+    $startInfo.StandardErrorEncoding = $utf8NoBom
+    if ($startInfo.RedirectStandardInput) {
+        $startInfo.StandardInputEncoding = $utf8NoBom
+    }
     Protect-AgentChildEnvironment -StartInfo $startInfo
 
     $promptText = $null
@@ -108,6 +116,35 @@ function Invoke-AgentCommand {
     }
 
     return $stdout
+}
+
+function Resolve-AgentExecutable {
+    param([string]$Executable)
+
+    if ([string]::IsNullOrWhiteSpace($Executable)) {
+        return $Executable
+    }
+
+    if ([System.IO.Path]::IsPathRooted($Executable) -or $Executable.Contains("\") -or $Executable.Contains("/")) {
+        return $Executable
+    }
+
+    $command = Get-Command -Name $Executable -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
+    if ($null -ne $command) {
+        return $command.Source
+    }
+
+    if ($Executable -ieq "codex" -and -not [string]::IsNullOrWhiteSpace($env:LOCALAPPDATA)) {
+        $codexBinary = Get-ChildItem -LiteralPath (Join-Path $env:LOCALAPPDATA "OpenAI\Codex\bin") -Filter "codex.exe" -Recurse -ErrorAction SilentlyContinue |
+            Sort-Object LastWriteTime -Descending |
+            Select-Object -First 1
+
+        if ($null -ne $codexBinary) {
+            return $codexBinary.FullName
+        }
+    }
+
+    return $Executable
 }
 
 function Protect-AgentChildEnvironment {
