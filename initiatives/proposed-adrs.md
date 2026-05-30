@@ -61,7 +61,6 @@
 - `ADR-0077-INFRASTRUCTURE-AS-CODE-BICEP` — ADR-0077: Infrastructure-as-Code — Bicep (Azure-native) (adrs/ADR-0077-infrastructure-as-code-bicep.md)
 - `ADR-0078-END-USER-IDENTITY-ENTRA-EXTERNAL-ID` — ADR-0078: End-User Identity — Microsoft Entra External ID (adrs/ADR-0078-end-user-identity-entra-external-id.md)
 - `ADR-0079-MULTI-PERSPECTIVE-PR-REVIEW-STACK` — ADR-0079: Multi-Perspective PR Review Stack — Copilot + CodeRabbit + Grid-Aware Agent (Codex + Claude) (adrs/ADR-0079-multi-perspective-pr-review-stack.md)
-- `ADR-0080-VENDOR-LOCK-IN-POSTURE-AND-EXIT-READINESS-HEDGES` — ADR-0080: Vendor Lock-In Posture and Exit-Readiness Hedges (adrs/ADR-0080-vendor-lock-in-posture-and-exit-readiness-hedges.md)
 - `ADR-0081-HOME-SERVER-FOR-OPENCLAW-AND-LOCAL-AGENT-INFRASTRUCTURE` — ADR-0081: Home Server for OpenClaw and Local Agent Infrastructure (adrs/ADR-0081-home-server-for-openclaw-and-local-agent-infrastructure.md)
 - `PDR-0002-NOTIFY-AS-A-SERVICE-FIRST-COMMERCIAL-PRODUCT` — PDR-0002: HoneyDrunk Notify — First Commercial Product on the Grid (pdrs/PDR-0002-notify-as-a-service-first-commercial-product.md)
 - `PDR-0003-LATELY-CURRENTS-BASED-CONNECTION-APP` — PDR-0003: Lately — A Currents-Based Connection App for Regular Humans (pdrs/PDR-0003-lately-currents-based-connection-app.md)

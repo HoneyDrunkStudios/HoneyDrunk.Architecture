@@ -77,7 +77,7 @@ The Grid consumes **OIDC-standard claims only** from Entra-issued tokens. The st
 
 **Entra-proprietary claims (`oid`, `tid`, etc.) are not consumed for application logic.** They may be logged for diagnostic purposes; they are not load-bearing in the Identity Node's claim-mapping logic.
 
-**Why standard-only:** This is the **cheap vendor-exit hedge** (the same pattern from [ADR-0076](./ADR-0076-cache-backing-azure-cache-for-redis.md) D3 and [ADR-0077](./ADR-0077-infrastructure-as-code-bicep.md) D5). Application code that depends only on OIDC-standard claims migrates cleanly to any other OIDC-compliant IdP; code that depends on `oid` or `tid` is bound to Entra specifically. The discipline at the consuming end pre-pays the migration cost if Entra's trajectory ever turns hostile.
+**Why standard-only:** This is the **cheap vendor-exit hedge** (the same pattern from [ADR-0076](./ADR-0076-cache-backing-azure-cache-for-redis.md) D3 and [ADR-0077](./ADR-0077-infrastructure-as-code-bicep.md) D5; the Grid's umbrella posture and canonical Azure governance file are [ADR-0080](./ADR-0080-vendor-lock-in-posture-and-exit-readiness-hedges.md) and [`governance/vendor-postures/azure.md`](../governance/vendor-postures/azure.md)). Application code that depends only on OIDC-standard claims migrates cleanly to any other OIDC-compliant IdP; code that depends on `oid` or `tid` is bound to Entra specifically. The discipline at the consuming end pre-pays the migration cost if Entra's trajectory ever turns hostile.
 
 The `IExternalIdpClaimMapper` interface from [ADR-0060](./ADR-0060-stand-up-honeydrunk-identity-node.md) D4 is the seam where claim mapping happens; the Entra implementation maps standard claims; a future alternative-IdP implementation maps the same standard claims from a different issuer.
 
@@ -178,14 +178,14 @@ The following are explicitly **not** decided by this ADR:
 This ADR proposes (numbering finalized at acceptance):
 
 - **End-user identity tokens are issued by Microsoft Entra External ID.** Any other end-user IdP requires an ADR amendment.
-- **Application code consumes OIDC-standard claims only from Entra-issued tokens.** Entra-proprietary claims (`oid`, `tid`, etc.) are not load-bearing in application logic. (Codifies D3; vendor-exit hedge.)
+- **Application code consumes OIDC-standard claims only from Entra-issued tokens.** Entra-proprietary claims (`oid`, `tid`, etc.) are not load-bearing in application logic. (Codifies D3; vendor-exit hedge per [ADR-0080](./ADR-0080-vendor-lock-in-posture-and-exit-readiness-hedges.md), canonical home [`governance/vendor-postures/azure.md`](../governance/vendor-postures/azure.md).)
 - **Auth still issues nothing.** [Invariant 10](../constitution/invariants.md) is preserved; Identity issues internal tokens, Entra issues external tokens, Auth validates both.
 
 ### Operational Consequences
 
 - **Hearth (and every subsequent consumer-app PDR) is unblocked on identity.** The vendor decision was the last gating decision for Phase 2 of [ADR-0060](./ADR-0060-stand-up-honeydrunk-identity-node.md).
 - **Credential-breach surface is outsourced to a vendor with a dedicated security team.** Per [ADR-0060](./ADR-0060-stand-up-honeydrunk-identity-node.md) D2's breach-liability analysis, this is the right posture for a solo-dev shop.
-- **The Azure-deep posture is reinforced.** Identity is one more Azure-native binding; the vendor-exit cost compounds.
+- **The Azure-deep posture is reinforced.** Identity is one more Azure-native binding; the vendor-exit cost compounds. (The Grid's Azure posture and honest exit cost are documented in [`governance/vendor-postures/azure.md`](../governance/vendor-postures/azure.md) per [ADR-0080](./ADR-0080-vendor-lock-in-posture-and-exit-readiness-hedges.md).)
 - **Cost is effectively zero through MVP** (50K MAU free tier).
 - **OAuth 2.1 + PKCE is the user-facing flow.** Aligns with [ADR-0057](./ADR-0057-public-http-api-versioning-and-client-sdk-strategy.md).
 - **Per-application Entra App Registrations** are operationally cheap to provision; one per consumer-app and one for Notify Cloud tenants.
@@ -284,5 +284,7 @@ Rejected. Per the forcing-functions analysis, Hearth's scaffolding work needs th
 - [ADR-0060](./ADR-0060-stand-up-honeydrunk-identity-node.md) — Identity Node standup (this ADR fills D2's deferred vendor decision)
 - [ADR-0072](./ADR-0072-data-access-stance-ef-core-default-dapper-hot-path.md) — EF Core (Identity's `IdentityMap` table)
 - [ADR-0077](./ADR-0077-infrastructure-as-code-bicep.md) — Bicep (Entra App Registration provisioning)
+- [ADR-0080](./ADR-0080-vendor-lock-in-posture-and-exit-readiness-hedges.md) — vendor lock-in posture umbrella (the OIDC-standard-claims-only hedge is the Entra surface's entry)
+- [`governance/vendor-postures/azure.md`](../governance/vendor-postures/azure.md) — Azure exit-playbook canonical home (Entra External ID per-surface row)
 - [PDR-0003](../pdrs/PDR-0003-lately-currents-based-connection-app.md), [PDR-0005](../pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md), [PDR-0006](../pdrs/PDR-0006-currents-social-suggestions-and-quests.md), [PDR-0008](../pdrs/PDR-0008-curiosities-discovery-first-city-app.md) — consumer-app PDRs that consume Identity (and therefore Entra)
 - [`generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md`](../generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md) — Hearth scout pick, charter context
