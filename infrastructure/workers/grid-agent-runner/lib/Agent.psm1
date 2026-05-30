@@ -80,6 +80,12 @@ function Invoke-AgentCommand {
     $startInfo.RedirectStandardOutput = $true
     $startInfo.RedirectStandardError = $true
     $startInfo.UseShellExecute = $false
+    $utf8NoBom = [System.Text.UTF8Encoding]::new($false)
+    $startInfo.StandardOutputEncoding = $utf8NoBom
+    $startInfo.StandardErrorEncoding = $utf8NoBom
+    if ($startInfo.RedirectStandardInput) {
+        $startInfo.StandardInputEncoding = $utf8NoBom
+    }
     Protect-AgentChildEnvironment -StartInfo $startInfo
 
     $promptText = $null
