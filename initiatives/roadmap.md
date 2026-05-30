@@ -2,7 +2,7 @@
 
 High-level roadmap for the HoneyDrunk Grid.
 
-**Last Updated:** 2026-05-29
+**Last Updated:** 2026-05-30
 
 For the near-term ranked priority list, see [current-focus.md](current-focus.md); this roadmap is the quarterly horizon.
 
@@ -71,7 +71,7 @@ The studio is currently building three product threads in 2026 — **Notify Clou
 - [ ] **ADR-0043 Backlog Generation — Phase 1 ship** — Strategic source event-driven on ADR acceptance + Reactive source for drift; `generated/issue-packets/proposed/` directory live
 - [ ] **ADR-0046 Specialist Review Agents — Phase 1** — `cfo` agent authored and retroactively invoked against cost-touching PRs; `agent-capability-matrix.md` updated
 - [ ] **ADR-0047 Phase 2 — Tier 2a integration CI** — `job-integration-tests.yml` live in Actions and wired into `pr-core.yml`; closes ADR-0011 Gap 1
-- [ ] **ADR-0079 Multi-Perspective PR Review Stack — Acceptance** — substantive-PR classifier defined; per-PR cost ceiling committed; ADR-0044 amended with billing-path discipline *(Reviewer 4 path unlocked 2026-06-15 by Claude Max Agent SDK launch)*
+- [x] **ADR-0079 Multi-Perspective PR Review Stack — Acceptance** — substantive-PR classifier defined; per-PR cost ceiling committed; ADR-0044 amended with billing-path discipline *(Reviewer 4 path unlocked 2026-06-15 by Claude Max Agent SDK launch)* *(ADR accepted; 5/5 accepting packet issues closed)*
 - [ ] **ADR-0010 Phase 2 (first useful increment)** — HoneyDrunk.Observe.Connectors.GitHub (webhook receiver + repo health checks), cost-first IRoutingPolicy implementation in HoneyDrunk.AI, routing policies loaded from Azure App Configuration
 - [ ] Cross-repo canary test automation via Actions workflows
 

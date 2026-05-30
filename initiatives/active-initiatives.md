@@ -4,20 +4,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 ## In Progress
 
-### ADR-0080 Vendor Lock-In Posture and Exit-Readiness Hedges
-**Status:** Complete on merge of PR #515 (all four packets shipped in one PR) — archive to `archived-initiatives.md` after merge per the ADR-0011 precedent.
-**Scope:** Architecture
-**Initiative:** `adr-0080-vendor-lockin`
-**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
-**Description:** Commit the Grid's vendor posture as a chosen position per ADR-0080 — assign each load-bearing vendor one of three postures (Accept / Hedge / Abstract), restate the cheap Grid-wide hedges as policy, define the decision-point triggers that fire a re-evaluation conversation, and create the `governance/vendor-postures/` canonical home with Azure and GitHub Accept-posture stubs. Governance-only; no code changes (all D3 hedges already hold at the code level via the source ADRs and invariants 1/2/3/44).
 
-**Tracking (all shipped via PR #515):**
-- [x] Architecture#347: Accept ADR-0080 — flip status, add the three vendor-posture invariants (99–101), register the initiative (packet 00)
-- [x] Architecture#348: Create `governance/vendor-postures/` and ship the Azure exit-playbook stub (packet 01)
-- [x] Architecture#349: Ship the GitHub exit-playbook stub (packet 02)
-- [x] Architecture#350: Cross-link ADR-0076 / ADR-0077 / ADR-0078 to `governance/vendor-postures/azure.md` (packet 03)
-
-**Exit criteria:** ADR-0080 is Accepted; invariants 99–101 are live under `## Vendor Posture Invariants`; `governance/vendor-postures/azure.md` and `governance/vendor-postures/github.md` stubs exist; ADR-0076/0077/0078 cite the resolved canonical home instead of the charter-aware draft. **All met by PR #515.**
 ### ADR-0052 Cost Governance, Budget Alerts, and Kill-Switches
 **Status:** In Progress — Phase-1 governance substrate landed; contract + implementation packets gated
 **Scope:** Architecture (governance), Kernel (contracts), AI (ledger impl + dispatcher kill-switch); Operator/Communications/Notify/Observe surfaces deferred to ADR-0018 standup
@@ -73,7 +60,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 **Exit criteria:** ADR-0083 Accepted; invariant 103 live; the inventory + walkthroughs + onboarding hook landed; the drift-detection workflow live in Actions; labels + standing issues created; real expiration dates reconciled against ground truth. **All met once #528 + #174 merge.**
 
 ### ADR-0044 Cloud Code Review and AI-Authored PR Discipline
-**Status:** In Progress
+**Status:** Complete — all tracked packet issues closed; ready for exit-criteria review/archive
 **Scope:** Architecture, Actions, OpenClaw runtime, and later the live Node repos
 **Initiative:** `adr-0044-cloud-code-review`
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
@@ -96,19 +83,21 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [x] Architecture#183: Verify `pr-review-rules.md` severity coverage across all D3 categories (packet 12; shipped via this PR)
 
 **Tracking (Wave 3 — Phase 3: discipline tightening):**
-- [ ] Architecture#184: Add `review_risk_class` to `catalogs/grid-health.json` (packet 13)
-- [ ] Actions#88: Activate D8 multi-perspective review for high-risk-Node PRs (packet 14)
+- [x] Architecture#184: Add `review_risk_class` to `catalogs/grid-health.json` (packet 13)
+- [x] Actions#88: Activate D8 multi-perspective review for high-risk-Node PRs (packet 14)
 
 **Tracking (Wave 4 — Phase 4: sampling audit + drift detection):**
-- [ ] Architecture#185: Create `generated/post-merge-audits/` with README (packet 15)
-- [ ] Actions#89: Build the D9 `audit-sample` post-merge labeling and audit job (packet 16)
-- [ ] Architecture#186: Wire `hive-sync` to detect D3 ↔ agent-file drift (packet 17)
+- [x] Architecture#185: Create `generated/post-merge-audits/` with README (packet 15)
+- [x] Actions#89: Build the D9 `audit-sample` post-merge labeling and audit job (packet 16)
+- [x] Architecture#186: Wire `hive-sync` to detect D3 ↔ agent-file drift (packet 17)
 
 **Superseded packets:** Architecture#171, Actions#84, Architecture#173, Architecture#174, and Architecture#182 are superseded and should not be executed. Architecture#173 and Architecture#174 should be closed as superseded by Architecture#180/#181; Architecture#182 is superseded by ADR-0086 packet 09, which fans out the `local-worker` default instead of `openclaw-codex`; Architecture#171 remains a gated human/infra item only if webhook/GitHub-App credentials become necessary for the non-cron path.
 
 **Exit criteria:** ADR-0044 is Accepted; Phase 1 MVP (`job-review-request.yml` + Grid Review Runner) is enabled on `HoneyDrunk.Architecture` only and running on every non-draft PR; each phase's dispatch-plan go/no-go criterion is satisfied before the next wave starts.
 
 > **Sync (2026-05-24):** Phase 1 is functionally complete in artifact-plus-cron/poll mode: ADR-0044 is Accepted, `job-review-request.yml` is live, Architecture has `.honeydrunk-review.yaml` and the caller workflow, and OpenClaw posted advisory PR comments for reviewed head SHAs. Webhook provisioning remains the transport hardening gap; the temporary OpenClaw cron/poll jobs should be disabled after signed webhook delivery is configured and verified. Wave 2 Architecture-side docs/prompts (#175, #176, #183) have landed. Actions#85 is closed via Actions PR #100; Actions#86 is closed after the `seed-labels-fanout.yml` run completed successfully on 2026-05-24. ADR-0044 no longer uses the deprecated multi-agent cloud-review path; broad Node fan-out (#182) is unblocked.
+
+> **Sync (2026-05-30):** 17/17 tracked ADR-0044 packet issues are closed in The Hive issue-state query. Packets moved to `completed/`; initiative is ready for exit-criteria review/archive.
 
 ### ADR-0086 Pull-Based Local Worker Grid Review Runner
 **Status:** In Progress
