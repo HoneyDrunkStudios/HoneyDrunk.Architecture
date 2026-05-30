@@ -1,6 +1,7 @@
 param(
     [string]$ConfigPath = (Join-Path (Split-Path -Parent $PSScriptRoot) "config/host.psd1"),
     [string[]]$JobId = @("grid-review", "post-merge-audit", "hive-sync", "lore-source", "lore-ingest", "lore-signal-review"),
+    [switch]$VisibleWindow,
     [switch]$WhatIf
 )
 
@@ -84,16 +85,24 @@ foreach ($id in $JobId) {
     Assert-GridAgentJobSpec -Spec $spec
 
     $taskName = Get-TaskName -JobId $id
-    $actionArgs = @(
-        "-NoProfile",
-        "-ExecutionPolicy", "Bypass",
-        "-File", "`"$(Join-Path $runnerRoot "Invoke-GridAgentRunner.ps1")`"",
-        "-JobId", $id,
-        "-ConfigPath", "`"$ConfigPath`"",
-        "-Once"
-    ) -join " "
+    if ($VisibleWindow) {
+        $actionArgs = @(
+            "-NoProfile",
+            "-ExecutionPolicy", "Bypass",
+            "-File", "`"$(Join-Path $runnerRoot "Invoke-GridAgentRunner.ps1")`"",
+            "-JobId", $id,
+            "-ConfigPath", "`"$ConfigPath`"",
+            "-Once"
+        ) -join " "
 
-    $action = New-ScheduledTaskAction -Execute "pwsh.exe" -Argument $actionArgs
+        $action = New-ScheduledTaskAction -Execute "pwsh.exe" -Argument $actionArgs
+    }
+    else {
+        $launcherPath = Join-Path $runnerRoot "scripts/Run-JobHidden.vbs"
+        $actionArgs = "//B //Nologo `"$launcherPath`" `"$id`" `"$ConfigPath`""
+        $action = New-ScheduledTaskAction -Execute "wscript.exe" -Argument $actionArgs
+    }
+
     $triggers = New-RunnerTaskTriggers -Spec $spec
     $settings = New-ScheduledTaskSettingsSet -MultipleInstances IgnoreNew -RestartCount 3 -RestartInterval (New-TimeSpan -Minutes 1) -StartWhenAvailable -ExecutionTimeLimit (New-TimeSpan -Minutes $spec.TimeoutMinutes)
 

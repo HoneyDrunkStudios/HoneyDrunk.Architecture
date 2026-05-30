@@ -21,8 +21,20 @@
             Executable = "codex"
             Arguments = @("exec", "--sandbox", "read-only", "--ignore-rules", "--ephemeral", "-")
             PromptStdin = $true
+        },
+        @{
+            Name = "claude"
+            Executable = "claude"
+            Arguments = @("--print", "--permission-mode", "plan", "--no-session-persistence")
+            PromptStdin = $true
         }
     )
+    SynthesisCommand = @{
+        Name = "codex-synthesis"
+        Executable = "codex"
+        Arguments = @("exec", "--sandbox", "read-only", "--ignore-rules", "--ephemeral", "-")
+        PromptStdin = $true
+    }
     WriteMode = "comment-only"
     OutputContract = @{
         LatestOutput = "github-pr-comment"
@@ -33,7 +45,7 @@
         "GitHub--AgentRunner--PrivateKey",
         "GitHub--AgentRunner--InstallationId"
     )
-    AllowedTools = @("read", "github-api", "codex")
+    AllowedTools = @("read", "github-api", "codex", "claude")
     RetainArtifactsDays = 14
     PortabilityNotes = "Requires host config for Architecture checkout, Vault access, Codex CLI, and optional Claude Code CLI."
     Queue = @{

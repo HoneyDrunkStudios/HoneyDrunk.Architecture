@@ -4,7 +4,7 @@ Portable scheduled agent runner for ADR-0086. The runner is operator-machine aut
 
 ## Jobs
 
-- `grid-review` polls the GitHub label/comment queue for `needs-agent-review` PRs.
+- `grid-review` polls the GitHub label/comment queue for `needs-agent-review` PRs, runs independent Codex and Claude passes, and posts one synthesized verdict.
 - `post-merge-audit` wires the future ADR-0044 audit job.
 - `hive-sync` runs the Architecture reconciliation agent.
 - `lore-source` runs the Lore sourcing prompt.
@@ -17,7 +17,9 @@ Committed job specs live in `config/jobs/*.psd1`. Machine-specific paths and Vau
 
 The runner is clone-safe by default. A fresh checkout has no `config/host.psd1`, and the example config keeps `Safety.Enabled = $false`; non-dry-run jobs refuse to start until the operator explicitly enables the local safety gate.
 
-For PR review, treat every PR field as hostile input. The runner does not check out PR heads or run PR code. It reviews GitHub diff/context only, rejects repositories outside `Safety.AllowedReviewRepositories`, rejects fork PRs unless `Safety.AllowForkPullRequests` is explicitly enabled, rejects private head repositories unless `Safety.AllowPrivateHeadRepositories` is explicitly enabled, requires the queue comment marker for claim recovery, launches child agents with common cloud/source-control/API-token environment variables removed, and runs Codex review passes with an ephemeral read-only sandbox that ignores repo-local rules.
+For PR review, treat every PR field as hostile input. The runner does not check out PR heads or run PR code. It reviews GitHub diff/context only, rejects repositories outside `Safety.AllowedReviewRepositories`, rejects fork PRs unless `Safety.AllowForkPullRequests` is explicitly enabled, rejects private head repositories unless `Safety.AllowPrivateHeadRepositories` is explicitly enabled, requires the queue comment marker for claim recovery, launches child agents with common cloud/source-control/API-token environment variables removed, runs Codex review passes with an ephemeral read-only sandbox that ignores repo-local rules, and runs Claude in non-interactive plan mode.
+
+For multi-agent PR review, raw Codex and Claude outputs are retained as runner artifacts. The PR receives only the synthesized verdict in the canonical review format; the runner does not post per-agent sections.
 
 The scheduled runner code must also be isolated from repository updates. With `Safety.RequireNonRepositoryRunnerRoot = $true`, non-dry-run jobs and Task Scheduler registration refuse to run from a Git worktree or from a configured repository path. Install or copy the runner into the operator-controlled `Safety.TrustedRunnerRoot`, keep `host.psd1` outside cloned source, then register scheduled tasks from that installed copy. If a malicious Architecture PR ever lands, the scheduled task continues running the previously installed runner copy until an operator intentionally updates it.
 
@@ -60,11 +62,13 @@ Preview registration:
 pwsh ./scripts/Register-Task.ps1 -ConfigPath C:\HoneyDrunk\Runtime\grid-agent-runner\host.psd1 -WhatIf
 ```
 
-Register default jobs:
+Register default jobs. Windows registrations use a hidden launcher by default so recurring jobs do not open terminal windows in the interactive session:
 
 ```powershell
 pwsh ./scripts/Register-Task.ps1 -ConfigPath C:\HoneyDrunk\Runtime\grid-agent-runner\host.psd1
 ```
+
+Use `-VisibleWindow` only when debugging a task interactively.
 
 Rollback:
 
