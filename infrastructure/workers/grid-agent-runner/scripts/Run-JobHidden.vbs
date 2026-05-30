@@ -48,6 +48,8 @@ Function ContainsUnsafeCommandChars(value)
     InStr(value, ">") > 0 Or _
     InStr(value, "<") > 0 Or _
     InStr(value, "^") > 0 Or _
+    InStr(value, "$") > 0 Or _
+    InStr(value, "`") > 0 Or _
     InStr(value, vbCr) > 0 Or _
     InStr(value, vbLf) > 0
 End Function
