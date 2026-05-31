@@ -3,14 +3,14 @@
 **Purpose:** Coordinate invariant numbering across in-flight ADRs to prevent collisions in `constitution/invariants.md`.
 
 **Rule:**
-1. The canonical state of accepted invariants lives in `constitution/invariants.md`. Today's max accepted invariant is **106** (with 54–98 still held as reservations below pending their ADRs' acceptance; 99–101 consumed by ADR-0080, 103 consumed by ADR-0083, 104–106 consumed by ADR-0052 — the accepted set is non-contiguous by design while in-flight Proposed ADRs hold reserved blocks).
+1. The canonical state of accepted invariants lives in `constitution/invariants.md`. Today's max accepted invariant is **107** (with 54–98 still held as reservations below pending their ADRs' acceptance; 99–101 consumed by ADR-0080, 103 consumed by ADR-0083, 104–106 consumed by ADR-0052, 107 consumed by ADR-0084 — the accepted set is non-contiguous by design while in-flight Proposed ADRs hold reserved blocks).
 2. ADRs in `Proposed` state that intend to add invariants reserve numbers here by listing them below. **A reservation is a forward soft-claim, not an accepted invariant** — it disappears if the ADR is rejected or restructured. Reservations may be added before any of the ADR's packets have merged; that's the point of the registry (coordinate across in-flight Proposed ADRs before they land).
 3. The reservation is added in the same PR that introduces (or last refines) the ADR's packet set. The **Notes** column points at the packet that will actually write to `constitution/invariants.md` — usually packet 00, but some standup ADRs delegate the invariant edit to a later packet (e.g., a separate `02-architecture-{node}-invariants.md`). The packet 00 PR carries a Required Decision if that's the case.
 4. **First merge wins.** If two ADRs end up racing for the same number block, the one whose invariant-writing packet merges first keeps the reservation; the second shifts upward by editing its packet body + this file in a follow-up commit before pushing.
 5. Numbering is contiguous and ascending across reservations. New reservations append after the highest existing claim. No gaps reserved "for later."
 6. **When an ADR is rejected or restructured**, the author removes its row from Active Reservations in the same PR that records the rejection / restructure. Downstream packets that reference the released numbers must shift down (or the released block stays empty in `invariants.md`, but contiguity rule 5 still holds for future claims).
 
-**Current ceiling:** highest reservation is the next ADR's starting point. With ADR-0080's 99–101, ADR-0083's 103, and ADR-0052's 104–106 all consumed (Reservation History), **next free = 107.**
+**Current ceiling:** highest reservation is the next ADR's starting point. With ADR-0080's 99–101, ADR-0083's 103, ADR-0052's 104–106, and ADR-0084's 107 all consumed (Reservation History), **next free = 108.**
 
 ---
 
@@ -32,8 +32,9 @@
 | 102   | Standup Procedure |
 | 103   | Sensitive Inventory |
 | 104–106 | Cost Governance |
+| 107   | Operator Alerts |
 
-**High-water mark on disk: 106** (gap 54–98 covers Active Reservations below; 99–101 consumed by ADR-0080, 103 consumed by ADR-0083, 104–106 consumed by ADR-0052).
+**High-water mark on disk: 107** (gap 54–98 covers Active Reservations below; 99–101 consumed by ADR-0080, 103 consumed by ADR-0083, 104–106 consumed by ADR-0052, 107 consumed by ADR-0084).
 
 ---
 
@@ -70,6 +71,7 @@ When a reservation is consumed (ADR packet 00 merges, invariants land in `invari
 | 99–101 | ADR-0080 | 2026-05-30 (PR #515) | Vendor Lock-In Posture and Exit-Readiness Hedges. Invariants 99/100/101 (three-posture vocabulary; no vendor-proprietary feature in application code; Accept-posture vendors have a per-vendor governance file) landed under the new `## Vendor Posture Invariants` section in `constitution/invariants.md`. Moved to history in the acceptance PR per the ADR-0082 precedent. |
 | 103 | ADR-0083 | 2026-05-30 (PR #518) | Sensitive Inventory and External-SaaS Credential Rotation Procedure. Invariant 103 (every credential/identifier/secret/identity-binding the Grid holds has an inventory row; `Rotates: yes` rows additionally carry a `Current Expiration`, a walkthrough, and a standing rotation issue; Vault-governed and non-rotating entries carved out) landed under the new `## Sensitive Inventory Invariants` section in `constitution/invariants.md`. Pre-assigned alongside ADR-0082's 102 by the refine pass. Moved to history in the acceptance PR per the ADR-0082 precedent. |
 | 104–106 | ADR-0052 | 2026-05-30 (PR #517) | Cost Governance, Budget Alerts, and Kill-Switches. Invariants 104/105/106 (every cost-producing op recorded as a `CostEvent`; the LLM-dispatch chokepoint checks the hard cap on the hot path; operator overrides audited) landed under the new `## Cost Governance Invariants` section in `constitution/invariants.md`. Block shifted off the stale packet-hardcoded 90/91/92 (now ADR-0077's) to the next free triple above ADR-0083's 103. Moved to history in the acceptance PR per the ADR-0082 precedent. |
+| 107 | ADR-0084 | 2026-05-31 | Discord as the Canonical Operator-Alerts Surface. Invariant 107 (every operator-actionable Grid event publishes to Discord via `job-discord-notify.yml` for Actions emitters or the ADR-0086 runner's Key Vault path for non-Actions emitters; no Discord channel receives secret values, customer PII, or full stack traces; ad-hoc `curl` to a webhook URL outside the seam is forbidden — ADR-0084 D11) landed under the new `## Operator Alerts Invariants` section in `constitution/invariants.md`. Block claimed as the next free number above ADR-0052's 104–106. Complements (does not replace) invariant 8. Consumed at acceptance per the ADR-0082 precedent. |
 
 ---
 
