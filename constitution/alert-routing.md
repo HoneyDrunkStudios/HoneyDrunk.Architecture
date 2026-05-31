@@ -1,3 +1,10 @@
+---
+title: Alert Routing
+source_adr: ADR-0084
+binding_invariant: 107
+status: active
+---
+
 # Alert Routing
 
 **Source ADR:** [ADR-0084](../adrs/ADR-0084-discord-operator-alerts-surface.md) (Discord as the Canonical Operator-Alerts Surface).
@@ -56,7 +63,7 @@ This table pins the v1 routing for every alert source. The columns are `Event so
 Per [ADR-0084](../adrs/ADR-0084-discord-operator-alerts-surface.md) D10's onboarding hook, when a new alert source is introduced anywhere in the Grid (new CI job, new scheduled workflow, new Node emitting operational events, new agent firing a non-PR-comment signal), the packet introducing it must:
 
 1. **Add a row to the routing table above** — `Event source | Destination channel | Severity | Format hint`. The destination channel is one of the seven from ADR-0084 D2 (`#ops-alerts`, `#security-alerts`, `#agent-activity`, `#hive-activity`, `#release`, `#announcements`, `#audit-sensitive`); the severity is one of Info / Medium / High / Critical. Edit **this file**, not the ADR-0084 D6 table.
-2. **Pass the specific `channel` and `severity` inputs** the source will use through `job-discord-notify.yml` in HoneyDrunk.Actions (per [ADR-0084](../adrs/ADR-0084-discord-operator-alerts-surface.md) D9) — the reusable workflow is the single Grid-side seam for GitHub-Actions emitters; emitters outside Actions use the `infrastructure/scripts/discord-notify.ps1` helper that mirrors the same contract. Ad-hoc `curl` to a webhook URL outside the workflow / helper is forbidden.
+2. **Pass the specific `channel` and `severity` inputs** the source will use through `job-discord-notify.yml` in HoneyDrunk.Actions (per [ADR-0084](../adrs/ADR-0084-discord-operator-alerts-surface.md) D9) — the reusable workflow is the single Grid-side seam for GitHub-Actions emitters. Emitters **outside** GitHub Actions (the [ADR-0086](../adrs/ADR-0086-pull-based-local-worker-grid-review-runner.md) pull-based runner) post from the runner's own PowerShell path, resolving the channel's `Discord--{ChannelPascalCase}--RunnerWebhookUrl` webhook from the `kv-hd-automation-dev` Key Vault. (There is no `infrastructure/scripts/discord-notify.ps1` home-server helper — the ADR-0081 home server is decommissioned.) Ad-hoc `curl` to a webhook URL outside these seams is forbidden.
 3. **Declare a volume estimate** (messages-per-day projection). If the source is projected to emit **more than 50 messages per day** on average, declare an explicit suppression rule — a per-source severity floor, a duplicate-suppression rule, or both — per [ADR-0084](../adrs/ADR-0084-discord-operator-alerts-surface.md) D8. Alert fatigue is the failure mode that makes a pager useless; pre-emptive volume budgeting prevents it.
 
 This onboarding hook is also attached to the Node-standup procedure as the **Operator-alert routing** step (per [`constitution/node-standup.md`](./node-standup.md)), parallel to the ADR-0083 D6 external-credential-onboarding step. Any Node standup that introduces a new operational event surface runs that step before the source enters CI.

@@ -1,3 +1,10 @@
+---
+title: Discord Webhook Rotation
+applies_to: ADR-0084, ADR-0083
+related_invariants: [8, 107]
+status: active
+---
+
 # Discord Webhook Rotation
 
 **Credential family:** Discord webhook URLs (see [`infrastructure/reference/sensitive-inventory.md`](../reference/sensitive-inventory.md) — the nine Discord webhook rows: seven Actions org-secret webhooks + two ADR-0086 runner Key-Vault webhooks).
