@@ -5,8 +5,8 @@
     TriggerKind = "schedule"
     Schedule = @{
         Type = "weekly"
-        DaysOfWeek = @("Monday", "Thursday")
-        TimeUtc = "06:00"
+        DaysOfWeek = @("Monday", "Wednesday", "Friday")
+        TimeLocal = "09:00"
         AtStartup = $false
         AtLogon = $false
     }
@@ -18,9 +18,10 @@
     PromptPath = ".claude/agents/hive-sync.md"
     AgentCommands = @(
         @{
-            Name = "claude"
-            Executable = "claude"
-            Arguments = @("--file", "{PromptPath}")
+            Name = "codex"
+            Executable = "codex"
+            Arguments = @("exec", "--sandbox", "danger-full-access", "--ignore-rules", "--ephemeral", "-")
+            PromptStdin = $true
         }
     )
     WriteMode = "pr"
@@ -28,8 +29,17 @@
         LatestOutput = "initiatives/drift-report.md"
         Summary = "Creates or updates a reconciliation PR; no direct Hive board mutation."
     }
-    RequiredSecrets = @()
-    AllowedTools = @("read", "write", "edit", "git", "gh", "graphql")
+    Notifications = @{
+        Discord = @{
+            Enabled = $true
+            Channel = "hive-activity"
+            SecretName = "Discord--HiveActivity--RunnerWebhookUrl"
+        }
+    }
+    RequiredSecrets = @(
+        "Discord--HiveActivity--RunnerWebhookUrl"
+    )
+    AllowedTools = @("read", "write", "edit", "git", "gh", "graphql", "codex")
     RetainArtifactsDays = 30
     PortabilityNotes = "Host must have Architecture checkout and GitHub CLI for interactive operator use; runner job must not mutate The Hive board directly."
 }

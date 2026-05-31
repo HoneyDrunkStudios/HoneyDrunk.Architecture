@@ -129,11 +129,6 @@ function Resolve-AgentExecutable {
         return $Executable
     }
 
-    $command = Get-Command -Name $Executable -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
-    if ($null -ne $command) {
-        return $command.Source
-    }
-
     if ($Executable -ieq "codex" -and -not [string]::IsNullOrWhiteSpace($env:LOCALAPPDATA)) {
         $codexBinary = Get-ChildItem -LiteralPath (Join-Path $env:LOCALAPPDATA "OpenAI\Codex\bin") -Filter "codex.exe" -Recurse -ErrorAction SilentlyContinue |
             Sort-Object LastWriteTime -Descending |
@@ -142,6 +137,11 @@ function Resolve-AgentExecutable {
         if ($null -ne $codexBinary) {
             return $codexBinary.FullName
         }
+    }
+
+    $command = Get-Command -Name $Executable -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
+    if ($null -ne $command) {
+        return $command.Source
     }
 
     return $Executable

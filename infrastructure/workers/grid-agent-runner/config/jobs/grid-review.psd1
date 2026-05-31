@@ -48,10 +48,18 @@
         LatestOutput = "github-pr-comment"
         Summary = "Posts one synthesized advisory review verdict to the PR."
     }
+    Notifications = @{
+        Discord = @{
+            Enabled = $true
+            Channel = "agent-activity"
+            SecretName = "Discord--AgentActivity--RunnerWebhookUrl"
+        }
+    }
     RequiredSecrets = @(
         "GitHub--AgentRunner--AppId",
         "GitHub--AgentRunner--PrivateKey",
-        "GitHub--AgentRunner--InstallationId"
+        "GitHub--AgentRunner--InstallationId",
+        "Discord--AgentActivity--RunnerWebhookUrl"
     )
     AllowedTools = @("read", "github-api", "codex", "claude")
     RetainArtifactsDays = 14

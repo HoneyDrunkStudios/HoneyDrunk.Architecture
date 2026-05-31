@@ -18,9 +18,10 @@
     PromptPath = "tools/openclaw-lore-signal-review-prompt.md"
     AgentCommands = @(
         @{
-            Name = "claude"
-            Executable = "claude"
-            Arguments = @("--file", "{PromptPath}")
+            Name = "codex"
+            Executable = "codex"
+            Arguments = @("exec", "--sandbox", "danger-full-access", "--ignore-rules", "--ephemeral", "-")
+            PromptStdin = $true
         }
     )
     WriteMode = "none"
@@ -28,8 +29,17 @@
         LatestOutput = "output/signal-review-YYYY-MM-DD.md"
         Summary = "Writes a sparse signal-review report only; no strategy or GitHub mutations."
     }
-    RequiredSecrets = @()
-    AllowedTools = @("read", "write")
+    Notifications = @{
+        Discord = @{
+            Enabled = $true
+            Channel = "agent-activity"
+            SecretName = "Discord--AgentActivity--RunnerWebhookUrl"
+        }
+    }
+    RequiredSecrets = @(
+        "Discord--AgentActivity--RunnerWebhookUrl"
+    )
+    AllowedTools = @("read", "write", "codex")
     RetainArtifactsDays = 60
     PortabilityNotes = "Can run manually or on schedule. It is intentionally report-only."
 }

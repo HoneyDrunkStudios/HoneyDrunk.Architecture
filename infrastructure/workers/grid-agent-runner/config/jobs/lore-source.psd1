@@ -5,7 +5,7 @@
     TriggerKind = "schedule"
     Schedule = @{
         Type = "daily"
-        TimeLocal = "09:00"
+        TimeLocal = "08:00"
         AtStartup = $false
         AtLogon = $false
     }
@@ -17,9 +17,10 @@
     PromptPath = "tools/openclaw-lore-sourcing-prompt.md"
     AgentCommands = @(
         @{
-            Name = "claude"
-            Executable = "claude"
-            Arguments = @("--file", "{PromptPath}")
+            Name = "codex"
+            Executable = "codex"
+            Arguments = @("exec", "--sandbox", "danger-full-access", "--ignore-rules", "--ephemeral", "-")
+            PromptStdin = $true
         }
     )
     WriteMode = "commit"
@@ -27,8 +28,17 @@
         LatestOutput = "output/openclaw-sourcing-last-run.md"
         Summary = "Writes qualifying sources to raw/ and records the sourcing run summary."
     }
-    RequiredSecrets = @()
-    AllowedTools = @("read", "write", "edit", "web", "git")
+    Notifications = @{
+        Discord = @{
+            Enabled = $true
+            Channel = "agent-activity"
+            SecretName = "Discord--AgentActivity--RunnerWebhookUrl"
+        }
+    }
+    RequiredSecrets = @(
+        "Discord--AgentActivity--RunnerWebhookUrl"
+    )
+    AllowedTools = @("read", "write", "edit", "web", "git", "codex")
     RetainArtifactsDays = 30
     PortabilityNotes = "Uses existing Lore sourcing prompt. Browser/audio/video sourcing remains disabled unless the prompt explicitly requires it."
 }

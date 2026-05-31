@@ -17,10 +17,12 @@ Import-Module (Join-Path $libRoot "Logging.psm1") -Force
 Import-Module (Join-Path $libRoot "JobSpec.psm1") -Force
 Import-Module (Join-Path $libRoot "State.psm1") -Force
 Import-Module (Join-Path $libRoot "Scheduler.psm1") -Force
+Import-Module (Join-Path $libRoot "Secrets.psm1") -Force
 Import-Module (Join-Path $libRoot "GitHub.psm1") -Force
 Import-Module (Join-Path $libRoot "Agent.psm1") -Force
 Import-Module (Join-Path $libRoot "Synthesis.psm1") -Force
 Import-Module (Join-Path $libRoot "Queue.psm1") -Force
+Import-Module (Join-Path $libRoot "Notify.psm1") -Force
 
 $hostConfig = Get-GridAgentHostConfig -Path $ConfigPath -RunnerRoot $PSScriptRoot
 $jobSpec = Get-GridAgentJobSpec -RunnerRoot $PSScriptRoot -JobId $JobId
@@ -85,6 +87,7 @@ Invoke-WithRunnerLock -HostConfig $hostConfig -JobSpec $jobSpec -ScriptBlock {
             status = $result.status
             message = $result.message
         }
+        Invoke-RunnerCompletionNotification -HostConfig $lockedHostConfig -JobSpec $lockedJobSpec -Result $result -StartedAt $startedAt -FinishedAt $finishedAt -Logger $logger -DryRun:$DryRun
     }
 }
 

@@ -1,3 +1,5 @@
+Import-Module (Join-Path $PSScriptRoot "Secrets.psm1") -Force
+
 function Get-GitHubInstallationToken {
     param(
         [hashtable]$HostConfig,
@@ -5,21 +7,31 @@ function Get-GitHubInstallationToken {
         [hashtable]$Logger
     )
 
-    foreach ($secretName in $RequiredSecretNames) {
-        if ($secretName -notmatch "^GitHub--AgentRunner--") {
-            throw "Invalid GitHub secret name '$secretName'. Expected prefix 'GitHub--AgentRunner--'."
+    if (-not $HostConfig.ContainsKey("Vault")) {
+        throw "Host config must include a Vault block for GitHub App token minting."
+    }
+
+    $expectedSecretNames = @(
+        "GitHub--AgentRunner--AppId",
+        "GitHub--AgentRunner--PrivateKey",
+        "GitHub--AgentRunner--InstallationId"
+    )
+    foreach ($secretName in $expectedSecretNames) {
+        if ($secretName -notin @($RequiredSecretNames)) {
+            throw "RequiredSecretNames must include GitHub App secret '$secretName'."
         }
 
         Write-RunnerLog -Logger $Logger -Level "DEBUG" -Message "GitHub App secret required." -Data @{ secret_name = $secretName }
     }
 
-    if (-not $HostConfig.ContainsKey("Vault")) {
-        throw "Host config must include a Vault block for GitHub App token minting."
+    $secrets = @{}
+    foreach ($secretName in $expectedSecretNames) {
+        $secrets[$secretName] = Get-RunnerSecret -HostConfig $HostConfig -SecretName $secretName
     }
 
-    $appId = Get-RunnerVaultSecret -HostConfig $HostConfig -SecretName "GitHub--AgentRunner--AppId"
-    $privateKeyPem = Get-RunnerVaultSecret -HostConfig $HostConfig -SecretName "GitHub--AgentRunner--PrivateKey"
-    $installationId = Get-RunnerVaultSecret -HostConfig $HostConfig -SecretName "GitHub--AgentRunner--InstallationId"
+    $appId = $secrets["GitHub--AgentRunner--AppId"]
+    $privateKeyPem = $secrets["GitHub--AgentRunner--PrivateKey"]
+    $installationId = $secrets["GitHub--AgentRunner--InstallationId"]
     $jwt = New-GitHubAppJwt -AppId $appId -PrivateKeyPem $privateKeyPem
 
     $headers = @{
@@ -31,22 +43,6 @@ function Get-GitHubInstallationToken {
     $uri = "https://api.github.com/app/installations/$installationId/access_tokens"
     $response = Invoke-RestMethod -Method Post -Uri $uri -Headers $headers
     return $response.token
-}
-
-function Get-RunnerVaultSecret {
-    param(
-        [hashtable]$HostConfig,
-        [string]$SecretName
-    )
-
-    $vaultName = $HostConfig.Vault.Name
-    $azPath = if ($HostConfig.Vault.ContainsKey("AzCliPath")) { $HostConfig.Vault.AzCliPath } else { "az" }
-    $value = & $azPath keyvault secret show --vault-name $vaultName --name $SecretName --query value -o tsv
-    if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($value)) {
-        throw "Failed to read Vault secret '$SecretName'."
-    }
-
-    return $value
 }
 
 function New-GitHubAppJwt {
