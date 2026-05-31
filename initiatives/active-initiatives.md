@@ -29,8 +29,10 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 **Exit criteria:** ADR-0052 Accepted; cost-governance invariants live; `cost-budgets.json` seeded; report format + review-agent cost gating in place; rollout playbook captures every deferred surface with its gating event. Full enforcement (the kill-switch) goes live when the AI Node scaffolds (ADR-0016 Phase 1) and the Kernel contracts release.
 
+> **Sync (2026-05-31):** ADR-0052 verified **Accepted** on `main`; wave-1 governance packets #354/#356/#357/#358/#359 confirmed CLOSED via live `gh`. ADR-0052 was struck from `current-focus.md` (was ranked #14) — the Architecture-side governance substrate is done. The only residual is **Architecture#355** (`ICostLedger` → Kernel relocation, confirmed OPEN), which is hard-gated AI-side work (HoneyDrunk.AI at seed v0.1.0; ADR-0016 Phase-1 scaffold unexecuted) plus a human Kernel release — tracked here as gated, deliberately **not** on current-focus.
+
 ### ADR-0083 Sensitive Inventory and External-SaaS Credential Rotation
-**Status:** In Progress
+**Status:** Complete — ADR-0083 Accepted; closing PRs #528 (Architecture) + #174 (Actions) MERGED 2026-05-30; ready for exit-criteria review/archive
 **Scope:** Architecture (inventory, walkthroughs, invariant, onboarding hook, cross-links) + Actions (drift-detection workflow)
 **Initiative:** `adr-0083-external-saas-credentials`
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
@@ -59,8 +61,10 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 **Exit criteria:** ADR-0083 Accepted; invariant 103 live; the inventory + walkthroughs + onboarding hook landed; the drift-detection workflow live in Actions; labels + standing issues created; real expiration dates reconciled against ground truth. **All met once #528 + #174 merge.**
 
+> **Sync (2026-05-31):** ADR-0083 verified **Accepted** on `main`; closing PRs **#528 (Architecture) and #174 (Actions) confirmed MERGED 2026-05-30** via live `gh`. All exit criteria now met — initiative is **ready to archive**. ADR-0083 was struck from `current-focus.md` (was ranked #3). One inventory row remains intentionally tracked: `OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET` retires under the ADR-0088 OpenClaw-decommission cutover (now current-focus #1), not here.
+
 ### ADR-0084 Discord as the Canonical Operator-Alerts Surface
-**Status:** In Progress — core shipped (acceptance + seam + credential pager + runner path); Phase 3/4 vendor-webhook emitters deferred pending a post-home-server substrate decision
+**Status:** Accepted — core shipped (acceptance + seam + credential pager + runner path); PRs #551 (Architecture, commit 89c3842) + #178 + #180 (Actions) MERGED 2026-05-31. Phase 1 emitter remainder + Phase 3/4 vendor-webhook emitters deferred pending a post-home-server substrate decision (ADR-0088 / ADR-0086).
 **Scope:** Architecture (governance flip, invariant, alert-routing table, walkthrough, vendor-posture + standup amendments) + Actions (`job-discord-notify.yml` reusable workflow + phased emitter retrofits) + the ADR-0086 runner (non-Actions Discord posting path)
 **Initiative:** `adr-0084-discord-alerts`
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
@@ -75,17 +79,19 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [x] Architecture: ADR-0080 D2 vendor-posture Discord row per D7 (packet 08) — PR #551
 - [x] Operator (human): seven Actions webhooks (org secrets) + two runner webhooks (`kv-hd-automation-dev`) provisioned (packet 02)
 - [x] Actions: `job-discord-notify.yml` reusable workflow with the D8 redaction pre-check (packet 05) — PR #178 (merged)
-- [x] Actions: Phase 1 emitter retrofit — ADR-0083 credential-rotation escalation (T-30/T-7/T+0) → Discord (packet 10) — PR #180
+- [x] Actions: Phase 1 emitter retrofit — ADR-0083 credential-rotation escalation (T-30/T-7/T+0) → Discord (packet 10) — PR #180 (merged 2026-05-31)
 - [x] ADR-0086 runner: Discord posting path live (resolves `Discord--*--RunnerWebhookUrl` from `kv-hd-automation-dev`) — covers review/specialist → `#agent-activity` and hive-sync → `#hive-activity`
 
 **Deferred / phased (NOT in this pass):**
 - [ ] Actions: Phase 1 remainder — CI-on-main failure, release/NuGet/deploy events → `#release` / `#ops-alerts` (cleanly wireable follow-up)
-- [ ] Phase 3/4 vendor-webhook emitters — Dependabot/CodeQL/secret-scan, CodeRabbit P0/P1, Azure budget, App Insights error spikes. These were designed as home-server webhook bridges (ADR-0081); the home server is decommissioned, so they need a substrate decision (the ADR-0086 runner absorbs them, or an Azure Function receives the webhooks) before wiring. GitHub-native security alerts (email + Security tab) and the absence of any deployed service make these low-urgency.
+- [ ] Phase 3/4 vendor-webhook emitters — Dependabot/CodeQL/secret-scan, CodeRabbit P0/P1, Azure budget, App Insights error spikes. These were designed as home-server webhook bridges (ADR-0081); ADR-0088 tears down the OpenClaw webhook bridge they assumed, so they need a substrate decision (the ADR-0086 runner absorbs them, or an Azure Function receives the webhooks) before wiring. GitHub-native security alerts (email + Security tab) and the absence of any deployed service make these low-urgency.
 
-**Dropped (home server decommissioned):**
-- The originally-planned home-server helper packet (#479 — `infrastructure/scripts/discord-notify.ps1`) is **dropped**: the ADR-0081 home server is decommissioned (see ADR-0088), so there is no home-server-hosted non-Actions emitter. The ADR-0086 runner is the sole non-Actions emitter and posts via its own Key Vault-resolved path — no separate helper script is authored.
+**Dropped (OpenClaw / standalone home-server helper path retired):**
+- The originally-planned home-server helper packet (#479 — `infrastructure/scripts/discord-notify.ps1`) is **dropped**: ADR-0088 retires the OpenClaw / standalone-helper delivery path (the home-server hardware survives as the ADR-0086 runner host, but the separate helper-script emitter premise is gone), so there is no separate home-server-hosted non-Actions emitter. The ADR-0086 runner is the sole non-Actions emitter and posts via its own Key Vault-resolved path — no separate helper script is authored.
 
 **Exit criteria:** ADR-0084 Accepted; invariant 107 live; alert-routing table landed; the two webhook classes provisioned and inventoried; `job-discord-notify.yml` live in Actions and the ADR-0086 runner's Discord path wired; standup + vendor-posture amendments landed; phased emitter retrofits complete per the rollout plan.
+
+> **Sync (2026-05-31):** ADR-0084 verified **Accepted** on `main` (commit 89c3842); acceptance/governance PR **#551 (Architecture)** + seam PR **#178** + Phase 1 emitter PR **#180 (Actions)** all confirmed MERGED 2026-05-31 via live `gh`. Core acceptance struck from `current-focus.md` (was ranked #4). Remaining work is deferred and Watch-tier, not ranked: the **Phase 3/4 vendor-webhook emitters** carry a current-focus Watch-tier line (substrate-gated on the ADR-0088 OpenClaw teardown + an ADR-0086-runner-or-Azure-Function decision); the Phase 1 emitter remainder (CI-on-main / release events) is a cleanly-wireable follow-up. Acceptance packet **Architecture#474 is still OPEN** — flagged as housekeeping for the operator (the PR merged but the issue was not auto-closed).
 
 ### ADR-0044 Cloud Code Review and AI-Authored PR Discipline
 **Status:** Complete — all tracked packet issues closed; ready for exit-criteria review/archive
@@ -128,7 +134,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 > **Sync (2026-05-30):** 17/17 tracked ADR-0044 packet issues are closed in The Hive issue-state query. Packets moved to `completed/`; initiative is ready for exit-criteria review/archive.
 
 ### ADR-0086 Pull-Based Local Worker Grid Review Runner
-**Status:** In Progress
+**Status:** Complete — ADR-0086 Accepted on `main`; operator confirms the local-worker review runner is complete and operating across the Grid. Ready for exit-criteria review/archive. Residual dual-pass + OpenClaw-teardown work re-homed under ADR-0087 (dual-pass / risk-signals) and ADR-0088 (OpenClaw decommission); scheduled-job migration tracked as Phase C/D follow-on.
 **Scope:** Architecture, Actions, the local runner host, HoneyDrunk.Lore scheduled jobs, and later the live Node repos
 **Initiative:** `adr-0086-pull-based-local-worker-grid-review`
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
@@ -136,18 +142,20 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 **Tracking (Wave 1 — Phase A: Architecture pilot):**
 - [x] Architecture: Accept ADR-0086, append supersession notes to ADR-0044/ADR-0079, register this initiative, and mark ADR-0044 Architecture#182 superseded (packet 01)
-- [ ] Architecture: Audit and reuse the existing ADR-0044 review-agent GitHub App walkthrough/credential contract (packet 02)
-- [ ] Architecture: Author the portable PowerShell scheduled agent runner under `infrastructure/workers/grid-agent-runner/`, including job specs, dual Codex/Claude synthesis, Task Scheduler startup/restart behavior, and initial hive-sync/Lore job specs (packet 03)
-- [ ] Architecture: Update the `.honeydrunk-review.yaml` schema doc for `runner: local-worker` / `api-ci` and removal of `openclaw-codex` (packet 04)
-- [ ] Actions: Rewrite `job-review-request.yml` as the managed-label-normalizing label/comment enqueue workflow (packet 05)
-- [ ] Actions: Add worker labels and the managed PR-label vocabulary Grid-wide (packet 06)
-- [ ] Architecture: Cut over the Architecture pilot to the local worker and record Phase-A go/no-go evidence (packet 07)
+- [x] Architecture: Audit and reuse the existing ADR-0044 review-agent GitHub App walkthrough/credential contract (packet 02)
+- [x] Architecture: Author the portable PowerShell scheduled agent runner under `infrastructure/workers/grid-agent-runner/`, including job specs, dual Codex/Claude synthesis, Task Scheduler startup/restart behavior, and initial hive-sync/Lore job specs (packet 03)
+- [x] Architecture: Update the `.honeydrunk-review.yaml` schema doc for `runner: local-worker` / `api-ci` and removal of `openclaw-codex` (packet 04)
+- [x] Actions: Rewrite `job-review-request.yml` as the managed-label-normalizing label/comment enqueue workflow (packet 05)
+- [x] Actions: Add worker labels and the managed PR-label vocabulary Grid-wide (packet 06)
+- [x] Architecture: Cut over the Architecture pilot to the local worker and record Phase-A go/no-go evidence (packet 07)
 
 **Tracking (Wave 2 — Phase B: decommission + fan-out):**
-- [ ] Architecture: Decommission OpenClaw on the review path and document operator-side cutover steps (packet 08; review transport replaced by ADR-0086 local-worker queue, physical teardown/governance reconciliation owned by ADR-0088)
-- [ ] Cross-repo: Enable the local-worker reviewer on the 10 remaining live Nodes, superseding ADR-0044 Architecture#182 (packet 09; implementation landed 2026-05-30, final packet closeout remains open until the Phase-A prerequisite rows are reconciled)
+- [x] Architecture: Decommission OpenClaw on the review path and document operator-side cutover steps (packet 08; review transport replaced by ADR-0086 local-worker queue; physical teardown/governance reconciliation owned by ADR-0088 — see #542/#545)
+- [x] Cross-repo: Enable the local-worker reviewer on the 10 remaining live Nodes, superseding ADR-0044 Architecture#182 (packet 09; implementation landed 2026-05-30, Phase-A prerequisites now reconciled)
 
-> **Sync (2026-05-30):** ADR-0086 packet 09 implementation landed across Kernel#70, Transport#43, Vault#48, Auth#38, Web.Rest#33, Data#39, Notify#52, Communications#29, Pulse#40, and the Actions queue/caller follow-ups through Actions#177. The `Authorship:` PR-template requirement is satisfied by the org-wide `HoneyDrunkStudios/.github` default template unless a repo deliberately overrides it. Keep packet 09's final tracker checkbox open until the still-open Phase-A prerequisite rows above are reconciled from their merged evidence.
+> **Sync (2026-05-30):** ADR-0086 packet 09 implementation landed across Kernel#70, Transport#43, Vault#48, Auth#38, Web.Rest#33, Data#39, Notify#52, Communications#29, Pulse#40, and the Actions queue/caller follow-ups through Actions#177. The `Authorship:` PR-template requirement is satisfied by the org-wide `HoneyDrunkStudios/.github` default template unless a repo deliberately overrides it.
+
+> **Sync (2026-05-31):** Operator confirms **ADR-0086 is DONE** — Accepted on `main` and the local-worker review runner is complete and operating across the Grid. Phase A/B tracker boxes closed; ADR-0086 **struck from `current-focus.md`** (was ranked #1) and added to the Archive / exit-criteria review candidate list (current-focus #9). **Residual work re-homed, not lost:** the open issues that still reference ADR-0086 in their body are no longer ADR-0086 implementation work — the OpenClaw teardown packets (**Arch#542/#545**, plus the Actions `job-review-request` edits **#175/#176**) belong to **ADR-0088** (OpenClaw decommission, current-focus #1), and the worker **dual-pass / risk-signals substrate (Arch#537/#538)** is **ADR-0087** follow-on. ADR-0086 is no longer the tracker for any of these. The scheduled-agent-job migration (Phase C, packet 11) and observability polish (Phase D, packet 10) remain ADR-0086-homed follow-on phases below but are not current-focus-ranked.
 
 **Tracking (Wave 3 — Phase C: scheduled agent job migration):**
 - [ ] Architecture: Migrate `hive-sync`, Lore sourcing, Lore ingest/compile, and Lore signal review from OpenClaw/Honeyclaw schedules to ADR-0086 runner jobs with smoke-test and rollback records (packet 11)
@@ -156,6 +164,27 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [ ] Architecture: Surface runner health through hive-sync and the weekly briefing surfaces, including review queue backlog and scheduled-job freshness (packet 10)
 
 **Exit criteria:** Phase A proves verdict quality, reliable polling/claim semantics, deterministic head-SHA invalidation, and near-zero marginal cost under subscription auth on `HoneyDrunk.Architecture`; Phase B follows only after OpenClaw is decommissioned on the review path; Phase C migrates scheduled agent jobs only after runner smoke tests; Phase D makes runner availability visible through the existing narrative surfaces without adding a pager or inbound alert.
+
+### ADR-0088 Decommission OpenClaw from the HoneyDrunk Grid
+**Status:** Proposed — live acceptance/teardown packet cluster open (#539/#541/#545/#546)
+**Scope:** Architecture (governance flip, reference-file teardown, ADR reconciliation, ADR-0007 addendum retirement) + the sensitive-inventory (`OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET` retirement)
+**Initiative:** `adr-0088-decommission-openclaw`
+**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
+**Description:** Accept ADR-0088 and govern the full teardown of OpenClaw from the Grid. **ADR-0088 supersedes ADR-0081** (the home-server-for-OpenClaw ADR): its OpenClaw-centric organizing premise is dead — ADR-0086's local-worker queue replaced the OpenClaw review path, and the home-server hardware/security premise is re-homed under ADR-0086 rather than retired — so the remaining OpenClaw surface area is dead reference material that needs a governed removal rather than a host to run on. This is the real owner of the dead-OpenClaw cleanup that `current-focus.md` was previously (incorrectly) tracking under ADR-0081. ADR-0086 Phase B (packet 08) explicitly defers the OpenClaw teardown + governance reconciliation here.
+
+**Tracking:**
+- [ ] Architecture#539: Accept ADR-0088 — decommission OpenClaw; supersede ADR-0081; register the teardown initiative (packet 00)
+- [ ] Architecture#541: Remove the `infrastructure/openclaw/*` reference files; tombstone the runner README pointers
+- [ ] Architecture#545: Reconcile OpenClaw references in ADR-0082, ADR-0083, ADR-0084, and ADR-0085 as documentation-currency edits
+- [ ] Architecture#546: Retire the ADR-0007 Operational Addendum (OpenClaw-skills-mirroring rule) + its node-standup and agent-skills-map wirings
+
+**Cross-initiative dependencies:**
+- Retires the `OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET` inventory row that ADR-0083 deliberately left tracked pending this cutover (see the ADR-0083 reconciliation note above).
+- Unblocks the ADR-0084 Phase 3/4 vendor-webhook-emitter substrate decision (the home-server bridge those emitters assumed is gone).
+
+**Exit criteria:** ADR-0088 Accepted; `infrastructure/openclaw/*` removed and runner README pointers tombstoned; OpenClaw references across ADR-0082/0083/0084/0085 reconciled; ADR-0007 Operational Addendum retired with its wirings; `OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET` row retired from the sensitive inventory and its standing issue #527 closed; ADR-0081 marked Superseded.
+
+> **Sync (2026-05-31):** Registered as an active initiative and promoted to `current-focus.md` #1. Packet cluster #539/#541/#545/#546 confirmed OPEN via live `gh`. ADR-0088 verified **Proposed** on `main`. This initiative replaces the false ADR-0081 tracking that previously sat at current-focus #15 — **ADR-0081 has been removed from current-focus** (its only acceptance packet, Architecture#457, remains OPEN but its OpenClaw-centric premise is dead — the home-server hardware survives under ADR-0086 — so ADR-0081 should be marked Superseded by ADR-0088 rather than accepted).
 
 ### ADR-0047 Testing Patterns and Tooling
 **Status:** In Progress

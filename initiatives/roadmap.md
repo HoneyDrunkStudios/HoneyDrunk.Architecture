@@ -2,7 +2,7 @@
 
 High-level roadmap for the HoneyDrunk Grid.
 
-**Last Updated:** 2026-05-30
+**Last Updated:** 2026-05-31
 
 For the near-term ranked priority list, see [current-focus.md](current-focus.md); this roadmap is the quarterly horizon.
 
@@ -27,6 +27,11 @@ The studio is currently building three product threads in 2026 — **Notify Clou
 - [x] **Code Review Pipeline (ADR-0011) — completed 2026-05-28** — `adr-0011-code-review-pipeline`: ADR-0011 Accepted 2026-05-25; SonarQube Cloud rollout shipped across all 12 .NET-active Grid repos (Kernel, Transport, Vault, Auth, Web.Rest, Data, Notify, Pulse, Communications, AI, Audit, Observe); `job-sonarcloud.yml` reusable workflow + `agent-run.yml` packet-link injection live in HoneyDrunk.Actions; initial-scan findings (Reliability, Maintainability, Security Hotspots on Communications/Observe) triaged; org-level GitHub ruleset for `SonarCloud Code Analysis` enforced (Active) on the 12 onboarded repos.
 - [x] **ADR-0012 Grid CI/CD Control Plane — completed 2026-05-27** — `adr-0012-grid-cicd-control-plane`: tracked_workflows catalog, grid-health aggregator, caller-permissions audit, and Node 20 action bump shipped.
 - [x] **ADR-0082 Canonical Node Standup Procedure — deliverables completed 2026-05-29** — `adr-0082-node-standup`: ADR-0082 Accepted (PR #505); invariant 102 + `## Standup Procedure Invariants` section in `constitution/invariants.md`; `constitution/node-standup.md` (PR #508); all six `infrastructure/walkthroughs/` node-standup + org-secret-repo-binding walkthroughs (PR #510). *(All 8 GitHub issues closed 2026-05-29; initiative archived to [archived-initiatives.md](archived-initiatives.md).)*
+- [x] **ADR-0080 Vendor Lock-In Posture — Accepted 2026-05-30** — `adr-0080-vendor-lockin`: invariants 99–101 live; `governance/vendor-postures/{azure,github}.md` stubs shipped (PR #515). Archived to [archived-initiatives.md](archived-initiatives.md).
+- [x] **ADR-0083 Sensitive Inventory & External-SaaS Credential Rotation — Accepted 2026-05-30** — `adr-0083-external-saas-credentials`: invariant 103 live; `infrastructure/reference/sensitive-inventory.md` + rotation walkthroughs + onboarding hook landed; `external-credentials-check.yml` drift-detection workflow live in Actions; closing PRs #528 (Architecture) + #174 (Actions) merged. Ready for archive. *(One inventory row, `OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET`, retires under ADR-0088.)*
+- [x] **ADR-0084 Discord as Operator-Alerts Surface — Accepted 2026-05-31** — `adr-0084-discord-alerts`: invariant 107 live; `constitution/alert-routing.md` + `job-discord-notify.yml` seam + Phase 1 credential-escalation emitter shipped (PRs #551/#178/#180). Phase 3/4 vendor-webhook emitters deferred (substrate-gated on ADR-0088 teardown + ADR-0086 runner decision).
+- [x] **ADR-0052 Cost Governance, Budget Alerts, Kill-Switches — Accepted 2026-05-30** — `adr-0052-cost-governance`: invariants 104–106 live; `cost-budgets.json` + `generated/cost-reports/` format + review-agent cost gating + Operator rollout playbook shipped (PR #517). Wave-1 governance complete; AI-side ledger impl + `ICostLedger` Kernel relocation (Architecture#355) remain gated on the AI Node scaffold + a human Kernel release.
+- [ ] **ADR-0088 Decommission OpenClaw** — accept + tear down the dead OpenClaw reference surface (`infrastructure/openclaw/*`, ADR-0007 addendum, cross-ADR references, `OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET`); supersedes ADR-0081 (OpenClaw-centric premise dead; home-server hardware re-homed under ADR-0086); ADR-0086 Phase B defers the OpenClaw teardown + governance reconciliation here *(current-focus #1; packet cluster #539/#541/#545/#546 open)*
 - [ ] **ADR-0033 environment-gated trigger packets** — unblocks Notify/Pulse dev deploy under ADR-0015
 - [ ] **ADR-0043 Backlog Generation — Phase 1 kickoff** — closes the ADR → packet auto-generation loop; Strategic source feeds on ADR acceptances
 - [ ] **ADR-0015 Container Apps Rollout — underway** *(2/5 issues closed; walkthroughs + reusable deploy workflow complete; Notify/Pulse release work remains; underwrites Notify Cloud deploy substrate)*
