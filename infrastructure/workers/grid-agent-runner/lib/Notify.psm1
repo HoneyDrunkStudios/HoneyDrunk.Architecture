@@ -352,6 +352,40 @@ function Invoke-RunnerNotifySelfTest {
         throw "Review Discord fields should include a sanitized review verdict."
     }
 
+    $fallbackReviewRepoCases = @(
+        @{
+            Name = "missing review_repo"
+            Result = @{ status = "completed" }
+        },
+        @{
+            Name = "cross-org review_repo"
+            Result = @{
+                status = "completed"
+                review_repo = "OtherOrg/HoneyDrunk.Architecture"
+            }
+        },
+        @{
+            Name = "URL-shaped review_repo"
+            Result = @{
+                status = "completed"
+                review_repo = "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture"
+            }
+        },
+        @{
+            Name = "malformed review_repo"
+            Result = @{
+                status = "completed"
+                review_repo = "HoneyDrunkStudios/HoneyDrunk.Architecture/pull/549"
+            }
+        }
+    )
+    foreach ($case in $fallbackReviewRepoCases) {
+        $fallbackFields = @(Get-RunnerDiscordFields -JobSpec $defaultSpec -Result $case.Result -DiscordConfig @{ Channel = "agent-activity" } -Duration ([timespan]::FromSeconds(5)))
+        if (-not (@($fallbackFields | Where-Object { $_.name -eq "Repo" -and $_.value -eq "HoneyDrunk.Test" }).Count -eq 1)) {
+            throw "Review Discord fields should fall back to the job repo for $($case.Name)."
+        }
+    }
+
     $unsafeValues = @(
         "token = honeydrunk_local_fixture_value_1234567890",
         "Authorization: Bearer local.fixture.value.with.enough.length",
