@@ -61,7 +61,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 **Exit criteria:** ADR-0083 Accepted; invariant 103 live; the inventory + walkthroughs + onboarding hook landed; the drift-detection workflow live in Actions; labels + standing issues created; real expiration dates reconciled against ground truth. **All met once #528 + #174 merge.**
 
-> **Sync (2026-05-31):** ADR-0083 verified **Accepted** on `main`; closing PRs **#528 (Architecture) and #174 (Actions) confirmed MERGED 2026-05-30** via live `gh`. All exit criteria now met — initiative is **ready to archive**. ADR-0083 was struck from `current-focus.md` (was ranked #3). One inventory row remains intentionally tracked: `OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET` retires under the ADR-0088 OpenClaw-decommission cutover (now current-focus #2), not here.
+> **Sync (2026-05-31):** ADR-0083 verified **Accepted** on `main`; closing PRs **#528 (Architecture) and #174 (Actions) confirmed MERGED 2026-05-30** via live `gh`. All exit criteria now met — initiative is **ready to archive**. ADR-0083 was struck from `current-focus.md` (was ranked #3). One inventory row remains intentionally tracked: `OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET` retires under the ADR-0088 OpenClaw-decommission cutover (now current-focus #1), not here.
 
 ### ADR-0084 Discord as the Canonical Operator-Alerts Surface
 **Status:** Accepted — core shipped (acceptance + seam + credential pager + runner path); PRs #551 (Architecture, commit 89c3842) + #178 + #180 (Actions) MERGED 2026-05-31. Phase 1 emitter remainder + Phase 3/4 vendor-webhook emitters deferred pending a post-home-server substrate decision (ADR-0088 / ADR-0086).
@@ -84,10 +84,10 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 **Deferred / phased (NOT in this pass):**
 - [ ] Actions: Phase 1 remainder — CI-on-main failure, release/NuGet/deploy events → `#release` / `#ops-alerts` (cleanly wireable follow-up)
-- [ ] Phase 3/4 vendor-webhook emitters — Dependabot/CodeQL/secret-scan, CodeRabbit P0/P1, Azure budget, App Insights error spikes. These were designed as home-server webhook bridges (ADR-0081); the home server is decommissioned, so they need a substrate decision (the ADR-0086 runner absorbs them, or an Azure Function receives the webhooks) before wiring. GitHub-native security alerts (email + Security tab) and the absence of any deployed service make these low-urgency.
+- [ ] Phase 3/4 vendor-webhook emitters — Dependabot/CodeQL/secret-scan, CodeRabbit P0/P1, Azure budget, App Insights error spikes. These were designed as home-server webhook bridges (ADR-0081); ADR-0088 tears down the OpenClaw webhook bridge they assumed, so they need a substrate decision (the ADR-0086 runner absorbs them, or an Azure Function receives the webhooks) before wiring. GitHub-native security alerts (email + Security tab) and the absence of any deployed service make these low-urgency.
 
-**Dropped (home server decommissioned):**
-- The originally-planned home-server helper packet (#479 — `infrastructure/scripts/discord-notify.ps1`) is **dropped**: the ADR-0081 home server is decommissioned (see ADR-0088), so there is no home-server-hosted non-Actions emitter. The ADR-0086 runner is the sole non-Actions emitter and posts via its own Key Vault-resolved path — no separate helper script is authored.
+**Dropped (OpenClaw / standalone home-server helper path retired):**
+- The originally-planned home-server helper packet (#479 — `infrastructure/scripts/discord-notify.ps1`) is **dropped**: ADR-0088 retires the OpenClaw / standalone-helper delivery path (the home-server hardware survives as the ADR-0086 runner host, but the separate helper-script emitter premise is gone), so there is no separate home-server-hosted non-Actions emitter. The ADR-0086 runner is the sole non-Actions emitter and posts via its own Key Vault-resolved path — no separate helper script is authored.
 
 **Exit criteria:** ADR-0084 Accepted; invariant 107 live; alert-routing table landed; the two webhook classes provisioned and inventoried; `job-discord-notify.yml` live in Actions and the ADR-0086 runner's Discord path wired; standup + vendor-posture amendments landed; phased emitter retrofits complete per the rollout plan.
 
@@ -170,7 +170,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 **Scope:** Architecture (governance flip, reference-file teardown, ADR reconciliation, ADR-0007 addendum retirement) + the sensitive-inventory (`OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET` retirement)
 **Initiative:** `adr-0088-decommission-openclaw`
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
-**Description:** Accept ADR-0088 and govern the full teardown of OpenClaw from the Grid. **ADR-0088 supersedes ADR-0081** (the home-server-for-OpenClaw ADR): the home server is decommissioned and ADR-0086's local-worker queue has replaced the OpenClaw review path, so the remaining OpenClaw surface area is dead reference material that needs a governed removal rather than a host to run on. This is the real owner of the dead-home-server / dead-OpenClaw cleanup that `current-focus.md` was previously (incorrectly) tracking under ADR-0081. ADR-0086 Phase B (packet 08) explicitly defers the physical teardown + governance reconciliation here.
+**Description:** Accept ADR-0088 and govern the full teardown of OpenClaw from the Grid. **ADR-0088 supersedes ADR-0081** (the home-server-for-OpenClaw ADR): its OpenClaw-centric organizing premise is dead — ADR-0086's local-worker queue replaced the OpenClaw review path, and the home-server hardware/security premise is re-homed under ADR-0086 rather than retired — so the remaining OpenClaw surface area is dead reference material that needs a governed removal rather than a host to run on. This is the real owner of the dead-OpenClaw cleanup that `current-focus.md` was previously (incorrectly) tracking under ADR-0081. ADR-0086 Phase B (packet 08) explicitly defers the OpenClaw teardown + governance reconciliation here.
 
 **Tracking:**
 - [ ] Architecture#539: Accept ADR-0088 — decommission OpenClaw; supersede ADR-0081; register the teardown initiative (packet 00)
@@ -184,7 +184,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 **Exit criteria:** ADR-0088 Accepted; `infrastructure/openclaw/*` removed and runner README pointers tombstoned; OpenClaw references across ADR-0082/0083/0084/0085 reconciled; ADR-0007 Operational Addendum retired with its wirings; `OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET` row retired from the sensitive inventory and its standing issue #527 closed; ADR-0081 marked Superseded.
 
-> **Sync (2026-05-31):** Registered as an active initiative and promoted to `current-focus.md` #2. Packet cluster #539/#541/#545/#546 confirmed OPEN via live `gh`. ADR-0088 verified **Proposed** on `main`. This initiative replaces the false ADR-0081 tracking that previously sat at current-focus #15 — **ADR-0081 has been removed from current-focus** (its only acceptance packet, Architecture#457, remains OPEN but the home server is decommissioned, so ADR-0081 should be marked Superseded by ADR-0088 rather than accepted).
+> **Sync (2026-05-31):** Registered as an active initiative and promoted to `current-focus.md` #1. Packet cluster #539/#541/#545/#546 confirmed OPEN via live `gh`. ADR-0088 verified **Proposed** on `main`. This initiative replaces the false ADR-0081 tracking that previously sat at current-focus #15 — **ADR-0081 has been removed from current-focus** (its only acceptance packet, Architecture#457, remains OPEN but its OpenClaw-centric premise is dead — the home-server hardware survives under ADR-0086 — so ADR-0081 should be marked Superseded by ADR-0088 rather than accepted).
 
 ### ADR-0047 Testing Patterns and Tooling
 **Status:** In Progress
