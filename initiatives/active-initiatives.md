@@ -59,6 +59,34 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 **Exit criteria:** ADR-0083 Accepted; invariant 103 live; the inventory + walkthroughs + onboarding hook landed; the drift-detection workflow live in Actions; labels + standing issues created; real expiration dates reconciled against ground truth. **All met once #528 + #174 merge.**
 
+### ADR-0084 Discord as the Canonical Operator-Alerts Surface
+**Status:** In Progress — core shipped (acceptance + seam + credential pager + runner path); Phase 3/4 vendor-webhook emitters deferred pending a post-home-server substrate decision
+**Scope:** Architecture (governance flip, invariant, alert-routing table, walkthrough, vendor-posture + standup amendments) + Actions (`job-discord-notify.yml` reusable workflow + phased emitter retrofits) + the ADR-0086 runner (non-Actions Discord posting path)
+**Initiative:** `adr-0084-discord-alerts`
+**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
+**Description:** Accept ADR-0084 and commit Discord as the single canonical operator-alerts surface for the Grid — the real-time operational pager across CI failures, security signals, agent activity, release events, hive-sync drift, and ADR-0083 credential-rotation escalation. Seven dedicated channels with a routing table; native Discord webhooks (one per channel per emitter class, no bot bridge); **two emitter classes** per the D4 refinement — GitHub Actions via `DISCORD_WEBHOOK_*` org secrets, and the ADR-0086 pull-based runner via `Discord--{ChannelPascalCase}--RunnerWebhookUrl` secrets in the shared automation Key Vault `kv-hd-automation-dev` (a third secret *category* — automation-runtime — beyond ADR-0083 D1's CI-machinery and workload-runtime, but two emitter *classes*). Single CI-side seam `job-discord-notify.yml`; the runner posts from its own Key Vault-resolved PowerShell path (best-effort, log-and-continue). Payload rules: no secret values, no customer PII, no full stack traces (invariant 8 extended to webhook payloads). The forcing function is ADR-0083 D5's T-30 / T-7 / T+0 escalation cadence needing a saliency-appropriate channel.
+
+**Tracking:**
+- [x] Architecture: Accept ADR-0084 — flip status, refine D4/D9 (third secret category for the ADR-0086 runner; drop the dead home-server helper path), claim invariant 107, register the initiative (packet 00) — PR #551
+- [x] Architecture: `constitution/alert-routing.md` — the canonical, hive-sync-checked routing table seeded from D6 (packet 01) — PR #551
+- [x] Architecture: Discord webhook rows in `infrastructure/reference/sensitive-inventory.md` per ADR-0083 D2 (`Rotates: no`) — seven Actions rows + two runner rows (packet 03) — PR #551
+- [x] Architecture: `infrastructure/walkthroughs/discord-webhook-rotation.md` per ADR-0083 D4 (packet 04) — PR #551
+- [x] Architecture: `constitution/node-standup.md` operator-alert-routing onboarding step per D10 (packet 07) — PR #551
+- [x] Architecture: ADR-0080 D2 vendor-posture Discord row per D7 (packet 08) — PR #551
+- [x] Operator (human): seven Actions webhooks (org secrets) + two runner webhooks (`kv-hd-automation-dev`) provisioned (packet 02)
+- [x] Actions: `job-discord-notify.yml` reusable workflow with the D8 redaction pre-check (packet 05) — PR #178 (merged)
+- [x] Actions: Phase 1 emitter retrofit — ADR-0083 credential-rotation escalation (T-30/T-7/T+0) → Discord (packet 10) — PR #180
+- [x] ADR-0086 runner: Discord posting path live (resolves `Discord--*--RunnerWebhookUrl` from `kv-hd-automation-dev`) — covers review/specialist → `#agent-activity` and hive-sync → `#hive-activity`
+
+**Deferred / phased (NOT in this pass):**
+- [ ] Actions: Phase 1 remainder — CI-on-main failure, release/NuGet/deploy events → `#release` / `#ops-alerts` (cleanly wireable follow-up)
+- [ ] Phase 3/4 vendor-webhook emitters — Dependabot/CodeQL/secret-scan, CodeRabbit P0/P1, Azure budget, App Insights error spikes. These were designed as home-server webhook bridges (ADR-0081); the home server is decommissioned, so they need a substrate decision (the ADR-0086 runner absorbs them, or an Azure Function receives the webhooks) before wiring. GitHub-native security alerts (email + Security tab) and the absence of any deployed service make these low-urgency.
+
+**Dropped (home server decommissioned):**
+- The originally-planned home-server helper packet (#479 — `infrastructure/scripts/discord-notify.ps1`) is **dropped**: the ADR-0081 home server is decommissioned (see ADR-0088), so there is no home-server-hosted non-Actions emitter. The ADR-0086 runner is the sole non-Actions emitter and posts via its own Key Vault-resolved path — no separate helper script is authored.
+
+**Exit criteria:** ADR-0084 Accepted; invariant 107 live; alert-routing table landed; the two webhook classes provisioned and inventoried; `job-discord-notify.yml` live in Actions and the ADR-0086 runner's Discord path wired; standup + vendor-posture amendments landed; phased emitter retrofits complete per the rollout plan.
+
 ### ADR-0044 Cloud Code Review and AI-Authored PR Discipline
 **Status:** Complete — all tracked packet issues closed; ready for exit-criteria review/archive
 **Scope:** Architecture, Actions, OpenClaw runtime, and later the live Node repos

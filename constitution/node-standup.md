@@ -198,6 +198,16 @@ If a Node's standup introduces **any** artifact governed by ADR-0083's inventory
 
 The inventory row exists **before** the integration ships. Procedural enforcement is the `review` agent per ADR-0044 D3 category 9 (Security): a PR that introduces a workflow consuming a new GitHub org secret, repo secret, or environment variable without a matching inventory row is a `Request Changes` finding. This is bound by invariant 103.
 
+### Operator-alert routing (per ADR-0084 D10)
+
+Parallel to the sensitive-inventory onboarding step above, ADR-0084 D10 attaches a second onboarding hook to this procedure. If the Node's standup introduces a new operational alert source (a new CI workflow, scheduled job, agent activity, or operational event emitter) that the operator should see in chat, the standup packet must, **before the source enters any CI surface:**
+
+1. **Add a row** to [`constitution/alert-routing.md`](./alert-routing.md) per [ADR-0084](../adrs/ADR-0084-discord-operator-alerts-surface.md) D6.
+2. **Pass `channel` and `severity` inputs** through `job-discord-notify.yml` in HoneyDrunk.Actions per [ADR-0084](../adrs/ADR-0084-discord-operator-alerts-surface.md) D9.
+3. **If the source's projected volume exceeds 50 messages per day,** declare a suppression rule per [ADR-0084](../adrs/ADR-0084-discord-operator-alerts-surface.md) D8.
+
+Most Node standups (Memory, Knowledge, Capabilities, Sim, Evals, Flow scaffolding) emit no operator-actionable events at first; this step activates only when a Node's CI, scheduled jobs, agent activity, or operational event emitters come online. The governing decision is [ADR-0084](../adrs/ADR-0084-discord-operator-alerts-surface.md) D10; the routing-table format is D6, the `job-discord-notify.yml` contract is D9, and the volume-bounding / suppression rule is D8. Procedural enforcement is the `review` agent per ADR-0044 D3 category 19 (Anti-entropy) and surfaced by `hive-sync` if an alert source is observed firing into Discord without a routing-table entry.
+
 ---
 
 ## Per-class walkthroughs
