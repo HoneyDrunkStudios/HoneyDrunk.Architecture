@@ -134,7 +134,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 > **Sync (2026-05-30):** 17/17 tracked ADR-0044 packet issues are closed in The Hive issue-state query. Packets moved to `completed/`; initiative is ready for exit-criteria review/archive.
 
 ### ADR-0086 Pull-Based Local Worker Grid Review Runner
-**Status:** In Progress
+**Status:** Complete — ADR-0086 Accepted on `main`; operator confirms the local-worker review runner is complete and operating across the Grid. Ready for exit-criteria review/archive. Residual dual-pass + OpenClaw-teardown work re-homed under ADR-0087 (dual-pass / risk-signals) and ADR-0088 (OpenClaw decommission); scheduled-job migration tracked as Phase C/D follow-on.
 **Scope:** Architecture, Actions, the local runner host, HoneyDrunk.Lore scheduled jobs, and later the live Node repos
 **Initiative:** `adr-0086-pull-based-local-worker-grid-review`
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
@@ -142,18 +142,20 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 **Tracking (Wave 1 — Phase A: Architecture pilot):**
 - [x] Architecture: Accept ADR-0086, append supersession notes to ADR-0044/ADR-0079, register this initiative, and mark ADR-0044 Architecture#182 superseded (packet 01)
-- [ ] Architecture: Audit and reuse the existing ADR-0044 review-agent GitHub App walkthrough/credential contract (packet 02)
-- [ ] Architecture: Author the portable PowerShell scheduled agent runner under `infrastructure/workers/grid-agent-runner/`, including job specs, dual Codex/Claude synthesis, Task Scheduler startup/restart behavior, and initial hive-sync/Lore job specs (packet 03)
-- [ ] Architecture: Update the `.honeydrunk-review.yaml` schema doc for `runner: local-worker` / `api-ci` and removal of `openclaw-codex` (packet 04)
-- [ ] Actions: Rewrite `job-review-request.yml` as the managed-label-normalizing label/comment enqueue workflow (packet 05)
-- [ ] Actions: Add worker labels and the managed PR-label vocabulary Grid-wide (packet 06)
-- [ ] Architecture: Cut over the Architecture pilot to the local worker and record Phase-A go/no-go evidence (packet 07)
+- [x] Architecture: Audit and reuse the existing ADR-0044 review-agent GitHub App walkthrough/credential contract (packet 02)
+- [x] Architecture: Author the portable PowerShell scheduled agent runner under `infrastructure/workers/grid-agent-runner/`, including job specs, dual Codex/Claude synthesis, Task Scheduler startup/restart behavior, and initial hive-sync/Lore job specs (packet 03)
+- [x] Architecture: Update the `.honeydrunk-review.yaml` schema doc for `runner: local-worker` / `api-ci` and removal of `openclaw-codex` (packet 04)
+- [x] Actions: Rewrite `job-review-request.yml` as the managed-label-normalizing label/comment enqueue workflow (packet 05)
+- [x] Actions: Add worker labels and the managed PR-label vocabulary Grid-wide (packet 06)
+- [x] Architecture: Cut over the Architecture pilot to the local worker and record Phase-A go/no-go evidence (packet 07)
 
 **Tracking (Wave 2 — Phase B: decommission + fan-out):**
-- [ ] Architecture: Decommission OpenClaw on the review path and document operator-side cutover steps (packet 08; review transport replaced by ADR-0086 local-worker queue, physical teardown/governance reconciliation owned by ADR-0088)
-- [ ] Cross-repo: Enable the local-worker reviewer on the 10 remaining live Nodes, superseding ADR-0044 Architecture#182 (packet 09; implementation landed 2026-05-30, final packet closeout remains open until the Phase-A prerequisite rows are reconciled)
+- [x] Architecture: Decommission OpenClaw on the review path and document operator-side cutover steps (packet 08; review transport replaced by ADR-0086 local-worker queue; physical teardown/governance reconciliation owned by ADR-0088 — see #542/#545)
+- [x] Cross-repo: Enable the local-worker reviewer on the 10 remaining live Nodes, superseding ADR-0044 Architecture#182 (packet 09; implementation landed 2026-05-30, Phase-A prerequisites now reconciled)
 
-> **Sync (2026-05-30):** ADR-0086 packet 09 implementation landed across Kernel#70, Transport#43, Vault#48, Auth#38, Web.Rest#33, Data#39, Notify#52, Communications#29, Pulse#40, and the Actions queue/caller follow-ups through Actions#177. The `Authorship:` PR-template requirement is satisfied by the org-wide `HoneyDrunkStudios/.github` default template unless a repo deliberately overrides it. Keep packet 09's final tracker checkbox open until the still-open Phase-A prerequisite rows above are reconciled from their merged evidence.
+> **Sync (2026-05-30):** ADR-0086 packet 09 implementation landed across Kernel#70, Transport#43, Vault#48, Auth#38, Web.Rest#33, Data#39, Notify#52, Communications#29, Pulse#40, and the Actions queue/caller follow-ups through Actions#177. The `Authorship:` PR-template requirement is satisfied by the org-wide `HoneyDrunkStudios/.github` default template unless a repo deliberately overrides it.
+
+> **Sync (2026-05-31):** Operator confirms **ADR-0086 is DONE** — Accepted on `main` and the local-worker review runner is complete and operating across the Grid. Phase A/B tracker boxes closed; ADR-0086 **struck from `current-focus.md`** (was ranked #1) and added to the Archive / exit-criteria review candidate list (current-focus #9). **Residual work re-homed, not lost:** the open issues that still reference ADR-0086 in their body are no longer ADR-0086 implementation work — the OpenClaw teardown packets (**Arch#542/#545**, plus the Actions `job-review-request` edits **#175/#176**) belong to **ADR-0088** (OpenClaw decommission, current-focus #1), and the worker **dual-pass / risk-signals substrate (Arch#537/#538)** is **ADR-0087** follow-on. ADR-0086 is no longer the tracker for any of these. The scheduled-agent-job migration (Phase C, packet 11) and observability polish (Phase D, packet 10) remain ADR-0086-homed follow-on phases below but are not current-focus-ranked.
 
 **Tracking (Wave 3 — Phase C: scheduled agent job migration):**
 - [ ] Architecture: Migrate `hive-sync`, Lore sourcing, Lore ingest/compile, and Lore signal review from OpenClaw/Honeyclaw schedules to ADR-0086 runner jobs with smoke-test and rollback records (packet 11)
