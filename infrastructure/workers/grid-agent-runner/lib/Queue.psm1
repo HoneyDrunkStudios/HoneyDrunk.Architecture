@@ -81,6 +81,7 @@ function Invoke-GridReviewQueueTick {
         message = "Posted review verdict for '$($item.html_url)'."
         latest_output = $JobSpec.OutputContract.LatestOutput
         pr_url = $item.html_url
+        review_repo = "$($postflight.Owner)/$($postflight.Repo)"
         review_verdict = Get-GridReviewVerdictLabel -VerdictBody $verdict
         artifacts = @($item.html_url)
     }
