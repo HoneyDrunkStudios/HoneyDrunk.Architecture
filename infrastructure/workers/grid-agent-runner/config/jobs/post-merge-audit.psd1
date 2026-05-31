@@ -48,10 +48,18 @@
         LatestOutput = "generated/post-merge-audits/"
         Summary = "Posts an audit comment and writes an audit artifact when ADR-0044 audit packets land."
     }
+    Notifications = @{
+        Discord = @{
+            Enabled = $true
+            Channel = "agent-activity"
+            SecretName = "Discord--AgentActivity--RunnerWebhookUrl"
+        }
+    }
     RequiredSecrets = @(
         "GitHub--AgentRunner--AppId",
         "GitHub--AgentRunner--PrivateKey",
-        "GitHub--AgentRunner--InstallationId"
+        "GitHub--AgentRunner--InstallationId",
+        "Discord--AgentActivity--RunnerWebhookUrl"
     )
     AllowedTools = @("read", "github-api", "codex", "claude")
     RetainArtifactsDays = 30

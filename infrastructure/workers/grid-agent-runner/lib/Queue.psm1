@@ -80,6 +80,8 @@ function Invoke-GridReviewQueueTick {
         status = "completed"
         message = "Posted review verdict for '$($item.html_url)'."
         latest_output = $JobSpec.OutputContract.LatestOutput
+        pr_url = $item.html_url
+        review_verdict = Get-GridReviewVerdictLabel -VerdictBody $verdict
         artifacts = @($item.html_url)
     }
 }
@@ -99,6 +101,27 @@ function Get-ReviewQueueItems {
     }
 
     return Get-ReviewQueueItemsByQuery -Query $query -Token $Token
+}
+
+function Get-GridReviewVerdictLabel {
+    param([string]$VerdictBody)
+
+    if ([string]::IsNullOrWhiteSpace($VerdictBody)) {
+        return "Unknown"
+    }
+
+    $match = [regex]::Match($VerdictBody, "(?im)^\s*(?:[^\w\r\n]+)?\s*Verdict\s*:\s*(.+?)\s*$")
+    if (-not $match.Success) {
+        return "Unknown"
+    }
+
+    $value = $match.Groups[1].Value.Trim()
+    $normalized = ($value -replace "[^\p{L}\p{N}\s/-]", "").Trim()
+    if ([string]::IsNullOrWhiteSpace($normalized)) {
+        return "Unknown"
+    }
+
+    return $normalized
 }
 
 function Get-ReviewQueueItemsByQuery {

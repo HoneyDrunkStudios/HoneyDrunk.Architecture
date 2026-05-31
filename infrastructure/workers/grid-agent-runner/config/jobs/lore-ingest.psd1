@@ -17,9 +17,10 @@
     PromptPath = "tools/openclaw-lore-ingest-prompt.md"
     AgentCommands = @(
         @{
-            Name = "claude"
-            Executable = "claude"
-            Arguments = @("--file", "{PromptPath}")
+            Name = "codex"
+            Executable = "codex"
+            Arguments = @("exec", "--sandbox", "danger-full-access", "--ignore-rules", "--ephemeral", "-")
+            PromptStdin = $true
         }
     )
     WriteMode = "commit"
@@ -27,8 +28,17 @@
         LatestOutput = "output/openclaw-ingest-last-run.md"
         Summary = "Compiles raw/ into wiki/, updates indexes, and records the ingest run summary."
     }
-    RequiredSecrets = @()
-    AllowedTools = @("read", "write", "edit", "git")
+    Notifications = @{
+        Discord = @{
+            Enabled = $true
+            Channel = "agent-activity"
+            SecretName = "Discord--AgentActivity--RunnerWebhookUrl"
+        }
+    }
+    RequiredSecrets = @(
+        "Discord--AgentActivity--RunnerWebhookUrl"
+    )
+    AllowedTools = @("read", "write", "edit", "git", "codex")
     RetainArtifactsDays = 30
     PortabilityNotes = "Uses existing Lore ingest prompt; redaction and flat-file wiki rules stay in HoneyDrunk.Lore."
 }
