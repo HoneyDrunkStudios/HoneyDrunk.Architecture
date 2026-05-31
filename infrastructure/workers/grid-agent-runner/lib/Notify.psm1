@@ -86,7 +86,7 @@ function Get-RunnerDiscordFields {
     )
 
     $fields = New-Object System.Collections.Generic.List[hashtable]
-    $fields.Add(@{ name = "Repo"; value = [string]$JobSpec.Repo; inline = $true })
+    $fields.Add(@{ name = "Repo"; value = Get-RunnerDiscordRepoFieldValue -JobSpec $JobSpec -Result $Result; inline = $true })
     $fields.Add(@{ name = "Duration"; value = Format-RunnerDuration -Duration $Duration; inline = $true })
     $fields.Add(@{ name = "Channel"; value = [string]$DiscordConfig.Channel; inline = $true })
 
@@ -101,6 +101,20 @@ function Get-RunnerDiscordFields {
     }
 
     return $fields.ToArray()
+}
+
+function Get-RunnerDiscordRepoFieldValue {
+    param(
+        [hashtable]$JobSpec,
+        [hashtable]$Result
+    )
+
+    $candidate = [string]$Result.review_repo
+    if ($candidate -match "^HoneyDrunkStudios/[A-Za-z0-9_.-]+$") {
+        return $candidate
+    }
+
+    return [string]$JobSpec.Repo
 }
 
 function Get-RunnerReviewPullRequestUrl {
@@ -324,9 +338,13 @@ function Invoke-RunnerNotifySelfTest {
     $reviewFields = @(Get-RunnerDiscordFields -JobSpec $defaultSpec -Result @{
         status = "completed"
         pr_url = "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/pull/549"
+        review_repo = "HoneyDrunkStudios/HoneyDrunk.Architecture"
         review_verdict = "Approved"
         artifacts = @("https://evil.example.invalid/HoneyDrunkStudios/HoneyDrunk.Architecture/pull/549")
     } -DiscordConfig @{ Channel = "agent-activity" } -Duration ([timespan]::FromSeconds(5)))
+    if (-not (@($reviewFields | Where-Object { $_.name -eq "Repo" -and $_.value -eq "HoneyDrunkStudios/HoneyDrunk.Architecture" }).Count -eq 1)) {
+        throw "Review Discord fields should prefer the reviewed repository over the runner working repository."
+    }
     if (-not (@($reviewFields | Where-Object { $_.name -eq "PR" -and $_.value -eq "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/pull/549" }).Count -eq 1)) {
         throw "Review Discord fields should include a validated HoneyDrunk PR URL."
     }
