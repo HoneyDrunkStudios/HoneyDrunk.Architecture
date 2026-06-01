@@ -2,7 +2,7 @@
 
 Non-initiative items currently on HoneyDrunkStudios org Project #4. Fully rewritten by `hive-sync`.
 
-**Last Updated:** 2026-05-30
+**Last Updated:** 2026-06-01
 
 ## security
 
@@ -49,6 +49,7 @@ Non-initiative items currently on HoneyDrunkStudios org Project #4. Fully rewrit
 - [HoneyDrunk.AI#1](https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/1) — Feature: Add `IModelRouter`, `IRoutingPolicy`, `ModelCapabilityDeclaration` to `HoneyDrunk.AI.Abstractions` (closed; closed 2026-05-21; labels: feature, tier-2, ai, contracts, adr-0010, blocked, wave-2, initiative-adr-0010-observe-ai-routing-phase-1)
 - [HoneyDrunk.AI#2](https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/2) — Feature: Stand up the HoneyDrunk.AI repo — solution, packages, contracts, CI, InMemory provider (closed; closed 2026-05-20; labels: feature, tier-2, ai, scaffold, adr-0016, initiative-adr-0016-honeydrunk-ai-standup)
 - [HoneyDrunk.AI#3](https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/3) — Feature: Add `IModelRouter`, `IRoutingPolicy`, `ModelCapabilityDeclaration` to `HoneyDrunk.AI.Abstractions` (closed; closed 2026-05-21; labels: feature, tier-2, ai, contracts, adr-0010, blocked, wave-2, initiative-adr-0010-observe-ai-routing-phase-1)
+- [HoneyDrunk.AI#24](https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/24) — 📦 Outdated Dependencies (open; labels: dependencies)
 - [HoneyDrunk.Actions#50](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/50) — Follow-up: add Container Apps deploy smoke test (closed; closed 2026-05-16; labels: ci, tier-2, adr-0015)
 - [HoneyDrunk.Actions#69](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/69) — CI Change: Migrate `hive-field-mirror.yml` to GitHub App auth with PAT fallback (closed; closed 2026-05-02; labels: chore, tier-2, ops, automation, initiative-standalone, ci-cd)
 - [HoneyDrunk.Actions#70](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/70) — CI Change: Cache project metadata and migrate label writes to REST in `hive-project-mirror.sh` (closed; closed 2026-05-02; labels: chore, tier-2, ops, automation, initiative-standalone, ci-cd)
@@ -96,7 +97,7 @@ Non-initiative items currently on HoneyDrunkStudios org Project #4. Fully rewrit
 - [HoneyDrunk.Data#19](https://github.com/HoneyDrunkStudios/HoneyDrunk.Data/issues/19) — Consolidate Data EF and SQL configuration helpers (closed; closed 2026-05-18; labels: tier-2, chore, core, initiative-standalone)
 - [HoneyDrunk.Data#20](https://github.com/HoneyDrunkStudios/HoneyDrunk.Data/issues/20) — Coverage backfill: bring `HoneyDrunk.Data` total line coverage to ≥ 70% (clear the absolute floor) (closed; closed 2026-05-19; labels: tier-2, wave-2, chore, core, testing, adr-0032, initiative-adr-0032-pr-validation-policy)
 - [HoneyDrunk.Data#21](https://github.com/HoneyDrunkStudios/HoneyDrunk.Data/issues/21) — Require context for Data outbox enrichment (closed; closed 2026-05-18; labels: bug, tier-2, core, data, wave-3, kernel-adoption, initiative-kernel-adoption-alignment)
-- [HoneyDrunk.Data#33](https://github.com/HoneyDrunkStudios/HoneyDrunk.Data/issues/33) — 📦 Outdated Dependencies (open; labels: dependencies)
+- [HoneyDrunk.Data#33](https://github.com/HoneyDrunkStudios/HoneyDrunk.Data/issues/33) — 📦 Outdated Dependencies (closed; closed 2026-06-01; labels: dependencies)
 - [HoneyDrunk.Kernel#24](https://github.com/HoneyDrunkStudios/HoneyDrunk.Kernel/issues/24) — Feature: Grid multi-tenant primitives — TenantId promotion, ITenantRateLimitPolicy, IBillingEventEmitter, noop defaults (closed; closed 2026-05-05; labels: feature, core, tier-3, breaking-change, adr-0026, wave-1, initiative-adr-0026-grid-multi-tenant-primitives)
 - [HoneyDrunk.Kernel#27](https://github.com/HoneyDrunkStudios/HoneyDrunk.Kernel/issues/27) — Consolidate Kernel duplicate context and identity helpers (closed; closed 2026-05-19; labels: chore, tier-2, core, initiative-standalone)
 - [HoneyDrunk.Kernel#28](https://github.com/HoneyDrunkStudios/HoneyDrunk.Kernel/issues/28) — Coverage backfill: bring `HoneyDrunk.Kernel` total line coverage to ≥ 70% (clear the absolute floor) (closed; closed 2026-05-19; labels: chore, tier-2, core, wave-2, testing, adr-0032, initiative-adr-0032-pr-validation-policy)
@@ -111,7 +112,7 @@ Non-initiative items currently on HoneyDrunkStudios org Project #4. Fully rewrit
 - [HoneyDrunk.Notify#9](https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/9) — Feature: ADR-0019 Notify boundary refactor for Communications ownership (closed; closed 2026-05-05; labels: feature, tier-2, ops)
 - [HoneyDrunk.Notify#12](https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/12) — Coverage backfill: bring `HoneyDrunk.Notify` total line coverage to ≥ 70% (clear the absolute floor) (closed; closed 2026-05-20; labels: tier-2, wave-2, chore, testing, comms, adr-0032, initiative-adr-0032-pr-validation-policy)
 - [HoneyDrunk.Notify#13](https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/13) — Align Notify Kernel identity and queue secret boundary (closed; closed 2026-05-18; labels: bug, tier-2, adr-0005, ops, notify, wave-3, kernel-adoption, adr-0006, initiative-kernel-adoption-alignment)
-- [HoneyDrunk.Notify#44](https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/44) — 📦 Outdated Dependencies (open; labels: dependencies)
+- [HoneyDrunk.Notify#44](https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/44) — 📦 Outdated Dependencies (closed; closed 2026-06-01; labels: dependencies)
 - [HoneyDrunk.Observe#2](https://github.com/HoneyDrunkStudios/HoneyDrunk.Observe/issues/2) — Feature: Scaffold `HoneyDrunk.Observe` repo, solution, and Abstractions package with Phase 1 contracts (closed; closed 2026-05-21; labels: feature, tier-3, ops, new-node, scaffolding, adr-0010, wave-2, initiative-adr-0010-observe-ai-routing-phase-1)
 - [HoneyDrunk.Pulse#9](https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/9) — Feature: Adopt typed TenantId on tenant_id telemetry tag with PDR-0002 cardinality discipline (closed; closed 2026-05-04; labels: feature, tier-2, ops, telemetry, adr-0026, wave-1, initiative-adr-0026-grid-multi-tenant-primitives)
 - [HoneyDrunk.Pulse#11](https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/11) — Consolidate Pulse HTTP OTLP sink helpers (closed; closed 2026-05-18; labels: tier-2, chore, ops, initiative-standalone)

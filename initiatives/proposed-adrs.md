@@ -1,19 +1,19 @@
 # Proposed ADR/PDR Queue
 
-**Last Updated:** 2026-05-30
+**Last Updated:** 2026-06-01
 
 ## Awaiting Implementing Packets
 
-- `ADR-0017-STAND-UP-HONEYDRUNK-CAPABILITIES-NODE` — ADR-0017: Stand Up the HoneyDrunk.Capabilities Node — Tool Registry and Dispatch Substrate for the AI Sector (adrs/ADR-0017-stand-up-honeydrunk-capabilities-node.md)
-- `ADR-0029-CLOUDFLARE-DNS-AND-EDGE-PLATFORM` — ADR-0029: Cloudflare as Registrar, Authoritative DNS, and Edge Platform (adrs/ADR-0029-cloudflare-dns-and-edge-platform.md)
-- `ADR-0032-PR-VALIDATION-POLICY-COVERAGE-GATE-AND-NUGET-FLAGGING` — ADR-0032: Grid-Wide PR Validation Policy — Coverage Gate and NuGet Update Flagging (adrs/ADR-0032-pr-validation-policy-coverage-gate-and-nuget-flagging.md)
-- `ADR-0058-GRID-WIDE-CACHING-STRATEGY` — ADR-0058: Grid-Wide Caching Strategy (adrs/ADR-0058-grid-wide-caching-strategy.md)
-- `PDR-0002-NOTIFY-AS-A-SERVICE-FIRST-COMMERCIAL-PRODUCT` — PDR-0002: HoneyDrunk Notify — First Commercial Product on the Grid (pdrs/PDR-0002-notify-as-a-service-first-commercial-product.md)
-- `PDR-0003-LATELY-CURRENTS-BASED-CONNECTION-APP` — PDR-0003: Lately — A Currents-Based Connection App for Regular Humans (pdrs/PDR-0003-lately-currents-based-connection-app.md)
-- `PDR-0005-HEARTH-PERSONAL-GROWTH-AS-A-LIVING-TOWN` — PDR-0005: Hearth — Personal Growth as a Living Town (pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md)
-- `PDR-0006-CURRENTS-SOCIAL-SUGGESTIONS-AND-QUESTS` — PDR-0006: Currents — Social Suggestions and Lightweight Quests (pdrs/PDR-0006-currents-social-suggestions-and-quests.md)
-- `PDR-0008-CURIOSITIES-DISCOVERY-FIRST-CITY-APP` — PDR-0008: Curiosities — Discovery-First City App (pdrs/PDR-0008-curiosities-discovery-first-city-app.md)
-- `PDR-0009-HONEYHUB-AS-INTERNAL-DAILY-DRIVER-WORKSPACE` — PDR-0009: HoneyHub as Internal Daily-Driver Workspace (pdrs/PDR-0009-honeyhub-as-internal-daily-driver-workspace.md)
+- `ADR-0017` — ADR-0017: Stand Up the HoneyDrunk.Capabilities Node — Tool Registry and Dispatch Substrate for the AI Sector (adrs/ADR-0017-stand-up-honeydrunk-capabilities-node.md)
+- `ADR-0029` — ADR-0029: Cloudflare as Registrar, Authoritative DNS, and Edge Platform (adrs/ADR-0029-cloudflare-dns-and-edge-platform.md)
+- `ADR-0032` — ADR-0032: Grid-Wide PR Validation Policy — Coverage Gate and NuGet Update Flagging (adrs/ADR-0032-pr-validation-policy-coverage-gate-and-nuget-flagging.md)
+- `ADR-0058` — ADR-0058: Grid-Wide Caching Strategy (adrs/ADR-0058-grid-wide-caching-strategy.md)
+- `PDR-0002` — PDR-0002: HoneyDrunk Notify — First Commercial Product on the Grid (pdrs/PDR-0002-notify-as-a-service-first-commercial-product.md)
+- `PDR-0003` — PDR-0003: Lately — A Currents-Based Connection App for Regular Humans (pdrs/PDR-0003-lately-currents-based-connection-app.md)
+- `PDR-0005` — PDR-0005: Hearth — Personal Growth as a Living Town (pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md)
+- `PDR-0006` — PDR-0006: Currents — Social Suggestions and Lightweight Quests (pdrs/PDR-0006-currents-social-suggestions-and-quests.md)
+- `PDR-0008` — PDR-0008: Curiosities — Discovery-First City App (pdrs/PDR-0008-curiosities-discovery-first-city-app.md)
+- `PDR-0009` — PDR-0009: HoneyHub as Internal Daily-Driver Workspace (pdrs/PDR-0009-honeyhub-as-internal-daily-driver-workspace.md)
 
 ## In Progress
 
@@ -26,11 +26,11 @@
 - `ADR-0033` — ADR-0033: Environment-Gated Deploy-Trigger Model for Deployable Nodes — 0/3 accepting packet issues closed; open: HoneyDrunk.Notify#19, HoneyDrunk.Notify#20, HoneyDrunk.Pulse#18
 - `ADR-0034` — ADR-0034: Public Package Distribution and NuGet Policy — 0/6 accepting packet issues closed; open: HoneyDrunk.Architecture#208, HoneyDrunk.Architecture#209, HoneyDrunk.Standards#40, HoneyDrunk.Actions#94, HoneyDrunk.Vault#34, HoneyDrunk.Architecture#210
 - `ADR-0035` — ADR-0035: Abstractions Versioning and Deprecation Policy — 0/5 accepting packet issues closed; open: HoneyDrunk.Architecture#211, HoneyDrunk.Standards#42, HoneyDrunk.Architecture#212, HoneyDrunk.Actions#95, HoneyDrunk.Architecture#213
-- `ADR-0036` — ADR-0036: Disaster Recovery and Backup Policy — 0/11 accepting packet issues closed; open: HoneyDrunk.Architecture#215, HoneyDrunk.Architecture#216, HoneyDrunk.Architecture#217, HoneyDrunk.Architecture#218, HoneyDrunk.Vault#35, HoneyDrunk.Vault#36, HoneyDrunk.Architecture#219, HoneyDrunk.Audit#3
+- `ADR-0036` — ADR-0036: Disaster Recovery and Backup Policy — 0/11 accepting packet issues closed; open: HoneyDrunk.Architecture#215, HoneyDrunk.Architecture#216, HoneyDrunk.Architecture#217, HoneyDrunk.Architecture#218, HoneyDrunk.Vault#35, HoneyDrunk.Vault#36, HoneyDrunk.Architecture#219, HoneyDrunk.Audit#3, HoneyDrunk.Audit#4, HoneyDrunk.Architecture#220, HoneyDrunk.Architecture#221
 - `ADR-0037` — ADR-0037: Payment and Billing Integration — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#222
-- `ADR-0038` — ADR-0038: Outbound Sender Identity and Deliverability — 0/11 accepting packet issues closed; open: HoneyDrunk.Architecture#227, HoneyDrunk.Architecture#228, HoneyDrunk.Architecture#229, HoneyDrunk.Architecture#230, HoneyDrunk.Architecture#231, HoneyDrunk.Notify#23, HoneyDrunk.Notify#24, HoneyDrunk.Notify#25
+- `ADR-0038` — ADR-0038: Outbound Sender Identity and Deliverability — 0/11 accepting packet issues closed; open: HoneyDrunk.Architecture#227, HoneyDrunk.Architecture#228, HoneyDrunk.Architecture#229, HoneyDrunk.Architecture#230, HoneyDrunk.Architecture#231, HoneyDrunk.Notify#23, HoneyDrunk.Notify#24, HoneyDrunk.Notify#25, HoneyDrunk.Architecture#232, HoneyDrunk.Architecture#233, HoneyDrunk.Architecture#234
 - `ADR-0039` — ADR-0039: Grid Open Source License Policy — 0/8 accepting packet issues closed; open: HoneyDrunk.Architecture#235, HoneyDrunk.Architecture#236, HoneyDrunk.Standards#43, HoneyDrunk.Architecture#237, HoneyDrunk.Actions#97, HoneyDrunk.Architecture#238, HoneyDrunk.Architecture#239, HoneyDrunk.Architecture#240
-- `ADR-0040` — ADR-0040: Telemetry Backend and Retention — 0/9 accepting packet issues closed; open: HoneyDrunk.Architecture#241, HoneyDrunk.Architecture#242, HoneyDrunk.Architecture#243, HoneyDrunk.Pulse#20, HoneyDrunk.Pulse#21, HoneyDrunk.Pulse#22, HoneyDrunk.Architecture#244, HoneyDrunk.Pulse#23
+- `ADR-0040` — ADR-0040: Telemetry Backend and Retention — 0/9 accepting packet issues closed; open: HoneyDrunk.Architecture#241, HoneyDrunk.Architecture#242, HoneyDrunk.Architecture#243, HoneyDrunk.Pulse#20, HoneyDrunk.Pulse#21, HoneyDrunk.Pulse#22, HoneyDrunk.Architecture#244, HoneyDrunk.Pulse#23, HoneyDrunk.Architecture#245
 - `ADR-0041` — ADR-0041: AI Model Registry and Approval Workflow — 0/6 accepting packet issues closed; open: HoneyDrunk.Architecture#246, HoneyDrunk.Architecture#247, HoneyDrunk.AI#6, HoneyDrunk.AI#7, HoneyDrunk.AI#8, HoneyDrunk.AI#9
 - `ADR-0042` — ADR-0042: Idempotency Contract for Async Boundaries — 0/2 accepting packet issues closed; open: HoneyDrunk.Architecture#248, HoneyDrunk.Architecture#249
 - `ADR-0043` — ADR-0043: Continuous Backlog Generation Strategy — 0/8 accepting packet issues closed; open: HoneyDrunk.Architecture#250, HoneyDrunk.Architecture#251, HoneyDrunk.Architecture#252, HoneyDrunk.Architecture#253, HoneyDrunk.Architecture#254, HoneyDrunk.Architecture#255, HoneyDrunk.Architecture#256, HoneyDrunk.Architecture#257
@@ -40,10 +40,10 @@
 - `ADR-0049` — ADR-0049: Data Classification, PII Handling, and Retention Schedule — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#400
 - `ADR-0050` — ADR-0050: Tenant Lifecycle: Provisioning, Suspension, Offboarding, and Data Export — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#407
 - `ADR-0051` — ADR-0051: AI Agent Authorization and Tool Scoping Model — 0/2 accepting packet issues closed; open: HoneyDrunk.Architecture#351, HoneyDrunk.Architecture#352
-- `ADR-0053` — ADR-0053: Environments, Branching, and Release Cadence — 0/9 accepting packet issues closed; open: HoneyDrunk.Architecture#360, HoneyDrunk.Architecture#361, HoneyDrunk.Architecture#362, HoneyDrunk.Actions#111, HoneyDrunk.Actions#112, HoneyDrunk.Actions#113, HoneyDrunk.Architecture#363, HoneyDrunk.Actions#114
-- `ADR-0054` — ADR-0054: Incident Response and On-Call Model for a One-Person Studio — 0/13 accepting packet issues closed; open: HoneyDrunk.Architecture#313, HoneyDrunk.Architecture#314, HoneyDrunk.Architecture#315, HoneyDrunk.Architecture#316, HoneyDrunk.Communications#22, HoneyDrunk.Communications#23, HoneyDrunk.Pulse#29, HoneyDrunk.Architecture#317
+- `ADR-0053` — ADR-0053: Environments, Branching, and Release Cadence — 0/9 accepting packet issues closed; open: HoneyDrunk.Architecture#360, HoneyDrunk.Architecture#361, HoneyDrunk.Architecture#362, HoneyDrunk.Actions#111, HoneyDrunk.Actions#112, HoneyDrunk.Actions#113, HoneyDrunk.Architecture#363, HoneyDrunk.Actions#114, HoneyDrunk.Architecture#364
+- `ADR-0054` — ADR-0054: Incident Response and On-Call Model for a One-Person Studio — 0/13 accepting packet issues closed; open: HoneyDrunk.Architecture#313, HoneyDrunk.Architecture#314, HoneyDrunk.Architecture#315, HoneyDrunk.Architecture#316, HoneyDrunk.Communications#22, HoneyDrunk.Communications#23, HoneyDrunk.Pulse#29, HoneyDrunk.Architecture#317, HoneyDrunk.Actions#106, HoneyDrunk.Architecture#318, HoneyDrunk.Architecture#319, HoneyDrunk.Architecture#320, HoneyDrunk.Architecture#321
 - `ADR-0055` — ADR-0055: Feature Flag and Progressive Rollout Strategy — 0/4 accepting packet issues closed; open: HoneyDrunk.Architecture#322, HoneyDrunk.Architecture#324, HoneyDrunk.Architecture#325, HoneyDrunk.Architecture#326
-- `ADR-0056` — ADR-0056: Threat Model and Security Review Cadence — 0/10 accepting packet issues closed; open: HoneyDrunk.Architecture#328, HoneyDrunk.Architecture#329, HoneyDrunk.Architecture#331, HoneyDrunk.Architecture#332, HoneyDrunk.Architecture#333, HoneyDrunk.Architecture#334, HoneyDrunk.Architecture#335, HoneyDrunk.Architecture#336
+- `ADR-0056` — ADR-0056: Threat Model and Security Review Cadence — 0/10 accepting packet issues closed; open: HoneyDrunk.Architecture#328, HoneyDrunk.Architecture#329, HoneyDrunk.Architecture#331, HoneyDrunk.Architecture#332, HoneyDrunk.Architecture#333, HoneyDrunk.Architecture#334, HoneyDrunk.Architecture#335, HoneyDrunk.Architecture#336, HoneyDrunk.Actions#108, HoneyDrunk.Architecture#337
 - `ADR-0057` — ADR-0057: Public HTTP API Versioning and Client SDK Strategy — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#417
 - `ADR-0062` — ADR-0062: Inbound Webhook Verification and Receiver Pattern — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#307
 - `ADR-0063` — ADR-0063: Grid-Wide Date, Time, and Clock Policy — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#291
@@ -60,7 +60,6 @@
 - `ADR-0077` — ADR-0077: Infrastructure-as-Code — Bicep (Azure-native) — 0/3 accepting packet issues closed; open: HoneyDrunk.Architecture#384, HoneyDrunk.Architecture#385, HoneyDrunk.Architecture#386
 - `ADR-0078` — ADR-0078: End-User Identity — Microsoft Entra External ID — 0/5 accepting packet issues closed; open: HoneyDrunk.Architecture#437, HoneyDrunk.Architecture#438, HoneyDrunk.Architecture#439, HoneyDrunk.Architecture#440, HoneyDrunk.Architecture#441
 - `ADR-0081` — ADR-0081: Home Server for OpenClaw and Local Agent Infrastructure — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#457
-- `ADR-0084` — ADR-0084: Discord as the Canonical Operator-Alerts Surface — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#474
 - `ADR-0085` — ADR-0085: Grid-Wide Documentation Currency Agent (`docs-sync`) — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#483
 - `ADR-0087` — ADR-0087: Per-Change Risk Scoring for the Double-Review Gate — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#536
 - `ADR-0088` — ADR-0088: Decommission OpenClaw from the HoneyDrunk Grid — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#539
@@ -83,4 +82,4 @@ _None._
 
 ## Flipped This Run
 
-- `ADR-0079` — Status flipped to Accepted.
+_None._

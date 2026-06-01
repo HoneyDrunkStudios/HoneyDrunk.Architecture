@@ -1,6 +1,6 @@
 # Hive Sync Drift Report
 
-**Last Updated:** 2026-05-30
+**Last Updated:** 2026-06-01
 
 Fully rewritten by `hive-sync`; First Surfaced dates are sticky for persistent findings.
 
@@ -84,7 +84,3 @@ Fully rewritten by `hive-sync`; First Surfaced dates are sticky for persistent f
   - **Item:** honeydrunk-pulse: mapped novel status blocked
   - **First Surfaced:** 2026-05-25
   - **Detail:** honeydrunk-pulse: mapped novel status blocked
-- **Category 14: current-focus read-only drift**
-  - **Item:** ADR-0079
-  - **First Surfaced:** 2026-05-30
-  - **Detail:** `initiatives/current-focus.md` still shows ADR-0079 as Proposed; hive-sync flipped it to Accepted.
