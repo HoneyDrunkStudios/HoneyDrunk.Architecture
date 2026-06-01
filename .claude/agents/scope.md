@@ -213,7 +213,7 @@ Each handoff must be self-contained: upstream changes, new package versions, int
 
 Per ADR-0008 § Implementation-Notes Packets (As-Built Reconciliation), **every initiative** (anything with a `dispatch-plan.md`) ends with an Implementation-Notes packet — the closing work item that reconciles what was *decided* with what was *built*. Emit it as the **last** numbered packet in the initiative:
 
-```
+```text
 active/{initiative-slug}/{NN}-implementation-notes.md
 ```
 
