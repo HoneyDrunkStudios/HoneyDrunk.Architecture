@@ -64,42 +64,28 @@ Work flows through three AI surfaces. See `/routing/sdlc.md` for the full lifecy
 | Surface | Role | Operates On | Strength |
 |---------|------|-------------|----------|
 | **Claude Code** | Plan, orchestrate, hand off | Architecture repo + workspace | Cross-repo reasoning, decomposition, issue generation |
-| **Codex** | Execute tasks autonomously in the cloud | Single repo per task | Autonomous implementation from well-scoped issues |
+| **Codex** | Execute tasks autonomously | Single repo per task | Autonomous implementation from well-scoped issues |
 | **GitHub Copilot** | In-IDE coding, debugging, exploration | Single repo (open in editor) | Line-by-line precision, interactive iteration |
 
-OpenClaw is an operator/runtime surface around these workflows. It does not load `.claude/agents/*.md` as native named agents, but it can read them as instruction sources and delegate work through OpenClaw `sessions_spawn` sub-agent sessions. For repeatable Architecture workflows, pair the Claude/Copilot agent with an OpenClaw skill instead of relying on ad hoc prompt copying.
+ADR-0088 retired OpenClaw as a Grid runtime surface. Repeatable Architecture workflows now live in `.claude/agents/`, repo instructions, GitHub reusable workflows, or ADR-0086 runner job specs depending on the execution mode.
 
 ## Agent Inventory (Claude Code Surface)
 
-Complete inventory of agents under `.claude/agents/` that run within the Claude Code / Architecture repo context. OpenClaw skill names refer to companion skills in the OpenClaw workspace `skills/` directory; use `—` only when no reusable OpenClaw pairing exists yet.
+Complete inventory of agents under `.claude/agents/` that run within the Claude Code / Architecture repo context.
 
-| Agent | Purpose | Invokes | OpenClaw skill |
-|-------|---------|---------|----------------|
-| **adr-composer** | Facilitate architecture decisions, produce ADRs | — | `honeydrunk-adr-composer` |
-| **pdr-composer** | Facilitate product decisions, produce PDRs | — | `honeydrunk-pdr-composer` |
-| **product-strategist** | Product strategy, positioning, roadmap, and commercialization analysis | — | `honeydrunk-product-strategist` |
-| **site-sync** | Sync website with architecture changes | — | `honeydrunk-site-sync` |
-| **scope** | Scope work into issues — auto-detects single or multi-repo, generates issue packets, dispatch plans, and handoff prompts | adr-composer, site-sync | `honeydrunk-scope` |
-| **file-issues** | File packet files as GitHub issues — creates issues, adds to The Hive, sets all project fields, wires blocking relationships | — | `honeydrunk-file-issues` |
-| **refine** | Challenge scoped work before execution — finds gaps, missed dependencies, boundary violations, invariant risks | — | `honeydrunk-refine` |
-| **review** | Review PRs against boundary rules, invariants, contract safety, and code conventions | — | `honeydrunk-review` |
-| **netrunner** | Research and investigation across the Grid | — | `honeydrunk-netrunner` |
-| **node-audit** | Audit Node boundary, invariant, catalog, and release-hygiene alignment | — | `honeydrunk-node-audit` |
-| **hive-sync** | Reconcile Architecture repo state with The Hive and initiative tracking | — | `honeydrunk-hive-sync` |
-
-## OpenClaw Skill Pairing Rule
-
-When adding a new Architecture agent under `.claude/agents/`, or materially changing an existing agent's routing intent, context contract, or output contract, also add or update the corresponding OpenClaw skill if OpenClaw should invoke that workflow repeatedly.
-
-The OpenClaw skill should preserve:
-
-- Routing intent: when the workflow should trigger.
-- Required context files and research order.
-- Decision boundaries and stop/ask conditions.
-- Output contract: ADR draft, PDR draft, issue packets, review notes, filed issues, etc.
-- Delegation expectations, translated to OpenClaw primitives such as sub-sessions rather than Claude-specific `Agent` tool language.
-
-Do not create a new canonical agent directory or generator for this. ADR-0007 keeps `.claude/agents/` as the source of truth for Claude/Copilot; OpenClaw compatibility is maintained through paired skills documented here.
+| Agent | Purpose | Invokes |
+|-------|---------|---------|
+| **adr-composer** | Facilitate architecture decisions, produce ADRs | - |
+| **pdr-composer** | Facilitate product decisions, produce PDRs | - |
+| **product-strategist** | Product strategy, positioning, roadmap, and commercialization analysis | - |
+| **site-sync** | Sync website with architecture changes | - |
+| **scope** | Scope work into issues - auto-detects single or multi-repo, generates issue packets, dispatch plans, and handoff prompts | adr-composer, site-sync |
+| **file-issues** | File packet files as GitHub issues - creates issues, adds to The Hive, sets all project fields, wires blocking relationships | - |
+| **refine** | Challenge scoped work before execution - finds gaps, missed dependencies, boundary violations, invariant risks | - |
+| **review** | Review PRs against boundary rules, invariants, contract safety, and code conventions | - |
+| **netrunner** | Research and investigation across the Grid | - |
+| **node-audit** | Audit Node boundary, invariant, catalog, and release-hygiene alignment | - |
+| **hive-sync** | Reconcile Architecture repo state with The Hive and initiative tracking | - |
 
 ## Codex Execution Model
 

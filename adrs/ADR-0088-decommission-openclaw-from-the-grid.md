@@ -57,7 +57,7 @@ The operator decision to retire OpenClaw is **already made**; this section recor
 
 **Cross-repo (HoneyDrunk.Actions):**
 
-- `.github/workflows/job-review-request.yml` — already rewritten by ADR-0086 to the label-and-comment enqueue form. It retains **deprecated, ignored** `openclaw-webhook-url` / `openclaw-webhook-secret` / fallback inputs for caller compatibility. These are vestigial OpenClaw surface, not live wiring.
+- `.github/workflows/job-review-request.yml` — already rewritten by ADR-0086 to the label-and-comment enqueue form. ADR-0088 packet 06 removes the deprecated `openclaw-webhook-url` / `openclaw-webhook-secret` / fallback compatibility inputs from the reusable workflow; the org secret itself remains a human deletion gate.
 - `HoneyDrunk.Architecture/.github/workflows/grid-review-request.yml` — the consumer caller. No live OpenClaw dependency (it queues via labels/comments).
 
 **ADRs referencing OpenClaw:** 0007 (skills mirroring addendum), 0011, 0028, 0043 (execution-surface deferral), 0044, 0064, 0068, 0079, 0080 (vendor posture), 0081, 0082, 0083, 0084, 0085, 0086. Of these, 0044 / 0079 are **already** "superseded in part by ADR-0086" and are NOT re-touched here; 0081 is superseded by this ADR; 0082 / 0083 / 0084 / 0085 carry OpenClaw references that this ADR's follow-ups reconcile (matrix row, footprint prose, skills-mirroring note).
@@ -113,7 +113,7 @@ The invariant-103 ordering is not a nicety: if steps 7–9 ran before step 6, th
 
 10. Remove the `OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET` row from the `constitution/node-standup.md` per-class org-secret binding matrix (D8 matrix). It is obsolete: nothing posts review results upstream through a webhook secret under ADR-0086.
 11. Reconcile the OpenClaw references in **ADR-0082** (invariant 102 enumeration and the README index row) and **ADR-0083** (footprint prose naming "the OpenClaw GitHub App private key" and the webhook secret) so they no longer imply a live OpenClaw secret surface. These are text reconciliations of accepted ADRs, performed as documentation-currency edits (the standing convention for keeping accepted-ADR prose honest), not re-supersessions.
-12. Remove the vestigial deprecated `openclaw-webhook-url` / `openclaw-webhook-secret` / fallback inputs from `HoneyDrunk.Actions/.github/workflows/job-review-request.yml` once no caller references them. This is a cleanup follow-up in the Actions repo, sequenced after the secret is deleted so no caller can pass a now-nonexistent secret.
+12. Remove the vestigial deprecated `openclaw-webhook-url` / `openclaw-webhook-secret` / fallback inputs from `HoneyDrunk.Actions/.github/workflows/job-review-request.yml` once no caller references them. The workflow cleanup may land before the org secret is deleted because the inputs are already ignored; actual deletion of `OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET` remains the human gate for inventory retirement.
 
 ### D4 — Access-policy note surfaced during teardown
 
@@ -213,6 +213,6 @@ Rejected. The home server's hardware and security premise is sound and is the ho
 - [ADR-0082](./ADR-0082-canonical-node-standup-procedure.md) — node-standup procedure (invariant 102; matrix reconciled by this ADR)
 - [ADR-0083](./ADR-0083-external-saas-credential-rotation.md) — sensitive inventory (invariant 103; footprint prose reconciled by this ADR)
 - [`../constitution/invariants.md`](../constitution/invariants.md) — invariant 103 (the teardown-ordering gate); invariant 8 (the inventory never held the secret value)
-- [`../constitution/node-standup.md`](../constitution/node-standup.md) — the per-class org-secret matrix (OpenClaw row removed) and the operator-internal-automation carve-out (OpenClaw is not a Node)
+- [`../constitution/node-standup.md`](../constitution/node-standup.md) — the per-class org-secret matrix (OpenClaw row retained only until the org secret is deleted) and the operator-internal-automation carve-out (OpenClaw is not a Node)
 - [`../infrastructure/workers/grid-agent-runner/README.md`](../infrastructure/workers/grid-agent-runner/README.md) — the ADR-0086 runner that replaces every OpenClaw workload
 - GitHub issue #527 — `[Rotate] OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET` (closed by this ADR's teardown, no successor)

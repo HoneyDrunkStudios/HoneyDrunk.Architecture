@@ -166,7 +166,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 **Exit criteria:** Phase A proves verdict quality, reliable polling/claim semantics, deterministic head-SHA invalidation, and near-zero marginal cost under subscription auth on `HoneyDrunk.Architecture`; Phase B follows only after OpenClaw is decommissioned on the review path; Phase C migrates scheduled agent jobs only after runner smoke tests; Phase D makes runner availability visible through the existing narrative surfaces without adding a pager or inbound alert.
 
 ### ADR-0088 Decommission OpenClaw from the HoneyDrunk Grid
-**Status:** Accepted locally — Wave 0 docs-sync scheduler landed; runtime/tunnel teardown, secret deletion, and inventory cleanup remain gated
+**Status:** Accepted locally — runtime/tunnel teardown, docs-sync scheduler, reference-file deletion, and governance cleanup landed locally; org-secret deletion and invariant-103 inventory cleanup remain gated
 **Scope:** Architecture (governance flip, reference-file teardown, ADR reconciliation, ADR-0007 addendum retirement) + operator/runtime chores + Actions cleanup + the sensitive-inventory (`OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET` retirement)
 **Initiative:** `adr-0088-openclaw-decommission`
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
@@ -174,14 +174,14 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 **Tracking:**
 - [x] Architecture: Author + smoke-test the `docs-sync` runner job spec so docs-sync keeps automated Friday scheduling on the ADR-0086 worker (packet 00a)
-- [ ] Architecture#539: Accept ADR-0088 — decommission OpenClaw; supersede ADR-0081; register the teardown initiative (packet 00)
-- [ ] Architecture#541: Remove the `infrastructure/openclaw/*` reference files; tombstone the runner README pointers
-- [ ] Human/Ops: Remove OpenClaw Gateway, Honeyclaw runtime, webhook bridge, and OpenClaw-bound Cloudflare Tunnel route after replacement jobs are proven (packet 02)
+- [x] Architecture#539: Accept ADR-0088 — decommission OpenClaw; supersede ADR-0081; register the teardown initiative (packet 00)
+- [x] Architecture#541: Remove the `infrastructure/openclaw/*` reference files; tombstone the runner README pointers
+- [x] Human/Ops: Remove OpenClaw Gateway, Honeyclaw runtime, webhook bridge, and OpenClaw-bound Cloudflare Tunnel route after replacement jobs are proven (packet 02)
 - [ ] Human/Org Admin: Delete `OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET` and close issue #527 as decommissioned, no successor issue (packet 03)
 - [ ] Architecture: Retire the sensitive-inventory row, rotation walkthrough, and node-standup matrix row only after packet 03 confirms the secret is gone (packet 04)
-- [ ] Architecture#545: Reconcile OpenClaw references in ADR-0082, ADR-0083, ADR-0084, and ADR-0085 as documentation-currency edits
-- [ ] Actions: Remove vestigial deprecated `openclaw-*` inputs from `job-review-request.yml` after packet 03 (packet 06)
-- [ ] Architecture#546: Retire the ADR-0007 Operational Addendum (OpenClaw-skills-mirroring rule) + its node-standup and agent-skills-map wirings
+- [x] Architecture#545: Reconcile OpenClaw references in ADR-0082, ADR-0083, ADR-0084, and ADR-0085 as documentation-currency edits, excluding secret-retirement claims blocked by packet 03
+- [x] Actions: Remove vestigial deprecated `openclaw-*` inputs from `job-review-request.yml` without deleting the org secret (packet 06; Actions branch `codex/adr-0088-openclaw-decommission`)
+- [x] Architecture#546: Retire the ADR-0007 Operational Addendum (OpenClaw-skills-mirroring rule) + its node-standup and agent-skills-map wirings
 
 **Cross-initiative dependencies:**
 - Retires the `OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET` inventory row that ADR-0083 deliberately left tracked pending this cutover (see the ADR-0083 reconciliation note above).
@@ -191,6 +191,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 > **Sync (2026-05-31):** Registered as an active initiative and promoted to `current-focus.md` #1. Packet cluster #539/#541/#545/#546 confirmed OPEN via live `gh`. ADR-0088 verified **Proposed** on `main`. This initiative replaces the false ADR-0081 tracking that previously sat at current-focus #15 — **ADR-0081 has been removed from current-focus** (its only acceptance packet, Architecture#457, remains OPEN but its OpenClaw-centric premise is dead — the home-server hardware survives under ADR-0086 — so ADR-0081 should be marked Superseded by ADR-0088 rather than accepted).
 > **Sync (2026-06-01):** ADR-0088 flipped to **Accepted** locally and ADR-0081 flipped to **Superseded by ADR-0088**. Wave 0 `docs-sync` scheduler work landed locally with a passing dry-run smoke; it runs weekly Friday at 10:30 local and posts report summaries to `#hive-activity`. Remaining work is not just docs: OpenClaw runtime/tunnel teardown and org-secret deletion are human-gated, and the inventory row/walkthrough/matrix cleanup remains blocked by the secret actually being deleted per invariant 103.
+> **Sync (2026-06-01, teardown update):** Operator confirmed OpenClaw Gateway / Honeyclaw runtime / webhook bridge deletion, and `cloudflared tunnel delete --force grid-review` removed the remaining Cloudflare Tunnel (`cloudflared tunnel list` returned no tunnels afterward). Architecture governance cleanup landed locally: owned-domain record retired `grid-review.honeydrunkstudios.com`; ADR-0007's OpenClaw Skills addendum is retired; node-standup step 15 no longer requires OpenClaw mirroring; `copilot/agent-skills-map.md` no longer tracks OpenClaw companion skills; ADR-0084/0085 execution-surface prose now points at ADR-0086 runner paths. Actions cleanup landed on branch `codex/adr-0088-openclaw-decommission` (commit `454adfd`): `job-review-request.yml` no longer accepts the deprecated OpenClaw webhook/fallback inputs or no-op workflow secret. Secret-backed cleanup remains blocked until the operator deletes `OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET`: keep the inventory row, rotation walkthrough, standing issue #527, and matrix row until that deletion is confirmed.
 
 ### ADR-0047 Testing Patterns and Tooling
 **Status:** In Progress
