@@ -1,9 +1,11 @@
 # ADR-0081: Home Server for OpenClaw and Local Agent Infrastructure
 
-**Status:** Proposed
+**Status:** Superseded by ADR-0088
 **Date:** 2026-05-24
 **Deciders:** HoneyDrunk Studios
 **Sector:** Meta / Ops / AI
+
+> **Superseded by ADR-0088 (2026-05-30).** OpenClaw is fully retired as a Grid substrate; the ADR-0086 pull-based local worker is the canonical home for scheduled and triggered agent work. The home-server hardware and security premise of this ADR survives, re-homed under [ADR-0086](./ADR-0086-pull-based-local-worker-grid-review-runner.md) D4 as the runner host. ADR-0081 is superseded because its OpenClaw-centric organizing premise is dead, not because the home server is retired.
 
 ## Context
 

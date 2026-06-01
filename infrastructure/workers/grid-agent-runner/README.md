@@ -18,6 +18,7 @@ Portable scheduled agent runner for ADR-0086. The runner is operator-machine aut
 - `grid-review` polls the GitHub label/comment queue for `needs-agent-review` PRs, runs Codex by default, adds an optional Claude pass for high-risk D8 queue items, and posts one synthesized Grid Review verdict in the established sectioned emoji format.
 - `post-merge-audit` wires the future ADR-0044 audit job.
 - `hive-sync` runs the Architecture reconciliation agent.
+- `docs-sync` runs the grid-wide code-to-docs currency sweep, writes a per-run report, posts a Discord summary, and opens conservative docs-only reconciliation PRs.
 - `lore-source` runs the Lore sourcing prompt.
 - `lore-ingest` runs the Lore ingest/compile prompt.
 - `lore-signal-review` runs the sparse Lore signal review prompt.
@@ -51,6 +52,7 @@ Dry-run a job without touching GitHub or invoking agents:
 ```powershell
 pwsh ./scripts/Test-JobLocally.ps1 -JobId grid-review
 pwsh ./scripts/Test-JobLocally.ps1 -JobId hive-sync
+pwsh ./scripts/Test-JobLocally.ps1 -JobId docs-sync
 ```
 
 Run against a real host config:
@@ -93,5 +95,4 @@ The runner writes JSON logs under `LogRoot` and per-job heartbeat state under `S
 
 ## Historical Predecessors
 
-- `infrastructure/openclaw/grid-review-runner.md` records the superseded OpenClaw review runner contract.
-- `infrastructure/openclaw/hive-sync.md` records the predecessor hive-sync runtime contract.
+- The OpenClaw review-runner and hive-sync runtime contracts were removed when OpenClaw was decommissioned per ADR-0088; this runner and its job specs are their successors.

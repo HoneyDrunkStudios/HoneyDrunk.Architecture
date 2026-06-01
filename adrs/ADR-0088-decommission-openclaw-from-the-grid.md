@@ -1,6 +1,6 @@
 # ADR-0088: Decommission OpenClaw from the HoneyDrunk Grid
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-05-30
 **Deciders:** HoneyDrunk Studios
 **Sector:** Meta / Ops
@@ -10,7 +10,7 @@
 OpenClaw was onboarded as the Grid's local-automation substrate across two decisions:
 
 - [ADR-0044](./ADR-0044-grid-aware-cloud-code-review-and-ai-authored-pr-discipline.md) (Accepted) made OpenClaw/Codex the subscription-backed execution runtime for the Grid Review Runner (D5) behind a signed GitHub→OpenClaw webhook (D1).
-- [ADR-0081](./ADR-0081-home-server-for-openclaw-and-local-agent-infrastructure.md) (Proposed) generalized the premise: it named a small always-on **home server** as the preferred host for OpenClaw Gateway and the Honeyclaw runtime, the ADR-0044 webhook bridge, the Cloudflare Tunnel that exposes that bridge, scheduled local automations, and local-agent experimentation. ADR-0081 is the **broad** onboarding — it made OpenClaw the host for essentially all local automation.
+- [ADR-0081](./ADR-0081-home-server-for-openclaw-and-local-agent-infrastructure.md) (then Proposed; now superseded by this ADR) generalized the premise: it named a small always-on **home server** as the preferred host for OpenClaw Gateway and the Honeyclaw runtime, the ADR-0044 webhook bridge, the Cloudflare Tunnel that exposes that bridge, scheduled local automations, and local-agent experimentation. ADR-0081 was the **broad** onboarding — it made OpenClaw the host for essentially all local automation.
 
 Two things have changed since.
 
@@ -28,7 +28,7 @@ Two things have changed since.
 | Lore signal review | `lore-signal-review` job spec |
 | Scheduled jobs needing local repo/filesystem context | Task Scheduler job specs on the same runner |
 
-OpenClaw as a substrate is therefore **fully replaced**. What is missing is a single governing decision that retires it cleanly: ADR-0081 still stands (Proposed) describing OpenClaw as the local-automation host, the broad OpenClaw premise has no decommission owner, and the concrete teardown — the org secret, the webhook bridge, the Cloudflare Tunnel pieces, the `infrastructure/openclaw/*` reference files, the inventory row, the standing rotation issue, and the OpenClaw references scattered across ADR-0044 / 0079 / 0082 — has no single sequenced home. This ADR is that decision.
+OpenClaw as a substrate is therefore **fully replaced**. What was missing was a single governing decision that retires it cleanly: ADR-0081 described OpenClaw as the local-automation host, the broad OpenClaw premise had no decommission owner, and the concrete teardown — the org secret, the webhook bridge, the Cloudflare Tunnel pieces, the `infrastructure/openclaw/*` reference files, the inventory row, the standing rotation issue, and the OpenClaw references scattered across ADR-0044 / 0079 / 0082 — had no single sequenced home. This ADR is that decision.
 
 ### What was verified (footprint, as of 2026-05-30)
 
@@ -70,7 +70,7 @@ This decision has six bound sub-decisions.
 
 ### D1 — Supersede ADR-0081 in full
 
-[ADR-0081](./ADR-0081-home-server-for-openclaw-and-local-agent-infrastructure.md) ("Home Server for OpenClaw and Local Agent Infrastructure", Proposed) is **superseded by this ADR.** ADR-0081's broad premise — *OpenClaw is the host for all local automation, and the home server exists to host OpenClaw* — no longer holds. ADR-0086 already removed OpenClaw from the review path and built the portable runner; this ADR removes OpenClaw entirely.
+[ADR-0081](./ADR-0081-home-server-for-openclaw-and-local-agent-infrastructure.md) ("Home Server for OpenClaw and Local Agent Infrastructure") is **superseded by this ADR.** ADR-0081's broad premise — *OpenClaw is the host for all local automation, and the home server exists to host OpenClaw* — no longer holds. ADR-0086 already removed OpenClaw from the review path and built the portable runner; this ADR removes OpenClaw entirely.
 
 **What survives ADR-0081's supersession, re-homed under ADR-0086:** the home-server *hardware and security premise* is still valid and is **not** retired. The always-on mini-PC, the no-router-port-forwarding posture, the least-privilege/recoverable security checklist, and the local-agent-sandbox idea are all preserved — but their document-of-record becomes ADR-0086 (which already names the home server as the runner host in D4) rather than ADR-0081. ADR-0081 is superseded because its *organizing premise* (OpenClaw-centric) is dead, not because the home server is. The teardown does not decommission the home server; it decommissions OpenClaw running on it.
 

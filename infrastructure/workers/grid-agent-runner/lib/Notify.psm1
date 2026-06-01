@@ -253,6 +253,7 @@ function Get-RunnerJobSummary {
     $content = Get-Content -LiteralPath $outputPath -Raw
     switch ($JobSpec.JobId) {
         "hive-sync" { return Get-HiveSyncSummary -Content $content }
+        "docs-sync" { return Get-DocsSyncSummary -Content $content }
         "lore-source" { return Get-LoreSourceSummary -Content $content }
         "lore-ingest" { return Get-LoreIngestSummary -Content $content }
         "lore-signal-review" { return Get-LoreSignalReviewSummary -Content $content }
@@ -276,7 +277,8 @@ function Resolve-RunnerLatestOutputPath {
     }
 
     if ($latestOutput.Contains("YYYY-MM-DD")) {
-        $pattern = [System.IO.Path]::GetFileName($latestOutput.Replace("YYYY-MM-DD", "*"))
+        $globOutput = $latestOutput.Replace("{YYYY-MM-DD}", "*").Replace("YYYY-MM-DD", "*")
+        $pattern = [System.IO.Path]::GetFileName($globOutput)
         $directory = Join-Path $RepoPath ([System.IO.Path]::GetDirectoryName($latestOutput))
         $latest = Get-ChildItem -LiteralPath $directory -Filter $pattern -File -ErrorAction SilentlyContinue |
             Sort-Object LastWriteTime -Descending |
@@ -446,6 +448,44 @@ function Invoke-RunnerNotifySelfTest {
         if ($summary[0] -ne "Drift findings: 2") {
             throw "Directory LatestOutput should summarize the newest file."
         }
+
+        $docsReportDir = Join-Path $tempRoot "docs-sync-reports"
+        New-Item -ItemType Directory -Path $docsReportDir -Force | Out-Null
+        $docsReport = Join-Path $docsReportDir "2026-06-01.md"
+        Set-Content -LiteralPath $docsReport -Value @"
+# Docs Sync Report - 2026-06-01
+
+## Summary
+
+- Repos scanned: 25
+- Clean: 20
+- Skipped: 3
+- Report-only findings: 1
+- PRs opened or updated: 1
+
+## Repositories
+
+### HoneyDrunk.Architecture
+
+- Status: actionable
+- PR: https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/pull/600
+"@ -Encoding UTF8
+
+        $docsSpec = @{
+            JobId = "docs-sync"
+            Repo = "HoneyDrunk.Test"
+            OutputContract = @{
+                LatestOutput = "docs-sync-reports/{YYYY-MM-DD}.md"
+                Summary = "docs"
+            }
+        }
+        $docsSummary = @(Get-RunnerJobSummary -JobSpec $docsSpec -RepoPath $tempRoot)
+        if (-not ($docsSummary -contains "- Repos scanned: 25")) {
+            throw "docs-sync summaries should include report counts."
+        }
+        if (-not ($docsSummary -contains "- PR: https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/pull/600")) {
+            throw "docs-sync summaries should include validated HoneyDrunk PR links."
+        }
     }
     finally {
         Remove-Item -LiteralPath $tempRoot -Recurse -Force -ErrorAction SilentlyContinue
@@ -463,6 +503,35 @@ function Get-HiveSyncSummary {
     }
 
     return $lines
+}
+
+function Get-DocsSyncSummary {
+    param([string]$Content)
+
+    $lines = New-Object System.Collections.Generic.List[string]
+    $summary = [regex]::Match($Content, "(?s)## Summary\s+(.+?)(?:\n## |\z)")
+    if ($summary.Success) {
+        foreach ($line in @($summary.Groups[1].Value -split "`r?`n" | Where-Object { $_ -match "^- " } | Select-Object -First 6)) {
+            $clean = $line.Trim()
+            if (Test-RunnerDiscordPayloadSafe -Value $clean) {
+                $lines.Add($clean)
+            }
+        }
+    }
+
+    $prs = @($Content -split "`r?`n" | Where-Object { $_ -match "^\s*- PR:\s+https://github\.com/HoneyDrunkStudios/[A-Za-z0-9_.-]+/pull/[1-9][0-9]*" } | Select-Object -First 5)
+    if ($prs.Count -gt 0) {
+        $lines.Add("PRs:")
+        foreach ($pr in $prs) {
+            $lines.Add($pr.Trim())
+        }
+    }
+
+    if ($lines.Count -eq 0) {
+        $lines.Add("Docs sync report generated; no summary rows found.")
+    }
+
+    return $lines.ToArray()
 }
 
 function Get-LoreSourceSummary {
