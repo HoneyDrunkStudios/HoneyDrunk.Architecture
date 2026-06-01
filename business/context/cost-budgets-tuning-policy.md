@@ -25,7 +25,7 @@ The slow path is the **only** mechanism that mutates persistent caps. The fast p
 
 ## The Phase-1 multiplier is a different knob
 
-This file carries the **D2 final-state** caps. ADR-0052 D14 Phase 1 runs intentionally loose ("$5000/$10000") so the kill-switch does not fire spuriously while baselines establish. That loosening is a **runtime multiplier in App Configuration** (`CostLedger:PhaseOneMultiplier:*`), not a different value in this file. The Phase-3 flip (multiplier → 1) is operator-driven via App Configuration and is **out of this file's PR scope**. See the `adr-0052-cost-governance` rollout playbook for the flip narrative.
+This file carries the **D2 final-state** caps. ADR-0052 D14 Phase 1 runs intentionally loose ("$5000/$10000") so the kill-switch does not fire spuriously while baselines establish. That loosening is a **runtime multiplier in App Configuration** (`CostLedger:PhaseOneMultiplier:*`), not a different value in this file. The Phase-3 flip (multiplier -> 1) is operator-driven via App Configuration and is **out of this file's PR scope**. See ADR-0052 D14 and the `adr-0052-cost-governance` section in `initiatives/active-initiatives.md` for the flip narrative.
 
 ## Related
 

@@ -39,7 +39,7 @@
     RequiredSecrets = @(
         "Discord--HiveActivity--RunnerWebhookUrl"
     )
-    AllowedTools = @("read", "write", "edit", "git", "gh", "codex")
+    AllowedTools = @("read", "grep", "glob", "bash", "edit", "write", "todowrite", "git", "gh", "codex")
     RetainArtifactsDays = 30
     PortabilityNotes = "Host must have Architecture and target repo checkouts plus GitHub CLI. The agent scans all available Grid repos, skips seed/scaffold repos without actionable docs drift, and posts run completion/report summaries through the runner's hive-activity Discord webhook."
 }

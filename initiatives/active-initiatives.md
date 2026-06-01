@@ -17,7 +17,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [x] Architecture#356: Create `business/context/cost-budgets.json` with the D2 defaults + tuning policy (packet 02)
 - [x] Architecture#357: Create `generated/cost-reports/` with the canonical monthly report format (packet 07)
 - [x] Architecture#358: Add `cost-config` + `cost-kill-switch-retry` review categories to `.claude/agents/review.md` (packet 08)
-- [x] Architecture#359: Author the Operator-side rollout playbook for the deferred Phase 2–7 surfaces (packet 09)
+- [x] Architecture#359: Capture the Operator-side rollout map for the deferred Phase 2–7 surfaces (packet 09; standalone playbook retired, residual gate map retained here)
 
 **Deferred / gated (NOT in this pass):**
 - [ ] Architecture#355: Catalog registration of the Kernel cost-governance contracts + AI-side `ICostLedger` relocation record (packet 01) — **deferred** to pair with the Kernel code (packet 03), so the catalog never claims contracts the Kernel package doesn't yet expose.
@@ -25,11 +25,20 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [ ] AI: Relocate `ICostLedger` off the seed AI contract onto Kernel; migrate provider call sites; Phase-1 stub (packet 04) — **blocked** on the human Kernel release.
 - [ ] AI: Cosmos-backed `CostLedger` v1 + cache + `BudgetConfigProvider` (packet 05) — **hard-blocked**: `HoneyDrunk.AI` is at seed v0.1.0; the ADR-0016 Phase-1 scaffold was never executed, so there is no scaffolded Node to host a Cosmos client. Also needs human Cosmos provisioning.
 - [ ] AI: Dispatcher kill-switch wiring + canary (packet 06) — blocked on packet 05 + ADR-0045 `IErrorReporter` (still Proposed; structured-log fallback documented).
-- [ ] **All Operator-side surfaces** (aggregator, `hd cost` CLI, auto-suspend, dashboard, anomaly Bicep, Communications+Notify alert wiring) — gated on ADR-0018 (Operator standup, still Proposed); enumerated in the packet-09 playbook.
+- [ ] **All Operator-side surfaces** (aggregator, `hd cost` CLI, auto-suspend, dashboard, anomaly Bicep, Communications+Notify alert wiring) — gated on ADR-0018 (Operator standup, still Proposed); use the deferred gate map below when this is re-scoped.
 
-**Exit criteria:** ADR-0052 Accepted; cost-governance invariants live; `cost-budgets.json` seeded; report format + review-agent cost gating in place; rollout playbook captures every deferred surface with its gating event. Full enforcement (the kill-switch) goes live when the AI Node scaffolds (ADR-0016 Phase 1) and the Kernel contracts release.
+**Deferred gate map (formerly the standalone rollout playbook):**
+- **Gate 0 — anytime:** per-provider API-key spending limits and operator override pattern docs.
+- **Gate 1 — ADR-0018 Accepted + Operator scaffold executed:** Operator aggregator, `hd cost status`, `hd cost unlock`, `hd cost report`, monthly report writer, dashboard view, non-prod Container Apps auto-suspend, Communications/Notify alert wiring, dev/prod Azure split.
+- **Gate 2 — ADR-0040 Accepted + App Insights provisioned:** App Insights anomaly-alert Bicep.
+- **Gate 3 — one month of Phase-1 baseline data:** Phase-1 multiplier flip (`CostLedger:PhaseOneMultiplier:*` -> 1) and cap tuning.
+- **Gate 4 — ADR-0037 Accepted + Billing Node scaffolded:** per-tenant cost query API.
+- **Gate K — ADR-0016 Phase-1 AI scaffold executed + Kernel contracts released:** Kernel packet 03, AI relocation, Cosmos ledger, and dispatcher kill-switch packets.
+
+**Exit criteria:** ADR-0052 Accepted; cost-governance invariants live; `cost-budgets.json` seeded; report format + review-agent cost gating in place; residual gate map captures every deferred surface with its gating event. Full enforcement (the kill-switch) goes live when the AI Node scaffolds (ADR-0016 Phase 1) and the Kernel contracts release.
 
 > **Sync (2026-05-31):** ADR-0052 verified **Accepted** on `main`; wave-1 governance packets #354/#356/#357/#358/#359 confirmed CLOSED via live `gh`. ADR-0052 was struck from `current-focus.md` (was ranked #14) — the Architecture-side governance substrate is done. The only residual is **Architecture#355** (`ICostLedger` → Kernel relocation, confirmed OPEN), which is hard-gated AI-side work (HoneyDrunk.AI at seed v0.1.0; ADR-0016 Phase-1 scaffold unexecuted) plus a human Kernel release — tracked here as gated, deliberately **not** on current-focus.
+> **Sync (2026-06-01):** The standalone `initiatives/adr-0052-rollout-playbook.md` file was retired as operator-directed cleanup; its durable residual gate map is retained in this initiative entry, and detailed phase sequencing remains in ADR-0052 D14. No ADR-0052 implementation gate changed.
 
 ### ADR-0083 Sensitive Inventory and External-SaaS Credential Rotation
 **Status:** Complete — ADR-0083 Accepted; closing PRs #528 (Architecture) + #174 (Actions) MERGED 2026-05-30; ready for exit-criteria review/archive
@@ -166,7 +175,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 **Exit criteria:** Phase A proves verdict quality, reliable polling/claim semantics, deterministic head-SHA invalidation, and near-zero marginal cost under subscription auth on `HoneyDrunk.Architecture`; Phase B follows only after OpenClaw is decommissioned on the review path; Phase C migrates scheduled agent jobs only after runner smoke tests; Phase D makes runner availability visible through the existing narrative surfaces without adding a pager or inbound alert.
 
 ### ADR-0088 Decommission OpenClaw from the HoneyDrunk Grid
-**Status:** Accepted locally — runtime/tunnel teardown, docs-sync scheduler, reference-file deletion, and governance cleanup landed locally; org-secret deletion and invariant-103 inventory cleanup remain gated
+**Status:** Accepted — runtime/tunnel teardown, docs-sync scheduler, reference-file deletion, and governance cleanup landed; org-secret deletion and invariant-103 inventory cleanup remain gated
 **Scope:** Architecture (governance flip, reference-file teardown, ADR reconciliation, ADR-0007 addendum retirement) + operator/runtime chores + Actions cleanup + the sensitive-inventory (`OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET` retirement)
 **Initiative:** `adr-0088-openclaw-decommission`
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)

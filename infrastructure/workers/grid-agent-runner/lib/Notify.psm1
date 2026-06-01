@@ -519,11 +519,23 @@ function Get-DocsSyncSummary {
         }
     }
 
-    $prs = @($Content -split "`r?`n" | Where-Object { $_ -match "^\s*- PR:\s+https://github\.com/HoneyDrunkStudios/[A-Za-z0-9_.-]+/pull/[1-9][0-9]*" } | Select-Object -First 5)
+    $prs = @(
+        $Content -split "`r?`n" |
+            ForEach-Object {
+                $match = [regex]::Match($_, "^\s*- PR:\s+(https://github\.com/HoneyDrunkStudios/[A-Za-z0-9_.-]+/pull/[1-9][0-9]*)\s*$")
+                if ($match.Success) {
+                    "- PR: $($match.Groups[1].Value)"
+                }
+            } |
+            Select-Object -First 5
+    )
     if ($prs.Count -gt 0) {
         $lines.Add("PRs:")
         foreach ($pr in $prs) {
-            $lines.Add($pr.Trim())
+            $cleanPr = $pr.Trim()
+            if (Test-RunnerDiscordPayloadSafe -Value $cleanPr) {
+                $lines.Add($cleanPr)
+            }
         }
     }
 
