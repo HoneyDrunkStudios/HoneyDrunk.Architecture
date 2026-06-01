@@ -40,6 +40,7 @@ This table pins the v1 routing for every alert source. The columns are `Event so
 | [ADR-0044](../adrs/ADR-0044-grid-aware-cloud-code-review-and-ai-authored-pr-discipline.md) review verdict (Approve / Request Changes / Comment) | `#agent-activity` | Info | `🐝 review on {repo}#{pr}: {verdict} — {pr-link}` |
 | [ADR-0046](../adrs/ADR-0046-specialist-review-agents.md) specialist invocation | `#agent-activity` | Info | `🎯 {specialist} on {repo}#{pr}: {verdict} — {pr-link}` |
 | [ADR-0014](../adrs/ADR-0014-hive-architecture-reconciliation-agent.md) hive-sync drift finding | `#hive-activity` | Medium | `🔄 hive-sync: {finding-summary} — {issue-link}` |
+| [ADR-0085](../adrs/ADR-0085-grid-wide-documentation-currency-agent.md) docs-sync run report | `#hive-activity` | Info | `docs-sync: {summary-counts} — {report-or-pr-link}` |
 | Packet lifecycle transition (`active/` → `completed/`) | `#hive-activity` | Info | `✅ {packet-slug} completed — {issue-link}` |
 | PR opened | `#hive-activity` | Info | `🆕 {repo}#{pr}: {title} — {pr-link}` |
 | PR merged | `#hive-activity` | Info | `✔️ {repo}#{pr} merged — {pr-link}` |

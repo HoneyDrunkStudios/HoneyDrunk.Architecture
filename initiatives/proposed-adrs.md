@@ -59,10 +59,8 @@
 - `ADR-0074` — ADR-0074: Testing Library Stack — xUnit + NSubstitute + AwesomeAssertions — 0/4 accepting packet issues closed; open: HoneyDrunk.Architecture#372, HoneyDrunk.Architecture#373, HoneyDrunk.Standards#46, HoneyDrunk.Architecture#374
 - `ADR-0077` — ADR-0077: Infrastructure-as-Code — Bicep (Azure-native) — 0/3 accepting packet issues closed; open: HoneyDrunk.Architecture#384, HoneyDrunk.Architecture#385, HoneyDrunk.Architecture#386
 - `ADR-0078` — ADR-0078: End-User Identity — Microsoft Entra External ID — 0/5 accepting packet issues closed; open: HoneyDrunk.Architecture#437, HoneyDrunk.Architecture#438, HoneyDrunk.Architecture#439, HoneyDrunk.Architecture#440, HoneyDrunk.Architecture#441
-- `ADR-0081` — ADR-0081: Home Server for OpenClaw and Local Agent Infrastructure — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#457
 - `ADR-0085` — ADR-0085: Grid-Wide Documentation Currency Agent (`docs-sync`) — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#483
 - `ADR-0087` — ADR-0087: Per-Change Risk Scoring for the Double-Review Gate — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#536
-- `ADR-0088` — ADR-0088: Decommission OpenClaw from the HoneyDrunk Grid — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#539
 
 ## Pending Flip
 

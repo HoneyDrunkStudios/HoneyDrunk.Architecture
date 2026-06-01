@@ -2,14 +2,14 @@
 
 **File:** `.honeydrunk-review.yaml`  
 **Schema version:** v1  
-**Status:** ADR-0044 Phase 1 pilot schema  
-**Related:** [ADR-0044](../adrs/ADR-0044-grid-aware-cloud-code-review-and-ai-authored-pr-discipline.md), [OpenClaw Grid Review Runner](../infrastructure/openclaw/grid-review-runner.md), [PR review rules](./pr-review-rules.md)
+**Status:** ADR-0086 local-worker schema  
+**Related:** [ADR-0044](../adrs/ADR-0044-grid-aware-cloud-code-review-and-ai-authored-pr-discipline.md), [ADR-0086 Grid Agent Runner](../infrastructure/workers/grid-agent-runner/README.md), [PR review rules](./pr-review-rules.md)
 
 ## Purpose
 
-`.honeydrunk-review.yaml` is the per-repo opt-in file for the ADR-0044 Grid-aware code review runner.
+`.honeydrunk-review.yaml` is the per-repo opt-in file for the ADR-0044 / ADR-0086 Grid-aware code review runner.
 
-GitHub Actions is only the trigger rail. The v1 reasoning runner is OpenClaw/Codex, using `.claude/agents/review.md` as the canonical prompt source and `copilot/pr-review-rules.md` as the severity taxonomy reference.
+GitHub Actions is only the enqueue rail. The default reasoning runner is the ADR-0086 pull-based local worker, using `.claude/agents/review.md` as the canonical prompt source and `copilot/pr-review-rules.md` as the severity taxonomy reference.
 
 The file must be present and `enabled: true` before `HoneyDrunk.Actions/.github/workflows/job-review-request.yml` requests review for a repository.
 
@@ -17,7 +17,7 @@ The file must be present and `enabled: true` before `HoneyDrunk.Actions/.github/
 
 ```yaml
 enabled: true
-runner: openclaw-codex       # openclaw-codex | api-ci; v1 default is openclaw-codex
+runner: local-worker         # local-worker | api-ci; default is local-worker
 severity_floor: Suggest      # Suggest | Request Changes | Block
 skip_paths:
   - "**/*.Designer.cs"
@@ -42,10 +42,10 @@ Required string.
 
 Allowed values:
 
-- `openclaw-codex` — default v1 runner. GitHub Actions emits a signed request; OpenClaw/Codex performs the review and comments back on the PR.
+- `local-worker` — default runner. GitHub Actions queues review work through labels/comments; the ADR-0086 local worker polls, claims, reviews, and comments back on the PR.
 - `api-ci` — reserved future fallback. This is not default v1 behavior and must not be used without an explicit ADR/packet updating the execution posture, cost cap, and secret requirements.
 
-Do not configure Sonnet/Opus/OpenAI model names in this file for v1. ADR-0044 removed per-repo model selection from the Phase 1 schema because the runner is OpenClaw/Codex, not a model API call from GitHub Actions.
+Do not configure Sonnet/Opus/OpenAI model names in this file. Per-repo model selection is not part of the schema because the runner invokes the canonical review agent through the approved worker substrate, not a model API call from GitHub Actions.
 
 ### `severity_floor`
 
@@ -73,13 +73,13 @@ Skipping a path does not override Grid invariants. If a skipped path is the only
 
 Required decimal.
 
-For `openclaw-codex`, the Phase 1 default is:
+For `local-worker`, the default is:
 
 ```yaml
 cost_cap_per_pr_usd: 0.00
 ```
 
-`0.00` means the repo expects the subscription-backed OpenClaw/Codex runner and no per-token API spend from GitHub Actions.
+`0.00` means the repo expects the subscription-backed local-worker path and no per-token API spend from GitHub Actions.
 
 If a future `api-ci` fallback is explicitly enabled, this field must be set to a non-zero cap and the enabling packet must document the budget and secret requirements. API-backed execution is not a required v1 dependency.
 
@@ -93,7 +93,7 @@ The caller workflow must skip without failure when:
 - `enabled` is not `true`;
 - the same PR head SHA has already reached a terminal reviewed/skipped state.
 
-The review remains advisory. OpenClaw offline/unavailable behavior must produce pending/replay evidence, not fail branch protection.
+The review remains advisory. Local-worker unavailable behavior must produce pending/replay evidence, not fail branch protection.
 
 ## Reviewed Head SHA and Idempotency
 
@@ -111,20 +111,20 @@ A new commit changes the head SHA and is eligible for a new review request.
 
 The runner posts the verdict as a normal GitHub PR comment using the format in `.claude/agents/review.md`. Phase 1 does not require a blocking check-run or required status check.
 
-If webhook delivery is unavailable, the workflow preserves the same `grid-review-request` payload as an artifact and may post a machine-readable replay pointer comment. OpenClaw cron/poll replay uses the same idempotency path.
+If the worker is unavailable, the queued label/comment state remains the durable replay surface. A later worker run uses the same idempotency path.
 
 ## ADR-0044 Cross-References
 
-- **ADR-0044 D1** — GitHub Actions emits the review request; OpenClaw/Codex runs the Grid-aware review; duplicate events converge by idempotency key.
+- **ADR-0044 D1, superseded in part by ADR-0086** — GitHub Actions requests Grid-aware review; under ADR-0086 this is a label/comment queue consumed by the local worker. Duplicate events converge by idempotency key.
 - **ADR-0044 D4** — `.honeydrunk-review.yaml` is the repo-local opt-in/config surface.
 - **ADR-0044 D5** — review remains advisory in Phase 1 and must not become required branch protection.
-- **Packet 02b runtime contract** — [`infrastructure/openclaw/grid-review-runner.md`](../infrastructure/openclaw/grid-review-runner.md) defines the webhook, payload, HMAC signing, state, replay, and reviewed-head-SHA behavior.
+- **ADR-0086 runner contract** — [`infrastructure/workers/grid-agent-runner/README.md`](../infrastructure/workers/grid-agent-runner/README.md) defines the successor pull-based local-worker runtime.
 
 ## Minimal Phase 1 Config for HoneyDrunk.Architecture
 
 ```yaml
 enabled: true
-runner: openclaw-codex
+runner: local-worker
 severity_floor: Suggest
 skip_paths:
   - "**/*.Designer.cs"
@@ -132,3 +132,8 @@ skip_paths:
   - "**/generated/**"
 cost_cap_per_pr_usd: 0.00
 ```
+
+## Breaking Change History
+
+- **2026-05-26 / ADR-0086:** `runner: openclaw-codex` was removed and replaced by `runner: local-worker` as the default. The `api-ci` fallback remains reserved for an explicit future opt-in.
+- **2026-05-30 / ADR-0088:** the OpenClaw runtime contract files were retired; the ADR-0086 Grid Agent Runner is the live runner documentation.

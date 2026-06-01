@@ -369,4 +369,4 @@ Rejected. The **GitHub PR is the system of record** per ADR-0011 D1. A separate 
 - [ADR-0052](./ADR-0052-cost-governance-budget-alerts-and-kill-switches.md) — cost governance (reviewer-stack cost monitoring)
 - [ADR-0079](./ADR-0079-multi-perspective-pr-review-stack.md) — multi-perspective PR review stack (partially superseded by this ADR; D1 Reviewer 3 transport, D2 Reviewer 4 recommendation)
 - [ADR-0081](./ADR-0081-home-server-for-openclaw-and-local-agent-infrastructure.md) — home server (recommended worker host; D1 review-webhook-bridge workload removed as Follow-up Work)
-- [`../infrastructure/openclaw/hive-sync.md`](../infrastructure/openclaw/hive-sync.md) — current OpenClaw-hosted hive-sync runtime contract migrated by this ADR's runner framework
+- [`../infrastructure/workers/grid-agent-runner/README.md`](../infrastructure/workers/grid-agent-runner/README.md) and [`../infrastructure/workers/grid-agent-runner/config/jobs/hive-sync.psd1`](../infrastructure/workers/grid-agent-runner/config/jobs/hive-sync.psd1) — ADR-0086 runner framework and successor `hive-sync` job spec after ADR-0088 retired the OpenClaw-hosted runtime contract
