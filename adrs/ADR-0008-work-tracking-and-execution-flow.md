@@ -150,6 +150,23 @@ ADR-prefix and plain-slug initiatives are otherwise structurally identical — d
 
 Not every Notify Cloud (or other product) work item belongs in an initiative. Single features, single bugs, and one-off chores still go to `active/standalone/` per D10. The initiative folder is only for multi-packet pushes with a dispatch plan.
 
+## Amendment (2026-06-01) — Implementation-Notes Packets (As-Built Reconciliation)
+
+A decision (ADR/PDR/BDR) and its packets are written *before* the work. Implementation routinely teaches things the decision and packets could not foresee — a packet's path filter was wrong, a chosen mechanism changed shape, an environment behaved differently than assumed, a "deferred" option turned out to be the right one to adopt early. This is normal and healthy: agility means the map updates when the territory pushes back. But the lifecycle as written (D6/D7) had **nowhere to record what actually shipped and, more importantly, *why* it diverged** — and packets are immutable (invariant 24), so the delta cannot be back-written into them. The dispatch plan is the wrong home: it is the *forward* narrative, updated at wave boundaries. And `hive-sync` — which flips ADR status and archives folders — has no knowledge of the how or the why; it sees board state, not implementation reasoning.
+
+**Rule:**
+
+- **Every initiative's dispatch ends with an Implementation-Notes packet.** The scope agent emits it as the final task in the wave plan, carrying `dependencies:` on every implementation packet in the initiative, `target_repo: HoneyDrunkStudios/HoneyDrunk.Architecture`, and `actor: Agent`. Its packet body is a *stub* — it specifies what the notes must cover (below), not the notes themselves.
+- **The implementing agent authors it — not the scope agent, not `hive-sync`.** Whoever did the work holds the how and the why; that knowledge cannot be reconstructed from board state after the fact. `hive-sync` keeps the mechanical jobs (Proposed→Accepted flip on packet closure, `active/`→`archive/` move); it does **not** write implementation notes. Authoring them is the implementer's closing task, run after the implementation packets merge and before the initiative archives.
+- **Deliverable:** `implementation-notes.md` in the initiative folder, alongside `dispatch-plan.md`. For a decision-driven initiative it *also* appends a dated `## Implementation Notes (YYYY-MM-DD)` pointer section to the governing ADR/PDR/BDR, so the delta is discoverable at the decision — not buried in the packet folder.
+- **Contents (minimum):** (1) what shipped, in a paragraph; (2) **deltas** — each material way the implementation diverged from the decision and/or the packets, written as *decided ➜ as-built*; (3) **why** each delta happened (the implementation learning); (4) PR/commit pointers; (5) follow-ups surfaced during the work; (6) known deviations from conventions, made explicit rather than silent. The original decision and packets are **not** edited — the notes are a retrospective overlay that preserves the decision history while recording reality.
+- **New artifact type (extends D7).** Implementation notes join the taxonomy: *spec* (packet — immutable), *narrative* (dispatch plan — mutable at wave boundaries), *baton* (handoff — ephemeral), and now *as-built* (implementation notes — authored once by the implementer at initiative close, a retrospective record, neither a spec nor live state; edited only to correct error).
+- **Scope-agent + filing updates required.** The scope agent definition must be updated to always emit the Implementation-Notes packet as the final task (tracked under Follow-up Work). `file-packets.yml` files it like any other packet.
+
+**New Work Tracking Invariant** (to be added to `constitution/invariants.md`): *Every initiative closes with an implementation-notes record authored by the implementing agent, capturing what shipped and why it diverged from the decision and its packets. `hive-sync` flips and archives; it does not author the record.*
+
+**Why a rule, not a habit:** without it, the only durable record is the *intended* design (decision + immutable packets), which drifts silently from the *actual* system the moment implementation teaches anything. The reconciliation note closes the loop — decision → plan → reality → recorded learning — and lands the learning with the one party who holds it.
+
 ## Consequences
 
 ### Process Consequences
