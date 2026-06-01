@@ -209,6 +209,21 @@ active/{initiative-slug}/handoff-rotation-bringup.md
 
 Each handoff must be self-contained: upstream changes, new package versions, interface signatures, invariants, acceptance criteria. Per ADR-0008 D7, handoffs are **read once at the wave transition** — ephemeral baton passes, not live trackers. They are immutable under invariant 24.
 
+### Implementation-Notes Packet (every initiative's final task)
+
+Per ADR-0008 § Implementation-Notes Packets (As-Built Reconciliation), **every initiative** (anything with a `dispatch-plan.md`) ends with an Implementation-Notes packet — the closing work item that reconciles what was *decided* with what was *built*. Emit it as the **last** numbered packet in the initiative:
+
+```
+active/{initiative-slug}/{NN}-implementation-notes.md
+```
+
+- **Frontmatter:** `target_repo: HoneyDrunkStudios/HoneyDrunk.Architecture`, `actor: Agent`, and `dependencies:` listing **every** implementation packet in the initiative (it runs only after they all merge). No `accepts:` — it gates no decision.
+- **The body is a stub/spec, not the notes.** Instruct the implementing agent to author `implementation-notes.md` in this initiative folder — and, for a decision-driven initiative, to append a dated `## Implementation Notes (YYYY-MM-DD)` pointer section to the governing ADR/PDR/BDR — covering: what shipped; deltas written as *decided ➜ as-built*; **why** each delta happened; PR/commit pointers; follow-ups surfaced; and explicit convention deviations.
+- **Who executes it:** the implementing agent — the party that did the work and holds the how and the why. **Not** the scope agent (which only writes this stub) and **not** `hive-sync` (which only flips ADR status and archives the folder, and cannot know how/why something was built). Never assign authoring to `hive-sync`.
+- The notes never edit the decision or the (immutable) packets — they are a retrospective as-built overlay, a distinct artifact type alongside the dispatch plan and handoffs.
+
+Standalone packets (`active/standalone/`, not part of an initiative) do not get one: no dispatch plan, no multi-packet drift to reconcile.
+
 ## ADR-0044 D3 Authoring Rubric
 
 ADR-0044 D3 makes the twenty-category review rubric a shared upstream authoring standard, not the review agent's private checklist. When decomposing work, apply the relevant subset before emitting packets so execution agents receive the right constraints up front.
