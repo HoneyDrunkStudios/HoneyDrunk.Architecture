@@ -173,6 +173,18 @@ Walk the full `review.md` rubric by reference, with special attention to repo-wi
 
 Findings should flow to packets per ADR-0043 rather than being fixed directly by node-audit. Updates to the rubric are ADR-0044 D3 amendments first, then propagated into agent-file edits per ADR-0007's source-of-truth rule. Drift between D3, `review.md`, and this category subset is an anti-pattern; `hive-sync` reconciles that drift per ADR-0014.
 
+## ADR-0043 Tactical Source
+
+In ad-hoc mode, you remain read-only: produce the report and hand off. In scheduled automation, the ADR-0086 `backlog-tactical-audit` runner job uses this rubric, writes the durable report to `generated/audits/{node}-{YYYY-MM-DD}.md`, updates `initiatives/audit-rotation.md`, and creates proposed packets only for high-confidence actionable findings.
+
+Scheduled tactical packets:
+
+- Land in `generated/issue-packets/proposed/`.
+- Use `source: tactical` and `generator: node-audit`.
+- Do not move to `active/`; human triage owns promotion.
+- Must cite the audit report path in Context.
+- Must dedupe against existing `proposed/`, `active/`, and recently completed packets before writing a new packet.
+
 ## Output Format
 
 ```markdown

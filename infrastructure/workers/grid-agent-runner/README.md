@@ -4,6 +4,7 @@ description: Portable ADR-0086 scheduled local-worker framework for review, audi
 applies_to:
   - ADR-0086
   - ADR-0044
+  - ADR-0043
 scope: Operator-internal automation infrastructure
 type: documentation/runbook
 slug: grid-agent-runner
@@ -19,6 +20,10 @@ Portable scheduled agent runner for ADR-0086. The runner is operator-machine aut
 - `post-merge-audit` wires the future ADR-0044 audit job.
 - `hive-sync` runs the Architecture reconciliation agent.
 - `docs-sync` runs the grid-wide code-to-docs currency sweep, writes a per-run report, posts a Discord summary, and opens conservative docs-only reconciliation PRs.
+- `backlog-strategic-scope` runs the ADR-0043 Strategic source after hive-sync and writes proposed packets for unimplemented Accepted decisions.
+- `backlog-tactical-audit` runs the ADR-0043 Tactical Node audit rotation and writes audit reports plus proposed packets for actionable findings.
+- `backlog-opportunistic-scout` runs the ADR-0043 Opportunistic Scout source through a weekly schedule with a monthly guard.
+- `backlog-weekly-briefing` writes the weekly ADR-0043 human triage briefing and optional netrunner-owned focus refresh.
 - `lore-source` runs the Lore sourcing prompt.
 - `lore-ingest` runs the Lore ingest/compile prompt.
 - `lore-signal-review` runs the sparse Lore signal review prompt.
@@ -53,6 +58,10 @@ Dry-run a job without touching GitHub or invoking agents:
 pwsh ./scripts/Test-JobLocally.ps1 -JobId grid-review
 pwsh ./scripts/Test-JobLocally.ps1 -JobId hive-sync
 pwsh ./scripts/Test-JobLocally.ps1 -JobId docs-sync
+pwsh ./scripts/Test-JobLocally.ps1 -JobId backlog-strategic-scope
+pwsh ./scripts/Test-JobLocally.ps1 -JobId backlog-tactical-audit
+pwsh ./scripts/Test-JobLocally.ps1 -JobId backlog-opportunistic-scout
+pwsh ./scripts/Test-JobLocally.ps1 -JobId backlog-weekly-briefing
 ```
 
 Run against a real host config:

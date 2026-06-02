@@ -141,6 +141,18 @@ Triggered by: "what should we build?", "suggest product ideas", "what's worth do
 - {If stay the course: no action — continue current initiatives}
 ```
 
+## ADR-0043 Opportunistic Source
+
+The ADR-0086 `backlog-opportunistic-scout` job invokes Scout mode as ADR-0043's Opportunistic backlog source. In that scheduled mode:
+
+- Write the Scout report to `generated/scout-reports/{YYYY-MM-DD}.md`.
+- If no opportunity clears the bar, write the report anyway and create no packets.
+- For a product-level opportunity, create a proposed packet asking for a PDR composition pass rather than writing the PDR yourself.
+- For a smaller in-scope improvement, create a proposed packet directly.
+- Proposed packets land in `generated/issue-packets/proposed/` with `source: opportunistic` and `generator: product-strategist`.
+- Dedupe against existing proposed, active, and completed packets before creating anything.
+- Never self-promote packets to `active/` and never mutate GitHub Projects.
+
 ## Constraints
 
 - **Never write a PDR yourself.** PDRs are formal records of decisions; that's `pdr-composer`'s job. You produce verdicts and opportunity briefings, not PDRs.

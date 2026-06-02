@@ -33,7 +33,7 @@ The studio is currently building three product threads in 2026 — **Notify Clou
 - [x] **ADR-0052 Cost Governance, Budget Alerts, Kill-Switches — Accepted 2026-05-30** — `adr-0052-cost-governance`: invariants 104–106 live; `cost-budgets.json` + `generated/cost-reports/` format + review-agent cost gating shipped (PR #517). Wave-1 governance complete; residual gate map lives in `initiatives/active-initiatives.md`; AI-side ledger impl + `ICostLedger` Kernel relocation (Architecture#355) remain gated on the AI Node scaffold + a human Kernel release.
 - [ ] **ADR-0088 Decommission OpenClaw** — accepted; runtime/tunnel/reference/governance cleanup is in Architecture PR #554 and Actions input cleanup is in Actions PR #182. The remaining tail is human deletion of `OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET`, then invariant-103 cleanup of the inventory row, walkthrough, standing issue #527, and node-standup matrix row *(current-focus #1)*.
 - [ ] **ADR-0033 environment-gated trigger packets** — unblocks Notify/Pulse dev deploy under ADR-0015
-- [ ] **ADR-0043 Backlog Generation — Phase 1 kickoff** — closes the ADR → packet auto-generation loop; Strategic source feeds on ADR acceptances
+- [ ] **ADR-0043 Backlog Generation — full automation substrate** — closes the ADR → packet auto-generation loop; Strategic/Tactical/Opportunistic/Weekly sources run through ADR-0086 runner jobs, with `proposed/` as the human triage inbox
 - [ ] **ADR-0015 Container Apps Rollout — underway** *(2/5 issues closed; walkthroughs + reusable deploy workflow complete; Notify/Pulse release work remains; underwrites Notify Cloud deploy substrate)*
 - [ ] **Archive / exit-criteria review** — sweep closed rollouts (ADR-0005/0006, 0009, 0014, 0030, 0032, Lore, Vault.Rotation, Kernel Adoption) into `archived-initiatives.md`
 
@@ -73,7 +73,7 @@ The studio is currently building three product threads in 2026 — **Notify Clou
 
 **Foundation / Substrate**
 
-- [ ] **ADR-0043 Backlog Generation — Phase 1 ship** — Strategic source event-driven on ADR acceptance + Reactive source for drift; `generated/issue-packets/proposed/` directory live
+- [ ] **ADR-0043 Backlog Generation — first live source pass** — first Strategic source run produces or explicitly skips proposed packets with dedupe evidence; first weekly briefing surfaces the backlog queue
 - [ ] **ADR-0046 Specialist Review Agents — Phase 1** — `cfo` agent authored and retroactively invoked against cost-touching PRs; `agent-capability-matrix.md` updated
 - [ ] **ADR-0047 Phase 2 — Tier 2a integration CI** — `job-integration-tests.yml` live in Actions and wired into `pr-core.yml`; closes ADR-0011 Gap 1
 - [x] **ADR-0079 Multi-Perspective PR Review Stack — Acceptance** — substantive-PR classifier defined; per-PR cost ceiling committed; ADR-0044 amended with billing-path discipline *(Reviewer 4 path unlocked 2026-06-15 by Claude Max Agent SDK launch)* *(ADR accepted; 5/5 accepting packet issues closed)*

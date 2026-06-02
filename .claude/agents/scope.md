@@ -83,7 +83,9 @@ Work within the same wave can run in parallel. Across waves, sequencing is stric
 
 ## Phase 4: Generate Artifacts
 
-Per ADR-0008 D10 (and the 2026-05-21 slug naming amendment), all generated artifacts live under `/generated/issue-packets/active/` and are grouped by initiative. Packets, dispatch plans, and handoffs are **co-located** inside their initiative folder — the prior sibling folders `/generated/dispatch-plans/` and `/generated/handoffs/` are deprecated and must not be written to.
+Per ADR-0008 D10 (and the 2026-05-21 slug naming amendment), human-selected execution packets live under `/generated/issue-packets/active/` and are grouped by initiative. Packets, dispatch plans, and handoffs are **co-located** inside their initiative folder — the prior sibling folders `/generated/dispatch-plans/` and `/generated/handoffs/` are deprecated and must not be written to.
+
+Per ADR-0043, backlog-generation packets created by agents land under `/generated/issue-packets/proposed/` first. Use `proposed/` when invoked by the ADR-0086 backlog-generation jobs or when explicitly creating Strategic, Tactical, Opportunistic, or Reactive backlog candidates. Do not self-promote proposed packets to `active/`; a human performs that move. Existing manual scoping for already-approved execution work may still write to `active/`.
 
 **Initiative slug naming:**
 
@@ -97,6 +99,8 @@ Layout:
 
 ```
 /generated/issue-packets/
+├── proposed/
+│   └── {YYYY-MM-DD}-{target-repo-short}-{description}.md
 ├── active/
 │   └── {initiative-slug}/
 │       ├── dispatch-plan.md                     (multi-repo only)
@@ -112,10 +116,11 @@ Layout:
 
 For each work unit:
 
+- **ADR-0043 generated backlog packet**: write to `proposed/` with the date prefix — `{YYYY-MM-DD}-{target-repo-short}-{kebab-case-description}.md`. Include `source` and `generator` frontmatter. If the work implies more than three packets, include the dispatch/wave rationale in the run report and ensure the proposed packet set is internally sequenced through `dependencies:`.
 - **Inside an initiative folder** (multi-repo or initiative-scoped work): name the packet `{NN}-{target-repo-short}-{kebab-case-description}.md` with a two-digit execution-order prefix (`01-`, `02-`, ...). The numeric prefix is the canonical ordering signal.
 - **Standalone** (one-off work not tied to any initiative): write to `active/standalone/` with the date prefix — `{YYYY-MM-DD}-{target-repo-short}-{kebab-case-description}.md`.
 
-Every packet must include frontmatter, summary, context, scope, acceptance criteria, human prerequisites, dependencies, and labels per `copilot/issue-authoring-rules.md`.
+Every packet must include frontmatter, summary, context, scope, acceptance criteria, human prerequisites, dependencies, and labels per `copilot/issue-authoring-rules.md`. Packets authored after ADR-0043 acceptance include `source` and `generator`; use `source: human` and `generator: human` only for human-authored packets.
 
 
 ### Decision Acceptance Frontmatter (`accepts:`)
@@ -290,6 +295,7 @@ Before outputting any issue:
 - [ ] Acceptance criteria are specific and testable
 - [ ] Dependencies listed if cross-repo
 - [ ] Labels include type, tier, and sector
+- [ ] Frontmatter includes `source` and `generator`; ADR-0043 agent-generated packets are in `proposed/`
 - [ ] Agent Handoff section included with constraints and key files
 - [ ] `## Human Prerequisites` section present (listing portal steps / manual actions, or explicitly "None.")
 - [ ] Acceptance criteria include repo-level CHANGELOG.md update whenever the packet changes shipped behavior — create a new version entry if this is the bumping packet, otherwise append to the existing in-progress version entry (invariants 12, 27)
@@ -318,5 +324,5 @@ Issue packets are executed by agents in the **target repo**, not the Architectur
 1. **Inline invariant text.** Never write "Invariant 17" — write the actual rule text. Reference the number parenthetically if useful (e.g., "One Key Vault per deployable Node per environment (invariant 17)").
 2. **Summarize ADR decisions.** If a packet references ADR-0005, extract the specific decisions the agent needs into the Proposed Implementation or Constraints section. The ADR ID is metadata for traceability, not a pointer the agent can follow.
 3. **Include relevant boundary rules.** If `repos/{name}/boundaries.md` has constraints that affect implementation, inline them.
-4. **Frontmatter must include all board fields.** The `wave`, `tier`, `target_repo`, `labels`, `adrs`, `initiative`, and (when `Actor=Human`) `"human-only"` in the `labels:` array are used by the filing script to populate both GitHub labels and Project board fields. Omitting them forces manual backfill. The `Actor` single-select field on The Hive defaults to `Agent`; no frontmatter key is required for that case.
+4. **Frontmatter must include all board fields.** The `wave`, `tier`, `target_repo`, `labels`, `adrs`, `initiative`, `source`, `generator`, and (when `Actor=Human`) `"human-only"` in the `labels:` array are used by the filing script, briefing, and audit tooling to populate GitHub labels, Project board fields, and ADR-0043 source visibility. Omitting them forces manual backfill. The `Actor` single-select field on The Hive defaults to `Agent`; no frontmatter key is required for that case.
 
