@@ -165,13 +165,13 @@ Rejected. Single-revision mode replaces the running revision in place with no ro
 
 Deferred. Container Apps supports Dapr sidecars for pub/sub, state, and service invocation. The current Grid uses explicit queue contracts (`HoneyDrunk.Transport`) and does not benefit from Dapr abstractions today. Reconsider when a cross-Node pub/sub pattern emerges that does not fit the existing Transport model.
 
-## Implementation Note (2026-06-02) — Notify.Worker parked on standby
+## Implementation Notes (2026-06-02) — Notify.Worker parked on standby
 
 This ADR lists **two** HoneyDrunk.Notify deployables (Notify.Functions + Notify.Worker). In practice both were scaffolded to dispatch the **same `notify-queue`** — `Notify.Functions` via a `[QueueTrigger]` and `Notify.Worker` via a polling `BackgroundService` — i.e. redundant consumers, with no recorded reason for two. The only non-overlapping surface is two HTTP endpoints (`/health`, `/internal/vault/invalidate`) that live in the Functions app.
 
 **Decision:** `Notify.Functions` is the **single active `notify-queue` dispatcher**. `Notify.Worker` is **retained in-repo but parked on standby** — not retired/deleted:
 
-- **Code/CI:** the Worker project stays in the solution (PR CI keeps building it so it doesn't rot). `release-worker.yml` is `workflow_dispatch`-only; its `push`/`tags` triggers (full path-filter closure) are preserved commented-out for one-step reactivation. (HoneyDrunk.Notify PR #55.)
+- **Code/CI:** the Worker project stays in the solution (PR CI keeps building it so it doesn't rot). `release-worker.yml` is `workflow_dispatch`-only; its `push`/`tags` triggers (full path-filter closure) are preserved commented-out for one-step reactivation. (HoneyDrunkStudios/HoneyDrunk.Notify#55.)
 - **Azure:** the `ca-hd-notify-worker-dev` Container App runs **no replicas** (revisions deactivated; was already scaled-to-zero = ~$0). Nothing deleted; the app + KEDA `notify-queue` scale rule are preserved so reactivation is a redeploy. Deactivation also removes the wake/race risk (the scale rule can't scale a deactivated revision).
 
 **Why standby, not delete:** a legitimate two-deployable design exists — `Notify.Functions` as the **transactional/real-time** lane (scale-to-zero, burst) and `Notify.Worker` as a **bulk/throttled/scheduled** lane on a **separate queue** (SLA isolation so a bulk blast can't delay a 2FA code; provider rate-limit control; no execution-time ceiling). That second traffic class does not exist yet, so paying for / running two consumers of one queue is waste. Standby keeps the option cheap.
