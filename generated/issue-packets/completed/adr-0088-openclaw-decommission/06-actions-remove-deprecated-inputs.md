@@ -128,5 +128,5 @@ None. YAML workflow edit only; no .NET project in this repo.
 - The `job-review-request.yml` reusable-workflow `inputs:` / `secrets:` interface — narrowed by removing the five deprecated entries; the live interface its callers depend on is unchanged.
 
 **PR Body Metadata:**
-- `Authorship: agent`
+- `Authorship: agent-codex`
 - `Packet: generated/issue-packets/completed/adr-0088-openclaw-decommission/06-actions-remove-deprecated-inputs.md`
