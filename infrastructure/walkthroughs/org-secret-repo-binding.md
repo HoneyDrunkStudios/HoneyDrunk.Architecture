@@ -61,12 +61,10 @@ The authoritative per-class matrix lives in `constitution/node-standup.md`. Repr
   - one or more of `DISCORD_WEBHOOK_OPS_ALERTS`, `DISCORD_WEBHOOK_SECURITY`, `DISCORD_WEBHOOK_AGENT_ACTIVITY`, `DISCORD_WEBHOOK_HIVE_ACTIVITY`, `DISCORD_WEBHOOK_RELEASE`, `DISCORD_WEBHOOK_ANNOUNCEMENTS`, `DISCORD_WEBHOOK_AUDIT_SENSITIVE` — per which channels the Node emits to.
 - **Any Node participating in cross-repo issue / label / project automation** (ADR-0014 hive-sync):
   - `LABELS_FANOUT_PAT`, `HIVE_FIELD_MIRROR_TOKEN`, `HIVE_APP_ID`, `HIVE_APP_PRIVATE_KEY`.
-- **Any Node whose `.honeydrunk-review.yaml` has `enabled: true` and posts review results upstream** (ADR-0044):
-  - `OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET`.
 - **TypeScript SDK packages** (per the Studios/TypeScript walkthrough Phase B):
   - `NPM_TOKEN` (or the OIDC-trusted-publishing equivalent once the org adopts it).
 
-This snapshot is dated **2026-05-25**. Future org-secret-inventory passes (ADR-0083 D5/D6) extend the matrix in `constitution/node-standup.md`; that update flows here at the next walkthrough revision.
+This snapshot is dated **2026-06-02**. Future org-secret-inventory passes (ADR-0083 D5/D6) extend the matrix in `constitution/node-standup.md`; that update flows here at the next walkthrough revision.
 
 ## Verification
 
