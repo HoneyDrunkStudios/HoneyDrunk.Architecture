@@ -129,4 +129,4 @@ None. YAML workflow edit only; no .NET project in this repo.
 
 **PR Body Metadata:**
 - `Authorship: agent`
-- `Packet: generated/issue-packets/active/adr-0088-openclaw-decommission/06-actions-remove-deprecated-inputs.md`
+- `Packet: generated/issue-packets/completed/adr-0088-openclaw-decommission/06-actions-remove-deprecated-inputs.md`
