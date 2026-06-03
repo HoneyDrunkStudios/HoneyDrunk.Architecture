@@ -1,3 +1,19 @@
+---
+title: ADR-0043 Tactical Node Audit Source
+purpose: Tactical node-audit backlog source scheduled job prompt
+version: "1.0"
+last_modified: 2026-06-03
+author: agent-codex
+job_id: backlog-tactical-audit
+related_agents:
+  - node-audit
+  - scope
+tags:
+  - adr-0043
+  - backlog-generation
+  - tactical
+---
+
 # ADR-0043 Tactical Node Audit Source
 
 You are running as the ADR-0086 `backlog-tactical-audit` scheduled job for `HoneyDrunk.Architecture`.

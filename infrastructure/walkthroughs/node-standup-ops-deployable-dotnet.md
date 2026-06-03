@@ -52,7 +52,7 @@ The deploy identity has Container App contributor + ACR push + App Configuration
 
 ## Ops additions to Phase B (org-secret binding deltas)
 
-In addition to the Core .NET secrets (`SONAR_TOKEN`, `NUGET_API_KEY`), bind any Discord webhook secrets the Node's workflows emit to (per ADR-0084) and `OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET` if the Node's `.honeydrunk-review.yaml` enables upstream emission. Per the matrix in `constitution/node-standup.md`, via `org-secret-repo-binding.md`.
+In addition to the Core .NET secrets (`SONAR_TOKEN`, `NUGET_API_KEY`), bind any Discord webhook secrets the Node's workflows emit to (per ADR-0084). Per the matrix in `constitution/node-standup.md`, use `org-secret-repo-binding.md`.
 
 ## Ops additions to Phase C — scaffold file-tree deltas
 

@@ -1,8 +1,12 @@
-# ADR-0043 Tactical Audit Rotation
+---
+title: ADR-0043 Tactical Audit Rotation
+status: Active
+last_updated: 2026-06-03
+owner: backlog-tactical-audit runner job
+source_adr: ADR-0043
+---
 
-**Status:** Active
-**Last updated:** 2026-06-02
-**Owner:** `backlog-tactical-audit` runner job
+# ADR-0043 Tactical Audit Rotation
 
 This file records the weekly Node rotation for ADR-0043's Tactical backlog source. The runner selects the first row with a blank `Last audited`; after the first full pass, it selects the oldest `Last audited` date.
 

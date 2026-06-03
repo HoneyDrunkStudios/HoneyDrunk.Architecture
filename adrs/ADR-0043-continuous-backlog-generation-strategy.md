@@ -51,7 +51,7 @@ Every source produces packets in the format already governed by `copilot/issue-a
 The contract:
 
 - A packet is a markdown file in `generated/issue-packets/proposed/{YYYY-MM-DD}-{repo}-{description}.md` per ADR-0008 D10 naming.
-- The packet's frontmatter includes a new `source` field: `strategic` | `tactical` | `opportunistic` | `reactive`. This is how triage later filters and how `hive-sync` reconciles per-source backlogs.
+- The packet's frontmatter includes a new `source` field: `strategic` | `tactical` | `opportunistic` | `reactive` for ADR-0043 generated backlog packets, or `human` for human-authored packets. This is how triage later filters and how `hive-sync` reconciles per-source backlogs.
 - The packet's frontmatter includes a `generator` field naming the agent that produced it. Auditability of "who said this should be done."
 - Reactive packets may also include `priority: urgent` for high+ CVE, production incident, or canary-failure-past-grace items. Non-urgent packets either omit `priority` or set a lower local value for briefing sorting only.
 

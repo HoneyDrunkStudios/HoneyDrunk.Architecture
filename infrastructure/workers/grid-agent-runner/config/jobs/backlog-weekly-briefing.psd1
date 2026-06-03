@@ -6,7 +6,7 @@
     Schedule = @{
         Type = "weekly"
         DaysOfWeek = @("Monday")
-        TimeLocal = "10:30"
+        TimeLocal = "11:00"
         AtStartup = $false
         AtLogon = $false
     }

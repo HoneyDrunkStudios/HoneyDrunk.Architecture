@@ -1,3 +1,18 @@
+---
+title: ADR-0043 Weekly Backlog Briefing
+purpose: Weekly backlog triage briefing scheduled job prompt
+version: "1.0"
+last_modified: 2026-06-03
+author: agent-codex
+job_id: backlog-weekly-briefing
+related_agents:
+  - netrunner
+tags:
+  - adr-0043
+  - backlog-generation
+  - briefing
+---
+
 # ADR-0043 Weekly Backlog Briefing
 
 You are running as the ADR-0086 `backlog-weekly-briefing` scheduled job for `HoneyDrunk.Architecture`.

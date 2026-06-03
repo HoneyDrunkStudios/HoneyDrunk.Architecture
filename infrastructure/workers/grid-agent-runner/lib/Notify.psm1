@@ -513,7 +513,7 @@ function Get-DocsSyncSummary {
     param([string]$Content)
 
     $lines = New-Object System.Collections.Generic.List[string]
-    $summary = [regex]::Match($Content, "(?s)## Summary\s+(.+?)(?:\n## |\z)")
+    $summary = [regex]::Match($Content, "(?s)## Summary\s+(.+?)(?:\r?\n## |\z)")
     if ($summary.Success) {
         foreach ($line in @($summary.Groups[1].Value -split "`r?`n" | Where-Object { $_ -match "^- " } | Select-Object -First 6)) {
             $clean = $line.Trim()

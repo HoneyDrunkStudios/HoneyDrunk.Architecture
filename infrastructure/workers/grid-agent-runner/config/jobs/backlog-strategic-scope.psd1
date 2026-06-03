@@ -40,6 +40,6 @@
         "Discord--HiveActivity--RunnerWebhookUrl"
     )
     AllowedTools = @("read", "grep", "glob", "edit", "write", "git", "gh", "codex")
-    RetainArtifactsDays = 30
+    RetainArtifactsDays = 60
     PortabilityNotes = "Host must have the Architecture checkout and GitHub CLI. Job opens or updates a reviewable PR and never promotes proposed packets to active."
 }

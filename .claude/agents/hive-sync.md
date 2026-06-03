@@ -61,7 +61,7 @@ ls adrs/ADR-*.md > /tmp/adr-files.txt
 ls pdrs/PDR-*.md > /tmp/pdr-files.txt
 ```
 
-For each ADR/PDR, extract ID, title, `**Status:**`, `**Date:**`, and `**Sector:**`. Also build the implementing-packet index by scanning packet YAML frontmatter under `generated/issue-packets/{active,completed}/**/*.md` for `accepts:` fields. Write the combined data to `/tmp/decision-frontmatter.json`.
+For each ADR/PDR, extract ID, title, `**Status:**`, `**Date:**`, and `**Sector:**`. Also build two packet indexes: the acceptance-gating index by scanning packet YAML frontmatter under `generated/issue-packets/{active,completed}/**/*.md` for `accepts:` fields, and the implementation-coverage index by scanning `generated/issue-packets/{proposed,active,completed}/**/*.md` for `adrs:` references. Write the combined data to `/tmp/decision-frontmatter.json`.
 
 **1h. Load ADR-0043 backlog-generation surfaces.** Read `generated/issue-packets/proposed/`, `generated/briefings/urgent.md`, `generated/audits/`, `generated/scout-reports/`, and `initiatives/audit-rotation.md` when present. Use these only for dedupe and drift context; do not promote proposed packets.
 
@@ -134,7 +134,7 @@ Annotated statuses such as `Accepted (Phase 1)` or `Superseded by ...` are autho
 
 **9e. Reconcile `adrs/README.md` and `pdrs/README.md`.** After flips, update only Status and Date columns to match each ADR/PDR frontmatter. Do not change Title, Sector, Impact, link text, or link targets. Missing or orphaned README rows are anomalies; never auto-add or auto-delete rows.
 
-**9f. Surface ADR-0043 Strategic source triggers.** For each ADR/PDR newly flipped to Accepted this run, and for any Accepted decision with no corresponding `accepts:` packet in `generated/issue-packets/{proposed,active,completed}/`, record a Strategic backlog trigger in the PR summary and `initiatives/drift-report.md`. The separate ADR-0086 `backlog-strategic-scope` job owns packet creation. Do not create Strategic packets directly from hive-sync unless that job is unavailable and the operator explicitly asks for manual fallback.
+**9f. Surface ADR-0043 Strategic source triggers.** For each ADR/PDR newly flipped to Accepted this run, record a Strategic backlog trigger in the PR summary and `initiatives/drift-report.md` unless an implementation packet already references the decision through `adrs:`. For already Accepted decisions, use the `adrs:` implementation-coverage index, not `accepts:`, to detect missing packet coverage. `accepts:` only gates Proposed -> Accepted flips and must not be treated as evidence of implementation coverage for an already-Accepted decision. The separate ADR-0086 `backlog-strategic-scope` job owns packet creation. Do not create Strategic packets directly from hive-sync unless that job is unavailable and the operator explicitly asks for manual fallback.
 
 ### Step 10: Move Closed Packets to completed/
 

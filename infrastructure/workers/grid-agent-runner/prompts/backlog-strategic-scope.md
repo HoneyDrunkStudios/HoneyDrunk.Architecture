@@ -1,3 +1,18 @@
+---
+title: ADR-0043 Strategic Backlog Source
+purpose: Strategic backlog source scheduled job prompt
+version: "1.0"
+last_modified: 2026-06-03
+author: agent-codex
+job_id: backlog-strategic-scope
+related_agents:
+  - scope
+tags:
+  - adr-0043
+  - backlog-generation
+  - strategic
+---
+
 # ADR-0043 Strategic Backlog Source
 
 You are running as the ADR-0086 `backlog-strategic-scope` scheduled job for `HoneyDrunk.Architecture`.

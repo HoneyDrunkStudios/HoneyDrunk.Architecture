@@ -1,3 +1,19 @@
+---
+title: ADR-0043 Opportunistic Scout Source
+purpose: Opportunistic Scout backlog source scheduled job prompt
+version: "1.0"
+last_modified: 2026-06-03
+author: agent-codex
+job_id: backlog-opportunistic-scout
+related_agents:
+  - product-strategist
+  - scope
+tags:
+  - adr-0043
+  - backlog-generation
+  - opportunistic
+---
+
 # ADR-0043 Opportunistic Scout Source
 
 You are running as the ADR-0086 `backlog-opportunistic-scout` scheduled job for `HoneyDrunk.Architecture`.
