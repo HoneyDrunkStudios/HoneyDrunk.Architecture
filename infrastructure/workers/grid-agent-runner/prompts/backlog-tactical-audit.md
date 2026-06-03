@@ -67,7 +67,7 @@ Choose the first rotation row with a blank `Last audited`. If all rows have a da
 
 ## Branch And PR
 
-Create or reuse branch `chore/backlog-tactical-audit-{YYYY-MM-DD}`. Open or update one PR against `main` if files change. PR body must include:
+Create or reuse branch `chore/backlog-tactical-audit-{YYYY-MM-DD}`. Open or update one non-draft, reviewable PR against `main` if files change. Do not create a draft PR. PR body must include:
 
 - `Authorship: agent-codex`
 - `Out-of-band reason: ADR-0043 backlog-tactical-audit scheduled runner job`
