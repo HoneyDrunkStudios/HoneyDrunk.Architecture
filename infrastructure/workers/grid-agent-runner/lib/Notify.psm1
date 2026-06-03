@@ -490,6 +490,45 @@ function Invoke-RunnerNotifySelfTest {
         if (-not ($docsSummary -contains "- PR: https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/pull/600")) {
             throw "docs-sync summaries should include validated HoneyDrunk PR links."
         }
+
+        $backlogReportDir = Join-Path $tempRoot "briefings"
+        New-Item -ItemType Directory -Path $backlogReportDir -Force | Out-Null
+        $backlogReport = Join-Path $backlogReportDir "2026-06-03-strategic-source.md"
+        Set-Content -LiteralPath $backlogReport -Value @"
+# Strategic Backlog Source - 2026-06-03
+
+## Summary
+- Decisions scanned: 31
+- Proposed packets created: 1
+
+## Recommendation Breakdown
+- **ADR-0084 routing drift**
+  - Recommendation: promote the proposed packet after review.
+  - Why: hive-sync is repeatedly surfacing the same routing drift.
+  - Human action: move the packet to active when ready.
+
+## Notes For Weekly Briefing
+- Weekly briefing should call out the routing-drift packet.
+"@ -Encoding UTF8
+
+        $backlogSpec = @{
+            JobId = "backlog-strategic-scope"
+            Repo = "HoneyDrunk.Test"
+            OutputContract = @{
+                LatestOutput = "briefings/{YYYY-MM-DD}-strategic-source.md"
+                Summary = "backlog"
+            }
+        }
+        $backlogSummary = @(Get-RunnerJobSummary -JobSpec $backlogSpec -RepoPath $tempRoot)
+        if (-not ($backlogSummary -contains "Recommendations:")) {
+            throw "backlog summaries should include the recommendation section marker."
+        }
+        if (-not ($backlogSummary -contains "- Recommendation: promote the proposed packet after review.")) {
+            throw "backlog summaries should include actionable recommendation detail."
+        }
+        if (-not ($backlogSummary -contains "- Weekly briefing should call out the routing-drift packet.")) {
+            throw "backlog summaries should collect recommendation detail across multiple sections."
+        }
     }
     finally {
         Remove-Item -LiteralPath $tempRoot -Recurse -Force -ErrorAction SilentlyContinue
@@ -559,10 +598,24 @@ function Get-BacklogGenerationSummary {
     $lines = New-Object System.Collections.Generic.List[string]
     $summary = [regex]::Match($Content, "(?s)## Summary\s+(.+?)(?:\n## |\z)")
     if ($summary.Success) {
-        foreach ($line in @($summary.Groups[1].Value -split "`r?`n" | Where-Object { $_ -match "^- " } | Select-Object -First 8)) {
+        foreach ($line in @($summary.Groups[1].Value -split "`r?`n" | Where-Object { $_ -match "^- " } | Select-Object -First 6)) {
             $clean = $line.Trim()
             if (Test-RunnerDiscordPayloadSafe -Value $clean) {
                 $lines.Add($clean)
+            }
+        }
+    }
+
+    $recommendations = @(Get-BacklogRecommendationLines -Content $Content -MaxLines 8)
+    if ($recommendations.Count -gt 0) {
+        if ($lines.Count -gt 0) {
+            $lines.Add("")
+        }
+
+        $lines.Add("Recommendations:")
+        foreach ($recommendation in $recommendations) {
+            if (Test-RunnerDiscordPayloadSafe -Value $recommendation) {
+                $lines.Add($recommendation)
             }
         }
     }
@@ -588,6 +641,55 @@ function Get-BacklogGenerationSummary {
 
     if ($lines.Count -eq 0) {
         $lines.Add($Fallback)
+    }
+
+    return $lines.ToArray()
+}
+
+function Get-BacklogRecommendationLines {
+    param(
+        [string]$Content,
+        [int]$MaxLines = 8
+    )
+
+    $sectionNames = @(
+        "Recommendation Breakdown",
+        "Recommended Top 3",
+        "Notes For Weekly Briefing",
+        "Decisions Scoped",
+        "New Proposed Packets"
+    )
+
+    $lines = New-Object System.Collections.Generic.List[string]
+    foreach ($sectionName in $sectionNames) {
+        $escaped = [regex]::Escape($sectionName)
+        $section = [regex]::Match($Content, "(?ms)^##\s+$escaped\s*\r?\n(.+?)(?=^##\s+|\z)")
+        if (-not $section.Success) {
+            continue
+        }
+
+        foreach ($line in @($section.Groups[1].Value -split "`r?`n")) {
+            $clean = $line.Trim()
+            if ([string]::IsNullOrWhiteSpace($clean)) {
+                continue
+            }
+
+            if ($clean -match '^```' -or $clean -match '^#+\s+') {
+                continue
+            }
+
+            if ($clean -match '^[-*]\s+' -or $clean -match '^\d+\.\s+' -or $clean -match '^(Recommendation|Why|Why now / Why not now|Human action|Suggested human action|Urgency|Source|Tradeoff|Opportunity cost|Kill criteria|Packet|Proposed packet path|Dedupe/Skipped reason):\s+') {
+                $clean = ($clean -replace "\s+", " ").Trim()
+                if (Test-RunnerDiscordPayloadSafe -Value $clean) {
+                    $lines.Add((Limit-RunnerDiscordText -Value $clean -MaxLength 280))
+                }
+            }
+
+            if ($lines.Count -ge $MaxLines) {
+                return $lines.ToArray()
+            }
+        }
+
     }
 
     return $lines.ToArray()

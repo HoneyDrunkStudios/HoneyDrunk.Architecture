@@ -72,11 +72,22 @@ Create or reuse branch `chore/backlog-tactical-audit-{YYYY-MM-DD}`. Open or upda
 - `Authorship: agent-codex`
 - `Out-of-band reason: ADR-0043 backlog-tactical-audit scheduled runner job`
 - Node audited, verdict, packet count, and skipped/dedupe count
+- Recommendation breakdown for each actionable finding: Recommendation, Why, Proposed packet path, Human action, Urgency, and Dedupe/Skipped reason
 
 ## Work
 
 1. Run the node-audit rubric against the selected Node.
 2. Write `generated/audits/{node}-{YYYY-MM-DD}.md` using the node-audit output format.
+   - Include a top-level `## Recommendation Breakdown` section near the start of the report.
+   - For each actionable finding, use this labeled format:
+     - **{finding title}**
+       - Recommendation: {promote/refine/defer/drop or concrete action}
+       - Why: {why it matters}
+       - Proposed packet path: {path if created, or `_None._`}
+       - Human action: {what the operator should do next}
+       - Urgency: {urgent/high/normal/watch}
+       - Dedupe/Skipped reason: {existing packet, low confidence, not packet-able, or `_None._`}
+   - If there are no actionable findings, state the operational recommendation clearly, for example `Recommendation: no new packet; keep watching {specific area}` with the evidence that supports it.
 3. For Blocking and Changes Requested findings that are concrete and packet-able, create proposed packets:
    - Land in `generated/issue-packets/proposed/{YYYY-MM-DD}-{repo-short}-{description}.md`.
    - Include `source: tactical` and `generator: node-audit`.
