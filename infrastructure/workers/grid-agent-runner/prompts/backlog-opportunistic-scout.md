@@ -28,19 +28,28 @@ This job is scheduled weekly for Task Scheduler portability. If `generated/scout
 
 Read:
 
+1. `constitution/manifesto.md`
+2. `constitution/terminology.md`
+3. `constitution/invariants.md`
+4. `constitution/sectors.md`
+5. `constitution/sector-interaction-map.md`
+6. `routing/request-types.md`
+7. `routing/sdlc.md`
+
+Then read:
+
 1. `adrs/ADR-0043-continuous-backlog-generation-strategy.md`
 2. `.claude/agents/product-strategist.md`
 3. `.claude/agents/scope.md`
 4. `copilot/issue-authoring-rules.md`
 5. `constitution/charter.md`
-6. `constitution/manifesto.md`
-7. `catalogs/nodes.json`
-8. `catalogs/relationships.json`
-9. `pdrs/`
-10. `adrs/`
-11. `initiatives/active-initiatives.md`
-12. `initiatives/roadmap.md`
-13. Existing packets under `generated/issue-packets/{proposed,active,completed}/`
+6. `catalogs/nodes.json`
+7. `catalogs/relationships.json`
+8. `pdrs/`
+9. `adrs/`
+10. `initiatives/active-initiatives.md`
+11. `initiatives/roadmap.md`
+12. Existing packets under `generated/issue-packets/{proposed,active,completed}/`
 
 Use web search for current market signal when available. Cite web sources in the report, but do not quote long passages.
 

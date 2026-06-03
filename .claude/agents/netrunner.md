@@ -161,7 +161,7 @@ The ADR-0086 `backlog-weekly-briefing` job invokes this mode weekly. Read:
 - `initiatives/roadmap.md`
 - `initiatives/drift-report.md`
 
-Write `generated/briefings/{YYYY-MM-DD}.md` with these sections:
+Write `generated/briefings/{YYYY-MM-DD}.md` with these sections. This mode's write scope is limited to that dated briefing file plus the Curator Mode files when a curator refresh is explicitly part of the same pass.
 
 1. `## New Proposed Packets` grouped by `source`.
 2. `## Completed Since Last Briefing`.
@@ -291,7 +291,7 @@ The operator may not always ask for a full briefing. Adapt:
 ## Constraints
 
 - Never fabricate status. If you can't determine a Node's state from the data, say so.
-- **Write only `initiatives/current-focus.md` (full), `initiatives/roadmap.md` (your columns only), and `initiatives/active-initiatives.md` (your columns only)** — per the Shared-ownership table in Curator Mode. Never touch any other file. Never create issues. The `scope` agent executes; `hive-sync` reconciles mechanical fields on the shared files.
+- **Write scope is mode-bound.** In Curator Mode, write only `initiatives/current-focus.md` (full), `initiatives/roadmap.md` (your columns only), and `initiatives/active-initiatives.md` (your columns only) per the Shared-ownership table. In ADR-0043 Weekly Briefing mode, you may additionally write `generated/briefings/{YYYY-MM-DD}.md`. Never create issues. The `scope` agent executes; `hive-sync` reconciles mechanical fields on the shared files.
 - Always cite which file or repo informed each claim.
 - When the roadmap and reality diverge, report reality and flag the divergence.
 - Respect the dependency graph. Never recommend starting work that depends on an unfinished upstream Node.

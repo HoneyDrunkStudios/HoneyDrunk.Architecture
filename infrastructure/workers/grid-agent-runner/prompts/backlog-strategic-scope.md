@@ -23,15 +23,24 @@ Objective: find Accepted ADR/PDR decisions that need implementation packets and 
 
 Read:
 
+1. `constitution/manifesto.md`
+2. `constitution/terminology.md`
+3. `constitution/invariants.md`
+4. `constitution/sectors.md`
+5. `constitution/sector-interaction-map.md`
+6. `routing/request-types.md`
+7. `routing/sdlc.md`
+
+Then read:
+
 1. `adrs/ADR-0043-continuous-backlog-generation-strategy.md`
 2. `copilot/issue-authoring-rules.md`
 3. `.claude/agents/scope.md`
-4. `constitution/invariants.md`
-5. `initiatives/proposed-adrs.md`
-6. `initiatives/drift-report.md`
-7. `generated/issue-packets/filed-packets.json`
-8. Existing packets under `generated/issue-packets/{proposed,active,completed}/`
-9. ADR/PDR README indexes and all Accepted ADRs/PDRs that appear unimplemented
+4. `initiatives/proposed-adrs.md`
+5. `initiatives/drift-report.md`
+6. `generated/issue-packets/filed-packets.json`
+7. Existing packets under `generated/issue-packets/{proposed,active,completed}/`
+8. ADR/PDR README indexes and all Accepted ADRs/PDRs that appear unimplemented
 
 ## Branch And PR
 

@@ -24,6 +24,16 @@ Objective: audit the next due Live Node, write a durable audit report, and creat
 
 Read:
 
+1. `constitution/manifesto.md`
+2. `constitution/terminology.md`
+3. `constitution/invariants.md`
+4. `constitution/sectors.md`
+5. `constitution/sector-interaction-map.md`
+6. `routing/request-types.md`
+7. `routing/sdlc.md`
+
+Then read:
+
 1. `adrs/ADR-0043-continuous-backlog-generation-strategy.md`
 2. `.claude/agents/node-audit.md`
 3. `.claude/agents/scope.md`

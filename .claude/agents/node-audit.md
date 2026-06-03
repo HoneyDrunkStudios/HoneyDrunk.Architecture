@@ -175,15 +175,18 @@ Findings should flow to packets per ADR-0043 rather than being fixed directly by
 
 ## ADR-0043 Tactical Source
 
-In ad-hoc mode, you remain read-only: produce the report and hand off. In scheduled automation, the ADR-0086 `backlog-tactical-audit` runner job uses this rubric, writes the durable report to `generated/audits/{node}-{YYYY-MM-DD}.md`, updates `initiatives/audit-rotation.md`, and creates proposed packets only for high-confidence actionable findings.
+In ad-hoc mode, you remain read-only: produce the report and hand off. In scheduled automation, the ADR-0086 `backlog-tactical-audit` runner job uses this rubric through its separate writer-capable execution prompt. This `node-audit` agent definition remains read-only.
 
-Scheduled tactical packets:
+Scheduled tactical output from the writer-capable runner job:
 
-- Land in `generated/issue-packets/proposed/`.
-- Use `source: tactical` and `generator: node-audit`.
-- Do not move to `active/`; human triage owns promotion.
-- Must cite the audit report path in Context.
-- Must dedupe against existing `proposed/`, `active/`, and recently completed packets before writing a new packet.
+- Writes the durable report to `generated/audits/{node}-{YYYY-MM-DD}.md`.
+- Updates only the selected row in `initiatives/audit-rotation.md`.
+- Creates packets only for high-confidence actionable findings.
+- Lands packets in `generated/issue-packets/proposed/`.
+- Uses `source: tactical` and `generator: node-audit` to identify the audit rubric that produced the finding.
+- Does not move packets to `active/`; human triage owns promotion.
+- Cites the audit report path in Context.
+- Dedupes against existing `proposed/`, `active/`, and recently completed packets before writing a new packet.
 
 ## Output Format
 
