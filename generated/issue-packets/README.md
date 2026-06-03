@@ -64,4 +64,4 @@ issue-packets/
 
 - [ADR-0008: Work Tracking and Execution Flow](../../adrs/ADR-0008-work-tracking-and-execution-flow.md) — full decision, particularly D6 (lifecycle), D7 (artifact responsibilities), and D10 (file layout)
 - [ADR-0043: Continuous Backlog Generation Strategy](../../adrs/ADR-0043-continuous-backlog-generation-strategy.md) — proposed packet inbox and backlog source automation
-- [constitution/invariants.md](../../constitution/invariants.md) — invariants 23–25, 78, and 79
+- [constitution/invariants.md](../../constitution/invariants.md) — invariants 23–25, 108, and 109

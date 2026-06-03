@@ -10,7 +10,7 @@
 5. Numbering is contiguous and ascending across reservations. New reservations append after the highest existing claim. No gaps reserved "for later."
 6. **When an ADR is rejected or restructured**, the author removes its row from Active Reservations in the same PR that records the rejection / restructure. Downstream packets that reference the released numbers must shift down (or the released block stays empty in `invariants.md`, but contiguity rule 5 still holds for future claims).
 
-**Current ceiling:** highest reservation is the next ADR's starting point. With ADR-0080's 99–101, ADR-0083's 103, ADR-0052's 104–106, and ADR-0084's 107 all consumed (Reservation History), **next free = 108.**
+**Current ceiling:** highest reservation is the next ADR's starting point. With ADR-0080's 99–101, ADR-0083's 103, ADR-0052's 104–106, ADR-0084's 107, and ADR-0043's 108–109 all consumed (Reservation History), **next free = 110.**
 
 ---
 
@@ -72,6 +72,7 @@ When a reservation is consumed (ADR packet 00 merges, invariants land in `invari
 | 103 | ADR-0083 | 2026-05-30 (PR #518) | Sensitive Inventory and External-SaaS Credential Rotation Procedure. Invariant 103 (every credential/identifier/secret/identity-binding the Grid holds has an inventory row; `Rotates: yes` rows additionally carry a `Current Expiration`, a walkthrough, and a standing rotation issue; Vault-governed and non-rotating entries carved out) landed under the new `## Sensitive Inventory Invariants` section in `constitution/invariants.md`. Pre-assigned alongside ADR-0082's 102 by the refine pass. Moved to history in the acceptance PR per the ADR-0082 precedent. |
 | 104–106 | ADR-0052 | 2026-05-30 (PR #517) | Cost Governance, Budget Alerts, and Kill-Switches. Invariants 104/105/106 (every cost-producing op recorded as a `CostEvent`; the LLM-dispatch chokepoint checks the hard cap on the hot path; operator overrides audited) landed under the new `## Cost Governance Invariants` section in `constitution/invariants.md`. Block shifted off the stale packet-hardcoded 90/91/92 (now ADR-0077's) to the next free triple above ADR-0083's 103. Moved to history in the acceptance PR per the ADR-0082 precedent. |
 | 107 | ADR-0084 | 2026-05-31 | Discord as the Canonical Operator-Alerts Surface. Invariant 107 (every operator-actionable Grid event publishes to Discord via `job-discord-notify.yml` for Actions emitters or the ADR-0086 runner's Key Vault path for non-Actions emitters; no Discord channel receives secret values, customer PII, or full stack traces; ad-hoc `curl` to a webhook URL outside the seam is forbidden — ADR-0084 D11) landed under the new `## Operator Alerts Invariants` section in `constitution/invariants.md`. Block claimed as the next free number above ADR-0052's 104–106. Complements (does not replace) invariant 8. Consumed at acceptance per the ADR-0082 precedent. |
+| 108–109 | ADR-0043 | 2026-06-03 (PR #558) | Continuous Backlog Generation Strategy. Invariants 108/109 (agent-generated issue packets land in `proposed/`, never directly in `active/`; issue packets carry `source` and `generator` frontmatter) landed under Work Tracking Invariants. Block shifted off stale 78/79 because those numbers are reserved for ADR-0065 in Active Reservations. |
 
 ---
 

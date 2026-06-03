@@ -111,10 +111,10 @@ Rules that must never be violated across the HoneyDrunk Grid. Canary tests enfor
 27. **All projects in a solution share one version and move together.**
     When a version bump is warranted, every `.csproj` in the solution (excluding test projects) is updated to the same new version in a single commit. Partial bumps — where some projects in a solution are on a different version than others — are forbidden. Releases are triggered by pushing a git tag; agents never push tags. The first packet to land on a solution in an initiative bumps the version; subsequent packets on the same solution append to the CHANGELOG only. The repo-level `CHANGELOG.md` must always get an entry for the new version. Per-package changelogs are updated only for packages with actual changes — do not add alignment-bump noise entries (see invariant 12). See invariant 26 and ADR-0008.
 
-78. **Agent-generated issue packets land in `proposed/`, never directly in `active/`.**
+108. **Agent-generated issue packets land in `proposed/`, never directly in `active/`.**
     Every agent-generated packet authored after ADR-0043 acceptance lands in `generated/issue-packets/proposed/`, not `generated/issue-packets/active/`. Agents do not self-promote; a human is the only authority for the `proposed/` -> `active/` transition. `active/` holds only human-elected packets that are ready for filing through the ADR-0008 packet-to-issue pipeline. This invariant is forward-only and non-retroactive: existing packets are not moved or rewritten solely to satisfy it. See ADR-0043 D3.
 
-79. **Issue packets carry `source` and `generator` frontmatter.**
+109. **Issue packets carry `source` and `generator` frontmatter.**
     Every issue packet authored after ADR-0043 acceptance carries `source` and `generator` frontmatter fields before it is eligible for filing. For ADR-0043 agent-generated backlog packets, `source` is one of `strategic`, `tactical`, `opportunistic`, or `reactive`; for human-authored packets, `source` may be `human`. `generator` is the agent name that produced it or `human` for human-authored packets. This invariant is forward-only and preserves invariant 24: already-filed packets remain immutable, and post-filing metadata corrections require a new packet rather than editing the filed packet. See ADR-0043 D2.
 
 ## AI Invariants
