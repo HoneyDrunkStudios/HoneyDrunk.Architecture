@@ -506,6 +506,9 @@ function Invoke-RunnerNotifySelfTest {
   - Recommendation: promote the proposed packet after review.
   - Why: hive-sync is repeatedly surfacing the same routing drift.
   - Human action: move the packet to active when ready.
+
+## Notes For Weekly Briefing
+- Weekly briefing should call out the routing-drift packet.
 "@ -Encoding UTF8
 
         $backlogSpec = @{
@@ -522,6 +525,9 @@ function Invoke-RunnerNotifySelfTest {
         }
         if (-not ($backlogSummary -contains "- Recommendation: promote the proposed packet after review.")) {
             throw "backlog summaries should include actionable recommendation detail."
+        }
+        if (-not ($backlogSummary -contains "- Weekly briefing should call out the routing-drift packet.")) {
+            throw "backlog summaries should collect recommendation detail across multiple sections."
         }
     }
     finally {
@@ -672,7 +678,7 @@ function Get-BacklogRecommendationLines {
                 continue
             }
 
-            if ($clean -match '^[-*]\s+' -or $clean -match '^\d+\.\s+' -or $clean -match '^(Recommendation|Why|Human action|Suggested human action|Urgency|Source|Tradeoff|Opportunity cost|Kill criteria|Packet):\s+') {
+            if ($clean -match '^[-*]\s+' -or $clean -match '^\d+\.\s+' -or $clean -match '^(Recommendation|Why|Why now / Why not now|Human action|Suggested human action|Urgency|Source|Tradeoff|Opportunity cost|Kill criteria|Packet|Proposed packet path|Dedupe/Skipped reason):\s+') {
                 $clean = ($clean -replace "\s+", " ").Trim()
                 if (Test-RunnerDiscordPayloadSafe -Value $clean) {
                     $lines.Add((Limit-RunnerDiscordText -Value $clean -MaxLength 280))
@@ -684,9 +690,6 @@ function Get-BacklogRecommendationLines {
             }
         }
 
-        if ($lines.Count -gt 0) {
-            return $lines.ToArray()
-        }
     }
 
     return $lines.ToArray()

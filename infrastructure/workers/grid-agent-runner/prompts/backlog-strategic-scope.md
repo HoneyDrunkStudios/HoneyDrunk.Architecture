@@ -61,7 +61,7 @@ Create or reuse branch `chore/backlog-strategic-scope-{YYYY-MM-DD}`. Open or upd
 - `Authorship: agent-codex`
 - `Out-of-band reason: ADR-0043 backlog-strategic-scope scheduled runner job`
 - Summary of decisions scanned, packets created, and skipped dedupes
-- Recommendation breakdown for each packet created or decision needing human follow-up: what is recommended, why, and the suggested human action
+- Recommendation breakdown for each packet created or decision needing human follow-up: Recommendation, Why, Human action, and Urgency
 
 If no changes are needed, exit cleanly without a PR.
 

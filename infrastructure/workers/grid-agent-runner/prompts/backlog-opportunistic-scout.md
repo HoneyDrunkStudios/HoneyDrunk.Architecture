@@ -79,8 +79,16 @@ Create or reuse branch `chore/backlog-opportunistic-scout-{YYYY-MM-DD}`. Open or
 1. Run Scout mode from `product-strategist`.
 2. Write `generated/scout-reports/{YYYY-MM-DD}.md`.
    - Include a top-level `## Recommendation Breakdown` section near the start of the report.
-   - For each opportunity considered, include: recommendation, why, why now or why not now, opportunity cost, kill criteria, proposed packet or PDR-handoff path if created, and suggested human action.
-   - If the recommendation is "build nothing" or "stay the course", explain the top evidence and the condition that would change the recommendation.
+   - For each opportunity considered, use this labeled format:
+     - **{opportunity title}**
+       - Recommendation: {build/defer/drop/stay the course or concrete action}
+       - Why: {core product or market signal}
+       - Why now / Why not now: {timing rationale}
+       - Opportunity cost: {what gets deferred or protected}
+       - Kill criteria: {condition that would abandon or reverse the recommendation}
+       - Packet: {path if created, PDR handoff path, or skipped reason}
+       - Human action: {what the operator should do next}
+   - If the recommendation is "build nothing" or "stay the course", still use the labeled format and state the top evidence plus the condition that would change the recommendation.
 3. If the recommendation is "build nothing" or "stay the course", create no packets.
 4. If an opportunity needs product-level decision-making, create a proposed Architecture packet for `pdr-composer` to author or amend the PDR. Do not write the PDR yourself.
 5. If an opportunity is a small in-scope improvement, create a proposed packet directly.
