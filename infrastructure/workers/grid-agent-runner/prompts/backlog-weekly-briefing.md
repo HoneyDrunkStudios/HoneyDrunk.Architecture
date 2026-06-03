@@ -70,6 +70,7 @@ Create or reuse branch `chore/backlog-weekly-briefing-{YYYY-MM-DD}`. Open or upd
 - `Authorship: agent-codex`
 - `Out-of-band reason: ADR-0043 backlog-weekly-briefing scheduled runner job`
 - Counts for new proposed, stale proposed, stale active, urgent, and recommended top three
+- Recommendation breakdown for the recommended top three: what to do, why, source packet/report, urgency, and tradeoff
 
 ## Work
 
@@ -84,6 +85,7 @@ Write `generated/briefings/{YYYY-MM-DD}.md` with:
 - Stale active packets: {N}
 - Stale proposed packets: {N}
 - Urgent reactive items: {N}
+- Recommendation digest: {one sentence summarizing the most important recommendation}
 
 ## New Proposed Packets
 ### Strategic
@@ -108,7 +110,11 @@ Write `generated/briefings/{YYYY-MM-DD}.md` with:
 ...
 
 ## Recommended Top 3
-1. ...
+1. **{recommended action}**
+   - Why: {concrete signal from packet/report/issue state}
+   - Source: {packet/report/issue path or URL}
+   - Urgency: {urgent/high/normal/watch}
+   - Tradeoff: {what gets deferred or protected by doing this}
 2. ...
 3. ...
 
