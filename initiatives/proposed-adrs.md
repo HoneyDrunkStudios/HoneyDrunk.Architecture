@@ -1,6 +1,6 @@
 # Proposed ADR/PDR Queue
 
-**Last Updated:** 2026-06-01
+**Last Updated:** 2026-06-03
 
 ## Awaiting Implementing Packets
 
@@ -23,7 +23,6 @@
 - `ADR-0022` — ADR-0022: Stand Up the HoneyDrunk.Memory Node — Agent-Memory Substrate for the AI Sector — 0/4 accepting packet issues closed; open: HoneyDrunk.Architecture#134, HoneyDrunk.Architecture#135, HoneyDrunk.Architecture#136, HoneyDrunk.Memory#2
 - `ADR-0024` — ADR-0024: Stand Up the HoneyDrunk.Flow Node — Workflow-Orchestration Substrate for the AI Sector — 0/4 accepting packet issues closed; open: HoneyDrunk.Architecture#141, HoneyDrunk.Architecture#142, HoneyDrunk.Architecture#143, HoneyDrunk.Flow#2
 - `ADR-0028` — ADR-0028: Event-Driven Architecture and Messaging — Use-Case-First Backing Selection — 0/4 accepting packet issues closed; open: HoneyDrunk.Architecture#117, HoneyDrunk.Architecture#118, HoneyDrunk.Architecture#119, HoneyDrunk.Communications#17
-- `ADR-0033` — ADR-0033: Environment-Gated Deploy-Trigger Model for Deployable Nodes — 0/3 accepting packet issues closed; open: HoneyDrunk.Notify#19, HoneyDrunk.Notify#20, HoneyDrunk.Pulse#18
 - `ADR-0034` — ADR-0034: Public Package Distribution and NuGet Policy — 0/6 accepting packet issues closed; open: HoneyDrunk.Architecture#208, HoneyDrunk.Architecture#209, HoneyDrunk.Standards#40, HoneyDrunk.Actions#94, HoneyDrunk.Vault#34, HoneyDrunk.Architecture#210
 - `ADR-0035` — ADR-0035: Abstractions Versioning and Deprecation Policy — 0/5 accepting packet issues closed; open: HoneyDrunk.Architecture#211, HoneyDrunk.Standards#42, HoneyDrunk.Architecture#212, HoneyDrunk.Actions#95, HoneyDrunk.Architecture#213
 - `ADR-0036` — ADR-0036: Disaster Recovery and Backup Policy — 0/11 accepting packet issues closed; open: HoneyDrunk.Architecture#215, HoneyDrunk.Architecture#216, HoneyDrunk.Architecture#217, HoneyDrunk.Architecture#218, HoneyDrunk.Vault#35, HoneyDrunk.Vault#36, HoneyDrunk.Architecture#219, HoneyDrunk.Audit#3, HoneyDrunk.Audit#4, HoneyDrunk.Architecture#220, HoneyDrunk.Architecture#221
@@ -80,4 +79,4 @@ _None._
 
 ## Flipped This Run
 
-_None._
+- `ADR-0033` — ADR-0033: Environment-Gated Deploy-Trigger Model for Deployable Nodes (adrs/ADR-0033-environment-gated-deploy-trigger-model.md)

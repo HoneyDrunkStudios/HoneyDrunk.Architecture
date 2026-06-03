@@ -1,6 +1,6 @@
 # ADR-0033: Environment-Gated Deploy-Trigger Model for Deployable Nodes
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-05-18
 **Deciders:** HoneyDrunk Studios
 **Sector:** Ops
