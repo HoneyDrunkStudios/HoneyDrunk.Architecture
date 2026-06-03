@@ -1,6 +1,6 @@
 # Hive Sync Drift Report
 
-**Last Updated:** 2026-06-01
+**Last Updated:** 2026-06-03
 
 Fully rewritten by `hive-sync`; First Surfaced dates are sticky for persistent findings.
 
@@ -84,3 +84,15 @@ Fully rewritten by `hive-sync`; First Surfaced dates are sticky for persistent f
   - **Item:** honeydrunk-pulse: mapped novel status blocked
   - **First Surfaced:** 2026-05-25
   - **Detail:** honeydrunk-pulse: mapped novel status blocked
+- **Category 14: current-focus drift**
+  - **Item:** ADR-0015 focus row still blocked by ADR-0033
+  - **First Surfaced:** 2026-06-03
+  - **Detail:** The ADR-0033 trigger-model blocker is cleared; `current-focus.md` is netrunner-owned.
+- **Category 14: current-focus drift**
+  - **Item:** ADR-0033 focus row still marked Open
+  - **First Surfaced:** 2026-06-03
+  - **Detail:** ADR-0033 auto-flipped to Accepted and all three accepting packet issues are closed; `current-focus.md` is netrunner-owned.
+- **Category 15: alert-routing-table drift**
+  - **Item:** live-only: [ADR-0085](ADR-0085) docs-sync run report | `#hive-activity` | Info | `docs-sync: {summary-counts} — {report-or-pr-link}`
+  - **First Surfaced:** 2026-06-03
+  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
