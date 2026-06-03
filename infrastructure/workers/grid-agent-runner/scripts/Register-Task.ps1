@@ -1,6 +1,6 @@
 param(
     [string]$ConfigPath = (Join-Path (Split-Path -Parent $PSScriptRoot) "config/host.psd1"),
-    [string[]]$JobId = @("grid-review", "post-merge-audit", "hive-sync", "docs-sync", "lore-source", "lore-ingest", "lore-signal-review"),
+    [string[]]$JobId = @("grid-review", "post-merge-audit", "hive-sync", "docs-sync", "backlog-strategic-scope", "backlog-tactical-audit", "backlog-opportunistic-scout", "backlog-weekly-briefing", "lore-source", "lore-ingest", "lore-signal-review"),
     [switch]$VisibleWindow,
     [switch]$WhatIf
 )

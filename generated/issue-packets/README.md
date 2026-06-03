@@ -6,6 +6,8 @@ Generated artifacts that describe work to be executed across HoneyDrunk repos. G
 
 ```
 issue-packets/
+├── proposed/
+│   └── {YYYY-MM-DD}-{target-repo-short}-{description}.md
 ├── active/
 │   ├── {initiative-slug}/
 │   │   ├── dispatch-plan.md
@@ -31,11 +33,13 @@ issue-packets/
 
 ## Lifecycle
 
-1. **Scope agent** produces packets + dispatch plan + handoffs into `active/{initiative-slug}/`
-2. **Packet-filing script** files each packet as a GitHub Issue in its target repo
-3. **Org Project board** auto-adds the issues via the `repo:HoneyDrunkStudios/*` filter
-4. **Execution** — cloud or local agent picks up items when `Status` → `Ready`, opens PRs
-5. **Completion** — when a filed issue closes, `hive-sync` moves that packet from `active/` to `completed/` and updates `filed-packets.json` in the same PR
+1. **Backlog generation** may produce agent-authored packet candidates into `proposed/` per ADR-0043.
+2. **Human triage** promotes selected packets from `proposed/` to `active/`.
+3. **Scope agent** produces already-approved execution packets + dispatch plan + handoffs into `active/{initiative-slug}/` when the operator explicitly scopes active work.
+4. **Packet-filing script** files each active packet as a GitHub Issue in its target repo.
+5. **Org Project board** auto-adds the issues via the `repo:HoneyDrunkStudios/*` filter.
+6. **Execution** — cloud or local agent picks up items when `Status` → `Ready`, opens PRs.
+7. **Completion** — when a filed issue closes, `hive-sync` moves that packet from `active/` to `completed/` and updates `filed-packets.json` in the same PR.
 
 **Packet lifecycle is issue-driven.** Closed packet files live under `completed/`; open packet files remain under `active/`. Dispatch plans move once the initiative has no active packet files left.
 
@@ -51,6 +55,7 @@ issue-packets/
 
 ## Folder rules
 
+- `proposed/` — generated or draft packets awaiting human selection. Agents never self-promote these to `active/`.
 - `active/` — every initiative currently in flight, plus `active/standalone/` for one-offs
 - `completed/` — closed issue packets and completed initiative dispatch plans, moved by `hive-sync` only
 - `ls active/` answers "what rollouts are in flight?" at the filesystem level
@@ -58,4 +63,5 @@ issue-packets/
 ## References
 
 - [ADR-0008: Work Tracking and Execution Flow](../../adrs/ADR-0008-work-tracking-and-execution-flow.md) — full decision, particularly D6 (lifecycle), D7 (artifact responsibilities), and D10 (file layout)
-- [constitution/invariants.md](../../constitution/invariants.md) — invariants 23–25
+- [ADR-0043: Continuous Backlog Generation Strategy](../../adrs/ADR-0043-continuous-backlog-generation-strategy.md) — proposed packet inbox and backlog source automation
+- [constitution/invariants.md](../../constitution/invariants.md) — invariants 23–25, 108, and 109

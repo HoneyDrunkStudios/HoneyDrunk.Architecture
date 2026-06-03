@@ -160,6 +160,13 @@ This table pins the v1 routing for every source above. It lives in this ADR as t
 | [ADR-0044](./ADR-0044-grid-aware-cloud-code-review-and-ai-authored-pr-discipline.md) review verdict (Approve / Request Changes / Comment) | `#agent-activity` | Info | `🐝 review on {repo}#{pr}: {verdict} — {pr-link}` |
 | [ADR-0046](./ADR-0046-specialist-review-agents.md) specialist invocation | `#agent-activity` | Info | `🎯 {specialist} on {repo}#{pr}: {verdict} — {pr-link}` |
 | [ADR-0014](./ADR-0014-hive-architecture-reconciliation-agent.md) hive-sync drift finding | `#hive-activity` | Medium | `🔄 hive-sync: {finding-summary} — {issue-link}` |
+| [ADR-0085](./ADR-0085-grid-wide-documentation-currency-agent.md) docs-sync run report | `#hive-activity` | Info | `docs-sync: {summary-counts} — {report-or-pr-link}` |
+| [ADR-0043](./ADR-0043-continuous-backlog-generation-strategy.md) strategic backlog source run | `#hive-activity` | Info | `backlog-strategic: {packets-created} proposed packets — {report-or-pr-link}` |
+| [ADR-0043](./ADR-0043-continuous-backlog-generation-strategy.md) tactical node-audit backlog source run | `#hive-activity` | Info | `backlog-tactical: {node} audit, {findings-count} findings, {packets-created} packets — {report-or-pr-link}` |
+| [ADR-0043](./ADR-0043-continuous-backlog-generation-strategy.md) opportunistic Scout backlog source run | `#hive-activity` | Info | `backlog-scout: {recommendation}, {packets-created} packets — {report-or-pr-link}` |
+| [ADR-0043](./ADR-0043-continuous-backlog-generation-strategy.md) weekly backlog briefing generated | `#hive-activity` | Info | `backlog-briefing: {new-proposed-count} proposed, top-3 ready — {briefing-or-pr-link}` |
+| [ADR-0043](./ADR-0043-continuous-backlog-generation-strategy.md) urgent reactive security packet | `#security-alerts` | High | `backlog-urgent-security: {summary} — {urgent-briefing-or-pr-link}` |
+| [ADR-0043](./ADR-0043-continuous-backlog-generation-strategy.md) urgent reactive operational packet | `#ops-alerts` | High | `backlog-urgent-ops: {summary} — {urgent-briefing-or-pr-link}` |
 | Packet lifecycle transition (`active/` → `completed/`) | `#hive-activity` | Info | `✅ {packet-slug} completed — {issue-link}` |
 | PR opened | `#hive-activity` | Info | `🆕 {repo}#{pr}: {title} — {pr-link}` |
 | PR merged | `#hive-activity` | Info | `✔️ {repo}#{pr} merged — {pr-link}` |

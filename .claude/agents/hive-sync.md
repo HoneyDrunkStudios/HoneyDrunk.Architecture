@@ -4,7 +4,7 @@ description: >-
   Reconcile the Architecture repo with The Hive — initiative tracking files,
   packet lifecycle (active/completed), non-initiative board items, Proposed
   ADR/PDR acceptance, README indexes, mutable catalog fields (version/status
-  derived from grid-health.json), and drift reports. Runs through OpenClaw
+  derived from grid-health.json), and drift reports. Runs through the ADR-0086 Grid Agent Runner
   on schedule or manually and opens a PR with all changes.
 tools:
   - Read
@@ -61,7 +61,9 @@ ls adrs/ADR-*.md > /tmp/adr-files.txt
 ls pdrs/PDR-*.md > /tmp/pdr-files.txt
 ```
 
-For each ADR/PDR, extract ID, title, `**Status:**`, `**Date:**`, and `**Sector:**`. Also build the implementing-packet index by scanning packet YAML frontmatter under `generated/issue-packets/{active,completed}/**/*.md` for `accepts:` fields. Write the combined data to `/tmp/decision-frontmatter.json`.
+For each ADR/PDR, extract ID, title, `**Status:**`, `**Date:**`, and `**Sector:**`. Also build two packet indexes: the acceptance-gating index by scanning packet YAML frontmatter under `generated/issue-packets/{active,completed}/**/*.md` for `accepts:` fields, and the implementation-coverage index by scanning `generated/issue-packets/{proposed,active,completed}/**/*.md` for `adrs:` references. Write the combined data to `/tmp/decision-frontmatter.json`.
+
+**1h. Load ADR-0043 backlog-generation surfaces.** Read `generated/issue-packets/proposed/`, `generated/briefings/urgent.md`, `generated/audits/`, `generated/scout-reports/`, and `initiatives/audit-rotation.md` when present. Use these only for dedupe and drift context; do not promote proposed packets.
 
 ### Step 2: Create or Reuse a Working Branch
 
@@ -131,6 +133,8 @@ Annotated statuses such as `Accepted (Phase 1)` or `Superseded by ...` are autho
 **9d. Render `initiatives/proposed-adrs.md`.** Fully rewrite Awaiting, In Progress, Pending Flip, Anomalies, and Flipped This Run sections. Empty sections render `_None._`.
 
 **9e. Reconcile `adrs/README.md` and `pdrs/README.md`.** After flips, update only Status and Date columns to match each ADR/PDR frontmatter. Do not change Title, Sector, Impact, link text, or link targets. Missing or orphaned README rows are anomalies; never auto-add or auto-delete rows.
+
+**9f. Surface ADR-0043 Strategic source triggers.** For each ADR/PDR newly flipped to Accepted this run, record a Strategic backlog trigger in the PR summary and `initiatives/drift-report.md` unless an implementation packet already references the decision through `adrs:`. For already Accepted decisions, use the `adrs:` implementation-coverage index, not `accepts:`, to detect missing packet coverage. `accepts:` only gates Proposed -> Accepted flips and must not be treated as evidence of implementation coverage for an already-Accepted decision. The separate ADR-0086 `backlog-strategic-scope` job owns packet creation. Do not create Strategic packets directly from hive-sync unless that job is unavailable and the operator explicitly asks for manual fallback.
 
 ### Step 10: Move Closed Packets to completed/
 
@@ -234,6 +238,7 @@ Initial categories:
 13. Nodes in `grid-health.json` whose `version` mismatches `compatibility.json` / `modules.json` / `services.json` *after* Step-12 reconciliation (would only happen if reconciliation was skipped for a specific node — surfaces a reconciliation bug).
 14. Drift between `initiatives/current-focus.md` (read-only here) and ground truth surfaced by other steps — e.g., a row that references a closed packet, an ADR shown as Proposed that hive-sync just flipped to Accepted, or an archived initiative still appearing in the top-10. Netrunner owns the file; this category just lets `netrunner` know what to fix on its next curator pass.
 15. Alert-routing-table drift between `constitution/alert-routing.md` (the operational copy) and ADR-0084 D6 (the committed-shape snapshot). `constitution/alert-routing.md` is the live working surface edited by onboarding packets per ADR-0084 D10; ADR-0084 D6 is the committed-shape snapshot. Parse the markdown table rows from both sources — the four-column `Event source | Destination channel | Severity | Format hint` table in `constitution/alert-routing.md` and the same table in the `### D6 — Alert-routing table` section of `adrs/ADR-0084-discord-operator-alerts-surface.md` — and report any row that exists in one and not the other, or any row whose columns differ. This is the same drift-check treatment ADR-0054 D4's routing table receives. **TODO (post-packet-05):** once `job-discord-notify.yml` lands, emit each finding to `#hive-activity` via that workflow; until then, log the finding to this drift report only (the existing hive-sync output surface) — do not block on the Discord post.
+16. ADR-0043 backlog-source drift: Accepted ADR/PDR decisions with no proposed, active, or completed implementation packets; medium+ drift findings that have no proposed or active packet; urgent reactive signals missing from `generated/briefings/urgent.md`; proposed packets missing `source` or `generator` frontmatter. These are findings for the backlog-generation runner jobs to consume, not direct hive-sync mutations.
 
 Preserve `First Surfaced` dates from the previous drift report by category and item identity. This sticky date is the single exception to the fully-rewritten tracking-file rule.
 
@@ -256,6 +261,8 @@ Commit changes and open/update a PR. If Step 9 flips one or more ADRs/PDRs, appe
 - Never delete tracking checkboxes — only check them off or add annotations.
 - Never add new entries to `filed-packets.json`; `file-issues` owns entry creation. `hive-sync` may update an existing entry's path key when moving its packet from `active/` to `completed/`, and may remove completed entries only under Step 11's closed-and-older-than-30-days pruning rule.
 - Never create GitHub issues — that's `scope` and `file-issues`.
+- Never promote packets from `proposed/` to `active/`; human triage owns that ADR-0043 transition.
+- Never create Strategic, Tactical, or Opportunistic packets directly in normal scheduled sync. Surface triggers for the ADR-0086 backlog-generation jobs unless the operator explicitly invokes a manual fallback.
 - Keep initiative-tracking edits within `initiatives/`. Packet moves between `generated/issue-packets/active/` and `generated/issue-packets/completed/` are explicitly authorized.
 - Never modify packet file contents under `generated/issue-packets/`; moving a packet is a path change only.
 - `hive-sync` is the only agent that moves files between `active/` and `completed/`.

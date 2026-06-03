@@ -254,6 +254,10 @@ function Get-RunnerJobSummary {
     switch ($JobSpec.JobId) {
         "hive-sync" { return Get-HiveSyncSummary -Content $content }
         "docs-sync" { return Get-DocsSyncSummary -Content $content }
+        "backlog-strategic-scope" { return Get-BacklogGenerationSummary -Content $content -Fallback "Strategic backlog source report generated." }
+        "backlog-tactical-audit" { return Get-BacklogGenerationSummary -Content $content -Fallback "Tactical audit report generated." }
+        "backlog-opportunistic-scout" { return Get-BacklogGenerationSummary -Content $content -Fallback "Opportunistic Scout report generated." }
+        "backlog-weekly-briefing" { return Get-BacklogGenerationSummary -Content $content -Fallback "Weekly backlog briefing generated." }
         "lore-source" { return Get-LoreSourceSummary -Content $content }
         "lore-ingest" { return Get-LoreIngestSummary -Content $content }
         "lore-signal-review" { return Get-LoreSignalReviewSummary -Content $content }
@@ -509,7 +513,7 @@ function Get-DocsSyncSummary {
     param([string]$Content)
 
     $lines = New-Object System.Collections.Generic.List[string]
-    $summary = [regex]::Match($Content, "(?s)## Summary\s+(.+?)(?:\n## |\z)")
+    $summary = [regex]::Match($Content, "(?s)## Summary\s+(.+?)(?:\r?\n## |\z)")
     if ($summary.Success) {
         foreach ($line in @($summary.Groups[1].Value -split "`r?`n" | Where-Object { $_ -match "^- " } | Select-Object -First 6)) {
             $clean = $line.Trim()
@@ -541,6 +545,49 @@ function Get-DocsSyncSummary {
 
     if ($lines.Count -eq 0) {
         $lines.Add("Docs sync report generated; no summary rows found.")
+    }
+
+    return $lines.ToArray()
+}
+
+function Get-BacklogGenerationSummary {
+    param(
+        [string]$Content,
+        [string]$Fallback
+    )
+
+    $lines = New-Object System.Collections.Generic.List[string]
+    $summary = [regex]::Match($Content, "(?s)## Summary\s+(.+?)(?:\n## |\z)")
+    if ($summary.Success) {
+        foreach ($line in @($summary.Groups[1].Value -split "`r?`n" | Where-Object { $_ -match "^- " } | Select-Object -First 8)) {
+            $clean = $line.Trim()
+            if (Test-RunnerDiscordPayloadSafe -Value $clean) {
+                $lines.Add($clean)
+            }
+        }
+    }
+
+    if ($lines.Count -eq 0) {
+        $verdict = [regex]::Match($Content, "(?m)^\*\*Verdict:\*\*\s*(.+)$")
+        if ($verdict.Success) {
+            $cleanVerdict = "Verdict: $($verdict.Groups[1].Value.Trim())"
+            if (Test-RunnerDiscordPayloadSafe -Value $cleanVerdict) {
+                $lines.Add($cleanVerdict)
+            }
+        }
+    }
+
+    if ($lines.Count -eq 0) {
+        foreach ($heading in @($Content -split "`r?`n" | Where-Object { $_ -match "^## (Recommended Top 3|Recommendation|Findings Summary|Notes For Weekly Briefing)" } | Select-Object -First 2)) {
+            $cleanHeading = ($heading -replace "^##\s*", "")
+            if (Test-RunnerDiscordPayloadSafe -Value $cleanHeading) {
+                $lines.Add($cleanHeading)
+            }
+        }
+    }
+
+    if ($lines.Count -eq 0) {
+        $lines.Add($Fallback)
     }
 
     return $lines.ToArray()

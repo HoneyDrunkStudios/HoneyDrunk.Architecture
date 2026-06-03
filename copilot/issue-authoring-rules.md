@@ -14,6 +14,22 @@ Every issue must include:
 6. **Labels** — At minimum: type (`feature`, `bug`, `chore`), tier (`tier-1`, `tier-2`, `tier-3`), sector.
 7. **Dependencies** — Other issues or PRs that must complete first.
 
+## Packet Lifecycle and Frontmatter
+
+Issue packets authored after ADR-0043 acceptance use the three-state lifecycle:
+
+- `generated/issue-packets/proposed/` — agent-generated or draft packets awaiting human triage. Not filed.
+- `generated/issue-packets/active/` — human-promoted packets ready for `file-issues` and GitHub issue creation.
+- `generated/issue-packets/completed/` — closed packets moved by `hive-sync`.
+
+Agents write new backlog-generation packets to `proposed/` only. A human moves a packet to `active/` when it is selected for execution. `hive-sync` is the only agent that moves packets from `active/` to `completed/`.
+
+Every new packet must carry:
+
+- `source:` one of `strategic`, `tactical`, `opportunistic`, `reactive`, or `human`.
+- `generator:` the agent or person that produced the packet, for example `scope`, `node-audit`, `product-strategist`, `hive-sync`, `netrunner`, `codex`, or `human`.
+- `priority:` only when useful for triage. Use `urgent` for high+ CVE, production incident, or canary-failure-past-grace reactive packets.
+
 ## Blocking Relationships
 
 The `dependencies:` array in packet frontmatter is the **canonical, machine-readable** source of blocking relationships. The body's `## Dependencies` section is human narrative explaining *why* — it is not parsed by the filing pipeline.
@@ -56,6 +72,7 @@ Before finalizing an issue packet:
 - [ ] Blocking relationships wired via `addBlockedBy` for every dependency listed
 - [ ] Labels include type, tier, and sector
 - [ ] Frontmatter includes all board fields: `wave`, `initiative`, `node`, `adrs`, `tier`
+- [ ] Frontmatter includes `source` and `generator`; agent-generated packets land in `proposed/` until a human promotes them
 - [ ] Acceptance criteria include a repo-level CHANGELOG.md update for any shipped change, using a new version entry when this packet is the bumping packet and appending to the existing solution entry otherwise
 - [ ] Acceptance criteria include per-package CHANGELOG.md update only for packages with actual changes (no noise entries for alignment bumps)
 - [ ] Acceptance criteria include README.md update if public API surface or installation changes

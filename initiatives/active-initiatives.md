@@ -5,6 +5,26 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 ## In Progress
 
 
+### ADR-0043 Continuous Backlog Generation
+**Status:** In Progress — ADR accepted; full ADR-0086 automation substrate landing
+**Scope:** Architecture governance, generated packet lifecycle, agent prompts, ADR-0086 runner jobs, Discord visibility
+**Initiative:** `adr-0043-continuous-backlog-generation`
+**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
+**Description:** Close the upstream work-sourcing gap by running Strategic, Tactical, Opportunistic, and Reactive backlog generation through the ADR-0086 Grid Agent Runner. Agent-generated work lands in `generated/issue-packets/proposed/`; humans promote selected packets to `active/`; weekly netrunner briefings provide the triage surface; Discord provides runner visibility and urgent reactive attention.
+
+**Tracking (Automation substrate):**
+- [x] Accept ADR-0043 and bind D7 to the ADR-0086 runner instead of deferring execution.
+- [x] Add `proposed/`, audit, scout, briefing, and urgent generated surfaces.
+- [x] Add backlog-generation invariants and packet `source` / `generator` authoring rules.
+- [x] Add tactical audit rotation.
+- [x] Amend `scope`, `node-audit`, `product-strategist`, `netrunner`, and `hive-sync` prompts for ADR-0043 automation.
+- [x] Add ADR-0086 job specs and Codex prompts for `backlog-strategic-scope`, `backlog-tactical-audit`, `backlog-opportunistic-scout`, and `backlog-weekly-briefing`.
+- [x] Add Discord alert-routing rows and runner notification summaries for backlog-generation jobs.
+- [ ] Register scheduled tasks on the operator runner host after merge.
+- [ ] First live Strategic source run creates proposed packets for currently Accepted decisions with missing implementation coverage.
+
+**Exit criteria:** ADR-0043 Accepted; generated surfaces live; source/generator packet contract enforced in docs; all four runner jobs dry-run successfully; runner defaults include the jobs; Discord summaries route to `#hive-activity`; first live Strategic run produces or explicitly skips proposed packets with dedupe evidence.
+
 ### ADR-0052 Cost Governance, Budget Alerts, and Kill-Switches
 **Status:** In Progress — Phase-1 governance substrate landed; contract + implementation packets gated
 **Scope:** Architecture (governance), Kernel (contracts), AI (ledger impl + dispatcher kill-switch); Operator/Communications/Notify/Observe surfaces deferred to ADR-0018 standup

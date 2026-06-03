@@ -111,6 +111,12 @@ Rules that must never be violated across the HoneyDrunk Grid. Canary tests enfor
 27. **All projects in a solution share one version and move together.**
     When a version bump is warranted, every `.csproj` in the solution (excluding test projects) is updated to the same new version in a single commit. Partial bumps — where some projects in a solution are on a different version than others — are forbidden. Releases are triggered by pushing a git tag; agents never push tags. The first packet to land on a solution in an initiative bumps the version; subsequent packets on the same solution append to the CHANGELOG only. The repo-level `CHANGELOG.md` must always get an entry for the new version. Per-package changelogs are updated only for packages with actual changes — do not add alignment-bump noise entries (see invariant 12). See invariant 26 and ADR-0008.
 
+108. **Agent-generated issue packets land in `proposed/`, never directly in `active/`.**
+    Every agent-generated packet authored after ADR-0043 acceptance lands in `generated/issue-packets/proposed/`, not `generated/issue-packets/active/`. Agents do not self-promote; a human is the only authority for the `proposed/` -> `active/` transition. `active/` holds only human-elected packets that are ready for filing through the ADR-0008 packet-to-issue pipeline. This invariant is forward-only and non-retroactive: existing packets are not moved or rewritten solely to satisfy it. See ADR-0043 D3.
+
+109. **Issue packets carry `source` and `generator` frontmatter.**
+    Every issue packet authored after ADR-0043 acceptance carries `source` and `generator` frontmatter fields before it is eligible for filing. For ADR-0043 agent-generated backlog packets, `source` is one of `strategic`, `tactical`, `opportunistic`, or `reactive`; for human-authored packets, `source` may be `human`. `generator` is the agent name that produced it or `human` for human-authored packets. This invariant is forward-only and preserves invariant 24: already-filed packets remain immutable, and post-filing metadata corrections require a new packet rather than editing the filed packet. See ADR-0043 D2.
+
 ## AI Invariants
 
 28. **Application code must never hardcode a model name or provider.**
@@ -175,7 +181,7 @@ Rules that must never be violated across the HoneyDrunk Grid. Canary tests enfor
 
 37. **Completed issue packets are moved to `completed/`.** When a filed issue is closed on GitHub, the `hive-sync` agent moves its source packet from `generated/issue-packets/active/` to `generated/issue-packets/completed/` and updates the path key in `generated/issue-packets/filed-packets.json`. No other agent moves packets between lifecycle directories. The `hive-sync` agent may update existing entries' paths in `filed-packets.json` but may not add or remove entries (that remains the `file-issues` agent's exclusive concern). See ADR-0014 D2, D4.
 
-38. **The Architecture repo tracks all Hive board items.** Every issue on The Hive (org Project #4) is represented in either an initiative tracking file (for packet-originated work, including `active-initiatives.md`, `archived-initiatives.md`, etc.) or `initiatives/board-items.md` (for non-initiative work — nightly-security issues, grid-health-aggregator issues, and any other issue mirrored onto The Hive without a `filed-packets.json` entry). The `hive-sync` agent is responsible for maintaining this correspondence and runs through OpenClaw scheduled/manual execution. See ADR-0014 D1, D3.
+38. **The Architecture repo tracks all Hive board items.** Every issue on The Hive (org Project #4) is represented in either an initiative tracking file (for packet-originated work, including `active-initiatives.md`, `archived-initiatives.md`, etc.) or `initiatives/board-items.md` (for non-initiative work — nightly-security issues, grid-health-aggregator issues, and any other issue mirrored onto The Hive without a `filed-packets.json` entry). The `hive-sync` agent is responsible for maintaining this correspondence and runs through ADR-0086 Grid Agent Runner scheduled/manual execution. See ADR-0014 D1, D3.
 
 ## Multi-Tenant Boundary Invariants
 
