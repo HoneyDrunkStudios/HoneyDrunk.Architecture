@@ -529,6 +529,62 @@ function Invoke-RunnerNotifySelfTest {
         if (-not ($backlogSummary -contains "- Weekly briefing should call out the routing-drift packet.")) {
             throw "backlog summaries should collect recommendation detail across multiple sections."
         }
+
+        $scoutReportDir = Join-Path $tempRoot "scout-reports"
+        New-Item -ItemType Directory -Path $scoutReportDir -Force | Out-Null
+        $scoutReport = Join-Path $scoutReportDir "2026-06-04.md"
+        Set-Content -LiteralPath $scoutReport -Value @"
+# Scout - 2026-06-04
+
+## Recommendation
+
+> Stay the course on the current ranked work. No opportunistic opportunity clears the bar over the existing priorities, so this run creates no proposed packets.
+
+The strongest market signal reinforces an existing PDR-backed initiative instead of a new work item.
+
+## Packet Decision
+
+No proposed packets were created.
+
+Reasons:
+
+Step 1:
+
+- Reason `#2`:
+
+- The top new-looking opportunity is already captured by an accepted planning artifact.
+- ADR-0043's Opportunistic quality bar avoids backlog noise.
+
+## Suggested Next Step
+
+- No action from this Scout pass.
+- Continue current ranked priorities.
+"@ -Encoding UTF8
+
+        $scoutSpec = @{
+            JobId = "backlog-opportunistic-scout"
+            Repo = "HoneyDrunk.Test"
+            OutputContract = @{
+                LatestOutput = "scout-reports/{YYYY-MM-DD}.md"
+                Summary = "scout"
+            }
+        }
+        $scoutSummary = @(Get-RunnerJobSummary -JobSpec $scoutSpec -RepoPath $tempRoot)
+        if (-not ($scoutSummary -contains "Recommendations:")) {
+            throw "scout summaries should include the recommendation section marker even when no packets are created."
+        }
+        if (-not ($scoutSummary -contains "> Stay the course on the current ranked work. No opportunistic opportunity clears the bar over the existing priorities, so this run creates no proposed packets.")) {
+            throw "scout summaries should include no-packet recommendation detail."
+        }
+        if (-not ($scoutSummary -contains "No proposed packets were created.")) {
+            throw "scout summaries should include packet decision detail."
+        }
+        if (-not ($scoutSummary -contains "- No action from this Scout pass.")) {
+            throw "scout summaries should include suggested next-step detail."
+        }
+        if ($scoutSummary -contains "Step 1:" -or $scoutSummary -contains "- Reason `#2`:") {
+            throw "scout summaries should not include standalone colon-terminated headers."
+        }
     }
     finally {
         Remove-Item -LiteralPath $tempRoot -Recurse -Force -ErrorAction SilentlyContinue
@@ -654,8 +710,11 @@ function Get-BacklogRecommendationLines {
 
     $sectionNames = @(
         "Recommendation Breakdown",
+        "Recommendation",
         "Recommended Top 3",
         "Notes For Weekly Briefing",
+        "Packet Decision",
+        "Suggested Next Step",
         "Decisions Scoped",
         "New Proposed Packets"
     )
@@ -678,7 +737,13 @@ function Get-BacklogRecommendationLines {
                 continue
             }
 
-            if ($clean -match '^[-*]\s+' -or $clean -match '^\d+\.\s+' -or $clean -match '^(Recommendation|Why|Why now / Why not now|Human action|Suggested human action|Urgency|Source|Tradeoff|Opportunity cost|Kill criteria|Packet|Proposed packet path|Dedupe/Skipped reason):\s+') {
+            $headerCandidate = ($clean -replace '^(?:[-*]\s+|\d+\.\s+)', '').Trim().Replace('`', '')
+            if ($headerCandidate -match '^[A-Za-z][A-Za-z0-9\s#/\-]+:$') {
+                continue
+            }
+
+            $allowNarrative = $sectionName -in @("Recommendation", "Packet Decision", "Suggested Next Step")
+            if ($clean -match '^[-*]\s+' -or $clean -match '^\d+\.\s+' -or $clean -match '^>\s+' -or $clean -match '^(Recommendation|Why|Why now / Why not now|Human action|Suggested human action|Urgency|Source|Tradeoff|Opportunity cost|Kill criteria|Packet|Proposed packet path|Dedupe/Skipped reason):\s+' -or $allowNarrative) {
                 $clean = ($clean -replace "\s+", " ").Trim()
                 if (Test-RunnerDiscordPayloadSafe -Value $clean) {
                     $lines.Add((Limit-RunnerDiscordText -Value $clean -MaxLength 280))
