@@ -548,6 +548,10 @@ No proposed packets were created.
 
 Reasons:
 
+Step 1:
+
+- Reason `#2`:
+
 - The top new-looking opportunity is already captured by an accepted planning artifact.
 - ADR-0043's Opportunistic quality bar avoids backlog noise.
 
@@ -577,6 +581,9 @@ Reasons:
         }
         if (-not ($scoutSummary -contains "- No action from this Scout pass.")) {
             throw "scout summaries should include suggested next-step detail."
+        }
+        if ($scoutSummary -contains "Step 1:" -or $scoutSummary -contains "- Reason `#2`:") {
+            throw "scout summaries should not include standalone colon-terminated headers."
         }
     }
     finally {
@@ -730,7 +737,8 @@ function Get-BacklogRecommendationLines {
                 continue
             }
 
-            if ($clean -match '^[A-Za-z][A-Za-z\s]+:$') {
+            $headerCandidate = ($clean -replace '^(?:[-*]\s+|\d+\.\s+)', '').Trim().Replace('`', '')
+            if ($headerCandidate -match '^[A-Za-z][A-Za-z0-9\s#/\-]+:$') {
                 continue
             }
 
