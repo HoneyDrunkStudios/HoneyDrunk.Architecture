@@ -78,6 +78,8 @@ Use the date-based branch `chore/hive-sync-$(date +%Y-%m-%d)` for scheduled runs
 
 From `/tmp/issue-states.json`: check off closed issues, update `**Status:**` based on issue completion ratio, add `> **Sync (YYYY-MM-DD):**` progress annotations, flag stale initiatives, and mark complete initiatives as ready to archive only when exit criteria are met. Do **not** reorder initiative blocks; do **not** rewrite `**Description:**`; do **not** add or remove `(current focus #N)` cross-references.
 
+**Implementation-notes completion gate (invariant 110).** A present implementation-notes record is a mandatory exit criterion. Before you set any initiative's `**Status:**` to complete (or mark it ready-to-archive), verify the record exists: `implementation-notes.md` in the initiative's packet folder (check both `generated/issue-packets/active/<initiative>/` and `generated/issue-packets/completed/<initiative>/`) and, for decision-driven initiatives, a dated `## Implementation Notes` section in the governing ADR/PDR/BDR. If every tracked issue is closed but the record is missing, **keep the initiative `In Progress`**, do **not** mark it ready-to-archive, and add a `> **Sync (YYYY-MM-DD):**` annotation: `implementation-notes record missing — the implementing agent must author it before this initiative can complete (invariant 110)`; also record it in `initiatives/drift-report.md` (Step 13). `hive-sync` never authors the record itself; the per-packet `active/`→`completed/` move (Step 10, invariant 37) still proceeds normally on issue closure — only initiative-level completion/archival is gated.
+
 ### Step 4: (Removed) — `initiatives/current-focus.md` is owned by `netrunner`
 
 `initiatives/current-focus.md` is curated by the `netrunner` agent (sole writer). `hive-sync` reads it for context but never edits it. If you notice drift between `initiatives/current-focus.md` and the ground truth surfaced by other steps, record it in `initiatives/drift-report.md` (Step 13, category 14) rather than modifying the file directly.
@@ -97,7 +99,7 @@ Cross-reference quarterly roadmap items against issue states, release state, and
 
 ### Step 7: Archive Complete Initiatives
 
-When an initiative is 100% closed and exit criteria are met, move the initiative block from `initiatives/active-initiatives.md` to `initiatives/archived-initiatives.md`. **Do not** modify `initiatives/current-focus.md` even if the archived initiative appears there — `netrunner` owns that file and will demote the row on its next curator pass. Do not archive on checkbox count alone.
+When an initiative is 100% closed and exit criteria are met, move the initiative block from `initiatives/active-initiatives.md` to `initiatives/archived-initiatives.md`. **Do not** modify `initiatives/current-focus.md` even if the archived initiative appears there — `netrunner` owns that file and will demote the row on its next curator pass. Do not archive on checkbox count alone. **The implementation-notes record is a mandatory exit criterion (invariant 110): never archive an initiative whose `implementation-notes.md` is absent — even at 100% closed — hold and flag it per Step 3 instead.**
 
 ### Step 8: Reconcile Non-Initiative Board Items
 

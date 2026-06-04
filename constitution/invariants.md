@@ -117,6 +117,9 @@ Rules that must never be violated across the HoneyDrunk Grid. Canary tests enfor
 109. **Issue packets carry `source` and `generator` frontmatter.**
     Every issue packet authored after ADR-0043 acceptance carries `source` and `generator` frontmatter fields before it is eligible for filing. For ADR-0043 agent-generated backlog packets, `source` is one of `strategic`, `tactical`, `opportunistic`, or `reactive`; for human-authored packets, `source` may be `human`. `generator` is the agent name that produced it or `human` for human-authored packets. This invariant is forward-only and preserves invariant 24: already-filed packets remain immutable, and post-filing metadata corrections require a new packet rather than editing the filed packet. See ADR-0043 D2.
 
+110. **Every initiative closes with an implementation-notes record, and `hive-sync` gates completion on it.**
+    Every initiative ends with an implementation-notes record authored by the *implementing* agent (never `hive-sync`): `implementation-notes.md` in the initiative's packet folder, plus — for decision-driven initiatives — a dated `## Implementation Notes (YYYY-MM-DD)` pointer section appended to the governing ADR/PDR/BDR. `hive-sync` **verifies this record exists before it marks an initiative complete or archive-ready**: an initiative whose tracked issues are all closed but whose record is missing is held `In Progress` and flagged as an anomaly, not completed or archived. `hive-sync` flips status and moves packet folders (invariant 37) but never authors the record. This closes the silent gap where issue closure alone would advance an initiative to `completed/` without the as-built reconciliation ever being written. See ADR-0008 § Implementation-Notes Packets.
+
 ## AI Invariants
 
 28. **Application code must never hardcode a model name or provider.**
