@@ -2,7 +2,7 @@
 
 High-level roadmap for the HoneyDrunk Grid.
 
-**Last Updated:** 2026-06-03
+**Last Updated:** 2026-06-05
 
 For the near-term ranked priority list, see [current-focus.md](current-focus.md); this roadmap is the quarterly horizon.
 
@@ -34,7 +34,7 @@ The studio is currently building three product threads in 2026 — **Notify Clou
 - [x] **ADR-0088 Decommission OpenClaw — completed 2026-06-02** — accepted; Architecture PR #554 and Actions PR #182 merged; runtime/tunnel/reference/governance cleanup done; `OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET` deleted; issue #527 closed; invariant-103 cleanup removed the inventory row, rotation walkthrough, and node-standup matrix row. Ready for archive / exit-criteria review.
 - [x] **ADR-0033 environment-gated trigger packets — completed 2026-06-01** — unblocked Notify/Pulse dev deploy trigger model under ADR-0015 *(3/3 issues closed; ADR-0033 Accepted)*
 - [ ] **ADR-0043 Backlog Generation — Phase 1 kickoff** — closes the ADR → packet auto-generation loop; Strategic source feeds on ADR acceptances
-- [ ] **ADR-0015 Container Apps Rollout — underway** *(2/5 issues closed; walkthroughs + reusable deploy workflow complete; Notify/Pulse release work remains; underwrites Notify Cloud deploy substrate)*
+- [x] **ADR-0015 Container Apps Rollout — completed 2026-06-04** *(5/5 issues closed; ready for archive/exit-criteria review; underwrites Notify Cloud deploy substrate)*
 - [ ] **Archive / exit-criteria review** — sweep closed rollouts (ADR-0005/0006, 0009, 0014, 0030, 0032, Lore, Vault.Rotation, Kernel Adoption) into `archived-initiatives.md`
 
 **Product**

@@ -2,7 +2,7 @@
 
 Non-initiative items currently on HoneyDrunkStudios org Project #4. Fully rewritten by `hive-sync`.
 
-**Last Updated:** 2026-06-03
+**Last Updated:** 2026-06-05
 
 ## security
 
@@ -34,7 +34,7 @@ Non-initiative items currently on HoneyDrunkStudios org Project #4. Fully rewrit
 - [HoneyDrunk.Memory#4](https://github.com/HoneyDrunkStudios/HoneyDrunk.Memory/issues/4) — [grid-health] publish.yml unhealthy (open)
 - [HoneyDrunk.Memory#5](https://github.com/HoneyDrunkStudios/HoneyDrunk.Memory/issues/5) — [grid-health] weekly-deps.yml unhealthy (closed; closed 2026-05-26)
 - [HoneyDrunk.Notify#45](https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/45) — [grid-health] publish.yml unhealthy (closed; closed 2026-05-28)
-- [HoneyDrunk.Notify#46](https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/46) — [grid-health] release-functions.yml unhealthy (open)
+- [HoneyDrunk.Notify#46](https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/46) — [grid-health] release-functions.yml unhealthy (closed; closed 2026-06-05)
 - [HoneyDrunk.Notify#47](https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/47) — [grid-health] release-worker.yml unhealthy (open)
 - [HoneyDrunk.Notify#57](https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/57) — [grid-health] pr.yml unhealthy (open)
 - [HoneyDrunk.Observe#7](https://github.com/HoneyDrunkStudios/HoneyDrunk.Observe/issues/7) — [grid-health] publish.yml unhealthy (open)
@@ -44,6 +44,7 @@ Non-initiative items currently on HoneyDrunkStudios org Project #4. Fully rewrit
 - [HoneyDrunk.Pulse#35](https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/35) — [grid-health] publish.yml unhealthy (closed; closed 2026-05-29)
 - [HoneyDrunk.Pulse#36](https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/36) — [grid-health] release-collector.yml unhealthy (closed; closed 2026-06-03)
 - [HoneyDrunk.Transport#38](https://github.com/HoneyDrunkStudios/HoneyDrunk.Transport/issues/38) — [grid-health] publish.yml unhealthy (closed; closed 2026-05-27)
+- [HoneyDrunk.Vault#51](https://github.com/HoneyDrunkStudios/HoneyDrunk.Vault/issues/51) — [grid-health] pr.yml unhealthy (open)
 
 ## other
 
@@ -61,11 +62,9 @@ Non-initiative items currently on HoneyDrunkStudios org Project #4. Fully rewrit
 - [HoneyDrunk.Architecture#34](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/34) — Chore: Create `HoneyDrunk.Observe` GitHub repo (human-only) (closed; closed 2026-05-16; labels: chore, tier-1, wave-1, new-node, human-only, meta, adr-0010, initiative-adr-0010-observe-ai-routing-phase-1)
 - [HoneyDrunk.Architecture#35](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/35) — Feature: Accept ADR-0010 — register HoneyDrunk.Observe, wire AI routing contracts into catalogs, finalize invariants (closed; closed 2026-05-21; labels: feature, tier-2, wave-1, docs, meta, catalog, adr-0010, initiative-adr-0010-observe-ai-routing-phase-1)
 - [HoneyDrunk.Architecture#36](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/36) — Chore: Create `HoneyDrunk.Observe` GitHub repo (human-only) (closed; closed 2026-05-16; labels: chore, tier-1, wave-1, new-node, human-only, meta, adr-0010, initiative-adr-0010-observe-ai-routing-phase-1)
-- [HoneyDrunk.Architecture#57](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/57) — Feature: Accept ADR-0013 — Communications context folder, ADR index, initiative + roadmap, Notify boundary refresh (closed; closed 2026-05-05; labels: feature, tier-2, wave-1, docs, meta, catalog, adr-0013, adr-0026, initiative-adr-0013-communications-bringup)
 - [HoneyDrunk.Architecture#72](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/72) — Chore: Register HoneyDrunk.AI's standup decisions in Architecture catalogs (closed; closed 2026-05-20; labels: chore, tier-2, architecture, ai, adr-0016, initiative-adr-0016-honeydrunk-ai-standup)
 - [HoneyDrunk.Architecture#73](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/73) — Chore: Add ADR-0016's three new invariants to the Grid constitution (closed; closed 2026-05-20; labels: chore, tier-2, architecture, ai, adr-0016, initiative-adr-0016-honeydrunk-ai-standup, constitution)
 - [HoneyDrunk.Architecture#80](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/80) — Consolidate Architecture packet and guidance rules (closed; closed 2026-05-19; labels: chore, tier-2, meta, initiative-standalone)
-- [HoneyDrunk.Architecture#82](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/82) — Feature: ADR-0019 Communications Architecture context and catalog reconciliation (closed; closed 2026-05-05; labels: feature, tier-2, docs, meta)
 - [HoneyDrunk.Architecture#94](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/94) — Chore: Verify `HoneyDrunk.AI` GitHub repo settings + clone locally (human-only) (open; labels: chore, tier-1, wave-2, human-only, meta, ai, adr-0016, initiative-adr-0016-honeydrunk-ai-standup)
 - [HoneyDrunk.Architecture#108](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/108) — Chore: Accept ADR-0030 — register HoneyDrunk.Audit catalog surface, sectors row, repo context folder, trackers (closed; closed 2026-05-20; labels: chore, tier-2, wave-1, meta, catalog, architecture, adr-0030, initiative-adr-0030-audit-substrate)
 - [HoneyDrunk.Architecture#109](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/109) — Chore: Add ADR-0030's audit-emission boundary invariant to the Grid constitution (closed; closed 2026-05-20; labels: chore, tier-2, wave-1, meta, architecture, constitution, adr-0030, initiative-adr-0030-audit-substrate)
@@ -77,21 +76,17 @@ Non-initiative items currently on HoneyDrunkStudios org Project #4. Fully rewrit
 - [HoneyDrunk.Auth#20](https://github.com/HoneyDrunkStudios/HoneyDrunk.Auth/issues/20) — Align Auth to current Kernel packages (closed; closed 2026-05-18; labels: tier-2, chore, core, auth, wave-3, kernel-adoption, initiative-kernel-adoption-alignment)
 - [HoneyDrunk.Auth#23](https://github.com/HoneyDrunkStudios/HoneyDrunk.Auth/issues/23) — Feature: Wire HoneyDrunk.Auth as the first `IAuditLog` emitter — durable security events (login attempts, authz grants/denials) (closed; closed 2026-05-21; labels: feature, tier-2, auth, audit, adr-0031, initiative-adr-0031-audit-node-standup)
 - [HoneyDrunk.Auth#34](https://github.com/HoneyDrunkStudios/HoneyDrunk.Auth/issues/34) — 📦 Outdated Dependencies (open; labels: dependencies)
-- [HoneyDrunk.Communications#2](https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications/issues/2) — Feature: Scaffold `HoneyDrunk.Communications` repo, solution, and project skeletons (closed; closed 2026-05-05; labels: feature, tier-3, ops, new-node, scaffolding, adr-0013, wave-2, initiative-adr-0013-communications-bringup)
-- [HoneyDrunk.Communications#9](https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications/issues/9) — Consolidate Communications tenant predicates (closed; closed 2026-05-05; labels: tier-2, chore, meta, initiative-standalone)
 - [HoneyDrunk.Communications#13](https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications/issues/13) — Coverage backfill: bring `HoneyDrunk.Communications` total line coverage to ≥ 70% (clear the absolute floor) (closed; closed 2026-05-20; labels: wave-2, tier-2, chore, testing, comms, adr-0032, initiative-adr-0032-pr-validation-policy)
 - [HoneyDrunk.Communications#14](https://github.com/HoneyDrunkStudios/HoneyDrunk.Communications/issues/14) — Drop Communications runtime Kernel dependency (closed; closed 2026-05-19; labels: ops, tier-2, wave-3, chore, communications, kernel-adoption, initiative-kernel-adoption-alignment)
 - [HoneyDrunk.Data#19](https://github.com/HoneyDrunkStudios/HoneyDrunk.Data/issues/19) — Consolidate Data EF and SQL configuration helpers (closed; closed 2026-05-18; labels: tier-2, chore, core, initiative-standalone)
 - [HoneyDrunk.Data#20](https://github.com/HoneyDrunkStudios/HoneyDrunk.Data/issues/20) — Coverage backfill: bring `HoneyDrunk.Data` total line coverage to ≥ 70% (clear the absolute floor) (closed; closed 2026-05-19; labels: tier-2, wave-2, chore, core, testing, adr-0032, initiative-adr-0032-pr-validation-policy)
 - [HoneyDrunk.Data#21](https://github.com/HoneyDrunkStudios/HoneyDrunk.Data/issues/21) — Require context for Data outbox enrichment (closed; closed 2026-05-18; labels: bug, tier-2, core, data, wave-3, kernel-adoption, initiative-kernel-adoption-alignment)
 - [HoneyDrunk.Data#33](https://github.com/HoneyDrunkStudios/HoneyDrunk.Data/issues/33) — 📦 Outdated Dependencies (closed; closed 2026-06-01; labels: dependencies)
-- [HoneyDrunk.Kernel#24](https://github.com/HoneyDrunkStudios/HoneyDrunk.Kernel/issues/24) — Feature: Grid multi-tenant primitives — TenantId promotion, ITenantRateLimitPolicy, IBillingEventEmitter, noop defaults (closed; closed 2026-05-05; labels: feature, core, tier-3, breaking-change, adr-0026, wave-1, initiative-adr-0026-grid-multi-tenant-primitives)
 - [HoneyDrunk.Kernel#27](https://github.com/HoneyDrunkStudios/HoneyDrunk.Kernel/issues/27) — Consolidate Kernel duplicate context and identity helpers (closed; closed 2026-05-19; labels: chore, tier-2, core, initiative-standalone)
 - [HoneyDrunk.Kernel#28](https://github.com/HoneyDrunkStudios/HoneyDrunk.Kernel/issues/28) — Coverage backfill: bring `HoneyDrunk.Kernel` total line coverage to ≥ 70% (clear the absolute floor) (closed; closed 2026-05-19; labels: chore, tier-2, core, wave-2, testing, adr-0032, initiative-adr-0032-pr-validation-policy)
 - [HoneyDrunk.Kernel#29](https://github.com/HoneyDrunkStudios/HoneyDrunk.Kernel/issues/29) — Align Kernel context bootstrap and well-known Node IDs (closed; closed 2026-05-19; labels: feature, tier-2, core, wave-1, kernel, kernel-adoption, initiative-kernel-adoption-alignment)
 - [HoneyDrunk.Kernel#62](https://github.com/HoneyDrunkStudios/HoneyDrunk.Kernel/issues/62) — 📦 Outdated Dependencies (open; labels: dependencies)
 - [HoneyDrunk.Notify#8](https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/8) — Consolidate Notify template and provider helpers (closed; closed 2026-05-18; labels: tier-2, chore, meta, initiative-standalone)
-- [HoneyDrunk.Notify#9](https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/9) — Feature: ADR-0019 Notify boundary refactor for Communications ownership (closed; closed 2026-05-05; labels: feature, tier-2, ops)
 - [HoneyDrunk.Notify#12](https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/12) — Coverage backfill: bring `HoneyDrunk.Notify` total line coverage to ≥ 70% (clear the absolute floor) (closed; closed 2026-05-20; labels: tier-2, wave-2, chore, testing, comms, adr-0032, initiative-adr-0032-pr-validation-policy)
 - [HoneyDrunk.Notify#13](https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/13) — Align Notify Kernel identity and queue secret boundary (closed; closed 2026-05-18; labels: bug, tier-2, adr-0005, ops, notify, wave-3, kernel-adoption, adr-0006, initiative-kernel-adoption-alignment)
 - [HoneyDrunk.Notify#44](https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/44) — 📦 Outdated Dependencies (closed; closed 2026-06-01; labels: dependencies)

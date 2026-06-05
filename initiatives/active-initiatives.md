@@ -384,7 +384,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 > **Sync (2026-05-16):** 15/15 issue packets remain closed. Completed manifest entries older than 30 days were pruned from `filed-packets.json`; packet files remain archived in `completed/`. Initiative remains ready for exit-criteria review/archive, with release-verification notes still tracked in `initiatives/releases.md`.
 
 ### Container Apps Rollout (ADR-0015)
-**Status:** In Progress — ADR-0033 trigger packets closed; Notify/Pulse service release work remains
+**Status:** Complete — all five rollout packet issues closed; ready for exit-criteria review/archive
 **Scope:** Architecture, Actions, Notify, Pulse  
 **Initiative:** `adr-0015-container-apps-rollout`  
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)  
@@ -393,13 +393,14 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 **Tracking:**
 - [x] Architecture#37: Infrastructure walkthroughs for Function App, ACR, Container Apps Environment, and Container App (closed)
 - [x] Actions#48: Reusable workflow `job-deploy-container-app.yml` for Azure Container Apps (closed)
-- [ ] Notify#3: Release workflow and Azure bring-up for `Notify.Functions` (open)
-- [ ] Notify#4: Release workflow and Azure bring-up for `Notify.Worker` on Container Apps (open)
-- [ ] Pulse#3: Release workflow and Azure bring-up for `Pulse.Collector` on Container Apps (open)
+- [x] Notify#3: Release workflow and Azure bring-up for `Notify.Functions` (closed 2026-06-04)
+- [x] Notify#4: Release workflow and Azure bring-up for `Notify.Worker` on Container Apps (closed 2026-06-04)
+- [x] Pulse#3: Release workflow and Azure bring-up for `Pulse.Collector` on Container Apps (closed 2026-06-04)
 
 > **Sync (2026-05-21):** 2/5 issues closed (40%). Foundation walkthroughs and reusable Actions workflow remain complete; Notify#3, Notify#4, and Pulse#3 are still open for service-specific release/Azure bring-up work. ADR-0033 environment-gated deploy-trigger packets (`Notify#19`, `Notify#20`, `Pulse#18`) are open in Backlog and should land before dev deploy verification resumes.
 
 > **Sync (2026-06-03):** ADR-0033 deploy-trigger packets `Notify#19`, `Notify#20`, and `Pulse#18` are CLOSED (closed 2026-06-01) and ADR-0033 auto-flipped to Accepted. Container Apps rollout remains 2/5 closed: `Notify#3`, `Notify#4`, and `Pulse#3` are still open for service-specific release/Azure bring-up work; the trigger-model blocker is cleared.
+> **Sync (2026-06-05):** Live GitHub issue state shows `Notify#3`, `Notify#4`, and `Pulse#3` CLOSED on 2026-06-04. ADR-0015 Container Apps rollout is now 5/5 issues closed; packets 03-05 and the dispatch plan moved to `completed/`. Marked complete and ready for exit-criteria review/archive; no archive move performed because downstream deploy verification should be reviewed by the operator.
 
 ### Package Scanning Rollout (ADR-0009)
 **Status:** In Progress  

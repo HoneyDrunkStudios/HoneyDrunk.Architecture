@@ -1,7 +1,4 @@
 {
-  "generated/issue-packets/active/adr-0015-container-apps-rollout/03-notify-functions-release-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/3",
-  "generated/issue-packets/active/adr-0015-container-apps-rollout/04-notify-worker-release-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/4",
-  "generated/issue-packets/active/adr-0015-container-apps-rollout/05-pulse-collector-release-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/3",
   "generated/issue-packets/active/adr-0016-honeydrunk-ai-standup/02b-architecture-verify-ai-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/95",
   "generated/issue-packets/active/adr-0017-capabilities-standup/01-architecture-capabilities-catalog-registration.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/87",
   "generated/issue-packets/active/adr-0017-capabilities-standup/02-architecture-capabilities-invariants.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/88",
@@ -415,6 +412,9 @@
   "generated/issue-packets/completed/adr-0012-grid-cicd-control-plane/07c-actions-actionlint-docker-ref-decision.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/67",
   "generated/issue-packets/completed/adr-0012-grid-cicd-control-plane/08-architecture-caller-permissions-audit.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/51",
   "generated/issue-packets/completed/adr-0012-grid-cicd-control-plane/09-actions-node20-actions-bump.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/68",
+  "generated/issue-packets/completed/adr-0015-container-apps-rollout/03-notify-functions-release-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/3",
+  "generated/issue-packets/completed/adr-0015-container-apps-rollout/04-notify-worker-release-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/4",
+  "generated/issue-packets/completed/adr-0015-container-apps-rollout/05-pulse-collector-release-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/3",
   "generated/issue-packets/completed/adr-0033-deploy-trigger-model/01-notify-functions-deploy-trigger-model.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/19",
   "generated/issue-packets/completed/adr-0033-deploy-trigger-model/02-notify-worker-deploy-trigger-model.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/20",
   "generated/issue-packets/completed/adr-0033-deploy-trigger-model/03-pulse-collector-deploy-trigger-model.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/18",

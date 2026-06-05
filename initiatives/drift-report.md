@@ -1,6 +1,6 @@
 # Hive Sync Drift Report
 
-**Last Updated:** 2026-06-03
+**Last Updated:** 2026-06-05
 
 Fully rewritten by `hive-sync`; First Surfaced dates are sticky for persistent findings.
 
@@ -83,16 +83,44 @@ Fully rewritten by `hive-sync`; First Surfaced dates are sticky for persistent f
 - **Category 12: unmapped or novel service status mapping**
   - **Item:** honeydrunk-pulse: mapped novel status blocked
   - **First Surfaced:** 2026-05-25
-  - **Detail:** honeydrunk-pulse: mapped novel status blocked
+  - **Detail:** mapped novel status blocked
 - **Category 14: current-focus drift**
-  - **Item:** ADR-0015 focus row still blocked by ADR-0033
-  - **First Surfaced:** 2026-06-03
-  - **Detail:** The ADR-0033 trigger-model blocker is cleared; `current-focus.md` is netrunner-owned.
+  - **Item:** ADR-0015 focus row still shows incomplete rollout
+  - **First Surfaced:** 2026-06-05
+  - **Detail:** ADR-0015 is now 5/5 closed after Notify#3, Notify#4, and Pulse#3 closed on 2026-06-04; `current-focus.md` is netrunner-owned.
 - **Category 14: current-focus drift**
   - **Item:** ADR-0033 focus row still marked Open
   - **First Surfaced:** 2026-06-03
   - **Detail:** ADR-0033 auto-flipped to Accepted and all three accepting packet issues are closed; `current-focus.md` is netrunner-owned.
 - **Category 15: alert-routing-table drift**
-  - **Item:** live-only: [ADR-0085](ADR-0085) docs-sync run report | `#hive-activity` | Info | `docs-sync: {summary-counts} — {report-or-pr-link}`
+  - **Item:** live-only: [ADR-0043](../adrs/ADR-0043-continuous-backlog-generation-strategy.md) opportunistic Scout backlog source run | `#hive-activity` | Info | `backlog-scout: {recommendation}, {packets-created} packets — {report-or-pr-link}`
+  - **First Surfaced:** 2026-06-05
+  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
+- **Category 15: alert-routing-table drift**
+  - **Item:** live-only: [ADR-0043](../adrs/ADR-0043-continuous-backlog-generation-strategy.md) strategic backlog source run | `#hive-activity` | Info | `backlog-strategic: {packets-created} proposed packets — {report-or-pr-link}`
+  - **First Surfaced:** 2026-06-05
+  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
+- **Category 15: alert-routing-table drift**
+  - **Item:** live-only: [ADR-0043](../adrs/ADR-0043-continuous-backlog-generation-strategy.md) tactical node-audit backlog source run | `#hive-activity` | Info | `backlog-tactical: {node} audit, {findings-count} findings, {packets-created} packets — {report-or-pr-link}`
+  - **First Surfaced:** 2026-06-05
+  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
+- **Category 15: alert-routing-table drift**
+  - **Item:** live-only: [ADR-0043](../adrs/ADR-0043-continuous-backlog-generation-strategy.md) urgent reactive operational packet | `#ops-alerts` | High | `backlog-urgent-ops: {summary} — {urgent-briefing-or-pr-link}`
+  - **First Surfaced:** 2026-06-05
+  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
+- **Category 15: alert-routing-table drift**
+  - **Item:** live-only: [ADR-0043](../adrs/ADR-0043-continuous-backlog-generation-strategy.md) urgent reactive security packet | `#security-alerts` | High | `backlog-urgent-security: {summary} — {urgent-briefing-or-pr-link}`
+  - **First Surfaced:** 2026-06-05
+  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
+- **Category 15: alert-routing-table drift**
+  - **Item:** live-only: [ADR-0043](../adrs/ADR-0043-continuous-backlog-generation-strategy.md) weekly backlog briefing generated | `#hive-activity` | Info | `backlog-briefing: {new-proposed-count} proposed, top-3 ready — {briefing-or-pr-link}`
+  - **First Surfaced:** 2026-06-05
+  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
+- **Category 15: alert-routing-table drift**
+  - **Item:** live-only: [ADR-0085](../adrs/ADR-0085-grid-wide-documentation-currency-agent.md) docs-sync run report | `#hive-activity` | Info | `docs-sync: {summary-counts} — {report-or-pr-link}`
   - **First Surfaced:** 2026-06-03
   - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
+- **Category 16: ADR-0043 backlog-source drift**
+  - **Item:** PDR-0001 has no implementation packet coverage
+  - **First Surfaced:** 2026-06-05
+  - **Detail:** Accepted decision has no proposed, active, or completed packet referencing it through `adrs:`; backlog-generation jobs own packet creation.
