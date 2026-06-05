@@ -13,6 +13,8 @@ node: honeydrunk-architecture
 
 # Author the per-Node Bicep template scaffold pattern for new infrastructure work
 
+> **STATUS — SUPERSEDED (2026-06-02) by packet 15.** Filed as `Architecture#387` (OPEN, unmerged). The ADR-0077 amendment (2026-06-02) relocates per-Node templates to `HoneyDrunk.Infrastructure/nodes/{node}/` (not each Node's own repo) and switches module references from `br:acrhdbicep.azurecr.io/...` (registry, dropped) to local relative path. Packet 15 re-cuts the scaffold pattern to that shape. This packet is retained for traceability; do not execute it. Close `Architecture#387` as superseded by packet 15. See `dispatch-plan.md`.
+
 ## Summary
 Author `infrastructure/patterns/per-node-bicep-template.md` — the canonical scaffold pattern that the `scope` agent (and human operators) consult when a Node needs to provision new Azure resources. The doc covers the per-Node `infra/` directory layout (`main.bicep` + `parameters.{env}.bicepparam` + per-Node `bicepconfig.json`), module registry-reference syntax, the `tags` parameter shape consumed by modules from packet 05, the `secretRef` shape for any secret-shaped input, the consumer-side `pr-core.yml` wiring for the `bicep lint` gate (packet 07), the consumer-side release-workflow wiring for `job-deploy-bicep.yml` (packet 06), and the per-environment approval-gate pattern per ADR-0033. The doc is the reference the `scope` agent uses to author packets for new per-Node infrastructure work going forward.
 

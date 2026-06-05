@@ -13,6 +13,8 @@ node: honeydrunk-actions
 
 # Scaffold the bicep/modules library layout and bicepconfig.json linter rules
 
+> **STATUS — SUPERSEDED (2026-06-02) by packets 11 + 13.** Filed as `Actions#118` (OPEN, unmerged). The ADR-0077 amendment (2026-06-02) relocates the Bicep modules library out of `HoneyDrunk.Actions/bicep/` and into the new `HoneyDrunk.Infrastructure` repo: the tree + single root `bicepconfig.json` land in packet 11 (repo standup); the module bodies land in packet 13. This packet is retained for traceability; do not execute it. Close `Actions#118` as superseded by packets 11 + 13. See `dispatch-plan.md`.
+
 ## Summary
 Scaffold the Bicep modules library structure in `HoneyDrunk.Actions/bicep/` per ADR-0077 D2 — create the seven per-concern subdirectories (`networking/`, `compute/`, `identity/`, `data/`, `secrets/`, `messaging/`, `observability/`), an empty-state `README.md` documenting the library's conventions and the registry-publish flow, and `bicepconfig.json` carrying the linter rules that enforce ADR-0077 D3 (required tags, name conventions, secret-shaped-literal detection). Do not author actual modules yet — those land in packet 05.
 

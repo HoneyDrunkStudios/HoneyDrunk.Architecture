@@ -13,6 +13,8 @@ node: honeydrunk-actions
 
 # Author job-deploy-bicep.yml — the reusable workflow that applies a Node's main.bicep per environment
 
+> **STATUS — SUPERSEDED (2026-06-02) by packet 16.** Filed as `Actions#121` (OPEN, unmerged). The workflow STAYS in `HoneyDrunk.Actions` per ADR-0012, but the ADR-0077 amendment (2026-06-02) changes its inputs: it applies templates from `HoneyDrunk.Infrastructure` (`nodes/{node}/main.bicep`, `platform/main.bicep`) whose modules resolve by local relative path — no `acrhdbicep` registry auth, no `br:` resolution — and deploys on the infra cadence decoupled from app release tags. Packet 16 carries the corrected workflow. This packet is retained for traceability; do not execute it. Close `Actions#121` as superseded by packet 16. See `dispatch-plan.md`.
+
 ## Summary
 Author `.github/workflows/job-deploy-bicep.yml` in `HoneyDrunk.Actions` — the reusable deploy workflow that runs `az deployment group create` (or `az deployment sub create` for subscription-scoped resources) on a Node's `infra/main.bicep` with the appropriate `parameters.{env}.bicepparam` per ADR-0077 D4. Consumed via `workflow_call` by per-Node release workflows. Authenticates via the existing Actions OIDC federation. Runs `bicep lint` and `bicep build` as preflight steps, then applies the deployment.
 

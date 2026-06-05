@@ -1,155 +1,216 @@
 # Dispatch Plan — ADR-0077: Infrastructure-as-Code — Bicep (Azure-native)
 
 **Initiative:** `adr-0077-iac-bicep`
-**ADR:** ADR-0077 (Proposed → Accepted via packet 00)
+**ADR:** ADR-0077 (Proposed → Accepted via packet 18) — **amended 2026-06-02** (consolidate Bicep content into `HoneyDrunk.Infrastructure`; drop the cross-repo module registry)
 **Sector:** Ops / cross-cutting
 **Created:** 2026-05-24
+**Re-cut:** 2026-06-02 (ADR amendment)
 
-> Per ADR-0008 D7, this dispatch plan is the one exception to packet immutability — it is a living narrative updated at wave boundaries as a historical record.
+> Per ADR-0008 D7, this dispatch plan is the one exception to packet immutability — it is a living narrative updated at wave boundaries (and, here, at an ADR-amendment boundary) as a historical record. The individual packets are immutable once filed; the re-cut is expressed by **superseding** the affected packets, not by rewriting them.
+
+## Amendment re-cut summary (2026-06-02)
+
+ADR-0077 was amended on 2026-06-02 (the `## Amendment (2026-06-02)` block in the ADR is the source of truth). The amendment:
+
+1. **Consolidates all Bicep *content* into a single NEW repo, `HoneyDrunk.Infrastructure`:** `modules/` (the seven per-concern groups, moved out of `HoneyDrunk.Actions`), `platform/` (NEW first-class home for shared/foundational resources — shared Container Apps Environment, shared image ACR `acrhdshared{env}`, Log Analytics, shared Service Bus, networking), and `nodes/{node}/` (thin per-Node leaf templates relocated out of each Node's repo). Modules are referenced by **local relative path**, not a registry.
+2. **Drops the cross-repo module registry in full:** no `acrhdbicep` ACR, no `bicep-publish.yml`, no `modules/v{N}.{N}.{N}` SemVer-tag-publish flow, no `br:acrhdbicep.azurecr.io/...` refs.
+3. **Keeps the deploy/lint *pipeline* in `HoneyDrunk.Actions`** per ADR-0012 (CI/CD control plane). `HoneyDrunk.Infrastructure` *consumes* `job-deploy-bicep.yml` and the `bicep lint` gate.
+4. **Decouples infra deploys from application release tags** — infra deploys on its own cadence.
+5. **Leaves invariant 35 unchanged** — the `acrhdbicep` carve-out is no longer needed (registry dropped).
+
+**The initiative is now 3 repos:** `HoneyDrunk.Architecture` (governance/catalog/docs), `HoneyDrunk.Actions` (pipeline: deploy + lint reusable workflows), `HoneyDrunk.Infrastructure` (all Bicep content: modules + platform + nodes).
+
+### Filing-status check (2026-06-02)
+
+**All ten original packets (00–09) were already FILED as GitHub issues and are OPEN** (verified live via `gh` against the `filed-packets.json` manifest):
+
+| Original packet | Issue | State |
+|---|---|---|
+| 00 acceptance | `Architecture#384` | OPEN |
+| 01 catalog registration | `Architecture#385` | OPEN |
+| 02 registry ACR walkthrough | `Architecture#386` | OPEN |
+| 03 modules library scaffold | `Actions#118` | OPEN |
+| 04 publish workflow | `Actions#119` | OPEN |
+| 05 first module set | `Actions#120` | OPEN |
+| 06 deploy workflow | `Actions#121` | OPEN |
+| 07 bicep lint PR gate | `Actions#122` | OPEN |
+| 08 per-Node scaffold pattern | `Architecture#387` | OPEN |
+| 09 import playbook | `Architecture#388` | OPEN |
+
+The work has **not shipped** — ADR-0077 is still `Proposed` on `main`, and no packet PR has merged. But because the packets are filed, **invariant 24 binds: filed packets are immutable.** Therefore the re-cut **supersedes** the affected packets (new packets that obsolete the old + a `STATUS — SUPERSEDED` banner on each original); it does **not** rewrite them in place. The dispatch plan (this file) is the ADR-0008 D7 living-narrative exception and IS edited in place.
+
+### Per-packet disposition
+
+| Original | Disposition | Successor | Issue to close |
+|---|---|---|---|
+| **00** acceptance | Superseded | **18** (drops invariant-35 carve-out; rewords IaC invariants for no-registry/consolidated shape) | `Architecture#384` |
+| **01** catalog registration | Superseded | **10** (new `HoneyDrunk.Infrastructure` Node registration) + **12** (Actions-side pipeline-workflows-only catalog edit; drops `acrhdbicep` grid-health entry) | `Architecture#385` |
+| **02** registry ACR walkthrough | **DEAD** | residue (the `rg-hd-platform-shared` RG decision) → **14** | `Architecture#386` |
+| **03** modules scaffold + `bicepconfig.json` | Superseded | **11** (tree + single root `bicepconfig.json` in the new repo) + **13** (module bodies) | `Actions#118` |
+| **04** publish workflow | **DEAD** (no successor — registry dropped) | — | `Actions#119` |
+| **05** first module set + `v1.0.0` tag-publish | Superseded | **13** (module authoring relocates to `HoneyDrunk.Infrastructure/modules/`; tag-publish dies) | `Actions#120` |
+| **06** `job-deploy-bicep.yml` | Superseded | **16** (stays Actions-owned; inputs consume local-path templates from the infra repo, no `br:` refs, decoupled cadence) | `Actions#121` |
+| **07** `bicep lint` PR gate | **UNTOUCHED** (shape-neutral; lints `.bicep`/`.bicepparam` generically; stays Actions-owned; consumed by the infra repo's `pr.yml`) | — (still `Actions#122`) | — |
+| **08** per-Node scaffold pattern | Superseded | **15** (`nodes/{node}/` shape, local-path module refs, `platform/` exported-ID references) | `Architecture#387` |
+| **09** import-existing-resources playbook | Superseded | **17** (re-cut for the consolidated repo; targets `nodes/{node}/`/`platform/`; local-path refs; cross-refs to 14/15/16) | `Architecture#388` |
+
+**NEW packets (no predecessor):**
+- **10** — `HoneyDrunk.Infrastructure` Node registration in the catalogs + routing rules + five-file context folder (invariant 102 Phase A).
+- **11** — `HoneyDrunk.Infrastructure` repo standup / scaffold (tree, root `bicepconfig.json`, consume-Actions wiring) — the bootstrap PR.
+- **14** — `platform/` shared-foundation provisioning (closes the shared-layer gap; absorbs packet 02's `rg-hd-platform-shared` residue).
+
+> **Operator action required at filing time:** when the re-cut packets are eventually filed, the ten OPEN superseded/dead issues above should be CLOSED with a comment pointing at their successors. The scope agent does not close issues; this is an operator (or `hive-sync`) step.
 
 ## Summary
 
-ADR-0077 commits **Bicep** as the canonical IaC tool for every Azure resource the Grid provisions, with a per-concern modularization strategy, a shared `acrhdbicep` Bicep registry distinct from the per-environment container-image ACR (`acrhdshared{env}`), naming and tagging conventions enforced by linter rules, per-environment parameter files, and an explicit grandfather posture for already-manually-provisioned resources (D6). The ADR is Azure-deep by construction (D5); modularization is the hedge against future Terraform migration cost.
+ADR-0077 commits **Bicep** as the canonical IaC tool for every Azure resource the Grid provisions, with a per-concern modularization strategy, naming and tagging conventions enforced by linter rules, per-environment parameter files, and an explicit grandfather posture for already-manually-provisioned resources (D6). The ADR is Azure-deep by construction (D5); modularization is the hedge against future Terraform migration cost.
 
-This initiative delivers: ADR acceptance + the three new IaC invariants + catalog registration (Architecture); the Bicep registry ACR provisioning walkthrough and the live `acrhdbicep` resource (Architecture/Human); the `HoneyDrunk.Actions/bicep/modules/` library structure with `bicepconfig.json` linter rules, the first module set (Container App, Key Vault, App Configuration, Storage Account, Service Bus, Application Insights), the `bicep-publish.yml` reusable workflow that publishes modules on tagged releases, the `job-deploy-bicep.yml` reusable deploy workflow consumed by per-Node release workflows, the `bicep lint` PR gate added to `pr-core.yml`; and the per-Node template-scaffold pattern + the D6 import-existing-resources-to-Bicep playbook (Architecture).
+Post-amendment, this initiative delivers: ADR acceptance + the three new IaC invariants + the new `HoneyDrunk.Infrastructure` Node registration + the Actions-pipeline catalog edit (Architecture); the `HoneyDrunk.Infrastructure` repo standup (tree + single root `bicepconfig.json` + consume-Actions wiring), the first per-concern module set (consumed by local relative path), and the NEW `platform/` shared-foundation layer (`HoneyDrunk.Infrastructure`); the `job-deploy-bicep.yml` reusable deploy workflow (inputs adjusted for local-path templates) and the `bicep lint` PR gate (unchanged) (`HoneyDrunk.Actions`); and the `nodes/{node}/` leaf-template-scaffold pattern + the D6 import-existing-resources playbook (Architecture).
 
-**10 packets across 6 waves**, targeting **2 repos** (`HoneyDrunk.Architecture`, `HoneyDrunk.Actions`). 9 `Actor=Agent`, 1 `Actor=Human` (packet 02 — the ACR portal provisioning).
+**Active packets: 07 (untouched) + 10–18 (re-cut/new) = 10 packets across 4 waves, targeting 3 repos** (`HoneyDrunk.Architecture`, `HoneyDrunk.Actions`, `HoneyDrunk.Infrastructure`). All `Actor=Agent`; several carry Human Prerequisites (repo creation, RG/RBAC provisioning, deploy approvals) but the code-change work is delegable. The 10 original packets (00–09) are superseded/dead/untouched per the table above.
 
 ## Trigger
 
-ADR-0077 is Proposed with no scope. The forcing functions (from the ADR's Context):
+ADR-0077 was Proposed; its original scope was decomposed into packets 00–09 (filed). The 2026-06-02 amendment course-corrects the location/distribution mechanics before any packet shipped. The forcing functions (from the ADR's Context) are unchanged:
 
-- **ADR-0076** Redis provisioning needs per-environment Cache for Redis instances — without an IaC tool, that provisioning happens via Portal or ad-hoc CLI.
-- **ADR-0036** DR posture's "re-provision in recovery region" claim is a multi-day operator effort without declarative templates.
-- **ADR-0033** environment-gated deploy model requires per-environment parity (dev ≈ staging ≈ prod) — only declarative templates make that enforceable.
-- **ADR-0059 (Cache), ADR-0060 (Identity), ADR-0061 (Files)** are imminent Node standups; each provisions Container Apps, Vault namespaces, possibly Postgres/Storage/Redis. The compounding infrastructure surface is about to exceed what manual provisioning can sustain.
+- **ADR-0076** Redis provisioning needs per-environment Cache for Redis instances.
+- **ADR-0036** DR posture's "re-provision in recovery region" claim.
+- **ADR-0033** environment-gated deploy model requires per-environment parity.
+- **ADR-0059 (Cache), ADR-0060 (Identity), ADR-0061 (Files)** imminent Node standups, each provisioning Azure resources.
 
-The ADR needs decomposition before the next major infrastructure provisioning event lands.
+The amendment additionally argues: a solo operator wants one PR per cross-Node infra change (one repo, not three); per-Node Bicep churn is low-frequency (the colocation argument is weak); whole-topology visibility + DR + a shared-resource home all favor one place; and `platform/` finally gives the shared layer a home.
 
 ## Scope Detection
 
-**Multi-repo.** ADR-0077 touches `HoneyDrunk.Actions` (the canonical home of the Bicep modules library `bicep/modules/`, the `bicep-publish.yml` workflow, the `job-deploy-bicep.yml` reusable deploy workflow, and the `bicep lint` PR gate per ADR-0012 — Actions is the CI/CD control plane) and `HoneyDrunk.Architecture` (acceptance, invariants, catalog registration, the ACR provisioning walkthrough, the per-Node template-scaffold pattern, the D6 import playbook). Per-Node `infra/main.bicep` templates are deliberately deferred — D6 grandfathers existing infrastructure and per-Node templates land at the first significant infrastructure touchpoint per Node, not as a campaign.
+**Multi-repo (now three repos).**
+- **`HoneyDrunk.Architecture`** — acceptance, invariants, the new Node registration, the Actions-pipeline catalog edit, the `nodes/{node}/` scaffold pattern, the D6 import playbook.
+- **`HoneyDrunk.Actions`** — the deploy + lint reusable workflows (the *pipeline* stays here per ADR-0012); only Bicep *content* moved.
+- **`HoneyDrunk.Infrastructure`** (NEW) — all Bicep content: `modules/`, `platform/`, `nodes/`.
 
-**No cascade into consuming Nodes during this initiative.** Per-Node `infra/main.bicep` adoption is the per-Node concern, executed when the Node provisions a new resource (e.g., ADR-0076 Redis provisioning for the Cache Node) or when an existing resource needs a configuration change (D6). This initiative ships the substrate; downstream Nodes consume it on demand.
+**No runtime cascade into consuming Nodes.** Bicep content is a deploy-time artifact, not a runtime dependency. Per-Node leaf templates land under `nodes/{node}/` at each Node's infrastructure touchpoint (per D6), scoped by that Node's standup ADR — not by this initiative.
 
 ## Wave Diagram
 
-### Wave 1 (No Dependencies — governance + catalog)
-- [ ] **00** — Architecture: Accept ADR-0077, claim the size-3 invariant block in `invariant-reservations.md` (`{N1}–{N3}`, currently **90–92**), add the three IaC invariants, amend invariant 35 to carve out `acrhdbicep`, register the initiative. `Actor=Agent`.
-- [ ] **01** — Architecture: register the Bicep modules library, the `acrhdbicep` registry, and the `bicep-publish.yml` / `job-deploy-bicep.yml` workflows in the Grid catalogs. `Actor=Agent`. Blocked by: 00.
+### Wave 1 (No Dependencies — governance + catalog, Architecture)
+- [ ] **18** — Architecture: Accept ADR-0077 (amended), claim the size-3 invariant block, add the three IaC invariants (reworded for the no-registry/consolidated shape), register the initiative. **Do NOT amend invariant 35.** `Actor=Agent`. (Supersedes 00 / `Architecture#384`.)
+- [ ] **10** — Architecture: register `HoneyDrunk.Infrastructure` as a new Node (nodes/relationships/grid-health/contracts catalogs, routing keyword row, sectors row, five-file context folder). `Actor=Agent`. Blocked by: 18. (Supersedes the Infrastructure-Node-registration scope of 01 / `Architecture#385`.)
+- [ ] **12** — Architecture: register the Bicep deploy + lint reusable workflows under `honeydrunk-actions` in the catalogs; ensure no `acrhdbicep` grid-health entry. `Actor=Agent`. Blocked by: 18, 10. (Supersedes the Actions-side scope of 01 / `Architecture#385`.)
 
-> **Invariant numbering.** Packet 00 claims the next free block in `constitution/invariant-reservations.md` (size 3). At dispatch-plan authoring the block is **90–92**; if a racing ADR's packet 00 merges first, the block shifts upward and every `{N*}` placeholder in packet 00 / `invariants.md` is updated together. The companion text-only amendment to invariant 35 lands in the same PR and is not a renumber.
+### Wave 2 (Repo standup — depends on Wave 1)
+- [ ] **11** — Infrastructure: stand up the repo — `modules/`+`platform/`+`nodes/` tree, single root `bicepconfig.json` (D3 rules), repo README/CHANGELOG, `.honeydrunk-review.yaml`, `pr.yml` consuming Actions' `pr-core.yml`. Bootstrap PR. `Actor=Agent` (operator creates the repo + binds org secrets — Human Prerequisite). Blocked by: 18, 10.
 
-### Wave 2 (Provision the Bicep registry — depends on Wave 1)
-- [ ] **02** — Architecture: author the `bicep-registry-acr-creation.md` walkthrough and provision `acrhdbicep` in the Azure subscription. `Actor=Human`. Blocked by: 00.
+### Wave 3 (Bicep content + pipeline — depends on Wave 2; Actions deploy workflow depends only on Wave 1)
+- [ ] **13** — Infrastructure: author the first six per-concern modules in `modules/`, consumed by local relative path. No publish, no registry. `Actor=Agent`. Blocked by: 11. (Supersedes 03+05 / `Actions#118`+`Actions#120`.)
+- [ ] **14** — Infrastructure: author the `platform/` shared-foundation templates (shared Container Apps Environment, image ACR, Log Analytics, Service Bus), exporting resource IDs; grandfather existing `dev` resources via `what-if`. `Actor=Agent` (RG/RBAC/apply are Human Prerequisites). Blocked by: 11, 13. (Absorbs packet 02's `rg-hd-platform-shared` residue.)
+- [ ] **16** — Actions: author `job-deploy-bicep.yml` — reusable deploy workflow applying `HoneyDrunk.Infrastructure` templates with local-path module resolution, OIDC auth, `what-if` preflight, caller-declared env gates. No registry auth. `Actor=Agent`. Blocked by: 18. (Supersedes 06 / `Actions#121`.)
+- [ ] **07** — Actions: add `bicep lint` to `pr-core.yml` (reusable `job-bicep-lint.yml`) so PRs touching `.bicep`/`.bicepparam` fail on linter/build-params violations. **UNCHANGED — still `Actions#122`, already filed.** Consumed by `HoneyDrunk.Infrastructure`'s `pr.yml` (packet 11). `Actor=Agent`. Blocked by: 18.
 
-### Wave 3 (Bicep substrate in Actions — depends on Wave 2)
-- [ ] **03** — Actions: scaffold `bicep/modules/` library layout + `bicepconfig.json` linter rules for naming and tagging conventions (D3). `Actor=Agent`. Blocked by: 00.
-- [ ] **04** — Actions: author the `bicep-publish.yml` reusable workflow that publishes modules to `acrhdbicep` on tagged releases (D2). `Actor=Agent`. Blocked by: 02, 03.
+### Wave 4 (Patterns + import playbook — Architecture docs, depend on the content waves)
+- [ ] **15** — Architecture: author the `nodes/{node}/` leaf-template scaffold pattern (`infrastructure/patterns/node-leaf-template.md`) — local-path module refs, `platform/` exported-ID references, decoupled deploy cadence. `Actor=Agent`. Blocked by: 18, 13, 14. (Supersedes 08 / `Architecture#387`.)
+- [ ] **17** — Architecture: author the D6 import-existing-resources playbook (`infrastructure/patterns/bicep-import-existing-resources.md`) re-cut for the consolidated repo. `Actor=Agent`. Blocked by: 18, 15. (Supersedes 09 / `Architecture#388`.)
 
-### Wave 4 (First module set — depends on Wave 3)
-- [ ] **05** — Actions: author the first per-concern Bicep module set — `compute/containerApp`, `secrets/keyVault`, `secrets/appConfigurationStore`, `data/storageAccount`, `messaging/serviceBusNamespace`, `observability/applicationInsights` — and tag `modules/v1.0.0` to publish them. `Actor=Agent`. Blocked by: 03, 04.
-
-### Wave 5 (Deploy workflow + PR gate — depends on Wave 4)
-- [ ] **06** — Actions: author the `job-deploy-bicep.yml` reusable deploy workflow that applies a Node's `infra/main.bicep` with per-environment `.bicepparam` (D4). `Actor=Agent`. Blocked by: 05.
-- [ ] **07** — Actions: add the `bicep lint` step to `pr-core.yml` so PRs touching any `.bicep` or `.bicepparam` file fail on linter violations (D3 enforcement). `Actor=Agent`. Blocked by: 03.
-
-### Wave 6 (Per-Node adoption substrate — depends on Wave 1, can run in parallel with Wave 3+)
-- [ ] **08** — Architecture: author the per-Node Bicep template scaffold pattern in the repo context docs — `infra/main.bicep` + `parameters.{env}.bicepparam` shape, module registry references, the executor checklist for new infrastructure work. `Actor=Agent`. Blocked by: 00.
-- [ ] **09** — Architecture: author the `bicep-import-existing-resources.md` playbook for the D6 opportunistic-migration path (export to ARM, decompile to Bicep, reconcile drift, adopt). `Actor=Agent`. Blocked by: 00.
-
-Packets within a wave run in parallel except where noted. **Packets 03 and 07 share `HoneyDrunk.Actions`** but touch different files (`bicep/` vs `.github/workflows/pr-core.yml`); they can land in parallel. **Packets 04 and 05** both extend `bicep/modules/` and share the `bicep-publish.yml` execution path — land 04 first (the workflow), then 05 (which uses it to publish the first module set). **Packet 06** consumes the modules published by 05 in its workflow inputs but does not itself need them to exist at PR time; the workflow ships idle until a per-Node release workflow calls it. **Packets 08 and 09 are independent** of all Actions work and run as early as Wave 1.
+Packets within a wave run in parallel except where the dependency arrows say otherwise. **16 and 07 are both Actions** but touch different files (`.github/workflows/job-deploy-bicep.yml` vs `pr-core.yml`/`job-bicep-lint.yml`); they can land in parallel. **16 ships idle** — it does not need packets 13/14 to exist at author time; it activates when `HoneyDrunk.Infrastructure` calls it.
 
 ## Packet Links
 
-| # | Packet | Repo | Actor | Wave | Blocked by |
-|---|--------|------|-------|------|-----------|
-| 00 | [Accept ADR-0077](./00-architecture-adr-0077-acceptance.md) | Architecture | Agent | 1 | — |
-| 01 | [Bicep modules + registry catalog registration](./01-architecture-bicep-catalog-registration.md) | Architecture | Agent | 1 | 00 |
-| 02 | [Bicep registry ACR walkthrough + provisioning](./02-architecture-bicep-registry-acr-walkthrough.md) | Architecture | Human | 2 | 00 |
-| 03 | [Bicep modules library scaffold + bicepconfig](./03-actions-bicep-modules-library-scaffold.md) | Actions | Agent | 3 | 00 |
-| 04 | [bicep-publish.yml reusable workflow](./04-actions-bicep-publish-workflow.md) | Actions | Agent | 3 | 02, 03 |
-| 05 | [First per-concern Bicep module set](./05-actions-bicep-first-module-set.md) | Actions | Agent | 4 | 03, 04 |
-| 06 | [job-deploy-bicep.yml reusable deploy workflow](./06-actions-job-deploy-bicep-workflow.md) | Actions | Agent | 5 | 05 |
-| 07 | [Add bicep lint gate to pr-core.yml](./07-actions-bicep-lint-pr-gate.md) | Actions | Agent | 5 | 03 |
-| 08 | [Per-Node Bicep template scaffold pattern](./08-architecture-per-node-bicep-template-scaffold-pattern.md) | Architecture | Agent | 6 | 00 |
-| 09 | [Import-existing-resources-to-Bicep playbook (D6)](./09-architecture-bicep-import-existing-resources-playbook.md) | Architecture | Agent | 6 | 00 |
+| # | Packet | Repo | Actor | Wave | Blocked by | Replaces |
+|---|--------|------|-------|------|-----------|----------|
+| 18 | [Accept ADR-0077 (amended)](./18-architecture-adr-0077-acceptance.md) | Architecture | Agent | 1 | — | 00 |
+| 10 | [Infrastructure Node registration](./10-architecture-infrastructure-node-registration.md) | Architecture | Agent | 1 | 18 | 01 (part) |
+| 12 | [Actions pipeline catalog registration](./12-architecture-actions-pipeline-catalog-registration.md) | Architecture | Agent | 1 | 18, 10 | 01 (part) |
+| 11 | [Infrastructure repo standup + scaffold](./11-infrastructure-repo-standup-and-scaffold.md) | Infrastructure | Agent | 2 | 18, 10 | new (+ 03 scaffold part) |
+| 13 | [First per-concern module set](./13-infrastructure-first-module-set.md) | Infrastructure | Agent | 3 | 11 | 03, 05 |
+| 14 | [platform/ shared-foundation](./14-infrastructure-platform-shared-foundation.md) | Infrastructure | Agent | 3 | 11, 13 | new (+ 02 residue) |
+| 16 | [job-deploy-bicep.yml (local-path)](./16-actions-job-deploy-bicep-workflow.md) | Actions | Agent | 3 | 18 | 06 |
+| 07 | [Add bicep lint gate to pr-core.yml](./07-actions-bicep-lint-pr-gate.md) | Actions | Agent | 3 | 18 | — (untouched) |
+| 15 | [nodes/{node}/ leaf-template scaffold pattern](./15-architecture-nodes-leaf-template-scaffold-pattern.md) | Architecture | Agent | 4 | 18, 13, 14 | 08 |
+| 17 | [Import-existing-resources playbook (D6)](./17-architecture-bicep-import-existing-resources-playbook.md) | Architecture | Agent | 4 | 18, 15 | 09 |
+
+**Superseded / dead originals (retained on disk with `STATUS` banners; do not execute):** [00](./00-architecture-adr-0077-acceptance.md), [01](./01-architecture-bicep-catalog-registration.md), [02 DEAD](./02-architecture-bicep-registry-acr-walkthrough.md), [03](./03-actions-bicep-modules-library-scaffold.md), [04 DEAD](./04-actions-bicep-publish-workflow.md), [05](./05-actions-bicep-first-module-set.md), [06](./06-actions-job-deploy-bicep-workflow.md), [08](./08-architecture-per-node-bicep-template-scaffold-pattern.md), [09](./09-architecture-bicep-import-existing-resources-playbook.md).
+
+> **Note on the dependency-frontmatter of the superseded originals.** The originals' `dependencies:` arrays still reference each other (`packet:00`, `packet:02`, etc.). They are skipped by `file-packets.yml` (already in the manifest, line-407 "already filed" skip), so their stale deps are inert. The re-cut packets (10–18) carry correct `packet:NN` / `Repo#N` deps among themselves.
 
 ## Version Bumps
 
-- **`HoneyDrunk.Actions`** — not a versioned .NET solution; the repo ships GitHub Actions YAML + Bicep modules. The Bicep module library has its own SemVer namespace via the `modules/v{N}.{N}.{N}` git-tag pattern (D2); packet 05 ships `modules/v1.0.0`. The repo may keep a `CHANGELOG.md` for the workflow surface; if so, every Actions packet appends an entry per the repo convention.
+- **`HoneyDrunk.Infrastructure`** (NEW) — not a versioned .NET solution; ships Bicep templates + GitHub Actions YAML. Carries a repo-level `CHANGELOG.md` (Keep a Changelog) for the Bicep-content surface: packet 11 seeds it (scaffold), packets 13/14 append (module set, platform layer). No module SemVer namespace — the `modules/v{N}.{N}.{N}` tag pattern is dropped with the registry; modules are versioned by git history, consumed by local relative path.
+- **`HoneyDrunk.Actions`** — not a versioned .NET solution; ships GitHub Actions YAML. The repo may keep a `CHANGELOG.md` for the workflow surface; packets 16/07 append entries per the repo convention. No Bicep modules live here anymore (moved to Infrastructure).
 - **`HoneyDrunk.Architecture`** — not a versioned .NET solution; governance/catalog/docs edits only.
 
 ## Cross-Cutting Concerns
 
 ### Coordination with ADR-0076 (Redis) — IMPORTANT
 
-ADR-0076 commits Azure Cache for Redis as the cache backing and names per-environment provisioning. ADR-0077 names ADR-0076 explicitly as the first forcing function. The two should be coordinated:
+ADR-0076 commits Azure Cache for Redis as the cache backing and names per-environment provisioning. ADR-0077 names ADR-0076 explicitly as the first forcing function.
 
-- **ADR-0076's Redis provisioning is the first natural touchpoint for a per-Node Bicep template.** ADR-0076's provisioning work (when scoped) can land in two shapes: (a) a portal walkthrough (consistent with the operator's portal-over-CLI preference), or (b) a per-Node `infra/main.bicep` consuming the `data/redisCache` module — which the first module set (packet 05) does **not** include in v1.0.0 because the Cache Node standup (ADR-0059) is not yet scoped. **Recommendation:** packet 05 v1.0.0 ships the six concerns the ADR explicitly names; ADR-0076's Redis module lands as `modules/v1.1.0` once the Cache Node's provisioning work is scoped and the resource shape is concrete. Until then, ADR-0076's `dev` provisioning can take the portal route consistent with the D6 grandfather pattern (new resource, but documented as not-yet-Bicep-managed in `grid-health.json`). Do not bundle Redis into packet 05 prematurely.
-- **No hard dependency.** ADR-0077 acceptance does not block on ADR-0076's acceptance, and ADR-0076's provisioning does not block on this initiative completing — the first deferral path is "provision via portal now; import to Bicep when the Cache Node's Bicep template lands per D6."
+- **ADR-0076's Redis provisioning is the first natural touchpoint for a per-Node leaf template under `nodes/{node}/`.** The first module set (packet 13) does **not** include a `data/redisCache` module in v1 — the Cache Node standup (ADR-0059) is not yet scoped. **Recommendation:** packet 13 ships the six concerns the ADR explicitly names; ADR-0076's Redis module lands when the Cache Node's provisioning work is scoped and the resource shape is concrete (a follow-up `modules/data/redisCache.bicep`, no version tag — local-path consumed). Until then, ADR-0076's `dev` provisioning can take the portal route consistent with the D6 grandfather pattern.
+- **No hard dependency.** ADR-0077 acceptance does not block on ADR-0076's acceptance, and ADR-0076's provisioning does not block on this initiative completing.
 
 ### Coordination with the Node standups (ADR-0059 Cache / ADR-0060 Identity / ADR-0061 Files)
 
-Each of these Node standups will provision Azure resources. Per D6 and the dispatch above:
+Each provisions Azure resources. Per D6 and the amendment:
+- **New infrastructure goes through Bicep from day one** — but now lands as a per-Node leaf template under `HoneyDrunk.Infrastructure/nodes/{node}/`, not in the Node's own repo. The leaf template consumes the modules (packet 13) by local relative path and references the `platform/` exported IDs (packet 14).
+- **Per-Node leaf templates are scoped by the standup ADR, not by this initiative.** This initiative ships the substrate (modules + platform + pattern + pipeline); per-Node templates land at each standup.
 
-- **New infrastructure goes through Bicep from day one.** Per ADR-0077 D6: "New infrastructure goes through Bicep from day one." Each Node standup that comes after this initiative completes ships its `infra/main.bicep` + per-environment `.bicepparam` as part of the standup, consuming the modules published by packet 05.
-- **Per-Node Bicep templates are scoped by the standup ADR, not by this initiative.** This initiative does not pre-author per-Node templates; doing so would couple Node-shape decisions (Postgres? Storage? region?) to an initiative whose scope is the substrate, not the per-Node infrastructure. The per-Node template lands when the standup ADR is scoped.
+### Shared layer — `platform/` closes the gap (was: "Bicep registry vs container-image registry")
 
-### Bicep registry vs container-image registry — separate ACRs
+> **This section replaces the now-moot "Bicep registry vs container-image registry — separate ACRs" cross-cutting section.** With the cross-repo Bicep module registry dropped, there is no second ACR and no carve-out question. The only ACR remains the per-environment **container-image** registry `acrhdshared{env}` (invariant 35), now declared as a `platform/` resource.
 
-ADR-0077 D2 is explicit: the Bicep modules registry (`acrhdbicep`) is a **dedicated** Azure Container Registry, distinct from the per-environment container-image ACR (`acrhdshared{env}` per ADR-0015 and invariant 35). Reason: Bicep modules are environment-agnostic templates; a single shared registry across environments is the right shape. Per-environment image ACRs are an environment isolation concern; per-environment module ACRs would force version-bump-and-republish per environment for no security gain.
+The original ADR had a gap: the shared layer (shared Container Apps Environment, shared image ACR, Log Analytics, shared Service Bus) had no provisioning home, and Nodes consumed those resources via hand-pasted ARM resource IDs. The amendment's NEW `platform/` layer (packet 14) closes it:
 
-- **Packet 02** provisions `acrhdbicep` in a yet-to-be-decided resource group. Recommended: `rg-hd-platform-shared` (a new platform RG that holds non-environment-scoped resources — the Bicep registry, and any future shared substrate). The walkthrough records the RG decision.
-- **Naming.** `acrhdbicep` is alphanumeric, globally unique, 11 chars — comfortably inside the 5–50 char ACR name limit. No environment suffix per its environment-agnostic role.
-- **Invariant 35 amendment.** Invariant 35's existing text names `acrhdshared{env}` as "the" shared ACR — `acrhdbicep` is a literal second ACR and collides on a strict reading. Packet 00 amends invariant 35's text in the same PR that adds the new IaC invariants, explicitly carving out `acrhdbicep` as the environment-agnostic, modules-only Bicep registry. The amendment is text-only; invariant 35 keeps its number.
+- **`platform/main.bicep`** declares the shared-foundation resources and **exports their resource IDs as deploy outputs**. Per-Node leaf templates reference those exported IDs — not hand-pasted ARM strings.
+- **Resource-group home.** The per-environment shared resources (`acrhdshared{env}`, `cae-hd-{env}` per invariant 35) live in `rg-hd-platform-{env}`. The amendment confirms `rg-hd-platform-shared` as the home for any environment-agnostic shared substrate. (This is the surviving residue of the dead packet 02, which had floated `rg-hd-platform-shared` for the now-dropped `acrhdbicep`.)
+- **Grandfather posture (D6).** The existing `dev` platform resources (`acrhdshared{dev}`, `cae-hd-dev`) are not recreated — packet 14's template matches them and they import as a no-op via `az deployment group what-if`.
+- **Invariant 35 unchanged.** No carve-out — the registry is dropped. `acrhdshared{env}` is the only ACR; the `acrhd` prefix on the (now-dead) `acrhdbicep` no longer exists anywhere.
 
-### Naming and tagging linter rules — committed by D3
+### Local relative path module references — the registry-drop consequence
 
-ADR-0077 D3 commits naming and tagging conventions enforced by `bicepconfig.json` linter rules. Packet 03 ships the `bicepconfig.json` and the rule set; packet 07 wires `bicep lint` into `pr-core.yml` so the rules are enforced at PR time. The rule set must:
+Every module reference across the initiative is `'../../modules/{concern}/{name}.bicep'` (or the appropriate relative depth). There is **no** `br:acrhdbicep.azurecr.io/...` syntax, no `bicep-publish.yml`, no `modules/v{N}.{N}.{N}` tag, and no `az acr login` in the deploy workflow. Because `modules/`, `platform/`, and `nodes/` share one repo checkout, `bicep build` resolves modules directly from the filesystem. This is the load-bearing simplification of the amendment — it must hold in every packet (11, 13, 14, 15, 16, 17).
 
+### Naming and tagging linter rules — committed by D3 (unchanged)
+
+A **single root `bicepconfig.json`** in `HoneyDrunk.Infrastructure` (packet 11) carries the D3 rules and covers `modules/`, `platform/`, and `nodes/` via Bicep's config-file resolution (filesystem search from a template's directory upward). The rules:
 - Flag missing required tags (`hd:node`, `hd:env`, `hd:owner`, `hd:cost-center`, `hd:dr-tier`, `hd:adr`).
-- Flag non-conformant resource names (per-resource-type prefix, `hd-` Grid identifier, `{service}` or `{node}` name within the ≤13-char service-name length rule from invariant 19, `{env}` suffix).
-- Reject hardcoded secret values in templates (D7 — codifies invariant 8 extended to IaC payloads).
+- Flag non-conformant resource names (per-resource-type prefix, `hd-` identifier, `{service}`/`{node}` within the ≤13-char rule of invariant 19, `{env}` suffix).
+- Best-effort secret-shaped-literal detection (D7).
 
-The rule set is a single committed `bicepconfig.json` shared across the modules library and per-Node templates; per-Node templates inherit the rule set via Bicep's config-file resolution (file-system search from the template's directory upward, picking up the first `bicepconfig.json`).
+The `bicep lint` gate (packet 07, consumed from Actions) enforces them at PR time.
 
-### Secrets discipline — codified in invariant 85, enforced by linter
+### Secrets discipline — codified in the IaC invariants, enforced by linter (unchanged)
 
-ADR-0077 D7 commits "Bicep templates never contain secret values." Packet 00's invariant 85 codifies it; packet 03's `bicepconfig.json` flags hardcoded secret-shaped strings as a linter rule (best-effort — full secret detection is impractical, but the rule should catch the common cases: `accountKey`, `connectionString`, `password`, `apiKey` literals). The runtime enforcement is the deploy-identity scope (D7): the GitHub Actions OIDC-federated identity has rights to provision resources, not to read secret values — so even if a template accidentally referenced a secret value by name, the deploy would fail with an AAD permission error rather than leaking the secret. This is defense in depth.
+ADR-0077 D7: "Bicep templates never contain secret values." Packet 18's `{N2}` invariant codifies it; packet 11's root `bicepconfig.json` flags hardcoded secret-shaped literals. The runtime enforcement is the deploy-identity scope (the Actions OIDC identity provisions, does not read secrets) — defense in depth.
 
-### Vendor-exit posture acknowledged in D5 — no rebalancing in this initiative
+### Vendor-exit posture acknowledged in D5 — no rebalancing in this initiative (unchanged)
 
-ADR-0077 D5 names the Azure-deep posture explicitly. The vendor-exit playbook (named in `charter-aware draft cluster 2.1`) is **explicitly out of scope** for this initiative — it lands as a separate ADR when authored. This initiative pre-pays the part of the vendor-exit cost that modularization (D2) addresses; nothing more. Do not bundle vendor-exit work into this initiative.
+Per ADR-0080 the Azure posture is "Accept (deep, intentional)" with `governance/vendor-postures/azure.md` as the canonical home. The vendor-exit playbook content is out of scope. Modularize-by-concern (D2, unchanged) is the pre-paid hedge — and consolidation into one repo does not weaken it (the per-concern module boundaries still map 1:1 to a future Terraform port).
 
 ### Site sync
 
-No site-sync flag. ADR-0077 is internal Ops infrastructure substrate — no public-facing Studios website content changes.
+No site-sync flag. ADR-0077 is internal Ops infrastructure substrate.
 
 ### Deferred follow-ups (explicitly out of scope)
 
-- **Per-Node `infra/main.bicep` adoption.** Per D6, opportunistic, at each Node's next significant infrastructure touchpoint. No campaign.
-- **Existing-resource imports.** Per D6, opportunistic. The playbook (packet 09) is the substrate; the actual imports are per-Node concerns.
-- **Vendor-exit playbook authoring.** Separate ADR (cluster 2.1).
-- **Azure Policy / Azure Blueprints adoption.** ADR-0077 D8 explicitly defers — governance via Policy is a future concern.
-- **Cost-allocation tagging beyond the D3 `hd:cost-center` baseline.** Future operational concern.
-- **Bicep-generated documentation** (`--summary` output). Nice-to-have; deferred.
-- **Subscription / resource-group topology decisions.** D8 defers — the current single-subscription, per-Node-RG convention stands.
-- **Cloudflare IaC.** ADR-0029 governs Cloudflare; Bicep is Azure-only by construction. Cloudflare IaC (if ever) is a separate ADR.
-- **DR-rehearsal exercise.** ADR-0036's DR-rehearsal is the validation event for the Bicep-driven re-provisioning path; rehearsal scheduling is its own work item, not in this initiative.
+- **Per-Node leaf-template adoption.** Opportunistic, at each Node's next infrastructure touchpoint (D6). No campaign.
+- **Existing-resource imports.** Opportunistic (D6). Packet 17 is the playbook; actual imports are per-resource work targeting `HoneyDrunk.Infrastructure`.
+- **The `data/redisCache` module** for ADR-0076 — lands when the Cache Node provisioning is scoped.
+- **Networking / identity modules** — land when a consumer first needs them.
+- **Vendor-exit playbook authoring.** ADR-0080 (per-surface content deferred).
+- **Azure Policy / Azure Blueprints.** D8 defers.
+- **Multi-region DR topology.** D8 defers; per-Node concern.
+- **Cloudflare IaC.** ADR-0029; Bicep is Azure-only by construction.
 
 ## Rollback Plan
 
-- **Packets 00–01 (governance/catalog):** revert the PR. ADR returns to Proposed; the three invariants and the catalog entries are removed. No runtime impact.
-- **Packet 02 (ACR provisioning):** `acrhdbicep` can be deleted in the portal; the walkthrough doc reverted. Low cost (Basic SKU), easily reversed. No consumer depends on it until packets 04/05 publish modules.
-- **Packet 03 (modules library scaffold):** revert the PR; the `bicep/modules/` tree and `bicepconfig.json` leave the repo. No published module exists yet — clean revert.
-- **Packet 04 (publish workflow):** revert the PR; `bicep-publish.yml` leaves the repo. No module has been published unless packet 05 already ran — if so, the published `modules/v1.0.0` tag in `acrhdbicep` is left in place by convention; deleting it requires an explicit ACR-side action and is normally not warranted. **Tag-immutability on ACR Basic tier is honor-system, not enforced** — the Basic SKU does not support repository-level immutability policies (a Premium-tier feature); the workflow's SemVer-bump discipline is what prevents republish-overwrite, not the registry.
-- **Packet 05 (first module set):** revert the PR; the module files leave the repo. The published `modules/v1.0.0` in `acrhdbicep` stays in place by convention (tag-immutability is honor-system on Basic tier; SemVer-bump discipline is workflow-enforced — `bicep-publish.yml` refuses to overwrite an existing tag); a future republish bumps to v1.0.1 with the corrected templates rather than overwriting v1.0.0.
-- **Packet 06 (deploy workflow):** revert the PR; `job-deploy-bicep.yml` leaves the repo. No per-Node release workflow calls it yet — clean revert.
-- **Packet 07 (PR gate):** revert the PR; `bicep lint` is removed from `pr-core.yml`. Existing PRs that previously failed the gate now pass. No runtime impact.
-- **Packets 08–09 (docs):** revert the PR; the docs are removed. No runtime impact.
-- **Operational escape hatch:** if a Bicep deployment ever produces a worse-than-portal result for a specific resource, the operator can fall back to portal provisioning for that resource and document the deviation in `grid-health.json`. D6's grandfather pattern is bidirectional — manual provisioning was the prior state; Bicep is the forward state; falling back is supported until the issue is reconciled.
+- **Packets 18 / 10 / 12 (governance/catalog):** revert the PR. ADR returns to Proposed; the three invariants, the new Node registration, and the catalog entries are removed. No runtime impact.
+- **Packet 11 (repo standup):** revert the bootstrap PR; the scaffold leaves the repo. The repo itself can be archived/deleted by the operator if the initiative is abandoned. No published artifact exists (no registry).
+- **Packet 13 (module set):** revert the PR; the module files leave the repo. No registry tag exists to clean up (registry dropped) — clean revert.
+- **Packet 14 (platform):** revert the PR; the `platform/` templates leave the repo. **Existing live `dev` resources are untouched by a revert** — they were grandfathered (no-op import), not recreated. If a `platform/` apply already ran and changed a live resource, roll back via the captured ARM snapshot (the import playbook, packet 17, documents this).
+- **Packet 16 (deploy workflow):** revert the PR; `job-deploy-bicep.yml` leaves Actions. No caller invokes it until `HoneyDrunk.Infrastructure` wires it — clean revert.
+- **Packet 07 (PR gate):** revert the PR; `bicep lint` is removed from `pr-core.yml`. No runtime impact.
+- **Packets 15 / 17 (docs):** revert the PR; the patterns/playbook docs are removed. No runtime impact.
+- **Operational escape hatch:** D6's grandfather pattern is bidirectional — a resource that fails a Bicep apply can fall back to portal provisioning, documented in `grid-health.json`.
 
 ## Filing
 
-Filing is automated. On push to `main`, `file-packets.yml` in `HoneyDrunk.Architecture` files every packet in this folder as a GitHub issue in its `target_repo`, adds it to The Hive (project #4), sets the board fields from frontmatter, and wires `addBlockedBy` edges from the `dependencies:` arrays. No manual `gh issue create`.
+Filing is automated. On push to `main`, `file-packets.yml` in `HoneyDrunk.Architecture` files every **non-superseded** packet in this folder as a GitHub issue in its `target_repo`, adds it to The Hive (project #4), sets the board fields from frontmatter, and wires `addBlockedBy` edges from the `dependencies:` arrays. The superseded originals (00–06, 08, 09) are already in `filed-packets.json` and are **skipped** ("already filed" — `file-packets.sh` line ~407); their `STATUS` banners are documentation only. Packet 07 is also already filed and skipped (unchanged). The re-cut packets (10–18) are new manifest entries and would be filed when pushed.
+
+**This re-cut is for operator review — nothing has been filed, pushed, or had issues created.** When the operator is ready: push the folder to `main` to file packets 10–18, then CLOSE the ten OPEN superseded/dead issues (`Architecture#384/385/386/387/388`, `Actions#118/119/120/121`) with comments pointing at their successors. `Actions#122` (packet 07) stays OPEN — it is untouched.

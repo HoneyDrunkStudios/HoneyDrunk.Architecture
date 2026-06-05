@@ -185,6 +185,63 @@ The following are explicitly **not** decided by this ADR:
 - **GitHub Actions Bicep deploy workflow specifics.** The workflow lands per HoneyDrunk.Actions's standard contract; the specific shape is a follow-up packet.
 - **Subscription / resource-group topology.** The Grid's current subscription is a single subscription with per-Node resource groups (per the existing convention); explicit confirmation is out of scope.
 
+## Amendment (2026-06-02) — Consolidate all Bicep content into `HoneyDrunk.Infrastructure`; drop the cross-repo module registry
+
+**Status of the amendment:** supersedes the *location* and *distribution* mechanics of D1, D2, D4, and one item of D8. The tool choice, modularize-by-concern principle, naming/tagging rules (D3), secrets-by-URI discipline (D7), Azure-deep posture (D5), and grandfather/opportunistic-import posture (D6) are **unchanged**. ADR-0077 was still Proposed when this amendment was authored (packet 00 had not run; nothing had shipped), so this is a pre-implementation course-correction, not a migration off a shipped shape.
+
+This amendment does **not** edit the D1–D8 prose above. The original decisions are preserved as the decision history; the deltas are recorded here and explicitly state which decisions they supersede and why.
+
+### What changes
+
+**All Bicep *content* consolidates into a single new repo, `HoneyDrunk.Infrastructure`.** The *pipeline* does not move — the reusable deploy and lint workflows stay in `HoneyDrunk.Actions` per [ADR-0012](./ADR-0012-grid-cicd-control-plane.md) (Actions is the CI/CD control plane). `HoneyDrunk.Infrastructure` *consumes* `job-deploy-bicep.yml` and the `bicep lint` gate as reusable workflows; only the Bicep templates and modules live in the new repo.
+
+Repository structure:
+
+- **`modules/`** — the per-concern modules (networking, compute, identity, data, secrets, messaging, observability), moved out of `HoneyDrunk.Actions/bicep/modules/`. The per-concern taxonomy from D2 is unchanged; only the home changes.
+- **`platform/`** — NEW first-class home for shared / foundational resources that are not owned by any single Node: the shared Container Apps Environment, the shared image ACR (`acrhdshared{env}`), Log Analytics, the shared Service Bus namespace, networking, etc. This closes a gap in the original ADR: the shared layer had no provisioning home, and Nodes consumed it via hand-pasted ARM resource IDs. `platform/` is now where those resources are declared.
+- **`nodes/{node}/`** — the thin per-Node leaf templates (`main.bicep` + `parameters.{env}.bicepparam`), relocated out of each Node's own repo.
+
+### Decisions superseded
+
+**D1 (location only — tool choice stays).** Bicep files no longer live in "each Node's repo under `infra/`." Per-Node templates live under `nodes/{node}/` in `HoneyDrunk.Infrastructure`. Bicep remains the canonical IaC tool; only the *location* of the files changes.
+
+**D2 (distribution mechanics dropped — modularize-by-concern stays).** Modules are still organized by concern. But because modules and their consumers now share one repo, modules are referenced by **local relative path** (e.g. `module containerApp '../../modules/compute/containerApp.bicep'`), not via a Bicep registry. The cross-repo distribution machinery existed *solely* to ship modules across repo boundaries, and is therefore dropped in full:
+
+> **REGISTRY DROP — CONFIRMED 2026-06-02.** The following are all dropped as part of this amendment:
+> - the dedicated **`acrhdbicep`** Azure Container Registry,
+> - the **`bicep-publish.yml`** publish workflow,
+> - the **`modules/v{N}.{N}.{N}`** SemVer-tag-to-publish flow,
+> - the **`br:acrhdbicep.azurecr.io/...`** registry reference syntax.
+>
+> A single-repo monorepo for infra content makes a Bicep registry pure overhead. The registry existed *solely* to ship modules across repo boundaries; with `modules/`, `platform/`, and `nodes/` co-located, modules are referenced by local relative path and the registry has no remaining purpose. The operator confirmed the drop on 2026-06-02; no module consumption outside `HoneyDrunk.Infrastructure` is anticipated.
+
+**D4 (location + cadence).** Per-environment `main.bicep` + `parameters.{env}.bicepparam` stays as the deploy shape, but lives per-Node under `nodes/{node}/` and per-platform-concern under `platform/`, rather than in Node repos. Infrastructure deploys on its **own cadence, decoupled from application release tags.** Infra and application code rarely change together; when they do, two separate deploys is acceptable. This supersedes the D4 framing that tied Bicep deployment to the application release-tag flow ("deployments to staging trigger from a tagged commit; deployments to prod trigger from a tagged staging-validated commit"); that tag-coupling was the per-Node-repo assumption and does not survive consolidation.
+
+**D8 (one item revisited — the rest of the deferrals stand).** D8 deferred "subscription / resource-group topology." That deferral is revisited *only* insofar as the new `platform/` layer now needs a home: the recommended home is the **`rg-hd-platform-shared`** resource group already floated in the dispatch plan. All other D8 deferrals (vendor-exit playbook content, multi-region topology, Azure Policy / Blueprints, cost-allocation tagging beyond the D3 baseline, Bicep-generated docs, deploy-workflow specifics, the broader subscription topology) remain intact.
+
+### What stays unchanged
+
+- **D1 tool choice** — Bicep is still the canonical IaC tool.
+- **D2 principle** — modularize by concern (the seven concern groups, the Terraform-port-mirrors-modules hedge).
+- **D3** — naming and tagging linter rules in `bicepconfig.json`, CI-enforced. A single `bicepconfig.json` at the `HoneyDrunk.Infrastructure` root now covers `modules/`, `platform/`, and `nodes/` via Bicep's config-file resolution.
+- **D5** — Azure-deep vendor posture, acknowledged honestly.
+- **D6** — grandfather / opportunistic-import posture for existing manually-provisioned resources.
+- **D7** — secrets-by-URI discipline; templates never carry secret values.
+- **Pipeline home** — the reusable deploy and lint workflows remain in `HoneyDrunk.Actions` per [ADR-0012](./ADR-0012-grid-cicd-control-plane.md). `HoneyDrunk.Infrastructure` consumes them.
+
+### Rationale
+
+- **Solo operator; one PR per cross-Node infra change.** A change that touches three Nodes' infrastructure should be one PR in one repo, not three PRs spread across three repos. Consolidation makes cross-Node infrastructure changes coherent.
+- **Per-Node Bicep churn is low-frequency, so the colocation argument is weak.** The high-frequency runtime churn — feature flags, secrets, config — lives in Azure App Configuration + Key Vault per [ADR-0005](./ADR-0005-configuration-and-secrets-strategy.md), **not** in Bicep. Per-Node Bicep changes (scaling tuning, occasionally adding a resource type) are infrequent, which removes the "keep infra next to the code that changes with it" argument that would otherwise favor per-Node `infra/` directories.
+- **The forcing functions the original ADR cited reward one place.** Whole-topology visibility, a coherent DR re-provisioning story ([ADR-0036](./ADR-0036-disaster-recovery-and-backup-policy.md)), explicit cross-resource ordering, and an obvious shared-resource home all favor a single repo. Bus-factor and DR — the forcing functions the original ADR named — are best served by being able to reason about the whole topology in one place.
+- **The shared layer finally has a home.** `platform/` closes the gap where shared/foundational resources had no provisioning home and were consumed via hand-pasted ARM resource IDs.
+
+### Amendment consequences
+
+- **`HoneyDrunk.Infrastructure` is a NEW Node.** It needs catalog registration (`nodes.json`, `relationships.json`, `contracts.json`) and routing-rule entries. The original packet 01 registered the substrate under `honeydrunk-actions`; that registration must be reworked for the new repo shape.
+- **The existing ADR-0077 dispatch plan and several packets are now partly or fully superseded** (enumerated in the follow-up note below). They are not rewritten by this amendment; a follow-up scope pass re-cuts the dispatch plan.
+- **The planned invariant-35 carve-out for `acrhdbicep` is no longer needed** (the carve-out only existed to let a second ACR coexist with `acrhdshared{env}`; with the registry dropped per the confirmed decision above, invariant 35 stands unchanged).
+
 ## Consequences
 
 ### Affected Nodes

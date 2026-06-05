@@ -13,6 +13,8 @@ node: honeydrunk-actions
 
 # Author bicep-publish.yml — the reusable workflow that publishes modules to acrhdbicep on tagged release
 
+> **STATUS — DEAD (2026-06-02).** Filed as `Actions#119` (OPEN, unmerged). The ADR-0077 amendment (2026-06-02) DROPS the cross-repo Bicep module registry in full — no `acrhdbicep` ACR, no `bicep-publish.yml`, no `modules/v{N}.{N}.{N}` SemVer-tag-publish flow. Modules in the consolidated `HoneyDrunk.Infrastructure` repo are consumed by local relative path; there is nothing to publish. This packet has no successor — its entire purpose is gone. Retained for traceability; do not execute it. Close `Actions#119` as obsolete (registry dropped per ADR-0077 amendment). See `dispatch-plan.md`.
+
 ## Summary
 Author `.github/workflows/bicep-publish.yml` in `HoneyDrunk.Actions` — the reusable workflow that runs `az bicep publish` for each Bicep module under `bicep/modules/` against the `acrhdbicep` Azure Container Registry on tagged release per ADR-0077 D2. Trigger: tag push of the form `modules/v{N}.{N}.{N}` (or `workflow_dispatch` for manual republish). Authenticated via the existing Actions OIDC federation. Publishes only modules whose files changed since the previous tag (best-effort) or all modules if change detection is not feasible.
 

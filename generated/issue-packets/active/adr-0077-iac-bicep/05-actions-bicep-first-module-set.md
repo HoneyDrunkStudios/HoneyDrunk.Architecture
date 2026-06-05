@@ -13,6 +13,8 @@ node: honeydrunk-actions
 
 # Author the first per-concern Bicep module set and tag modules/v1.0.0
 
+> **STATUS — SUPERSEDED (2026-06-02) by packet 13.** Filed as `Actions#120` (OPEN, unmerged). The ADR-0077 amendment (2026-06-02) relocates module authoring to `HoneyDrunk.Infrastructure/modules/` (packet 13) and DROPS the `modules/v1.0.0` tag-publish step (no registry — modules are consumed by local relative path). This packet is retained for traceability; do not execute it. Close `Actions#120` as superseded by packet 13. See `dispatch-plan.md`.
+
 ## Summary
 Author the first per-concern Bicep module set in `HoneyDrunk.Actions/bicep/modules/` per ADR-0077 D2's Follow-up Work — covering the six concerns named in the ADR: `compute/containerApp.bicep`, `secrets/keyVault.bicep`, `secrets/appConfigurationStore.bicep`, `data/storageAccount.bicep`, `messaging/serviceBusNamespace.bicep`, and `observability/applicationInsights.bicep`. Each module accepts the parameters needed to provision its resource per Grid naming and tagging conventions (D3) and references Vault for any secret-shaped input (D7). Tag `modules/v1.0.0` after merge so `bicep-publish.yml` (packet 04) publishes the set to `acrhdbicep`.
 
