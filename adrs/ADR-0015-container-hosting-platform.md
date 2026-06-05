@@ -180,7 +180,7 @@ This ADR lists **two** HoneyDrunk.Notify deployables (Notify.Functions + Notify.
 
 ## Implementation Notes (2026-06-04) — As-Built: First-Generation Container Apps Rollout
 
-Recorded per ADR-0008 § Implementation-Notes Packets. Full as-built record (every delta + rationale, PRs, follow-ups) lives in this initiative's `implementation-notes.md` — under `generated/issue-packets/completed/adr-0015-container-apps-rollout/` (invariant 37). The decision above is preserved as written. Headline deltas (decided ➜ as-built):
+Recorded per ADR-0008 § Implementation-Notes Packets. Full as-built record (every delta + rationale, PRs, follow-ups) lives in this initiative's `implementation-notes.md` — under `generated/issue-packets/completed/adr-0015-container-apps-rollout/` (per the Hive Sync invariant "Completed issue packets are moved to `completed/`"). The decision above is preserved as written. Headline deltas (decided ➜ as-built):
 
 - **Notify.Worker — deploy ➜ park.** Packet 04 specified bringing the Worker up as a running Container App dispatcher; as-built it is **parked on standby** (release workflow built, deployment deactivated) because it duplicated `Notify.Functions` on the same `notify-queue`. Recorded in the standby section above (Notify #55, Architecture #557). `Notify#4` is resolved as "workflow built, deployment intentionally parked."
 - **Dev substrate hand-provisioned.** The dev apps existed as `simple-hello-world` placeholders; nearly all runtime wiring (AcrPull, Key Vault Secrets User, App Configuration Data Reader, managed-environment `join`, ingress `targetPort` 80→8080, placeholder TCP:80 probes) was **applied live via `az`** rather than from the Wave 1 walkthroughs. None is codified — it is the concrete spec for **ADR-0077 (Bicep IaC)**.
