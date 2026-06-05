@@ -498,5 +498,11 @@
   "generated/issue-packets/completed/adr-0088-openclaw-decommission/04-architecture-retire-inventory-row.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/544",
   "generated/issue-packets/completed/adr-0088-openclaw-decommission/05-architecture-reconcile-adr-prose.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/545",
   "generated/issue-packets/completed/adr-0088-openclaw-decommission/06-actions-remove-deprecated-inputs.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/176",
-  "generated/issue-packets/completed/adr-0088-openclaw-decommission/07-architecture-retire-openclaw-skills-rule.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/546"
+  "generated/issue-packets/completed/adr-0088-openclaw-decommission/07-architecture-retire-openclaw-skills-rule.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/546",
+  "generated/issue-packets/active/adr-0077-iac-bicep/10-architecture-infrastructure-node-registration.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/571",
+  "generated/issue-packets/active/adr-0077-iac-bicep/12-architecture-actions-pipeline-catalog-registration.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/572",
+  "generated/issue-packets/active/adr-0077-iac-bicep/15-architecture-nodes-leaf-template-scaffold-pattern.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/573",
+  "generated/issue-packets/active/adr-0077-iac-bicep/16-actions-job-deploy-bicep-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/187",
+  "generated/issue-packets/active/adr-0077-iac-bicep/17-architecture-bicep-import-existing-resources-playbook.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/574",
+  "generated/issue-packets/active/adr-0077-iac-bicep/18-architecture-adr-0077-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/575"
 }
