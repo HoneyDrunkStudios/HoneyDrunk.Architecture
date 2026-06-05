@@ -1,6 +1,6 @@
 # Proposed ADR/PDR Queue
 
-**Last Updated:** 2026-06-03
+**Last Updated:** 2026-06-05
 
 ## Awaiting Implementing Packets
 
@@ -32,7 +32,6 @@
 - `ADR-0040` — ADR-0040: Telemetry Backend and Retention — 0/9 accepting packet issues closed; open: HoneyDrunk.Architecture#241, HoneyDrunk.Architecture#242, HoneyDrunk.Architecture#243, HoneyDrunk.Pulse#20, HoneyDrunk.Pulse#21, HoneyDrunk.Pulse#22, HoneyDrunk.Architecture#244, HoneyDrunk.Pulse#23, HoneyDrunk.Architecture#245
 - `ADR-0041` — ADR-0041: AI Model Registry and Approval Workflow — 0/6 accepting packet issues closed; open: HoneyDrunk.Architecture#246, HoneyDrunk.Architecture#247, HoneyDrunk.AI#6, HoneyDrunk.AI#7, HoneyDrunk.AI#8, HoneyDrunk.AI#9
 - `ADR-0042` — ADR-0042: Idempotency Contract for Async Boundaries — 0/2 accepting packet issues closed; open: HoneyDrunk.Architecture#248, HoneyDrunk.Architecture#249
-- `ADR-0043` — ADR-0043: Continuous Backlog Generation Strategy — 0/8 accepting packet issues closed; open: HoneyDrunk.Architecture#250, HoneyDrunk.Architecture#251, HoneyDrunk.Architecture#252, HoneyDrunk.Architecture#253, HoneyDrunk.Architecture#254, HoneyDrunk.Architecture#255, HoneyDrunk.Architecture#256, HoneyDrunk.Architecture#257
 - `ADR-0045` — ADR-0045: Grid-Wide Error Tracking — 0/8 accepting packet issues closed; open: HoneyDrunk.Architecture#258, HoneyDrunk.Architecture#259, HoneyDrunk.Pulse#24, HoneyDrunk.Pulse#25, HoneyDrunk.Actions#98, HoneyDrunk.Notify#27, HoneyDrunk.Architecture#260, HoneyDrunk.Architecture#261
 - `ADR-0046` — ADR-0046: Specialist Review Agents — 0/8 accepting packet issues closed; open: HoneyDrunk.Architecture#262, HoneyDrunk.Architecture#263, HoneyDrunk.Architecture#264, HoneyDrunk.Architecture#265, HoneyDrunk.Architecture#266, HoneyDrunk.Architecture#267, HoneyDrunk.Architecture#268, HoneyDrunk.Architecture#269
 - `ADR-0048` — ADR-0048: Data Schema Evolution and Migration Policy — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#394
@@ -79,4 +78,4 @@ _None._
 
 ## Flipped This Run
 
-- `ADR-0033` — ADR-0033: Environment-Gated Deploy-Trigger Model for Deployable Nodes (adrs/ADR-0033-environment-gated-deploy-trigger-model.md)
+_None._
