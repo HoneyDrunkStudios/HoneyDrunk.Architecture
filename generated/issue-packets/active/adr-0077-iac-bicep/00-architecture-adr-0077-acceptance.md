@@ -14,6 +14,8 @@ node: honeydrunk-architecture
 
 # Accept ADR-0077 — flip status, add the three IaC invariants, amend invariant 35, register the initiative
 
+> **STATUS — SUPERSEDED (2026-06-02) by packet 18** (`18-architecture-adr-0077-acceptance.md`). Filed as `Architecture#384` (OPEN, unmerged — nothing shipped). The ADR-0077 amendment (2026-06-02) drops the cross-repo Bicep module registry, so this packet's invariant-35 carve-out is no longer needed and its IaC-invariant wording (which referenced the registry / per-Node `infra/` / `br:` refs) is reworded by packet 18. This packet is retained for traceability; do not execute it. Close `Architecture#384` as superseded by packet 18. See `dispatch-plan.md`.
+
 ## Summary
 Flip ADR-0077 (Infrastructure-as-Code — Bicep) from Proposed to Accepted: update the ADR header, update the ADR index row in `adrs/README.md`, add the three new IaC invariants ADR-0077 commits in its Consequences/Invariants section to `constitution/invariants.md` (numbered per the reservation claimed in `constitution/invariant-reservations.md`), amend invariant 35's text to carve out the Bicep-module ACR (`acrhdbicep`) so it does not collide with the shared container-image ACR (`acrhdshared{env}`), and register the `adr-0077-iac-bicep` initiative in `initiatives/active-initiatives.md`.
 

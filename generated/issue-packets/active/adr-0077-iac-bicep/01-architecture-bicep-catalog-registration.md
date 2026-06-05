@@ -14,6 +14,8 @@ node: honeydrunk-architecture
 
 # Register the Bicep modules library, the acrhdbicep registry, and the deploy workflows in the Grid catalogs
 
+> **STATUS — SUPERSEDED (2026-06-02) by packets 10 + 12.** Filed as `Architecture#385` (OPEN, unmerged). The ADR-0077 amendment (2026-06-02) moves the modules library to the new `HoneyDrunk.Infrastructure` Node (registered by packet 10), drops the `acrhdbicep` registry and `bicep-publish.yml` (registry confirmed dropped), and keeps only the deploy + lint reusable workflows registered under `honeydrunk-actions` (packet 12). This packet is retained for traceability; do not execute it. Close `Architecture#385` as superseded by packets 10 + 12. See `dispatch-plan.md`.
+
 ## Summary
 Record ADR-0077's IaC substrate as catalog data: register the Bicep modules library and its publish/deploy workflows in `catalogs/contracts.json` under `honeydrunk-actions` (the Node that owns the modules library and the workflows per ADR-0012); add the `acrhdbicep` Bicep registry as a new "not-yet-provisioned" entry in `catalogs/grid-health.json` so packet 02's portal work flips it to `provisioned`; and update the `honeydrunk-actions` entry in `catalogs/relationships.json` to expose the new module-library and workflow surface.
 

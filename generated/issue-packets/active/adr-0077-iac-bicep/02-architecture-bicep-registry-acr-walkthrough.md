@@ -14,6 +14,8 @@ node: honeydrunk-architecture
 
 # Author the Bicep registry ACR walkthrough and provision acrhdbicep
 
+> **STATUS — SUPERSEDED / DEAD (2026-06-02).** Filed as `Architecture#386` (OPEN, unmerged). The ADR-0077 amendment (2026-06-02) DROPS the cross-repo Bicep module registry in full — there is no `acrhdbicep` ACR to provision, so this packet's portal walkthrough + provisioning scope is dead. The one surviving residue — the `rg-hd-platform-shared` resource-group decision — migrates to packet 14 (the new `platform/` shared-foundation packet), which needs a home. This packet is retained for traceability; do not execute it. Close `Architecture#386` as superseded by packet 14. See `dispatch-plan.md`.
+
 ## Summary
 Author `infrastructure/walkthroughs/bicep-registry-acr-creation.md` — an Azure-Portal UI walkthrough for creating the shared `acrhdbicep` Azure Container Registry that hosts the Grid's published Bicep modules per ADR-0077 D2 — and execute it: provision the `acrhdbicep` registry in `rg-hd-platform-shared`, grant the Actions OIDC-federated identity `AcrPush` on it (so `bicep-publish.yml` can push modules), and grant per-environment Container App deploy identities `AcrPull` (or scope `AcrPull` more broadly to the deploy identities used by `job-deploy-bicep.yml` consumers). This is `Actor=Human` — Azure resource creation is portal work and the operator prefers UI walkthroughs over CLI.
 

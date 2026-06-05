@@ -13,6 +13,8 @@ node: honeydrunk-architecture
 
 # Author the bicep-import-existing-resources playbook for the D6 opportunistic-migration path
 
+> **STATUS — SUPERSEDED (2026-06-02) by packet 17.** Filed as `Architecture#388` (OPEN, unmerged). The D6 import playbook survives in concept, but this packet's body references the dropped registry (`br:acrhdbicep.azurecr.io/...`), per-Node-repo `infra/` import targets, and the old packet numbers (02/05/06/08). Packet 17 re-cuts it for the consolidated `HoneyDrunk.Infrastructure` repo (import targets `nodes/{node}/` or `platform/`; local-path module refs; cross-refs to packets 14/15/16). This packet is retained for traceability; do not execute it. Close `Architecture#388` as superseded by packet 17. See `dispatch-plan.md`.
+
 ## Summary
 Author `infrastructure/patterns/bicep-import-existing-resources.md` — the canonical playbook for the ADR-0077 D6 opportunistic-migration path: when a manually-provisioned Azure resource (an existing Vault namespace, Service Bus namespace, Container App, etc.) needs a configuration change, the operator imports it to Bicep before applying the change. The playbook documents the four-step path the ADR commits — export ARM → decompile to Bicep → reconcile drift → adopt — plus the per-Node responsibilities, the `grid-health.json` reconciliation pattern, the rollback path, and the failure modes specific to imported resources (deployment-mode safety, immutable property mismatches, missing tags).
 
