@@ -24,7 +24,7 @@ The phase spine is PDR-0011's Rollout (dates live on `roadmap.md`, not here).
 
 | Decision | Status | Depends on | Unblocks | Phase |
 |----------|--------|------------|----------|-------|
-| **Local-runner-bridge ADR** (promote [ADR-DRAFT](../../generated/adr-drafts/ADR-DRAFT-honeyhub-local-runner-bridge.md); spike-validated) | drafting | [ADR-0086](../../adrs/ADR-0086-pull-based-local-worker-grid-review-runner.md) substrate (accepted) | App-stack ADR; Routing/telemetry ADR; HoneyHub repo standup | P2 |
+| **[ADR-0090](../../adrs/ADR-0090-honeyhub-local-runner-bridge.md)** Local-runner-bridge (spike-validated; `[Firm]` BYOK-only-cloud rule) | drafting (ADR-0090 Proposed) | [ADR-0086](../../adrs/ADR-0086-pull-based-local-worker-grid-review-runner.md) substrate (accepted) | App-stack ADR; Routing/telemetry ADR; HoneyHub repo standup | P2 |
 | **App-stack + repo/Node-home ADR** (Tauri-class shell bundling the bridge; mobile→bridge relay; `HoneyHub.Web` Node) | needed | Bridge ADR *accepted* (decision→decision: cites session contract) | HoneyHub repo standup; Individual desktop tier | P2 / P4 |
 | **Routing + session/usage-telemetry ADR** (`DispatchSession`/`DispatchRun`/`UsageSignal`; routing + subscription-governance; reaches into HoneyDrunk.AI / ADR-0010) | needed | Bridge ADR *accepted* (cites session contract) | Coaching (rules); Team/org-governance ADR | P3 |
 | **BYOK cloud-execution ADR** (`[Firm]` BYOK-API-key only, never subscription auth — Amendment §3) | gated | Local v1 *shipped* (build→build) + Amendment §5 probe converts | Cloud exact accounting + enforcement; unattended runs | P5 / v2 |
