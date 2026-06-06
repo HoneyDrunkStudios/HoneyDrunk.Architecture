@@ -210,13 +210,16 @@ repo-root `bicepconfig.json` and **fails the PR on error-severity findings**
 ## Deploy wiring — `job-deploy-bicep.yml` with ADR-0033 env gates
 
 Deploy the leaf template per environment via the reusable
-`job-deploy-bicep.yml` workflow (consumed from `HoneyDrunk.Actions`), with
-ADR-0033 `environment:` approval gates:
+`job-deploy-bicep.yml` workflow (consumed from `HoneyDrunk.Actions`).
 
-Each caller job declares `permissions: { id-token: write, contents: read }` —
-the superset `job-deploy-bicep.yml` requires for OIDC federation (invariant 39) —
-and passes the OIDC identity via repo/org **vars** (no secret values). The
-`environment:` is declared by the caller, not the reusable workflow.
+**The ADR-0033 approval gate needs the right shape.** GitHub Actions does **not**
+allow `environment:` on a job that calls a reusable workflow (`uses:`) — it is
+only valid on a `steps:` job. So the gate goes on a small `gate` job that
+declares `environment: <env>`, and the `deploy` job (`uses:`) `needs:` it — the
+apply runs only after that environment's required reviewers approve. The deploy
+caller declares `permissions: { id-token: write, contents: read }` (the superset
+for OIDC federation, invariant 39) and passes the OIDC identity via repo/org
+**vars** (no secret values).
 
 ```yaml
 permissions:
@@ -224,10 +227,16 @@ permissions:
   contents: read
 
 jobs:
-  deploy-node-infra-dev:
-    environment: dev
+  gate-dev:
+    runs-on: ubuntu-latest
+    environment: dev                          # ADR-0033 gate — valid on a steps: job
+    steps:
+      - run: echo "dev deploy approved"
+
+  deploy-dev:
+    needs: gate-dev
     permissions:
-      id-token: write                       # OIDC federation (job-deploy-bicep.yml)
+      id-token: write                         # OIDC federation (job-deploy-bicep.yml)
       contents: read
     uses: HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/job-deploy-bicep.yml@main
     with:
@@ -240,40 +249,16 @@ jobs:
       azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
       azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
-  deploy-node-infra-staging:
-    environment: staging                    # ADR-0033 required-reviewers gate
-    needs: deploy-node-infra-dev
-    permissions:
-      id-token: write
-      contents: read
-    uses: HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/job-deploy-bicep.yml@main
-    with:
-      env: staging
-      template-path: nodes/identity/main.bicep
-      parameters-path: nodes/identity/parameters.staging.bicepparam
-      deployment-scope: resourceGroup
-      resource-group: rg-hd-identity-staging
-      azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
-      azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
-      azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-
-  deploy-node-infra-prod:
-    environment: prod                       # ADR-0033 required-reviewers gate (gated prod)
-    needs: deploy-node-infra-staging
-    permissions:
-      id-token: write
-      contents: read
-    uses: HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/job-deploy-bicep.yml@main
-    with:
-      env: prod
-      template-path: nodes/identity/main.bicep
-      parameters-path: nodes/identity/parameters.prod.bicepparam
-      deployment-scope: resourceGroup
-      resource-group: rg-hd-identity-prod
-      azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
-      azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
-      azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+  # staging and prod repeat the same gate + deploy PAIR, chained via needs: so
+  # promotion is dev -> staging -> prod. Each gate-<env> carries
+  # environment: <env> (with that environment's required reviewers); each
+  # deploy-<env> needs its gate-<env>, and gate-staging needs deploy-dev, etc.
 ```
+
+`HoneyDrunk.Infrastructure`'s own `.github/workflows/deploy.yml` is the canonical
+implementation of this gate + deploy shape (a `workflow_dispatch` over `env` +
+`target`). Deploys run on the infra repo's **own cadence, decoupled from
+application release tags** (the 2026-06-02 amendment).
 
 **Infra deploys on its own cadence, decoupled from application release tags.**
 The trigger is the `HoneyDrunk.Infrastructure` repo's own cadence — a push to
