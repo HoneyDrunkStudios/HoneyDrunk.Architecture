@@ -113,7 +113,7 @@ Each package/crate (`ui`, `shell`, `shared-types`, `bridge`) gets a `README.md` 
 - [ ] PR body links the packet (invariant 32) and records the open desktop-shell-toolkit decision + the Web.UI-token-adoption follow-up.
 
 ## Human Prerequisites
-- [ ] Packet 02 Done — repo exists, branch protection active, `SONAR_TOKEN` bound, repo-to-node mapped, local tree cloned.
+- [ ] Packet 02 Done — repo exists, branch protection active, repo-to-node mapped (via packet 10), local tree cloned. (`studios-typescript-native` requires no org secret by default: the self-contained `pr.yml` runs no Sonar job, so `SONAR_TOKEN` is conditional — bound only if a Sonar lane is later added to `pr.yml`.)
 - [ ] Local dev machine has both the Node.js toolchain (Node >=22, pnpm/npm) and the Rust toolchain (`rustup`, stable `cargo`, `clippy`) installed — required for the agent (or a human running the agent locally) to build/test both lanes before pushing. Per the memory note on CRLF: run `dotnet format`-equivalent (here, `cargo fmt` + the Node formatter) locally before committing after any full-file rewrite, since Write-tool output is LF on Windows.
 - [ ] (Post-merge, human, deferred) First-PR branch-protection update to add the Rust-lane + PWA-build canary as required checks once each runs cleanly — not blocking this scaffold.
 - [ ] (Deferred, not this packet) Cloudflare Pages project for the static PWA host (ADR-0091 D4 / ADR-0029) — a deploy concern, set up when the PWA is ready to publish, not at scaffold.
@@ -121,7 +121,7 @@ Each package/crate (`ui`, `shell`, `shared-types`, `bridge`) gets a `README.md` 
 
 ## Dependencies
 - `packet:01` — catalog registration + context folder must be in `main` (the scaffold's CLAUDE.md and PR body cross-reference `repos/HoneyDrunk.HoneyHub/`).
-- `packet:02` — the GitHub repo must exist, branch protection active, `SONAR_TOKEN` bound, repo-to-node mapped, local tree cloned, before the scaffold can be filed and authored.
+- `packet:02` — the GitHub repo must exist, branch protection active, repo-to-node mapped (via packet 10), local tree cloned, before the scaffold can be filed and authored. (No `SONAR_TOKEN` is required by default for `studios-typescript-native` — the self-contained `pr.yml` runs no Sonar job; `SONAR_TOKEN` is bound only if a Sonar lane is later added.)
 
 ## Agent Handoff
 **Objective:** Scaffold the empty `HoneyDrunk.HoneyHub` repo to a CI-green, buildable, first-shippable workspace (React+Vite PWA + Rust bridge crate + Tauri-class shell wrapper + shared session-contract types), with no Grid package published.

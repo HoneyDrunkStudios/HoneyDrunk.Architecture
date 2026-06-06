@@ -11,14 +11,15 @@
 
 **Trigger:** ADR-0090 Accepted + ADR-0091/0092 Proposed (operator-confirmed stack: new repo, React+Vite PWA, Tauri-class shell, **Rust bridge**). The program tracker's Next action: "cut the `HoneyDrunk.HoneyHub` node-standup packets (ADR-0082) and the session/usage-telemetry + routing implementation packets." This initiative is the standup + Phase 2 (the first shippable slice); Phase 3+ is outlined at low resolution (packet 09).
 
-**Type:** **Multi-repo** — `HoneyDrunk.Architecture` (the program tracker: catalog registration, context folder, repo-to-node mapping) + the new `HoneyDrunk.HoneyHub` repo (scaffold + Phase 2 build).
+**Type:** **Multi-repo** — `HoneyDrunk.Architecture` (the program tracker: catalog registration, context folder) + `HoneyDrunk.Actions` (the `repo-to-node.yml` mapping, packet 10) + the new `HoneyDrunk.HoneyHub` repo (scaffold + Phase 2 build).
 
 **Site sync required:** No at standup/Phase 2 (no public-API surface change to publicize yet). When the Creator/Meta cockpit goes live and a `0.x` ships, a site-sync follow-up may publicize HoneyHub — flag then, not now.
 
 ## Scope detection: multi-repo
 Two repos:
-1. **`HoneyDrunk.Architecture`** — Phase A standup registration (packet 01) + Phase B human repo creation tracking + the `repo-to-node.yml` mapping (packet 02).
-2. **`HoneyDrunk.HoneyHub`** (new) — the scaffold (packet 03) and all of Phase 2 (packets 04–08) + the Phase 3+ outline tracker (packet 09).
+1. **`HoneyDrunk.Architecture`** — Phase A standup registration (packet 01) + Phase B human repo creation tracking (packet 02).
+2. **`HoneyDrunk.Actions`** — the `repo-to-node.yml` mapping (packet 10; depends on packet 02; runs in parallel with packet 03).
+3. **`HoneyDrunk.HoneyHub`** (new) — the scaffold (packet 03) and all of Phase 2 (packets 04–08) + the Phase 3+ outline tracker (packet 09).
 
 The `HoneyDrunk.HoneyHub → HoneyDrunk.Architecture` (read backend) and `→ HoneyDrunk.AI` (routing) edges are **named but not wired** at v1 (ADR-0091 D6); the AI consume edge is wired when the Phase 3+ routing packet is cut (packet 09 notes this).
 
@@ -32,14 +33,19 @@ Wave 1: Phase A — Architecture registration                    (Agent)
 Wave 2: Phase B — GitHub repo creation                          (Human)
    └─ Architecture(tracking): 02-architecture-create-honeyhub-repo
         Blocked by: packet 01
-        (repo + branch protection on `pr / build` + labels + repo-to-node.yml + clone;
-         no org secret required by default for studios-typescript-native)
+        (repo + branch protection on `pr / build` + labels + clone;
+         no org secret required by default for studios-typescript-native;
+         repo-to-node.yml is now packet 10, targeting HoneyDrunk.Actions)
 
-Wave 3: Phase C — scaffold                                      (Agent)
-   └─ HoneyHub: 03-honeyhub-node-scaffold
-        Blocked by: packet 01, packet 02
-        (workspace monorepo: React+Vite PWA + Rust bridge crate + shell wrapper +
-         shared-types session contract; dual-lane CI; no Grid package published)
+Wave 3: Phase C — scaffold + routing mapping                    (Agent)
+   ├─ HoneyHub: 03-honeyhub-node-scaffold
+   │     Blocked by: packet 01, packet 02
+   │     (workspace monorepo: React+Vite PWA + Rust bridge crate + shell wrapper +
+   │      shared-types session contract; dual-lane CI; no Grid package published)
+   └─ Actions: 10-actions-honeyhub-repo-to-node-mapping
+         Blocked by: packet 02
+         (add HoneyDrunk.HoneyHub → honeydrunk-honeyhub to repo-to-node.yml;
+          parallel to packet 03; invariant 41 + ADR-0082 step 7)
 
 Wave 4: Phase 2 — bridge core + trust boundary                 (Agent)
    ├─ HoneyHub: 04-honeyhub-bridge-core
@@ -77,8 +83,9 @@ Within a wave, packets can run in parallel (05 depends only on 04; 07 depends on
 | # | Packet | Repo | Wave | Actor | Depends On |
 |---|--------|------|------|-------|------------|
 | 01 | [Register HoneyDrunk.HoneyHub in Architecture catalogs + 5-file context folder](./01-architecture-honeyhub-catalog-registration.md) | Architecture | 1 | Agent | — |
-| 02 | [Create HoneyDrunk.HoneyHub repo + branch protection + labels + repo-to-node + org-secret + clone](./02-architecture-create-honeyhub-repo.md) | Architecture (tracking) | 2 | Human | packet:01 |
+| 02 | [Create HoneyDrunk.HoneyHub repo + branch protection + labels + org-secret + clone](./02-architecture-create-honeyhub-repo.md) | Architecture (tracking) | 2 | Human | packet:01 |
 | 03 | [Scaffold HoneyDrunk.HoneyHub — workspace monorepo (React+Vite PWA + Rust bridge crate), dual-lane CI](./03-honeyhub-node-scaffold.md) | HoneyHub | 3 | Agent | packet:01, packet:02 |
+| 10 | [Add HoneyDrunk.HoneyHub → honeydrunk-honeyhub mapping to repo-to-node.yml](./10-actions-honeyhub-repo-to-node-mapping.md) | Actions | 3 | Agent | packet:02 |
 | 04 | [Rust bridge core — process lifecycle + session contract over the wire (stream/reply/stop)](./04-honeyhub-bridge-core.md) | HoneyHub | 4 | Agent | packet:03 |
 | 05 | [Secure pairing + workspace-root allowlist + backend allowlist](./05-honeyhub-pairing-and-allowlist.md) | HoneyHub | 4 | Agent | packet:04 |
 | 06 | [Claude Code backend adapter — drive the official CLI under the user's own local auth](./06-honeyhub-claude-code-adapter.md) | HoneyHub | 5 | Agent | packet:04, packet:05 |
@@ -116,7 +123,7 @@ Per the operator's standing process (ADR-0008 amendment), this initiative closes
 ## Filing
 `file-packets.yml` in `HoneyDrunk.Architecture` triggers automatically on push to `generated/issue-packets/active/**/*.md` and runs `file-packets.sh` — it creates each issue, adds it to The Hive (project #4), sets Status/Wave/Node/Tier/Actor/Initiative/ADR fields from frontmatter, and wires `addBlockedBy` from each packet's `dependencies:` array. **No `gh issue create` / `gh project item-add` / `addBlockedBy` commands here** — they run automatically once the packets land on `main`. Verify a wave landed by checking The Hive for the new items + their blocked-by chains.
 
-Filing-order note: packets 01–09 can all be pushed together — the `dependencies:` frontmatter wires the blocking edges so the board reflects the strict cross-wave ordering automatically (packet 02 blocked-by 01; 03 blocked-by 01+02; 04 blocked-by 03; etc.). The human packet (02) and the Phase 3+ tracker (09) file the same way.
+Filing-order note: packets 01–10 can all be pushed together — the `dependencies:` frontmatter wires the blocking edges so the board reflects the strict cross-wave ordering automatically (packet 02 blocked-by 01; 03 blocked-by 01+02; 10 blocked-by 02 [Actions-targeted, parallel to 03]; 04 blocked-by 03; etc.). The human packet (02), the Actions routing packet (10), and the Phase 3+ tracker (09) file the same way.
 
 ## Archival
 Per ADR-0008 D10, when every packet reaches `Done` on The Hive **and** the Phase 2 slice ships, the entire `active/honeyhub-v1/` folder moves to `archive/honeyhub-v1/` in a single commit. Partial archival is forbidden. hive-sync moves individual closed packet files `active/`→`completed/` per the per-packet lifecycle; initiative-level archival is the post-completion sweep.

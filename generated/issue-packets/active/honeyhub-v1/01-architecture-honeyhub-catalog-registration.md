@@ -142,10 +142,10 @@ Upstream dependencies: **zero runtime Grid-Node dependency at v1.** Later (named
 - [ ] `modules.json` handled per the non-publishing-Node convention (no invented package entries; PR body notes HoneyHub publishes no Grid package at v1).
 - [ ] `constitution/sectors.md` Meta-sector table gains a HoneyHub row; the "Dependency Flow (Real Nodes)" block is **not** edited (flagged in PR body for the post-scaffold reconciliation).
 - [ ] `initiatives/roadmap.md` gains a Q2 2026 HoneyHub bullet; `initiatives/active-initiatives.md` gains an "In Progress" entry referencing `initiatives/programs/honeyhub.md`.
-- [ ] `repos/HoneyDrunk.HoneyHub/` exists with all five files (`overview.md`, `boundaries.md`, `invariants.md`, `active-work.md`, `integration-points.md`); `active-work.md` records the open node-class question and the ADR-0091/0092 `[Provisional]` seams.
+- [ ] `repos/HoneyDrunk.HoneyHub/` exists with all five files (`overview.md`, `boundaries.md`, `invariants.md`, `active-work.md`, `integration-points.md`); `active-work.md` records the resolved node class (`studios-typescript-native`) and the ADR-0091/0092 `[Provisional]` seams.
 - [ ] No `constitution/invariants.md` edit (ADRs explicitly add no new invariant); no `adrs/*.md` Status flip in this packet.
 - [ ] Repo-level `CHANGELOG.md` (Architecture) gains an entry for the HoneyHub registration under the in-progress version section (invariants 12, 27).
-- [ ] PR body links the packet (invariant 32) and notes the mixed TS+Rust node-class provisional decision.
+- [ ] PR body links the packet (invariant 32) and notes the resolved `studios-typescript-native` node class.
 
 ## Human Prerequisites
 None. This is an agent-eligible Architecture-repo edit (catalog rows + context folder + sector row + roadmap/initiative entries). The GitHub repo creation and org-admin actions are packet 02.
@@ -155,7 +155,7 @@ None. This is the first packet of the initiative (Phase A registration) and has 
 
 ## Agent Handoff
 
-**Objective:** Land the Phase A standup registration (catalogs + sector + five-file context folder) for the new `HoneyDrunk.HoneyHub` Node, and record the mixed TS+Rust node-class question for resolution.
+**Objective:** Land the Phase A standup registration (catalogs + sector + five-file context folder) for the new `HoneyDrunk.HoneyHub` Node, and record the resolved node class (`studios-typescript-native`).
 **Target:** `HoneyDrunkStudios/HoneyDrunk.Architecture`, branch from `main`.
 **Context:**
 - Goal: stand up the HoneyHub Agent Cockpit Node (PDR-0011, the lead near-term build thread).
