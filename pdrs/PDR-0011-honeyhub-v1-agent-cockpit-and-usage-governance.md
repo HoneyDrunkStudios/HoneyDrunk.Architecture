@@ -2,20 +2,24 @@
 title: "PDR-0011: HoneyHub v1 — Agent Cockpit and Usage Governance"
 status: Accepted
 date: 2026-06-06
+amended: 2026-06-06
 deciders: HoneyDrunk Studios
 sector: Meta / AI / Platform
-relationship: "Selects the v1 commercial wedge under PDR-0001 and re-sequences PDR-0009's internal Grid read-layer / daily-driver workspace as a later layer."
+relationship: "Names HoneyHub v1 as the FREE, local Agent Cockpit — the lead near-term build focus among parallel portfolio threads (charter §portfolio), and the operator's dogfood wedge. Re-sequences PDR-0009's internal Grid read-layer / daily-driver workspace as a later layer. Amended 2026-06-06 post product-strategist Critic passes (see Amendment §)."
 implemented_by: "../generated/adr-drafts/ADR-DRAFT-honeyhub-local-runner-bridge.md"
 adjacent: "PDR-0010 Agent Action Ledger; PDR-0002 Notify Cloud"
 ---
 
 # PDR-0011: HoneyHub v1 — Agent Cockpit and Usage Governance
 
-**Status:** Accepted
+**Status:** Accepted (amended 2026-06-06)
 **Date:** 2026-06-06
+**Amended:** 2026-06-06
 **Deciders:** HoneyDrunk Studios
 **Sector:** Meta / AI / Platform
-**Relationship:** Selects the **v1 commercial wedge** under [PDR-0001](PDR-0001-honeyhub-platform-observation-and-ai-routing.md) (HoneyHub Platform — Observation and AI Routing). **Re-sequences** [PDR-0009](PDR-0009-honeyhub-as-internal-daily-driver-workspace.md): the internal Grid read-layer / daily-driver workspace becomes a **later layer**, not v1. **Implemented by** [ADR-DRAFT HoneyHub Local Runner Bridge](../generated/adr-drafts/ADR-DRAFT-honeyhub-local-runner-bridge.md) (the §B/§F dispatch substrate). **Adjacent** to [PDR-0010](PDR-0010-agent-action-ledger-hosted-forensic-record-for-ai-agents.md) (Agent Action Ledger — the eventual forensic/usage-record cousin). **Re-sequences ahead of** [PDR-0002](PDR-0002-notify-as-a-service-first-commercial-product.md) (Notify Cloud) for near-term focus.
+**Relationship:** Names HoneyHub **v1 = the FREE, local Agent Cockpit** under [PDR-0001](PDR-0001-honeyhub-platform-observation-and-ai-routing.md) (HoneyHub Platform — Observation and AI Routing) — the **lead near-term build focus** among parallel portfolio threads ([`charter.md`](../constitution/charter.md) §"The portfolio model"), and the operator's dogfood wedge. **Re-sequences** [PDR-0009](PDR-0009-honeyhub-as-internal-daily-driver-workspace.md): the internal Grid read-layer / daily-driver workspace becomes a **later layer**, not v1. **Implemented by** [ADR-DRAFT HoneyHub Local Runner Bridge](../generated/adr-drafts/ADR-DRAFT-honeyhub-local-runner-bridge.md) (the §B/§F dispatch substrate). **Adjacent** to [PDR-0010](PDR-0010-agent-action-ledger-hosted-forensic-record-for-ai-agents.md) (Agent Action Ledger — the eventual forensic/usage-record cousin) and [PDR-0002](PDR-0002-notify-as-a-service-first-commercial-product.md) (Notify Cloud, which keeps its own Q3 commercial-trial slot — see Amendment §).
+
+> **Amended 2026-06-06.** Two product-strategist Critic passes pressure-tested the commercial thesis and returned MODIFY. The original body overclaimed the commercial case (a single-product "wedge ahead of Notify Cloud" contest) and silently contradicted [ADR-0088](../adrs/ADR-0088-decommission-openclaw-from-the-grid.md)'s banned shape. The corrected, validated shape is encoded in the **[Amendment (2026-06-06)](#amendment-2026-06-06--commercial-reframing-cloud-execution-boundary-decision-ledger)** section at the end of this PDR, which is **load-bearing and supersedes** the original framing wherever they conflict. The original §A–§I prose is preserved as decision history (with two narrowly-scoped inline corrections flagged in the amendment), per the accepted-PDR amendment convention.
 
 ---
 
@@ -61,7 +65,9 @@ HoneyHub v1 is **Agent Cockpit and Usage Governance**: one web surface to start,
 
 > One web surface to start, watch, interrupt, and govern local AI coding-agent sessions — transcripts, token/model governance, and mobile monitoring — with mobile-first controls for HoneyDrunk solo operation and desktop-first controls for individual developers.
 
-This is the **commercial wedge** under PDR-0001's external-platform thesis. It is buildable now, testable now against the operator's own day-job agent usage, and it reaches a real team-shaped pain point ahead of Notify Cloud commercial readiness.
+> **Corrected 2026-06-06 (Amendment §1).** The sentence below originally read "This is the **commercial wedge** under PDR-0001's external-platform thesis … ahead of Notify Cloud commercial readiness." That overclaimed. v1 is the **FREE, local Agent Cockpit** — the lead near-term *build* focus among parallel portfolio threads and the operator's dogfood wedge, **not** a single-product commercial contest that Notify Cloud lost. The commercial candidate that lives *inside* this thread is the gated, validation-first BYOK cloud-execution seam (Amendment §2/§5), not the free cockpit itself. Read the original sentence through that correction.
+
+This is the **lead near-term build focus** among the studio's parallel portfolio threads ([`charter.md`](../constitution/charter.md) §"The portfolio model") under PDR-0001's external-platform thesis. It is buildable now, testable now against the operator's own day-job agent usage, and it reaches a real team-shaped pain point. It is the cleanest available dogfooding loop, which is why it leads the build queue — not because it won a commercial contest against another product.
 
 ### B. The internal Grid read-layer (PDR-0009) becomes a later layer, not v1
 
@@ -118,9 +124,11 @@ Cloud/API mode is the clean path for exact token/cost accounting, unattended job
 
 Transcripts, prompts, filenames, command lines, diff metadata, and usage signals are sensitive by default. v1 storage prefers local transcript storage with explicit user control over what syncs; usage analytics prefers metadata and summaries over raw prompt/code; command lines are redacted for known secret patterns; diff metadata starts as counts and links, not copied hunks; notifications carry status and links, never prompt text, code, secrets, stack traces, or full paths. Retention keeps active transcripts while a run is open, lets the user pin useful transcripts, prunes unpinned local transcripts after a configurable window, and keeps durable artifact links / usage totals / outcome summaries longer than raw transcripts. Cloud/API mode requires a separate retention and data-processing decision before multi-tenant use.
 
-### I. The cockpit moves ahead of Notify Cloud for near-term focus
+### I. The cockpit is the lead near-term build focus (parallel to Notify Cloud, not ahead of it)
 
-This thread moves **ahead of Notify Cloud (PDR-0002)** for near-term focus. Notify Cloud is not cancelled and remains a valid commercial product; it moves behind the cockpit v1 slice until the cockpit either proves useful or trips a kill criterion (see Risks / Kill Criteria). The cockpit's forcing function is stronger: real developer pain at the operator's day job, immediate HoneyDrunk operating value, direct fit with an AI-heavy Grid, an easier dogfooding loop than a public notification SaaS, and clearer differentiation than another notification API.
+> **Corrected 2026-06-06 (Amendment §1).** This section originally read "The cockpit moves **ahead of Notify Cloud (PDR-0002)** for near-term focus" and framed the two as a contest the cockpit won. That contradicted the charter's portfolio model and wrongly implied Notify Cloud was *demoted because of* the cockpit. The corrected position is below. **Notify Cloud keeps its Q3 commercial-trial slot** (its own PDR-0002 sequencing and the ADR-0077 provisioning re-sequencing are separate, legitimate dependencies and stand on their own). The cockpit is the **lead near-term *build* thread among parallel threads**, chosen for its dogfood loop and buildable-now shape — not because Notify Cloud lost a single-product contest.
+
+The cockpit is the **lead near-term build focus** among the studio's parallel portfolio threads ([`charter.md`](../constitution/charter.md) §"The portfolio model"). Notify Cloud (PDR-0002) is **not** demoted by this PDR and **retains its Q3 commercial-trial slot**; the two run as parallel threads, not as a contest. The cockpit leads the *build queue* because its forcing function for **building** is stronger: real developer pain at the operator's day job, immediate HoneyDrunk operating value, direct fit with an AI-heavy Grid, and the cleanest available dogfooding loop. That is a sequencing-of-build-attention call, not a claim that the free cockpit out-competes Notify Cloud commercially. Per the charter, the studio is a portfolio; there is no single-product contest to win.
 
 ---
 
@@ -246,14 +254,16 @@ The bridge MUST provide, at minimum:
 
 ### Capability tiers / packaging / positioning
 
+> **Corrected 2026-06-06 (Amendment §8).** The original table below treated the **Individual** desktop tier as "the first **commercial** tier" and implied the paid surface was Dev-surface + arbitrage. That is superseded. The corrected tier shape is in **[Amendment §8 — Corrected capability-tier table](#8-corrected-capability-tier-table)**. In short: **everything that ships in v1 is FREE** (cockpit + cost/usage + optimization routing + rules-based coaching, local-first). The single gated, validation-first **paid** candidate is **BYOK cloud execution** (Amendment §2/§5), with **learned coaching** as a later paid enrichment. The **Dev surface is internal-default** (the PDR-0009 read-layer), not a committed paid tier until a design partner pays. Read the rows below through that correction; "the first commercial tier" no longer applies to Individual.
+
 | Tier | Audience | Capabilities | Packaging intent |
 |------|----------|--------------|------------------|
 | **Solo / Operator** | HoneyDrunk solo operation (mobile-first) | Full session control, notifications, mid-run control, artifact links, advisory usage hints, local transcript store | First dogfooding tier; operator-controlled HoneyHub store; not a paid tier |
-| **Individual** | Single developer (desktop-first) | Everything in Solo plus personal usage analytics, model/thinking-level recommendations, stale-session/split-task warnings, personal policy budgets (advisory) | The first **commercial** tier — per-seat; local bridge install; warning-only governance |
+| **Individual** | Single developer (desktop-first) | Everything in Solo plus personal usage analytics, model/thinking-level recommendations, stale-session/split-task warnings, personal policy budgets (advisory) | **FREE per the amendment** (was "first commercial tier"); per-developer; local bridge install; warning-only governance |
 | **Team / Org** *(later)* | Multiple developers under shared policy | Cross-user **metadata** aggregation, admin model allowlists, expensive-mode approval thresholds, new-session rules, opt-in enforcement | Later tier; gated on privacy decision + reliable capability detection; admin/seat pricing |
-| **Cloud/API** *(later provider, any tier)* | Exact accounting / unattended / multi-tenant | Same session model over provider APIs/hosted workers; exact token/cost accounting; enables hard enforcement | Separate retention + data-processing decision before multi-tenant use |
+| **Cloud/API** *(later provider, any tier)* | Exact accounting / unattended / multi-tenant | Same session model over provider APIs/hosted workers; exact token/cost accounting; enables hard enforcement | **BYOK-API-key ONLY** (Amendment §3 — never a vendor subscription token); separate retention + data-processing decision before multi-tenant use |
 
-**Positioning:** not "another notification API" and not "an internal HoneyDrunk tool" — a **mobile-first cockpit and usage-governance layer for local AI coding agents**. The wedge is governance + control + monitoring of tools developers already pay for, dogfooded on the operator's real day-job usage before it is sold.
+**Positioning:** not "another notification API" and not "an internal HoneyDrunk tool" — a **mobile-first cockpit and usage-governance layer for local AI coding agents**, free at v1. The value is governance + control + monitoring of tools developers already pay for, dogfooded on the operator's real day-job usage. The optimization routing is framed as **"route for capability/cost fit + optimize your own subscriptions"** — explicitly **not** "beat the rate limiter" (Amendment §1). Marketing must never drift to defeating vendor rate limits.
 
 ### What changes / does not change for the operator
 
@@ -266,7 +276,7 @@ The bridge MUST provide, at minimum:
 
 - **PDR-0001's external-platform thesis and fidelity-tier model** — intact; the cockpit is the v1 wedge under it.
 - **PDR-0009 in substance** — not superseded; its structural backend, composition model, per-Node shell, products-via-same-shell, and PRs-as-artifacts boundary all stand as the *later* HoneyHub layer.
-- **PDR-0002 Notify Cloud** — not cancelled; re-sequenced behind the cockpit for near-term focus, resumes priority if the cockpit trips a kill criterion.
+- **PDR-0002 Notify Cloud** — not cancelled and **not demoted by this PDR**; it **keeps its Q3 commercial-trial slot** and runs as a parallel portfolio thread. *(Corrected 2026-06-06, Amendment §1: the original "re-sequenced behind the cockpit" framing wrongly implied the cockpit demoted Notify Cloud; the cockpit is the lead near-term **build** focus, which is a build-attention call, not a commercial demotion of Notify Cloud. The ADR-0077 provisioning re-sequencing is a separate, legitimate dependency.)*
 - **Architecture-as-code and the PR-driven review/merge discipline** — `pr-core`, cloud-`review`, branch protection, packet linkage, `out-of-band` labeling all stand.
 - **`constitution/invariants.md`, `catalogs/nodes.json`, `catalogs/relationships.json`** — unchanged; no new invariant, Node, or edge created by this PDR.
 - **The IDE-versus-HoneyHub boundary** — HoneyHub never gains a code editor.
@@ -301,10 +311,17 @@ The bridge MUST provide, at minimum:
 
 ### Kill criteria
 
+**v1 feasibility kill criteria (original, retained):**
+
 - If the local bridge cannot reliably stream messages, accept replies, and stop/redirect sessions for **at least one** of Codex or Claude Code, reduce scope to read-only session launch/logging before building governance.
 - If exact usage metrics are unavailable locally **and** estimates are too noisy to drive useful recommendations, keep enforcement disabled in local mode and limit governance to warnings until API/cloud mode exists.
 - If individual developers will not install a local bridge, reposition the desktop experience as cloud/API-only and keep local mode as HoneyDrunk/operator tooling.
-- If the cockpit does not reduce session switching and follow-up latency for HoneyDrunk within **two weeks** of dogfooding, return HoneyHub to the PDR-0009 read-only-workspace path and demote this thread back behind Notify Cloud.
+- If the cockpit does not reduce session switching and follow-up latency for HoneyDrunk within **two weeks** of dogfooding, return HoneyHub to the PDR-0009 read-only-workspace path. *(Corrected 2026-06-06, Amendment §1: the original "demote this thread back behind Notify Cloud" wording is dropped — the two are parallel threads, not a contest. Tripping this criterion means the cockpit's **build** lead is reconsidered, not that Notify Cloud is "promoted past" it.)*
+
+**Added 2026-06-06 (Amendment §4):**
+
+- **Legal/ToS kill (hard).** Any feature that would require HoneyHub to **hold or forward a vendor subscription auth token**, or any **hosted/cloud execution running on a subscription token**, is **not built** — it is the banned shape. This is non-negotiable and ties directly to the `[Firm]` cloud-execution boundary in Amendment §3. **Precedent:** [ADR-0088](../adrs/ADR-0088-decommission-openclaw-from-the-grid.md) (the Grid's own OpenClaw decommission) and the Anthropic third-party-subscription-auth ToS ban that forced it (clarified early 2026). Re-creating that shape on HoneyHub's own hosted worker is the exact violation the ban targets.
+- **Differentiation kill.** If a headline feature ships **free from the vendors or incumbents before us**, there is no wedge and it is not pursued as a paid surface. This has **already tripped for subscription/optimization routing** — 9Router and free OSS routers already do it — which is precisely why routing is a **free-tier-only** capability and never a selling point. It is a **live risk for the Dev surface**: Rovo, Notion, and Linear already bundle AI-over-work-management for free, and Microsoft owns both the GitHub and Azure DevOps endpoints and is actively closing the gap. The Dev surface therefore gets **no commercial scaffolding** until a design partner pays over-and-above their already-bundled incumbent AI (Amendment §2).
 
 ---
 
@@ -381,3 +398,122 @@ This PDR is direction; execution happens through subsequent packets and initiati
 | Cloud/API dispatch provider | ADR | API-key/service-account execution, exact token/cost accounting, hosted-worker security, multi-tenant concerns. |
 | Copilot-compatible workflow assessment | Research note | Which Copilot surfaces can be controlled locally or via supported APIs without violating tool boundaries. |
 | PRs-as-artifacts as formal invariant | Invariant amendment via ADR | Promote the boundary inherited from PDR-0009 §D to a constitution-level invariant once the bridge ADR is accepted. |
+| **BYOK-cloud-execution waitlist experiment** *(Amendment §5)* | Validation probe | One-page waitlist + concrete monthly price + reserve button; <1 solo-dev day to first signal. Gates any commercial scaffolding. |
+| **App-stack ADR** *(Amendment §6)* | ADR | Decides the `[Provisional]` desktop packaging (Tauri-class native shell bundling the local bridge) and the mobile-PWA→bridge secure relay. |
+
+---
+
+## Amendment (2026-06-06) — Commercial reframing, cloud-execution boundary, Decision Ledger
+
+**Status of the amendment:** This amendment **supersedes the commercial framing** of the original §A and §I, **adds** the load-bearing cloud-execution / ToS boundary (Amendment §3), **adds** two kill criteria, **records** the cheapest validation experiment, **updates** the v1 scope to match the operator design session, and **adds** the flexibility-posture / Decision Ledger machinery. The original §B–§H (the cockpit shape, the bridge contract, the PRs-as-artifacts write boundary, data minimization) is **unchanged in substance**; only its commercial *framing* and *tier wording* are corrected. The PDR was Accepted the same day it was amended (both dated 2026-06-06); this is a same-day course-correction after two product-strategist **Critic**-mode passes returned **MODIFY**, not a migration off a shipped shape.
+
+This amendment does **not** rewrite the original §A–§I prose wholesale. Where the original framing was actively wrong or misleading, a dated inline correction note was added in place (flagged "Corrected 2026-06-06") and the corrected text follows; the original wording is quoted in the correction note so the delta is auditable. Everything else — the validated additions — lives in this section. **Where this section and the original body conflict, this section wins.**
+
+### Why the amendment
+
+Two product-strategist Critic passes pressure-tested the HoneyHub commercial thesis and each returned **MODIFY**. The findings:
+
+1. **The commercial case was overclaimed.** The original cast v1 as "the commercial wedge … ahead of Notify Cloud," i.e. a single-product contest. Per [`charter.md`](../constitution/charter.md) the studio is a **portfolio, not a startup**; there is no single-product contest to win, and "first commercial product" / "wedge" language is a *trial framing*, not a structural commitment ([`charter.md`](../constitution/charter.md) §"How to read other docs"). v1 is the **FREE, local Agent Cockpit** — the lead near-term *build* thread and the operator's dogfood wedge.
+2. **It silently contradicted [ADR-0088](../adrs/ADR-0088-decommission-openclaw-from-the-grid.md).** The "cloud/API provider later" framing left the door open to hosted execution on subscription auth — the exact OpenClaw-style shape the Grid already banned. That boundary is now made hard and explicit (§3).
+3. **The paid-tier thesis was wrong.** It implied paid = Dev-surface + subscription arbitrage. Corrected below (§2): arbitrage is free-tier-only; the Dev surface is internal-default; the one real (gated) commercial candidate is BYOK cloud execution.
+
+### §1 — Corrected commercial framing (the core fix)
+
+- **v1 = the FREE, local Agent Cockpit.** It is the Grid's lead near-term *build* thread and the operator's dogfood wedge — **not** "the commercial flagship ahead of Notify Cloud." The single-product-contest framing is struck (charter §"The portfolio model"). The inline corrections in §A and §I above carry this.
+- **Notify Cloud (PDR-0002) keeps its Q3 commercial-trial slot.** It is **not** demoted *because of* the cockpit. The ADR-0077 provisioning re-sequencing is a separate, legitimate dependency and remains valid; it is not a commercial demotion.
+- **The subscription/optimization routing is a FREE-tier feature**, framed as **"route for capability/cost fit + optimize your own subscriptions"** — explicitly **NOT** "cap-dodging" or "beat the rate limiter." **Marketing and positioning must never drift to language about defeating vendor rate limits.** If the only story a feature can tell is "evade the vendor's limits," it is the wrong feature.
+
+### §2 — Corrected paid-tier thesis: three parts, three fates
+
+The original implied a single Dev-surface-plus-arbitrage paid tier. Corrected, the paid surface is three distinct parts with three distinct fates:
+
+| Part | Fate | Reasoning |
+|------|------|-----------|
+| **BYOK cloud execution** | **The real (gated) commercial candidate** — pursued commercially **only after** the §5 validation probe converts. | "Kick off an agent from your phone, it runs in the cloud on your **own API key**, no laptop left on." A genuinely unserved seam: GitHub gated BYOK to Business/Enterprise, and BYOK does not apply to *cloud* agents. Cheaply testable (§5). The **only** part to pursue commercially, and only post-probe. **BYOK-API-key only — never a subscription token (§3).** |
+| **The Dev surface** | **Recorded vision, default INTERNAL.** Build **no** commercial scaffolding until a design partner commits to pay over-and-above their already-bundled Rovo/Notion/Linear AI. | The vendor-neutral AI layer unifying GitHub Issues/Projects/PRs + Azure DevOps Boards/Repos/Wiki + ADRs/PDRs/knowledge, connector model, status stays in source systems, PRs-as-artifacts. **This is the PDR-0009 read-layer.** Most defensible *long-term* bet **and** the least cheaply-validatable. Honest risks: team-shaped buyer (wrong shape for a solo-dev GTM), incumbents bundle it free, and **Microsoft owns both the GitHub and Azure DevOps endpoints and is actively closing the gap.** |
+| **The coaching agent** | **A retention FEATURE, not a standalone commercial leg.** Rules-based in v1 (free); a **learned per-user model** is a later **paid enrichment**. | Stop presenting it as a third commercial pillar. It increases retention of the free cockpit; the learned model is the only paid slice, and only later. |
+
+### §3 — `[Firm]` cloud-execution / ToS boundary (the single most important addition)
+
+This is a non-negotiable **`[Firm]`** decision (not a default), and it is the boundary that separates HoneyHub from the [ADR-0088](../adrs/ADR-0088-decommission-openclaw-from-the-grid.md)/OpenClaw banned shape:
+
+- **HoneyHub never holds, stores, or proxies vendor subscription auth.** Local execution drives each vendor's **official** CLI, running **locally**, under the **user's own session**. (Anthropic confirms the official Claude Code CLI is within ToS even on a remote server that the user *themselves* SSHes into — i.e. a machine the user controls.)
+- **Cloud/hosted execution is BYO-API-key ONLY and MUST NEVER authenticate with a vendor subscription token.** The "remote server" allowance covers a server **the user controls**, **NOT** a multi-tenant SaaS executing on their behalf with their subscription. Running the official CLI on **our** hosted worker against **their subscription** would re-create the exact violation — it is the OpenClaw/ADR-0088 banned shape. This is stated as **hard and explicit**: there is no configuration, tier, or convenience exception.
+
+The §4 Legal/ToS kill criterion enforces this: any feature that would require holding/forwarding subscription auth, or hosting execution on subscription tokens, is **not built**.
+
+### §4 — Added kill criteria
+
+Both new kill criteria are recorded in the **[Kill criteria](#kill-criteria)** section above (the v1-feasibility kill criteria there are retained):
+
+- **Legal/ToS kill (hard)** — no feature holds/forwards subscription auth; no hosted execution on subscription tokens. Precedent: ADR-0088 (the Grid's own OpenClaw decommission) + the Anthropic third-party-subscription-auth ToS ban that forced it (clarified early 2026).
+- **Differentiation kill** — if a headline feature ships free from vendors/incumbents before us, there is no wedge. Already tripped for subscription/optimization routing (9Router, free OSS) → routing is free-tier-only and not a selling point. Live risk for the Dev surface (Rovo/Notion/Linear bundle AI-over-work-management free; Microsoft owns both endpoints).
+
+### §5 — Cheapest validation experiment (before any commercial scaffolding)
+
+Before **any** commercial scaffolding is built for BYOK cloud execution:
+
+1. **One-page BYOK-cloud-execution waitlist** with a **concrete monthly price** and a **reserve button**, driven to the operator's build-in-public audience. **<1 solo-dev day to first signal.**
+2. **If it converts past a pre-set threshold within 30 days →** graduate to a **Wizard-of-Oz** on the existing [ADR-0086](../adrs/ADR-0086-pull-based-local-worker-grid-review-runner.md) runner for **3–5 design partners** (BYOK only, per §3).
+3. **If not →** BYOK cloud execution stays **operator tooling**; no commercial build.
+
+**The Dev surface has NO sub-2-week proof and therefore gets no scaffolding regardless** of the BYOK-cloud outcome. It remains internal-default (§2) until a design partner pays over-and-above their bundled incumbent AI.
+
+### §6 — Richer v1 scope (from the operator design session)
+
+The v1 product shape is updated to match what was actually decided. This supersedes the original §C "mobile-first … and desktop-first" phased reading and the Rollout's mobile-then-desktop ordering:
+
+- **Mobile (PWA) + desktop in PARALLEL, one shared web UI.** (Corrects the original phased mobile-then-desktop sequencing.)
+- **Desktop = "Option A": a single packaged native shell (Tauri-class) that BUNDLES the local bridge** → one easy install; the mobile PWA reaches that bundled bridge over a **secure relay**. Exact stack is **`[Provisional]`**, decided in the app-stack ADR.
+- **Any repo; three backends via their official CLIs:** **Codex** + **Claude Code** (full), **GitHub Copilot CLI** (best-effort — its CLI wraps GPT/Claude). This relaxes the original §D "v1 does not attempt multi-agent group chat" only in *surface* (one chat across all three), not in the one-backend-per-session contract.
+- **One chat surface across all three; parallel sessions/threads** (a unified multi-agent chat). Each session remains bound to exactly one backend (original §D preserved); the unification is at the chat surface, not the session contract.
+- **Agent-discovery** from `.claude/agents/` and the Copilot agent folder — auto-surface and run them.
+- **Always-on cost/token usage; rules-based coaching; local-first data.**
+
+### §7 — Flexibility posture (explicit operator requirement)
+
+For HoneyHub records, a deliberate flexibility posture so direction changes are cheap to **execute**, not just to decide.
+
+#### Decision Ledger
+
+Each HoneyHub decision is tagged **`[Firm]`** or **`[Provisional]`**.
+
+- **`[Firm]`** — load-bearing boundaries we do not move without real cause:
+  - not-an-editor / not-a-terminal (HoneyHub never gains a code editor or terminal — original §"What Does NOT Change" preserved);
+  - **PRs-as-artifacts** write boundary (inherited from PDR-0009 §D, original §F);
+  - connector-**never**-system-of-record (status stays in the source systems);
+  - local-first data **default**;
+  - honest capability flags (the bridge never fakes live interaction — original §F / contract item 2);
+  - **never touch subscription auth / cloud = BYOK-only** (§3).
+- **`[Provisional]`** — working assumptions we intend to revise on signal:
+  - routing heuristics;
+  - backend order / support (Codex/Claude/Copilot priority);
+  - exact UX;
+  - packaging / stack (the Tauri-class shell, the relay mechanism);
+  - coaching rules;
+  - the Dev-surface and BYOK-cloud **commercial bets**.
+
+#### Lightweight amendment protocol
+
+A **`[Provisional]`** decision changes via **a conversation + an amendment note in the record** — no new PDR/ADR, no ceremony — **as long as no `[Firm]` boundary is crossed**. Only crossing a **`[Firm]`** line needs a fresh decision (a new or amended ADR/PDR). This is consistent with the accepted-PDR amendment convention this very section uses.
+
+#### Reversibility as architecture
+
+The flexibility is **structural**, not just procedural: backends are **adapters behind a stable session contract** (original §D / §G — "same contract for the future cloud/API provider"); routing is **config/policy-driven**; connectors are **isolated**. A direction change swaps an adapter or a policy, not a rewrite.
+
+### §8 — Corrected capability-tier table
+
+This supersedes the original "Capability tiers / packaging / positioning" table (which is annotated inline above). The corrected shape:
+
+| Tier | Cost | Capabilities |
+|------|------|--------------|
+| **Free** | $0 | Cockpit + cost/usage visibility + optimization routing ("route for capability/cost fit + optimize your own subscriptions") + rules-based coaching. **Local-first.** Includes the Solo/Operator and Individual desktop experiences — both free. |
+| **Paid (gated, validated)** | TBD per §5 probe | **BYOK cloud execution** (the testable wedge — BYOK-API-key only, §3) **+ learned coaching** (later paid enrichment of the free rules-based coach). |
+| **Dev surface** | **Internal-default — not a committed paid tier** | The PDR-0009 read-layer (vendor-neutral AI-over-work-management). **No commercial scaffolding** until a design partner pays over-and-above their already-bundled Rovo/Notion/Linear AI (§2). |
+
+### What stays unchanged (amendment)
+
+- **The cockpit shape** (original §A product definition, §B PDR-0009 re-sequencing, §C bridge architecture, §D one-backend-per-session contract, §E chat-shaped dispatch, §F usage governance + PRs-as-artifacts write boundary, §G local-first / same-contract cloud provider, §H data minimization) — **unchanged in substance.**
+- **The implementing bridge ADR contract** (original §"Architecture Implications") — unchanged; it now additionally inherits the §3 `[Firm]` BYOK-only cloud boundary when the cloud/API adapter is built.
+- **PDR-0001** (external-platform thesis, fidelity tiers) and **PDR-0009** (not superseded; the read-layer is the Dev surface, internal-default per §2) — unchanged.
+- **`constitution/invariants.md`, `catalogs/nodes.json`, `catalogs/relationships.json`** — unchanged; this amendment adds no invariant, Node, or edge. The PRs-as-artifacts boundary remains a candidate for a future formal invariant.
