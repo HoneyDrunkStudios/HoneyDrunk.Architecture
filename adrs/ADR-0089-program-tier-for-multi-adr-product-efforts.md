@@ -1,6 +1,7 @@
 # ADR-0089: Program Tier for Multi-ADR Product Efforts
 
-**Status:** Proposed
+**Status:** Accepted
+**Accepted:** 2026-06-06
 **Date:** 2026-06-06
 **Deciders:** HoneyDrunk Studios
 **Sector:** Meta
@@ -139,15 +140,15 @@ The ADR Dependency Map is the single artifact that no existing surface provides 
 - **Ownership / cadence.** The program tracker is **operator-maintained by hand**, updated on **child-ADR status changes** (a child ADR moves `needed→drafting`, gets a number, flips to Accepted, or an initiative completes) and at the weekly ADR-0043 briefing review. The update is small: flip one Status cell, adjust the affected Depends-on/Unblocks edges, refresh the Status Rollup and Last-updated line. No agent is required to keep it live at v1.
 - **Forward-compat with ADR-0043.** The program tracker is designed to be **fed by, not dependent on, ADR-0043 backlog generation**. When ADR-0043's Strategic source fires on a child ADR's acceptance, that same event is the natural trigger to flip the corresponding dependency-map row — a future enhancement may have `hive-sync` or the Strategic-source pass update the map row automatically. ADR-0089 does **not** require that automation; the manual path is the committed v1 and the automated path is an explicitly optional follow-up. This mirrors how ADR-0043 itself layered automation onto the pre-existing manual packet flow.
 
-### D6 — Backfill: the three 2026 threads become the first programs
+### D6 — Backfill: the qualifying 2026 threads become the first programs
 
-The three named 2026 roadmap product threads become the first program instances, created as execution (packets/hand edits), not as part of this ADR's decision:
+The 2026 roadmap product threads that meet the D1 bar (a PDR spawning **more than one ADR**) become the first program instances, created as execution (packets/hand edits), not as part of this ADR's decision:
 
-- **HoneyHub** → `initiatives/programs/honeyhub.md`, governing PDR-0011 (with PDR-0001/PDR-0009 as the external-platform and read-layer context). First and highest-value instance — it is the live forcing function for this ADR.
-- **Notify Cloud** → `initiatives/programs/notify-cloud.md`, governing PDR-0002.
-- **Curiosities** → `initiatives/programs/curiosities.md`, governing PDR-0008.
+- **HoneyHub** → `initiatives/programs/honeyhub.md`, governing PDR-0011 (with PDR-0001/PDR-0009 as the external-platform and read-layer context). First and highest-value instance — it is the live forcing function for this ADR. ✅ Qualifies (bridge / app-stack / routing-telemetry + the gated v2 ADRs).
+- **Notify Cloud** → `initiatives/programs/notify-cloud.md`, governing PDR-0002. ✅ Qualifies (ADR-0015 / ADR-0019 / multi-tenant primitives / ADR-0027 / Stripe).
+- **Curiosities** (PDR-0008) → **deferred — no tracker yet.** Per D1, a program requires >1 ADR; PDR-0008's follow-ups are content/spike **packets** with only a *conditional* "future ADR" (backend storage / curated-content pipeline / editorial review queue, *if* accepted for build). It does not yet meet the bar. A `initiatives/programs/curiosities.md` tracker is created **if and when** Curiosities spawns more than one ADR — keeping D6 consistent with the D1 threshold rather than forcing a single-decision product into the program tier.
 
-Instantiation (populating each map, wiring the child-initiative links) is downstream packet work, named here but not performed by this ADR.
+Instantiation (populating each qualifying map, wiring the child-initiative links) is downstream packet work, named here but not performed by this ADR.
 
 ### D7 — No new invariant at v1
 
@@ -164,7 +165,7 @@ Because no invariant is added, **no number is reserved** in `constitution/invari
 - **New directory and convention.** `initiatives/programs/` is created (by the first backfill instance) with one file per multi-ADR product. The `initiatives/README` conventions and any agent that enumerates initiative surfaces should learn about it; `hive-sync`'s board-coverage reconciliation (invariant 112) is **unaffected** — programs reference initiatives and board items, they do not introduce new untracked board items.
 - **`active-initiatives.md`, packet lifecycle, and initiative semantics are unchanged.** Programs are purely additive: a reference-and-rollup layer above initiatives.
 - **`roadmap.md` and `current-focus.md` gain a link target.** Each of the three product threads on `roadmap.md` can now link to its program tracker; the rank-#1 HoneyHub row on `current-focus.md` can link to `programs/honeyhub.md` for the full dependency picture. These are link additions, not schema changes.
-- **Backfill work.** Three program trackers (HoneyHub, Notify Cloud, Curiosities) are authored as a follow-up packet set; HoneyHub first. Delegate to the `scope` agent to generate the issue packets for the directory creation + the three trackers + the roadmap/current-focus link edits.
+- **Backfill work.** Two program trackers (HoneyHub, Notify Cloud) are authored — the qualifying threads (D6); Curiosities is deferred until it spawns >1 ADR. HoneyHub first. Further program/tracker work can be delegated to the `scope` agent.
 - **No invariant, no catalog edit, no Node-graph cascade.** This ADR touches only the `initiatives/` work-tracking surface and the `adrs/` index. No `nodes.json` / `relationships.json` / `grid-health.json` change; no `constitution/invariants.md` change.
 - **Forward-compat hook for ADR-0043.** The dependency-map row becomes a natural automation target once ADR-0043's Strategic source is live; this ADR keeps that path open without depending on it.
 

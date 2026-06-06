@@ -27,9 +27,9 @@ This procedure (and invariant 102) applies only to artifacts that are **Nodes** 
 
 ---
 
-## The six Node classes (per ADR-0082 D2)
+## The Node classes (per ADR-0082 D2)
 
-Standup procedure varies by Node class. The taxonomy is closed at six classes as of 2026-05-25; a future class addition (mobile per ADR-0070 D3, Tauri desktop, Bicep-only infrastructure repos) requires a one-row amendment to ADR-0082 D2 plus a per-class walkthrough — not a new ADR.
+Standup procedure varies by Node class. The taxonomy is closed at **seven** classes as of 2026-06-06 (the six-class 2026-05-25 baseline plus `studios-typescript-native`, added by the ADR-0082 2026-06-06 amendment); a future class addition (mobile per ADR-0070 D3, additional Tauri desktop variants, Bicep-only infrastructure repos) requires a one-row amendment to ADR-0082 D2 plus a per-class walkthrough — not a new ADR.
 
 | Class | `node_class:` value | Description | Examples |
 |---|---|---|---|
@@ -39,6 +39,7 @@ Standup procedure varies by Node class. The taxonomy is closed at six classes as
 | Meta / Docs / Wiki | `meta-docs` | No NuGet, no deployable, no contract surface. The repo *is* the deliverable. | Architecture, Lore, Standards, HoneyDrunk.Prompts |
 | AI Seed (scaffold-only) | `ai-seed` | Node cataloged but not yet stood up — `signal: "seed"` in `catalogs/nodes.json` with `done: false`. | The nine AI-sector Nodes prior to per-Node scaffold |
 | Studios / TypeScript | `studios-typescript` | TypeScript / React / Next-style repo. No NuGet, no .NET CI. | HoneyDrunk.Studios, future SDKs, future per-stack Web.UI packages |
+| Studios / TypeScript + native | `studios-typescript-native` | A TS/web-UI repo that **also bundles a native bridge/shell crate (Rust) in one workspace** — a dual Node + Cargo workspace shipping a UI plus a co-bundled native binary, not a published package. | HoneyDrunk.HoneyHub (Agent Cockpit — React+Vite PWA + Tauri-class shell + Rust bridge) |
 
 The class is declared in the standup ADR's frontmatter (`node_class:`); if omitted, the default is `core-dotnet-abstractions-runtime`. Authoring tools surface the class for human and agent review.
 
@@ -159,6 +160,14 @@ Eighteen steps. They land across Phases A/B/C as noted in brackets. Skipping any
 - **y.** Node.js CI workflow at `.github/workflows/pr.yml` calling a (future) `HoneyDrunk.Actions` `pr-typescript.yml` reusable workflow if one exists, or directly invoking `npm ci && npm run build && npm test` until that workflow is built (ADR-0012 D4 / Invariant 38: *reusable workflows invoke tool CLIs directly — wrapping a tool in a third-party marketplace action is forbidden for any tool with a stable CLI*; npm/Node wrappers are rejected for the same reasons as gitleaks-action@v2).
 - **z.** Web.UI design-token consumption per ADR-0071 when the package is React-stack.
 
+### Studios / TypeScript + native — additional and replaced steps
+
+*(Stub per the ADR-0082 2026-06-06 amendment; full walkthrough `node-standup-studios-typescript-native.md` is a TODO.)*
+
+- **aa.** Everything in the `studios-typescript` steps (x–z) applies to the TS/web-UI surface, **except** the CI workflow: this class ships a **self-contained `pr.yml`** that does **not** call `pr-core.yml`. The `pr.yml` runs an npm/pnpm lane (`npm ci && npm run build && npm test`, or pnpm equivalent) **and** a Cargo lane (`cargo build && cargo test && cargo clippy`), both via direct CLI invocation (Invariant 38). The single required `main` status check is the job's own name — **`pr / build`**, not `pr-core / core` (this substitutes for `pr-core / core` in the Invariant 102 clauses 8/9 / mandatory steps 6 and 17).
+- **bb.** A **dual Node + Cargo workspace** in one repo (a Node/pnpm workspace for the UI/shell-frontend/shared-types packages; a Cargo workspace for the native bridge/shell crate). No `.slnx`, no `Directory.Build.props`, no `HoneyDrunk.Standards`, no NuGet.
+- **cc.** **Org-secret matrix: none required by default** — see the matrix note below. No `SONAR_TOKEN` (no .NET `pr-core.yml` Sonar job runs unless a Sonar lane is later added to `pr.yml`), no `NPM_TOKEN`/`NUGET_API_KEY` (no package publish at v1). Bind a secret only if/when a `pr.yml` lane that consumes it is added.
+
 ---
 
 ## Per-class org-secret binding matrix (per ADR-0082 D8)
@@ -183,6 +192,8 @@ GitHub does **not** auto-propagate org Actions secrets with the `Selected reposi
 | `DISCORD_WEBHOOK_ANNOUNCEMENTS` | Announcement events (ADR-0084) | Any Node emitting announcement events |
 | `DISCORD_WEBHOOK_AUDIT_SENSITIVE` | Audit-sensitive events (ADR-0084) | Any Node emitting audit-sensitive events |
 | `NPM_TOKEN` | `release.yml` npm publishing (ADR-0057 SDK packaging) — or the OIDC-trusted-publishing equivalent once the org adopts it | Studios/TypeScript Nodes publishing an npm package (SDK packages, per-stack Web.UI packages) |
+
+**`studios-typescript-native` default: no org secrets required.** This class ships a self-contained `pr.yml` (not `pr-core.yml`), so the `SONAR_TOKEN` "every Node consuming `pr-core.yml`" row does **not** apply by default; and it publishes no package at v1 (static UI build + co-bundled native binary), so `NPM_TOKEN`/`NUGET_API_KEY` do not apply. Bind a secret only if/when a `pr.yml` lane that consumes it is added (e.g. a Sonar lane → `SONAR_TOKEN`, an npm publish lane → `NPM_TOKEN`).
 
 **Standing access-policy:** `Selected repositories` is the Grid default for org secrets containing live credentials, tokens, webhooks, or signing material — i.e. every org secret currently in use. `All repositories` is reserved for benign org constants (none currently exist). Promoting any secret from `Selected repositories` to `All repositories` requires an ADR amendment.
 
@@ -218,5 +229,6 @@ The operational step-by-step for each class lives in `infrastructure/walkthrough
 - `node-standup-meta-docs.md` — Architecture, Lore, Standards, Prompts, and future docs/wiki repos.
 - `node-standup-ai-seed.md` — the smallest walkthrough: catalog rows + context folder + sector row, plus the promotion gate from seed to Core .NET.
 - `node-standup-studios-typescript.md` — TypeScript repos (Studios, future SDKs, future per-stack Web.UI packages).
+- `node-standup-studios-typescript-native.md` — *(TODO, per the ADR-0082 2026-06-06 amendment)* TS/web-UI + native (Rust) bridge repos in one dual Node + Cargo workspace (HoneyDrunk.HoneyHub). Until it lands, the `studios-typescript` walkthrough plus the D5 stub steps (aa–cc) are the reference.
 - `org-secret-repo-binding.md` — the per-secret Settings → Secrets → Actions → {Secret} → Selected repositories → Add repositories flow (the Phase B binding step).
 - `sonarcloud-organization-setup.md` — already exists; the one-time SonarCloud org onboarding behind the `SONAR_TOKEN` secret.

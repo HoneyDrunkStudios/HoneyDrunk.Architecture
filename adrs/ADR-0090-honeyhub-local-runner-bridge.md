@@ -1,6 +1,7 @@
 # ADR-0090: HoneyHub Local Runner Bridge for Agent Cockpit Sessions
 
-**Status:** Proposed
+**Status:** Accepted
+**Accepted:** 2026-06-06
 **Date:** 2026-06-06
 **Deciders:** HoneyDrunk Studios
 **Sector:** Meta / AI / Platform
