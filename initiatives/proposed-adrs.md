@@ -1,6 +1,6 @@
 # Proposed ADR/PDR Queue
 
-**Last Updated:** 2026-06-05
+**Last Updated:** 2026-06-06
 
 ## Awaiting Implementing Packets
 
@@ -8,6 +8,7 @@
 - `ADR-0029` — ADR-0029: Cloudflare as Registrar, Authoritative DNS, and Edge Platform (adrs/ADR-0029-cloudflare-dns-and-edge-platform.md)
 - `ADR-0032` — ADR-0032: Grid-Wide PR Validation Policy — Coverage Gate and NuGet Update Flagging (adrs/ADR-0032-pr-validation-policy-coverage-gate-and-nuget-flagging.md)
 - `ADR-0058` — ADR-0058: Grid-Wide Caching Strategy (adrs/ADR-0058-grid-wide-caching-strategy.md)
+- `ADR-0089` — ADR-0089: Program Tier for Multi-ADR Product Efforts (adrs/ADR-0089-program-tier-for-multi-adr-product-efforts.md)
 - `PDR-0002` — PDR-0002: HoneyDrunk Notify — First Commercial Product on the Grid (pdrs/PDR-0002-notify-as-a-service-first-commercial-product.md)
 - `PDR-0003` — PDR-0003: Lately — A Currents-Based Connection App for Regular Humans (pdrs/PDR-0003-lately-currents-based-connection-app.md)
 - `PDR-0005` — PDR-0005: Hearth — Personal Growth as a Living Town (pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md)
