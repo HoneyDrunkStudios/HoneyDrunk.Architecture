@@ -7,6 +7,7 @@ Walkthroughs are **portal-first**; CLI is optional appendix material only.
 Organized into four folders:
 
 - **[`walkthroughs/`](walkthroughs/)** — step-by-step provisioning runbooks
+- **[`patterns/`](patterns/)** — reusable IaC scaffolding + migration patterns (ADR-0077 Bicep)
 - **[`conventions/`](conventions/)** — naming/identity/release rules and standards
 - **[`reference/`](reference/)** — living inventories and maps (what exists, where)
 - **[`workers/`](workers/)** — operator-machine automation such as the ADR-0086 Grid Agent Runner

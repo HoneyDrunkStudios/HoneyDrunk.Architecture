@@ -182,7 +182,10 @@
       "consumed_by_planned": [],
       "blocked_by": [],
       "exposes": {
-        "contracts": [],
+        "contracts": [
+          "job-deploy-bicep.yml",
+          "bicep lint (job-bicep-lint.yml)"
+        ],
         "packages": []
       },
       "consumes_detail": {}
