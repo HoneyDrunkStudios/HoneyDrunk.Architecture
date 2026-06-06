@@ -493,7 +493,7 @@
       "active_blockers": [
         "Awaiting first module set + platform scaffold (ADR-0077 packets 13/14)"
       ],
-      "notes": "New IaC-content Node per ADR-0077 amendment 2026-06-02; holds modules/, platform/, nodes/. No acrhdbicep registry (dropped).",
+      "notes": "New IaC-content Node per ADR-0077 amendment 2026-06-02; holds modules/, platform/, nodes/. No Bicep module registry; the cross-repo registry approach was dropped.",
       "tracked_workflows": [
         "pr.yml"
       ]
