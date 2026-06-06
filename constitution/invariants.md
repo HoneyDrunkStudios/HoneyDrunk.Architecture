@@ -211,6 +211,17 @@ Rules that must never be violated across the HoneyDrunk Grid. Canary tests enfor
 49. **The HoneyDrunk.Audit Node CI must include a contract-shape canary for the full `HoneyDrunk.Audit.Abstractions` public surface.**
     Shape drift on `IAuditLog`, `IAuditQuery`, `AuditEntry`, or the supporting query/category/outcome/target/change value types is a build failure unless paired with an intentional version bump. The implementation may be the existing `job-api-compatibility.yml` reusable workflow scoped to `HoneyDrunk.Audit.Abstractions`; the obligation is to keep the gate, not to use any specific implementation. See ADR-0031 D8.
 
+## Infrastructure-as-Code Invariants
+
+90. **New Azure infrastructure is provisioned via Bicep.**
+    Every new Azure resource — Container Apps, Key Vault, App Configuration, Service Bus, Event Grid, Storage, Application Insights, Azure Cache for Redis, anything else — is declared in a Bicep template in `HoneyDrunk.Infrastructure` (a per-concern reusable template under `modules/`, the shared-foundation `platform/` layer, or a per-Node leaf template under `nodes/{node}/`) and applied through the `HoneyDrunk.Actions` reusable Bicep deploy workflow (`job-deploy-bicep.yml`) per ADR-0012. Manual Azure Portal provisioning of new resources, raw ARM JSON, and Azure CLI scripts as primary IaC are boundary violations. Existing resources manually provisioned before ADR-0077 are grandfathered and imported to Bicep at their next significant touchpoint per ADR-0077 D6 — not in a retroactive campaign. See ADR-0077 D1, D6, and the 2026-06-02 amendment.
+
+91. **Bicep templates never contain secret values.**
+    Bicep templates reference secrets via Vault URIs and `keyVaultSecret` resources; parameter files (`.bicepparam`) carry non-secret configuration only; the GitHub Actions OIDC-federated deploy identity has rights to provision resources, not to read secret values. This codifies invariant 8 (secrets never appear in logs, traces, exceptions, or telemetry) extended to IaC payloads. The linter flags hardcoded secret-shaped literals (`accountKey`, `connectionString`, `password`, `apiKey`) on a best-effort basis. See ADR-0077 D7.
+
+92. **Bicep templates apply the Grid naming and tagging conventions enforced by linter rules.**
+    Every Azure resource declared in Bicep carries a per-resource-type prefix (`ca-`, `kv-`, `redis-`, `sb-`, etc.), the `hd-` Grid identifier, a `{service}` or `{node}` name truncated to fit Azure's resource-name length limits (≤13 chars per invariant 19 where applicable), and an `{env}` suffix. Every resource carries the required tags `hd:node`, `hd:env`, `hd:owner`, `hd:cost-center`, `hd:dr-tier`, and `hd:adr`. A single root `bicepconfig.json` in `HoneyDrunk.Infrastructure` flags missing tags and non-conformant names across `modules/`, `platform/`, and `nodes/`; the `bicep lint` gate (consumed from `HoneyDrunk.Actions` per ADR-0012) fails the PR on violation. See ADR-0077 D3.
+
 ## Standup Procedure Invariants
 
 102. **Node registration is mandatory before the first non-bootstrap PR merges.**

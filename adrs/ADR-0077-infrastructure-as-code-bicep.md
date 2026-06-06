@@ -1,7 +1,8 @@
 # ADR-0077: Infrastructure-as-Code — Bicep (Azure-native)
 
-**Status:** Proposed
+**Status:** Accepted (amended 2026-06-02)
 **Date:** 2026-05-23
+**Accepted:** 2026-06-06
 **Deciders:** HoneyDrunk Studios
 **Sector:** Ops / cross-cutting
 
@@ -246,8 +247,9 @@ Repository structure:
 
 ### Affected Nodes
 
-- **HoneyDrunk.Actions** — primary affected Node. Gains `job-deploy-bicep.yml` reusable workflow; hosts the per-concern Bicep modules under `bicep/modules/`.
-- **Every Node that provisions Azure resources** — owns `infra/main.bicep` and per-environment `.bicepparam` files in its repo.
+- **HoneyDrunk.Infrastructure** (NEW Node, per the 2026-06-02 amendment) — owns **all** Bicep *content*: the per-concern reusable `modules/`, the shared-foundation `platform/` layer, and the per-Node leaf templates under `nodes/{node}/`. Carries the single root `bicepconfig.json` (D3 linter rules). Modules are consumed by local relative path; there is no registry.
+- **HoneyDrunk.Actions** — owns the reusable *pipeline* only (per [ADR-0012](./ADR-0012-grid-cicd-control-plane.md)): the `job-deploy-bicep.yml` deploy workflow and the `bicep lint` PR gate. It no longer hosts Bicep modules (those moved to `HoneyDrunk.Infrastructure` per the 2026-06-02 amendment). `HoneyDrunk.Infrastructure` *consumes* these workflows.
+- **Every Node that provisions Azure resources** — owns a `nodes/{node}/` leaf template (`main.bicep` + per-environment `.bicepparam`) in `HoneyDrunk.Infrastructure` (per the 2026-06-02 amendment), not an `infra/` directory in its own repo. The leaf template references modules by local relative path and the `platform/` exported resource IDs.
 - **[ADR-0059](./ADR-0059-stand-up-honeydrunk-cache-node.md)** Cache Node — provisions Azure Cache for Redis instances via Bicep per [ADR-0076](./ADR-0076-cache-backing-azure-cache-for-redis.md).
 - **[ADR-0060](./ADR-0060-stand-up-honeydrunk-identity-node.md)** Identity — provisions Container App, Key Vault, managed identity, possibly Postgres via Bicep.
 - **[ADR-0061](./ADR-0061-stand-up-honeydrunk-files-node.md)** Files — provisions Storage Account, Container App via Bicep.
@@ -256,11 +258,11 @@ Repository structure:
 
 ### Invariants
 
-The following are proposed for `constitution/invariants.md` (numbering finalized at acceptance):
+The following were added to `constitution/invariants.md` at acceptance (2026-06-06) under a new `## Infrastructure-as-Code Invariants` section, numbered **90 / 91 / 92** (the size-3 block ADR-0077 reserved in `constitution/invariant-reservations.md`). They are worded for the consolidated-repo / no-registry shape per the 2026-06-02 amendment; invariant 35 is **not** amended (the `acrhdbicep` carve-out is no longer needed — the registry is dropped):
 
-- **New Azure infrastructure is provisioned via Bicep.** Manual Portal provisioning of new resources is a boundary violation. Existing resources are grandfathered per D6.
-- **Bicep templates never contain secret values.** Secrets reference Vault by URI. (Codifies D7; extends [Invariant 8](../constitution/invariants.md).)
-- **Bicep templates apply the Grid naming and tagging conventions per D3.** Linter-enforced; CI gate fails on violation.
+- **90 — New Azure infrastructure is provisioned via Bicep** in `HoneyDrunk.Infrastructure` (`modules/` / `platform/` / `nodes/{node}/`) and applied through the `HoneyDrunk.Actions` reusable `job-deploy-bicep.yml` per [ADR-0012](./ADR-0012-grid-cicd-control-plane.md). Manual Portal provisioning of new resources, raw ARM JSON, and CLI scripts as primary IaC are boundary violations. Existing resources are grandfathered per D6.
+- **91 — Bicep templates never contain secret values.** Secrets reference Vault by URI / `keyVaultSecret`; `.bicepparam` files carry non-secret config only; the OIDC deploy identity provisions resources, not secret reads. (Codifies D7; extends [Invariant 8](../constitution/invariants.md).)
+- **92 — Bicep templates apply the Grid naming and tagging conventions per D3.** Enforced by a single root `bicepconfig.json` in `HoneyDrunk.Infrastructure`; the `bicep lint` gate (consumed from `HoneyDrunk.Actions`) fails the PR on violation.
 
 ### Operational Consequences
 
@@ -274,11 +276,12 @@ The following are proposed for `constitution/invariants.md` (numbering finalized
 
 ### Follow-up Work
 
-- Ship `job-deploy-bicep.yml` reusable workflow in HoneyDrunk.Actions.
-- Author the per-concern Bicep modules library under `HoneyDrunk.Actions/bicep/modules/`.
-- Per-Node Bicep templates land as part of each Node's scaffolding (or are added at the first significant infrastructure touchpoint per D6).
+- Ship `job-deploy-bicep.yml` reusable deploy workflow and the `bicep lint` PR gate in HoneyDrunk.Actions (the *pipeline* stays in Actions per [ADR-0012](./ADR-0012-grid-cicd-control-plane.md); they consume `HoneyDrunk.Infrastructure`'s local-path templates).
+- Stand up the `HoneyDrunk.Infrastructure` repo (`modules/` + `platform/` + `nodes/` tree, single root `bicepconfig.json`) and author the per-concern Bicep modules library under `HoneyDrunk.Infrastructure/modules/` (per the 2026-06-02 amendment — moved out of `HoneyDrunk.Actions/bicep/modules/`; consumed by local relative path, no registry).
+- ~~Author the per-concern Bicep modules library and the `bicep-publish.yml` publish workflow, publishing to the `acrhdbicep` registry on `modules/v*` tags.~~ **Dropped per the 2026-06-02 amendment** — the cross-repo module registry (`acrhdbicep`, `bicep-publish.yml`, `modules/v{N}.{N}.{N}` tag-publish, `br:` refs) is removed in full; modules are consumed by local relative path within `HoneyDrunk.Infrastructure`.
+- Per-Node Bicep templates land under `HoneyDrunk.Infrastructure/nodes/{node}/` at each Node's first significant infrastructure touchpoint per D6 (per the 2026-06-02 amendment — relocated out of each Node's own repo).
 - ~~Author the vendor-exit playbook for Azure per [`charter-aware draft cluster 2.1`](../generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md) (separate ADR).~~ **Resolved 2026-05-24:** authorized by [ADR-0080](./ADR-0080-vendor-lock-in-posture-and-exit-readiness-hedges.md); the Azure canonical home is [`governance/vendor-postures/azure.md`](../governance/vendor-postures/azure.md). Full per-surface content remains deferred per ADR-0080 D8.
-- Bicep linter configuration (`bicepconfig.json`) carries the naming + tagging rules per D3.
+- A single root Bicep linter configuration (`bicepconfig.json`) in `HoneyDrunk.Infrastructure` carries the naming + tagging rules per D3, covering `modules/`, `platform/`, and `nodes/` via Bicep's config-file resolution.
 - Existing infrastructure imports happen opportunistically per D6.
 - DR-rehearsal exercise (per [ADR-0036](./ADR-0036-disaster-recovery-and-backup-policy.md)) validates the Bicep-driven re-provisioning path.
 - Watch list: Bicep stewardship continues (first-party Microsoft); Bicep language evolves; the Terraform `azapi` provider's coverage trajectory if a future cloud-migration is ever considered.
