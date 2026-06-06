@@ -1147,5 +1147,51 @@
     "time_pressure": 0,
     "done": false,
     "cooldown_days": 14
+  },
+  {
+    "id": "honeydrunk-infrastructure",
+    "type": "node",
+    "name": "HoneyDrunk.Infrastructure",
+    "public_name": "HoneyDrunk.Infrastructure",
+    "short": "Bicep IaC content for the Grid",
+    "description": "Bicep IaC content for the Grid — per-concern modules, the shared platform layer, and per-Node leaf templates. Consumes the deploy + lint pipeline from Actions per ADR-0012; no registry (local-path module refs).",
+    "sector": "Ops",
+    "signal": "Seed",
+    "cluster": "foundation",
+    "energy": 0,
+    "priority": 20,
+    "flow": 0,
+    "tags": [
+      "bicep",
+      "iac",
+      "infrastructure"
+    ],
+    "links": {
+      "repo": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Infrastructure"
+    },
+    "long_description": {
+      "overview": "HoneyDrunk.Infrastructure is the single home for the Grid's Bicep infrastructure-as-code content: per-concern reusable modules/ (networking, compute, identity, data, secrets, messaging, observability), a shared platform/ layer (shared Container Apps Environment, image ACR, Log Analytics, Service Bus namespace, networking), and per-Node nodes/{node}/ leaf templates (main.bicep + parameters.{env}.bicepparam). Modules are referenced by local relative path — there is no module registry.",
+      "why_it_exists": "Consolidating all Bicep content into one repo (ADR-0077 amendment 2026-06-02) gives whole-topology visibility, a single home for the shared platform layer, and one PR per cross-Node infrastructure change instead of a fan-out across Node repos.",
+      "primary_audience": "HoneyDrunk operators and Node owners provisioning or evolving Grid infrastructure.",
+      "value_props": [
+        "Whole-topology visibility — the entire Grid's infrastructure is described in one place",
+        "A single home for the shared platform/ foundation layer that every Node's leaf template references",
+        "One PR per cross-Node infrastructure change; modules referenced by local relative path, no registry overhead"
+      ],
+      "monetization_signal": "Internal-first; reproducibility and bus-factor reduction.",
+      "roadmap_focus": "Land the per-concern module bodies and the shared platform scaffold (ADR-0077 packets 13/14), then the per-Node leaf-template pattern (packet 15).",
+      "grid_relationship": "Consumes: honeydrunk-actions (deploy + lint reusable workflows).",
+      "integration_depth": "low",
+      "demo_path": "Edit a module under modules/ → a Node leaf template under nodes/{node}/ references it by local relative path → the Actions deploy + lint workflows validate and apply it.",
+      "signal_quote": "One repo, the whole topology.",
+      "stability_tier": "seed",
+      "impact_vector": "bus-factor / reproducibility"
+    },
+    "foundational": false,
+    "strategy_base": 0,
+    "tier": "platform",
+    "time_pressure": 3,
+    "done": false,
+    "cooldown_days": 14
   }
 ]

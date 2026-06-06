@@ -26,6 +26,7 @@ Rules for determining which repo(s) are affected by a given request.
 | website, Studios, Next.js, pages, blog | `HoneyDrunk.Studios` |
 | architecture, ADR, invariant, sector, catalog, routing | `HoneyDrunk.Architecture` |
 | lore, wiki, raw/, ingest, compile, lint, knowledge surface, living wiki | `HoneyDrunk.Lore` |
+| bicep, IaC, infrastructure, main.bicep, bicepparam, module, platform, container apps environment, resource group, provisioning, az deployment | `HoneyDrunk.Infrastructure` |
 
 ## Dependency Cascade Rules
 

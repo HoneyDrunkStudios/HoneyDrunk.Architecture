@@ -380,6 +380,25 @@
         "honeydrunk-ai": ["IChatClient", "HoneyDrunk.AI.Abstractions"],
         "honeydrunk-flow": ["IWorkflowEngine", "HoneyDrunk.Flow.Abstractions"]
       }
+    },
+    {
+      "id": "honeydrunk-infrastructure",
+      "consumes": [
+        "honeydrunk-actions"
+      ],
+      "consumed_by": [],
+      "consumed_by_planned": [],
+      "blocked_by": [],
+      "exposes": {
+        "contracts": [],
+        "packages": []
+      },
+      "consumes_detail": {
+        "honeydrunk-actions": [
+          "job-deploy-bicep.yml",
+          "bicep lint (job-bicep-lint.yml)"
+        ]
+      }
     }
   ],
   "agent_couplings": [
