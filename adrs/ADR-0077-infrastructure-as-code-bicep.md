@@ -67,34 +67,28 @@ Bicep templates are organized by **concern**, not by Node. The committed structu
 | **Compute** | Container Apps environment, Container Apps, Container Apps Jobs, Function Apps | `containerAppEnvironment`, `containerApp`, `containerAppJob` |
 | **Identity** | Managed identities, role assignments, RBAC scopes | `userAssignedIdentity`, `roleAssignment` |
 | **Data** | SQL servers, SQL databases, Postgres servers, Cosmos accounts, Storage accounts, Redis | `sqlServer`, `sqlDatabase`, `postgresServer`, `storageAccount`, `redisCache` |
-| **Secrets** | Key Vault, Key Vault secrets-as-resources, App Configuration stores | `keyVault`, `keyVaultSecret`, `appConfigurationStore` |
+| **Secrets** | Key Vault, Key Vault secret references for secure parameters, App Configuration stores | `keyVault`, `getSecret`, `appConfigurationStore` |
 | **Messaging** | Service Bus namespaces, topics, subscriptions, queues, Event Grid topics | `serviceBusNamespace`, `serviceBusTopic`, `eventGridTopic` |
 | **Observability** | Application Insights, Log Analytics, Action Groups, Alerts | `applicationInsights`, `logAnalyticsWorkspace`, `actionGroup` |
 
-Each module is a Bicep file maintained in a shared canonical source location (`HoneyDrunk.Actions/bicep/modules/`) and **published to a dedicated Bicep registry on tagged release**. The registry is an Azure Container Registry (`acrhdbicep`) distinct from the per-environment container-image ACR (`acrhdshared{env}` per [ADR-0015](./ADR-0015-container-hosting-platform.md)) — Bicep modules are environment-agnostic templates, so a single shared registry across environments is the right shape. Per-Node templates consume modules via Bicep registry references (`br:`), never via cross-repo relative paths.
+Each module is a Bicep file maintained in the shared canonical `HoneyDrunk.Infrastructure/modules/` tree. Per-Node templates live in `HoneyDrunk.Infrastructure/nodes/{node}/` and consume those modules by local relative path. The deploy and lint pipeline remains in `HoneyDrunk.Actions`, but Bicep content and module consumption stay inside `HoneyDrunk.Infrastructure`; no cross-repo Bicep module registry, publish workflow, or `br:` reference syntax is part of the accepted shape after the 2026-06-02 amendment.
 
-The publish flow:
-
-- Module authors edit `HoneyDrunk.Actions/bicep/modules/` and tag a semantic-version release (`modules/v1.2.0` style).
-- A reusable `bicep-publish` workflow in `HoneyDrunk.Actions` runs `az bicep publish` for each changed module against the target registry on tag.
-- Module consumers reference the registry path with an immutable version: `br:acrhdbicep.azurecr.io/modules/{concern}/{name}:{semver}`.
-
-Node-specific templates consume the modules via registry refs:
+Node-specific templates consume the modules via local relative paths:
 
 ```bicep
-// HoneyDrunk.Identity/infra/main.bicep
-module identityVault 'br:acrhdbicep.azurecr.io/modules/secrets/keyVault:1.0.0' = {
+// HoneyDrunk.Infrastructure/nodes/identity/main.bicep
+module identityVault '../../modules/secrets/keyVault.bicep' = {
   name: 'identityVault'
   params: { ... }
 }
 
-module identityApp 'br:acrhdbicep.azurecr.io/modules/compute/containerApp:1.0.0' = {
+module identityApp '../../modules/compute/containerApp.bicep' = {
   name: 'identityApp'
   params: { ... }
 }
 ```
 
-The follow-up packet for this ADR (filed at acceptance time) provisions `acrhdbicep`, the publish workflow in `HoneyDrunk.Actions`, and a first set of modules covering Container Apps, Key Vault, App Configuration, Storage, Service Bus, and Application Insights.
+The follow-up packets for this ADR stand up `HoneyDrunk.Infrastructure`, author the first module set covering Container Apps, Key Vault, App Configuration, Storage, Service Bus, and Application Insights, and wire `HoneyDrunk.Actions` reusable deploy/lint workflows to validate and apply those local-path templates.
 
 **Why modularize by concern, not by Node:**
 
@@ -168,9 +162,9 @@ The grandfather posture preserves the working state of existing infrastructure; 
 
 Bicep templates **never contain secret values**. The discipline:
 
-- **Secrets reference Vault by URI**, never by value. Bicep templates can declare `keyVaultSecret` references — the Container App's environment variables resolve from Vault at runtime; the secret value never enters the template, the deploy pipeline, or the Azure deployment payload.
-- **Parameter files do not contain secrets.** The `.bicepparam` files carry non-secret configuration only.
-- **Deploy pipeline does not have secret access.** The deploy identity (the GitHub Actions OIDC-federated identity per the existing CI pattern) has rights to provision resources, not to read secret values.
+- **Secrets use Key Vault references, never inline values.** When a deployment must pass a secret into a secure parameter, it uses Bicep's Key Vault secret-reference mechanisms (`getSecret` in modules and `az.getSecret()` / `getSecret()` in `.bicepparam` files) or an equivalent Azure-native secure-parameter reference. The secret value never enters the template, ordinary parameter files, logs, or reviewable source.
+- **Parameter files do not contain raw secrets.** The `.bicepparam` files carry non-secret configuration only except for explicit Key Vault secret-reference expressions such as `az.getSecret()` / `getSecret()`.
+- **Deploy pipeline does not have broad secret access.** The deploy identity (the GitHub Actions OIDC-federated identity per the existing CI pattern) has rights to provision resources, not to read secret values except where an explicit secure-parameter reference requires tightly scoped Key Vault read access.
 
 This is consistent with [Invariant 8](../constitution/invariants.md) (secrets never appear in logs / traces / exceptions / telemetry) extended to IaC payloads.
 
@@ -261,7 +255,7 @@ Repository structure:
 The following were added to `constitution/invariants.md` at acceptance (2026-06-06) under a new `## Infrastructure-as-Code Invariants` section, numbered **90 / 91 / 92** (the size-3 block ADR-0077 reserved in `constitution/invariant-reservations.md`). They are worded for the consolidated-repo / no-registry shape per the 2026-06-02 amendment; invariant 35 is **not** amended (the `acrhdbicep` carve-out is no longer needed — the registry is dropped):
 
 - **90 — New Azure infrastructure is provisioned via Bicep** in `HoneyDrunk.Infrastructure` (`modules/` / `platform/` / `nodes/{node}/`) and applied through the `HoneyDrunk.Actions` reusable `job-deploy-bicep.yml` per [ADR-0012](./ADR-0012-grid-cicd-control-plane.md). Manual Portal provisioning of new resources, raw ARM JSON, and CLI scripts as primary IaC are boundary violations. Existing resources are grandfathered per D6.
-- **91 — Bicep templates never contain secret values.** Secrets reference Vault by URI / `keyVaultSecret`; `.bicepparam` files carry non-secret config only; the OIDC deploy identity provisions resources, not secret reads. (Codifies D7; extends [Invariant 8](../constitution/invariants.md).)
+- **91 — Bicep templates never contain secret values.** Secure parameters use Bicep's Key Vault secret-reference mechanisms (`getSecret` in modules and `az.getSecret()` / `getSecret()` in `.bicepparam` files) or equivalent Azure-native secure-parameter references; ordinary `.bicepparam` files carry non-secret config only; the OIDC deploy identity provisions resources and has no broad secret-read access. (Codifies D7; extends [Invariant 8](../constitution/invariants.md).)
 - **92 — Bicep templates apply the Grid naming and tagging conventions per D3.** Enforced by a single root `bicepconfig.json` in `HoneyDrunk.Infrastructure`; the `bicep lint` gate (consumed from `HoneyDrunk.Actions`) fails the PR on violation.
 
 ### Operational Consequences
