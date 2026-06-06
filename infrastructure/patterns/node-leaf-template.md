@@ -194,8 +194,14 @@ The leaf template is gated by the reusable `bicep lint` workflow, consumed from
 ```yaml
 jobs:
   bicep-lint:
+    permissions:
+      contents: read                          # superset of the callee (invariant 39)
     uses: HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/job-bicep-lint.yml@main
 ```
+
+The caller **must** declare a `permissions:` block that is a superset of the
+reusable workflow's (ADR-0012 D5 / invariant 39); under `workflow_call` the
+callee's `permissions:` is documentary and the caller's grant is what applies.
 
 `job-bicep-lint.yml` runs `bicep lint` + `bicep build-params` against the
 repo-root `bicepconfig.json` and **fails the PR on error-severity findings**
@@ -207,10 +213,22 @@ Deploy the leaf template per environment via the reusable
 `job-deploy-bicep.yml` workflow (consumed from `HoneyDrunk.Actions`), with
 ADR-0033 `environment:` approval gates:
 
+Each caller job declares `permissions: { id-token: write, contents: read }` —
+the superset `job-deploy-bicep.yml` requires for OIDC federation (invariant 39) —
+and passes the OIDC identity via repo/org **vars** (no secret values). The
+`environment:` is declared by the caller, not the reusable workflow.
+
 ```yaml
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   deploy-node-infra-dev:
     environment: dev
+    permissions:
+      id-token: write                       # OIDC federation (job-deploy-bicep.yml)
+      contents: read
     uses: HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/job-deploy-bicep.yml@main
     with:
       env: dev
@@ -218,11 +236,16 @@ jobs:
       parameters-path: nodes/identity/parameters.dev.bicepparam
       deployment-scope: resourceGroup
       resource-group: rg-hd-identity-dev
-    secrets: inherit
+      azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
+      azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
+      azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
   deploy-node-infra-staging:
     environment: staging                    # ADR-0033 required-reviewers gate
     needs: deploy-node-infra-dev
+    permissions:
+      id-token: write
+      contents: read
     uses: HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/job-deploy-bicep.yml@main
     with:
       env: staging
@@ -230,11 +253,16 @@ jobs:
       parameters-path: nodes/identity/parameters.staging.bicepparam
       deployment-scope: resourceGroup
       resource-group: rg-hd-identity-staging
-    secrets: inherit
+      azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
+      azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
+      azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
   deploy-node-infra-prod:
     environment: prod                       # ADR-0033 required-reviewers gate (gated prod)
     needs: deploy-node-infra-staging
+    permissions:
+      id-token: write
+      contents: read
     uses: HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/job-deploy-bicep.yml@main
     with:
       env: prod
@@ -242,7 +270,9 @@ jobs:
       parameters-path: nodes/identity/parameters.prod.bicepparam
       deployment-scope: resourceGroup
       resource-group: rg-hd-identity-prod
-    secrets: inherit
+      azure-client-id: ${{ vars.AZURE_CLIENT_ID }}
+      azure-tenant-id: ${{ vars.AZURE_TENANT_ID }}
+      azure-subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 ```
 
 **Infra deploys on its own cadence, decoupled from application release tags.**
