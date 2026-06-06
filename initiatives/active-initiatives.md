@@ -5,6 +5,29 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 ## In Progress
 
 
+### ADR-0077 Infrastructure-as-Code — Bicep (amended 2026-06-02)
+**Status:** In Progress — ADR-0077 Accepted (amended); re-cut packets filed (Arch #571–575, Actions #122/#187); START sequence underway
+**Scope:** Architecture (acceptance, invariants 90/91/92, new-Node registration, Actions-pipeline catalog edit, scaffold pattern, import playbook) + Actions (deploy + lint reusable workflows) + **HoneyDrunk.Infrastructure** (NEW — all Bicep content: `modules/` + `platform/` + `nodes/`)
+**Initiative:** `adr-0077-iac-bicep`
+**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
+**Description:** Commit **Bicep** as the canonical IaC tool for every Azure resource the Grid provisions, with a per-concern modularization strategy, naming/tagging linter rules (D3), per-environment parameter files (D4), secrets-by-URI discipline (D7), an Azure-deep vendor posture (D5), and grandfather/opportunistic-import (D6). **Amended 2026-06-02:** all Bicep *content* consolidates into the new `HoneyDrunk.Infrastructure` repo (`modules/` + `platform/` + `nodes/`); the cross-repo module registry (`acrhdbicep`, `bicep-publish.yml`, `modules/v*` tag-publish, `br:` refs) is dropped in full (modules consumed by local relative path); the deploy/lint *pipeline* stays in `HoneyDrunk.Actions` per ADR-0012; infra deploys decouple from app release tags; **invariant 35 unchanged** (no `acrhdbicep` carve-out — registry dropped). The amendment adds a `platform/` first-class home for shared/foundational resources.
+
+**Tracking (post-amendment packets 07 + 10–18; superseded originals 00–06/08/09):**
+- [x] **Wave 1 — Arch #575** (packet 18): Accept ADR-0077 (amended), claim invariant block 90–92, add IaC invariants, register the initiative. **Do NOT amend invariant 35.** *(This entry is the registration that packet calls for.)*
+- [ ] **Wave 1 — Arch #571** (packet 10): Register `HoneyDrunk.Infrastructure` as a new Grid Node (catalogs + routing + sectors + five-file context folder; invariant 102 Phase A). Blocked by #575.
+- [ ] **Wave 1 — Arch #572** (packet 12): Register the Bicep deploy + lint reusable workflows under `honeydrunk-actions` in the catalogs; no `acrhdbicep` grid-health entry. Blocked by #575, #571.
+- [ ] **Wave 2 — Infra packet 11** (not yet filed; Infra repo created 2026-06-06 as a bare shell): Stand up the repo — `modules/`+`platform/`+`nodes/` tree, single root `bicepconfig.json`, README/CHANGELOG, `.honeydrunk-review.yaml`, `pr.yml` consuming Actions' `pr-core.yml`. Bootstrap PR. Blocked by #575, #571.
+- [ ] **Wave 3 — Infra packet 13**: First six per-concern modules in `modules/`, consumed by local relative path. Blocked by packet 11.
+- [ ] **Wave 3 — Infra packet 14**: `platform/` shared-foundation templates (shared Container Apps Environment, image ACR, Log Analytics, Service Bus); grandfather existing `dev` resources via `what-if`. Blocked by packet 11, 13.
+- [ ] **Wave 3 — Actions #187** (packet 16): `job-deploy-bicep.yml` reusable deploy workflow — local-path Bicep, OIDC, `what-if` preflight, no registry auth. Blocked by #575.
+- [ ] **Wave 3 — Actions #122** (packet 07, UNCHANGED/already filed): Add `bicep lint` to `pr-core.yml`. Consumed by Infra's `pr.yml`. Blocked by #575.
+- [ ] **Wave 4 — Arch #573** (packet 15): Author the `nodes/{node}/` leaf-template scaffold pattern. Blocked by #575, packet 13, 14.
+- [ ] **Wave 4 — Arch #574** (packet 17): Author the D6 import-existing-resources playbook for the consolidated repo. Blocked by #575, packet 15.
+
+**Operator/site-sync close-out (nine superseded/dead originals, all OPEN — close with successor pointers):** Arch #384→#575, Arch #385→#571+#572, Arch #386→#574 (residue to packet 14), Arch #387→#573, Arch #388→#574, Actions #118→packet 11+13, Actions #119→DEAD (registry dropped, no successor), Actions #120→packet 13, Actions #121→#187. **Actions #122 stays OPEN** (packet 07 untouched). The `scope`/`hive-sync` agents do not close issues — operator step.
+
+**Exit criteria:** ADR-0077 Accepted (amended); invariants 90/91/92 live; `HoneyDrunk.Infrastructure` registered + scaffolded (`modules/`+`platform/`+`nodes/` + root `bicepconfig.json`); deploy + lint workflows shipped in Actions and consumed by Infra's `pr.yml`; first per-concern module set + `platform/` foundation authored; scaffold pattern + import playbook documented; the nine superseded originals closed with successor pointers.
+
 ### ADR-0043 Continuous Backlog Generation
 **Status:** In Progress — ADR accepted; full ADR-0086 automation substrate landing
 **Scope:** Architecture governance, generated packet lifecycle, agent prompts, ADR-0086 runner jobs, Discord visibility
