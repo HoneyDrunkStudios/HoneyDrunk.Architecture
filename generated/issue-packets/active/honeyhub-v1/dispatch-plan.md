@@ -122,9 +122,9 @@ Per the operator's standing process (ADR-0008 amendment), this initiative closes
 
 ## Filing
 
-These packets are authored in **`generated/issue-packets/proposed/honeyhub-v1/`** per **invariant 108** (agent-generated packets land in `proposed/`; a human is the only authority for the `proposed/` → `active/` promotion — agents do not self-promote). **Filing is gated on that human promotion step.**
+These packets were **operator-elected for filing** and promoted `proposed/` → `active/honeyhub-v1/` on 2026-06-06 — the human-authority step **invariant 108** requires (agents do not self-promote; a human is the only authority for the `proposed/` → `active/` transition). They now sit in `active/`, ready to file.
 
-When you're ready to file: **promote** the set by moving `proposed/honeyhub-v1/` → `active/honeyhub-v1/` in a commit. `file-packets.yml` triggers automatically on push to `generated/issue-packets/active/**/*.md` and runs `file-packets.sh` — it creates each issue, adds it to The Hive (project #4), sets Status/Wave/Node/Tier/Actor/Initiative/ADR fields from frontmatter, and wires `addBlockedBy` from each packet's `dependencies:` array. **No `gh issue create` / `gh project item-add` / `addBlockedBy` commands here** — they run automatically once the promoted packets land on `main`. Verify a wave landed by checking The Hive for the new items + their blocked-by chains.
+On merge to `main`, `file-packets.yml` triggers automatically on the `active/**/*.md` packets and runs `file-packets.sh` — it creates each issue, adds it to The Hive (project #4), sets Status/Wave/Node/Tier/Actor/Initiative/ADR fields from frontmatter, and wires `addBlockedBy` from each packet's `dependencies:` array. **No `gh issue create` / `gh project item-add` / `addBlockedBy` commands here** — they run automatically once the packets land on `main`. Verify a wave landed by checking The Hive for the new items + their blocked-by chains.
 
 Filing-order note: once promoted to `active/`, packets 01–10 can all land together — the `dependencies:` frontmatter wires the blocking edges so the board reflects the strict cross-wave ordering automatically (packet 02 blocked-by 01; 03 blocked-by 01+02; 10 blocked-by 02 [Actions-targeted, parallel to 03]; 04 blocked-by 03; etc.). The human packet (02), the Actions routing packet (10), and the Phase 3+ tracker (09) file the same way.
 
