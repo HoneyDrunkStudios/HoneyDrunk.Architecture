@@ -2,11 +2,11 @@
 
 High-level roadmap for the HoneyDrunk Grid.
 
-**Last Updated:** 2026-06-05
+**Last Updated:** 2026-06-06
 
 For the near-term ranked priority list, see [current-focus.md](current-focus.md); this roadmap is the quarterly horizon.
 
-The studio is currently building three product threads in 2026 — **Notify Cloud** (PDR-0002, the Grid's first commercial trial), **Curiosities** (PDR-0008, discovery-first city app), and **HoneyHub** (PDR-0009, the operator's internal daily-driver workspace) — on top of the substrate. The first game thread begins in 2027. Per the [charter](../constitution/charter.md), foundation work is real work, *and* it has to serve the workshop rather than consume it; ADRs on this roadmap are filtered to those that materially move the substrate forward for the product threads in flight. AI-sector standup ADRs (0017–0025) and other future-tense surfaces live in **Future** until a real consumer pulls them in.
+The studio is currently building three product threads in 2026 — **HoneyHub** (now the lead thread; v1 re-scoped per PDR-0011 to the **Agent-Cockpit** wedge — govern/monitor local AI coding-agent sessions — with the internal daily-driver workspace of PDR-0009 sequenced as a later layer), **Notify Cloud** (PDR-0002, the Grid's first commercial trial, re-sequenced behind the **ADR-0077** IaC consolidation its cloud bring-up composes on), and **Curiosities** (PDR-0008, discovery-first city app) — on top of the substrate. The first game thread begins in 2027. Per the [charter](../constitution/charter.md), foundation work is real work, *and* it has to serve the workshop rather than consume it; ADRs on this roadmap are filtered to those that materially move the substrate forward for the product threads in flight. AI-sector standup ADRs (0017–0025) and other future-tense surfaces live in **Future** until a real consumer pulls them in.
 
 ## Q1 2026 (Jan–Mar)
 
@@ -33,15 +33,16 @@ The studio is currently building three product threads in 2026 — **Notify Clou
 - [x] **ADR-0052 Cost Governance, Budget Alerts, Kill-Switches — Accepted 2026-05-30** — `adr-0052-cost-governance`: invariants 104–106 live; `cost-budgets.json` + `generated/cost-reports/` format + review-agent cost gating shipped (PR #517). Wave-1 governance complete; residual gate map lives in `initiatives/active-initiatives.md`; AI-side ledger impl + `ICostLedger` Kernel relocation (Architecture#355) remain gated on the AI Node scaffold + a human Kernel release.
 - [x] **ADR-0088 Decommission OpenClaw — completed 2026-06-02** — accepted; Architecture PR #554 and Actions PR #182 merged; runtime/tunnel/reference/governance cleanup done; `OPENCLAW_GRID_REVIEW_WEBHOOK_SECRET` deleted; issue #527 closed; invariant-103 cleanup removed the inventory row, rotation walkthrough, and node-standup matrix row. Ready for archive / exit-criteria review.
 - [x] **ADR-0033 environment-gated trigger packets — completed 2026-06-01** — unblocked Notify/Pulse dev deploy trigger model under ADR-0015 *(3/3 issues closed; ADR-0033 Accepted)*
+- [ ] **ADR-0077 Infrastructure-as-Code (Bicep) consolidation — start** — accept the amended ADR (Accepted 2026-06-06, invariants 90–92; PR #580) and stand up the new `HoneyDrunk.Infrastructure` repo (`modules/` + `platform/` + `nodes/`); module registry dropped, deploy/lint pipeline stays in Actions per ADR-0012. Forcing function: the ADR-0015 dev deploy proved the hand-provisioning pain (apps built live via `az rest`). Runs in parallel with HoneyHub; Notify Cloud's cloud bring-up composes on the reproducible provisioning this delivers.
 - [ ] **ADR-0043 Backlog Generation — Phase 1 kickoff** — closes the ADR → packet auto-generation loop; Strategic source feeds on ADR acceptances
 - [x] **ADR-0015 Container Apps Rollout — completed 2026-06-04** *(5/5 issues closed; ready for archive/exit-criteria review; underwrites Notify Cloud deploy substrate)*
 - [ ] **Archive / exit-criteria review** — sweep closed rollouts (ADR-0005/0006, 0009, 0014, 0030, 0032, Lore, Vault.Rotation, Kernel Adoption) into `archived-initiatives.md`
 
 **Product**
 
-- [ ] **Notify Cloud (PDR-0002) — multi-tenant scaffolding kickoff** — first commercial trial on the Grid; ADR-0027 Node standup, Stripe wiring scoped, tenant isolation at gateway/queue/Vault layers begun
+- [ ] **Notify Cloud (PDR-0002) — multi-tenant scaffolding kickoff** — first commercial trial on the Grid; ADR-0027 Node standup, Stripe wiring scoped, tenant isolation at gateway/queue/Vault layers begun. **Re-sequenced behind ADR-0077** — the Notify dev deploy substrate is done, but the cloud bring-up rides ADR-0077's reproducible Bicep provisioning rather than more hand-provisioning.
 - [ ] **Curiosities (PDR-0008) — Phase 0 content spike + loop prototype** — pick launch district, build curated-content pipeline against open data + AI-assisted enrichment, produce ~25 reviewed POIs to measure real per-POI cost; tests Kill Criterion 1 before any significant mobile investment
-- [ ] **HoneyHub (PDR-0009) — direction accepted, agent-dispatch ADR drafted** — accept PDR-0009 as a peer to PDR-0001 (internal-daily-driver fitness as first-class success criterion); draft the agent-dispatch service ADR named in §G (placement, auth, repo-cloning model, sandboxing, PR-opening contract) so Q3 read-layer work has a known dispatch target *(per PDR-0009 §"Rollout — Phased Approach" Phase 1)*
+- [ ] **HoneyHub v1 — Agent Cockpit & Usage Governance (PDR-0011) — LEAD product thread** — v1 re-scoped from the internal read-layer (PDR-0009, now a later layer) to the Agent-Cockpit wedge: govern/monitor local Codex/Claude Code/Copilot sessions (transcripts, token/model governance, mobile monitoring), product-testable on the operator's day-job agent pain ahead of Notify Cloud commercial readiness. PDR-0011 Accepted; the deliverable is promoting the **local-runner-bridge ADR** (the PDR-0009 §G dispatch answer — web/PWA → secure local runner bridge → local agent/git/gh, built on the ADR-0086 substrate) from draft to a numbered, Accepted ADR.
 
 **Business operations**
 
@@ -68,7 +69,7 @@ The studio is currently building three product threads in 2026 — **Notify Clou
 
 - [ ] **Notify Cloud — first external customer / beta** *(PDR-0002 first-revenue milestone)* — REST API + `HoneyDrunk.Notify.Client` NuGet package GA; tenant signup + API key issuance live; first paying or free-tier external developer wired up
 - [ ] **Curiosities — Phase 1 launch-district v1** *(PDR-0008)* — expand to 50–100 reviewed POIs with safety-reviewed metadata; wire walk-memory backbone (auto-detected walks → Mochi chapters); add discovery atlas surface; test paid district pack or Founding Explorer tier; measure Kill Criteria 2–4
-- [ ] **HoneyHub — read layer + generic Node shell** *(PDR-0009 Phase 2)* — read layer over Architecture repo catalogs + frontmatter (SSG-generated static JSON viable for v1); generic per-Node management page composed from `nodes.json` + `grid-health.json` + GitHub; ADR/PDR/initiative/packet list views with filters; no dispatch actions yet
+- [ ] **HoneyHub — read layer + generic Node shell** *(PDR-0009 Phase 2; the later read-layer behind the v1 cockpit)* — read layer over Architecture repo catalogs + frontmatter (SSG-generated static JSON viable for v1); generic per-Node management page composed from `nodes.json` + `grid-health.json` + GitHub; ADR/PDR/initiative/packet list views with filters; no dispatch actions yet
 - [ ] **Lore → Grid use-case bridge — author the ADR** — formalize HoneyDrunk.Lore's mandate as the durable operator-memory archive that survives Claude/Codex/Copilot session boundaries (per [`generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md`](../generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md) §2.3); land first consumer wiring (Honeyclaw or another agent path) so the flat-file wiki stops being write-only
 
 **Foundation / Substrate**
@@ -90,7 +91,7 @@ The studio is currently building three product threads in 2026 — **Notify Clou
 
 - [ ] **Notify Cloud — pricing tiers + first decision point** — Stripe metered billing live; charter §"Commercial trials" decision (keep active / drop to maintenance / sunset gracefully) based on customer signal from Q3 beta
 - [ ] **Curiosities — Phase 2 content pipeline hardening + Atlas season** — repeatable district-pack build process, editorial review queue, first Yearly Atlas season ("what you uncovered this year"), print-on-demand pipeline live
-- [ ] **HoneyHub — dispatch actions via PRs** *(PDR-0009 Phase 3)* — "New ADR," "New PDR," "Scope," "Refine," "Netrunner," "Site-sync" buttons open draft PRs through the agent-dispatch service; agent-dispatch service ADR Accepted before this phase ships; optimistic UI + inline PR-state visibility
+- [ ] **HoneyHub — dispatch actions via PRs** *(PDR-0009 Phase 3)* — "New ADR," "New PDR," "Scope," "Refine," "Netrunner," "Site-sync" buttons open draft PRs through the local-runner-bridge dispatch service (the v1 cockpit ADR, already Accepted); optimistic UI + inline PR-state visibility
 
 **Foundation / Substrate**
 
