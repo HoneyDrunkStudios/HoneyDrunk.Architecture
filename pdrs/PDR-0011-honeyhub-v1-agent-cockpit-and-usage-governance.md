@@ -1,3 +1,14 @@
+---
+title: "PDR-0011: HoneyHub v1 — Agent Cockpit and Usage Governance"
+status: Accepted
+date: 2026-06-06
+deciders: HoneyDrunk Studios
+sector: Meta / AI / Platform
+relationship: "Selects the v1 commercial wedge under PDR-0001 and re-sequences PDR-0009's internal Grid read-layer / daily-driver workspace as a later layer."
+implemented_by: "../generated/adr-drafts/ADR-DRAFT-honeyhub-local-runner-bridge.md"
+adjacent: "PDR-0010 Agent Action Ledger; PDR-0002 Notify Cloud"
+---
+
 # PDR-0011: HoneyHub v1 — Agent Cockpit and Usage Governance
 
 **Status:** Accepted
@@ -91,13 +102,13 @@ The cockpit inherits PDR-0009 §D **PRs-as-artifacts** as its write boundary: th
 
 The first provider is local:
 
-```
+```text
 HoneyHub web/PWA -> secure local runner bridge -> local Codex / Claude Code / git / gh
 ```
 
 Cloud/API execution is a later provider over the **same** session/run/usage contract:
 
-```
+```text
 HoneyHub web/PWA -> cloud dispatch provider -> provider APIs / hosted workers
 ```
 
@@ -193,7 +204,7 @@ The implementing technical decision is **[ADR-DRAFT: HoneyHub Local Runner Bridg
 
 **The contract the cockpit needs from the bridge ADR:**
 
-```
+```text
 HoneyHub web/PWA  ->  secure local runner bridge  ->  local agent tools / git / gh
 ```
 
