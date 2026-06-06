@@ -30,6 +30,7 @@ From commit to production with confidence — pipelines, deployment orchestratio
 | **Observe** | Seed | Inbound external-project observation — connectors, event normalization, observation state |
 | **Notify** | Live | Channel-agnostic notification dispatch (email, SMS) |
 | **Actions** | Live | Reusable GitHub Actions workflows for the Grid |
+| **Infrastructure** | Seed | Bicep IaC content — per-concern modules, shared platform layer, per-Node leaf templates |
 
 ## Meta
 

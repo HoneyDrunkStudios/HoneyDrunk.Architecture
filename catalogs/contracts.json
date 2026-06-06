@@ -279,6 +279,28 @@
         { "name": "ISimulator", "kind": "interface", "description": "Run a simulated execution of a plan or workflow and return risk analysis." },
         { "name": "ISimulationResult", "kind": "interface", "description": "Outcome of a simulation — steps executed, risks identified, confidence score." }
       ]
+    },
+    {
+      "node": "honeydrunk-infrastructure",
+      "node_name": "HoneyDrunk.Infrastructure",
+      "status": "seed",
+      "interfaces": [
+        {
+          "name": "modules/",
+          "kind": "bicep-module",
+          "description": "Per-concern reusable Bicep modules (networking, compute, identity, data, secrets, messaging, observability), consumed by LOCAL RELATIVE PATH."
+        },
+        {
+          "name": "platform/",
+          "kind": "bicep-template",
+          "description": "Shared-foundation templates (shared Container Apps Environment, image ACR, Log Analytics, Service Bus); exports resource IDs."
+        },
+        {
+          "name": "nodes/",
+          "kind": "bicep-template",
+          "description": "Per-Node leaf templates (main.bicep + parameters.{env}.bicepparam)."
+        }
+      ]
     }
   ]
 }

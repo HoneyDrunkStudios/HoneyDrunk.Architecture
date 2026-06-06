@@ -481,14 +481,30 @@
       ],
       "notes": "Simulation, plan evaluation, risk analysis.",
       "tracked_workflows": []
+    },
+    {
+      "id": "honeydrunk-infrastructure",
+      "name": "HoneyDrunk.Infrastructure",
+      "sector": "Ops",
+      "signal": "Seed",
+      "version": "N/A",
+      "canary_status": "none",
+      "last_release": null,
+      "active_blockers": [
+        "Awaiting first module set + platform scaffold (ADR-0077 packets 13/14)"
+      ],
+      "notes": "New IaC-content Node per ADR-0077 amendment 2026-06-02; holds modules/, platform/, nodes/. No Bicep module registry; the cross-repo registry approach was dropped.",
+      "tracked_workflows": [
+        "pr.yml"
+      ]
     }
   ],
   "summary": {
-    "total_nodes": 26,
+    "total_nodes": 27,
     "live": 13,
-    "seed": 13,
+    "seed": 14,
     "canary_passing": 13,
-    "canary_none": 13,
+    "canary_none": 14,
     "canary_failing": 0,
     "blocked_nodes": [
       "honeydrunk-vault-rotation",
@@ -506,7 +522,8 @@
       "honeydrunk-capabilities",
       "honeydrunk-flow",
       "honeydrunk-operator",
-      "honeydrunk-sim"
+      "honeydrunk-sim",
+      "honeydrunk-infrastructure"
     ]
   }
 }
