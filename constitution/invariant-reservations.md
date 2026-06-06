@@ -7,10 +7,10 @@
 2. ADRs in `Proposed` state that intend to add invariants reserve numbers here by listing them below. **A reservation is a forward soft-claim, not an accepted invariant** — it disappears if the ADR is rejected or restructured. Reservations may be added before any of the ADR's packets have merged; that's the point of the registry (coordinate across in-flight Proposed ADRs before they land).
 3. The reservation is added in the same PR that introduces (or last refines) the ADR's packet set. The **Notes** column points at the packet that will actually write to `constitution/invariants.md` — usually packet 00, but some standup ADRs delegate the invariant edit to a later packet (e.g., a separate `02-architecture-{node}-invariants.md`). The packet 00 PR carries a Required Decision if that's the case.
 4. **First merge wins.** If two ADRs end up racing for the same number block, the one whose invariant-writing packet merges first keeps the reservation; the second shifts upward by editing its packet body + this file in a follow-up commit before pushing.
-5. Numbering is contiguous and ascending across reservations. New reservations append after the highest existing claim. No gaps reserved "for later."
+5. Numbering is contiguous and ascending. New claims append at the **next-free** value — the higher of the highest *accepted* invariant (in `constitution/invariants.md`) and the highest *active reservation*, +1 — **not** merely above the highest reservation. (Accepted invariants can exceed the highest reservation; see Current ceiling.) No gaps reserved "for later."
 6. **When an ADR is rejected or restructured**, the author removes its row from Active Reservations in the same PR that records the rejection / restructure. Downstream packets that reference the released numbers must shift down (or the released block stays empty in `invariants.md`, but contiguity rule 5 still holds for future claims).
 
-**Current ceiling:** highest reservation is the next ADR's starting point. With ADR-0080's 99–101, ADR-0083's 103, ADR-0052's 104–106, ADR-0084's 107, ADR-0043's 108–109, the ADR-0008 implementation-notes-gate amendment's 110, and the 2026-06-05 invariant-37–41 dedup's 111–115 all consumed (Reservation History), **next free = 116.**
+**Current ceiling:** the next ADR's starting point is the **next-free** value — the higher of the highest *accepted* invariant (`constitution/invariants.md`) and the highest *active reservation*, +1. With ADR-0080's 99–101, ADR-0083's 103, ADR-0052's 104–106, ADR-0084's 107, ADR-0043's 108–109, the ADR-0008 implementation-notes-gate amendment's 110, and the 2026-06-05 invariant-37–41 dedup's 111–115 all consumed (Reservation History), **next free = 116** — note accepted invariants now reach 115 while active reservations stop at 98, so anchor on 116, not on the Active Reservations table alone.
 
 ---
 
@@ -88,8 +88,8 @@ When a reservation is consumed (ADR packet 00 merges, invariants land in `invari
 
 ## How a packet 00 claims a block
 
-1. Read the **Active Reservations** table.
-2. Pick the next free range above the highest reservation. The block size matches the number of invariants the ADR adds.
+1. Read the **Current ceiling / next-free** value (above) and the **Active Reservations** table.
+2. Pick the next free range starting at the next-free value — the higher of the highest *accepted* invariant (`constitution/invariants.md`) and the highest *active reservation*, +1 (not merely above the reservation table; accepted invariants can be higher). The block size matches the number of invariants the ADR adds.
 3. Add a row to **Active Reservations** in the same PR that writes packet 00.
 4. Reference this file from the packet 00 body so a reviewer can verify the claim.
 
