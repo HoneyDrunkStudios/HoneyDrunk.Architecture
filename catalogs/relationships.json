@@ -390,7 +390,11 @@
       "consumed_by_planned": [],
       "blocked_by": [],
       "exposes": {
-        "contracts": [],
+        "contracts": [
+          "modules/",
+          "platform/",
+          "nodes/"
+        ],
         "packages": []
       },
       "consumes_detail": {
