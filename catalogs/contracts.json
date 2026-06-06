@@ -281,6 +281,23 @@
       ]
     },
     {
+      "node": "honeydrunk-actions",
+      "node_name": "HoneyDrunk.Actions",
+      "status": "live",
+      "interfaces": [
+        {
+          "name": "job-deploy-bicep.yml",
+          "kind": "workflow",
+          "description": "Reusable deploy workflow: az deployment {group|sub} create on a Bicep template from HoneyDrunk.Infrastructure (nodes/{node}/ or platform/) with the env bicepparam, per ADR-0077 D4 (amended). OIDC; what-if preflight; local-path module resolution — no registry. Consumed by HoneyDrunk.Infrastructure deploy workflows."
+        },
+        {
+          "name": "job-bicep-lint.yml",
+          "kind": "workflow",
+          "description": "Reusable bicep lint + build-params PR gate per ADR-0077 D3. Fails on error-severity findings against the consuming repo's bicepconfig.json. Consumed by HoneyDrunk.Infrastructure's pr.yml."
+        }
+      ]
+    },
+    {
       "node": "honeydrunk-infrastructure",
       "node_name": "HoneyDrunk.Infrastructure",
       "status": "seed",
