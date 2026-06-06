@@ -49,7 +49,7 @@ A Program is created when, and only when, **a PDR spawns more than one ADR**. A 
 
 The full hierarchy, coarse to fine:
 
-```
+```text
 PDR  (the product decision — pdrs/PDR-*.md)
  └── Program  (the live cross-ADR tracker — initiatives/programs/{slug}.md)   ← NEW
       ├── ADR  (a decision the program needs — adrs/ADR-*.md)
@@ -81,7 +81,7 @@ The program adds **one** new edge type to the model: **decision-to-decision and 
 
 ### D3 — Programs live at `initiatives/programs/{slug}.md`, one file per program
 
-A program tracker is a single Markdown file at `initiatives/programs/{slug}.md` (e.g. `initiatives/programs/honeyhub.md`). The `initiatives/programs/` directory is new and is created by the first program instance (backfill, D6). The slug matches the roadmap thread name, lowercased and kebabed.
+A program tracker is a single Markdown file at `initiatives/programs/{slug}.md` (e.g. `initiatives/programs/honeyhub.md`). The `initiatives/programs/` directory is new and is created by the first program instance (backfill, D6). The slug matches the roadmap thread name, lowercased and kebab-cased.
 
 A program tracker has this schema. It is deliberately thin — every section is either a link list or a single table, and the operator updates it by hand on ADR status changes (D5):
 
