@@ -93,6 +93,8 @@ Within a wave, packets can run in parallel (05 depends only on 04; 07 depends on
 | 08 | [Minimal React PWA run screen — start/watch/reply/stop/see artifacts](./08-honeyhub-minimal-run-screen.md) | HoneyHub | 6 | Agent | packet:06, packet:07 |
 | 09 | [Phase 3+ outline (Codex/Copilot, usage+cost, routing, coaching, packaging, relay)](./09-honeyhub-phase3-plus-outline.md) | HoneyHub | 7 | Agent | packet:08 |
 
+**Full standup =** packets 01/02/03/10 **PLUS** the operator's runner-host `host.psd1` enablement (Step 8 of packet 02 — a manual, non-delegable step that adds HoneyHub to the ADR-0086 local worker's `Repositories` + `Safety.AllowedReviewRepositories` and clones it on the runner host, so Grid review actually fires). CodeRabbit (ADR-0079 Global Overrides) and the hive-field mirror (`file-packets.yml` + the Hive refresh workflow) are automatic/central — no per-repo wiring needed for either.
+
 ## Handoffs (wave-transition batons)
 - [`handoff-standup-to-phase2.md`](./handoff-standup-to-phase2.md) — read at the Wave 3→4 transition (scaffold landed → build the bridge): the session contract, the build order, the `[Firm]` boundaries, the Phase 2 kill-criterion gate.
 - [`handoff-phase2-bringup.md`](./handoff-phase2-bringup.md) — read at Phase 2 bringup: the human-run live Claude Code CLI smoke (the kill-criterion check, referenced by packets 06/08) and the mobile-over-Tailscale relay exercise (referenced by packets 05/08).
