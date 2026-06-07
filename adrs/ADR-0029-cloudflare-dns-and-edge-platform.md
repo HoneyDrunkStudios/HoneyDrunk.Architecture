@@ -1,19 +1,21 @@
 # ADR-0029: Cloudflare as Registrar, Authoritative DNS, and Edge Platform
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-05-08
 **Deciders:** HoneyDrunk Studios
 **Sector:** Infrastructure
+
+> **Accepted 2026-06-07.** See [`## Acceptance`](#acceptance) and the as-built record in [`generated/issue-packets/completed/adr-0029-cloudflare-dns-rollout/implementation-notes.md`](../generated/issue-packets/completed/adr-0029-cloudflare-dns-rollout/implementation-notes.md). The realized scope was **registrar-only** — DNS authority was already on Cloudflare for two of three domains before this ADR, so the migration reduced to transferring the registration. The decision body below is preserved as written; the implementation notes record where reality diverged.
 
 ## If Accepted — Required Follow-Up Work in Architecture Repo
 
 Accepting this ADR creates infrastructure and catalog obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
 
-- [ ] Update `infrastructure/reference/vendor-inventory.md` — replace the GoDaddy row with Cloudflare (registrar), keep Cloudflare DNS/CDN row, and update the lock-in assessment to reflect the consolidation
-- [ ] Add `infrastructure/cloudflare-account-provisioning.md` — portal walkthrough for the Cloudflare account, the API token storage convention (per ADR-0005 / ADR-0006), and the lean tag/comment scheme for DNS records
-- [ ] Add `infrastructure/cloudflare-domain-transfer.md` — portal walkthrough for the GoDaddy → Cloudflare transfer of `honeydrunkstudios.com` and any other domain currently held at GoDaddy
-- [ ] Migration packets — one per domain, in the order recommended in §Implementation; scope agent emits packets at acceptance time
-- [ ] Scope agent flips Status → Accepted after the first domain (Studios marketing site) has cut over and the migration walkthrough lands
+- [x] Update `infrastructure/reference/vendor-inventory.md` — replace the GoDaddy row with Cloudflare (registrar), keep Cloudflare DNS/CDN row, and update the lock-in assessment to reflect the consolidation *(done in the acceptance PR — GoDaddy row removed; Cloudflare row scoped to registrar + DNS + edge; lock-in row added)*
+- [~] Add `infrastructure/cloudflare-account-provisioning.md` — *descoped: the Cloudflare account already existed (and held the two zones) before this ADR; no provisioning walkthrough was authored. The as-built account posture is captured in the implementation notes.*
+- [~] Add `infrastructure/cloudflare-domain-transfer.md` — *descoped: with DNS already on Cloudflare the migration was registrar-only (no zone import, no nameserver flip, no cutover smoke). The full DNS-migration walkthrough would have documented ceremony that did not occur; the as-built registrar-transfer recipe (incl. the GoDaddy "Ownership Protection" gotcha) is captured in the implementation notes instead.*
+- [x] Migration packets — emitted (P4 `honeydrunkstudios.com`, P5a `tatteddev.com`, P5b `honeyhub.app`) and executed as registrar-only transfers
+- [x] Scope agent flips Status → Accepted after the first domain (Studios marketing site) has cut over and the migration walkthrough lands *(flipped in this PR; "walkthrough lands" reinterpreted as the implementation-notes record, since the walkthroughs were descoped)*
 
 ## Context
 
@@ -207,3 +209,15 @@ Items that should become their own ADRs or packets later:
 - **R2 vs. Azure Blob for object storage.** Per D4. Cost-driven; waits for a workload whose egress profile makes R2 worth the cross-cloud surface.
 - **DNS-as-IaC.** Per D2. Revisit when the DNS footprint, contributor count, or audit requirements change.
 - **Workers as a pre-Container-Apps cheap edge layer.** Per D4. Waits for a concrete workload whose shape is wrong for Container Apps but right for Workers.
+
+## Acceptance
+
+Accepted on 2026-06-07 after all three Grid-owned apex domains — `honeydrunkstudios.com`, `tatteddev.com`, and `honeyhub.app` — were moved to Cloudflare Registrar with Cloudflare authoritative DNS, and the GoDaddy registrar relationship was wound down (all GoDaddy auto-renewals cancelled).
+
+**Realized scope was registrar-only, not a DNS migration.** The Cloudflare account already existed and was already authoritative DNS for `honeydrunkstudios.com` and `tatteddev.com` before this ADR (set up during the retired ADR-0044 Tunnel work). What remained was transferring the *registration* off GoDaddy. Because the zones were already on Cloudflare, the registrar transfers touched no DNS records and caused no downtime — D1 was the substantive work; D2 was largely already true. `honeyhub.app` was parked at GoDaddy and was first onboarded as a Cloudflare zone, then transferred.
+
+D3 (edge proxy posture), D4 (deferred features), D5 (API token handling — no token provisioned), and D6 (lean record comments) are accepted as written and unchanged in practice.
+
+## Implementation Notes
+
+As-built record (decided ➜ as-built deltas, the registrar-transfer recipe, and the GoDaddy email-billing finding): [`generated/issue-packets/completed/adr-0029-cloudflare-dns-rollout/implementation-notes.md`](../generated/issue-packets/completed/adr-0029-cloudflare-dns-rollout/implementation-notes.md).

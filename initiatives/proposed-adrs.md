@@ -5,7 +5,6 @@
 ## Awaiting Implementing Packets
 
 - `ADR-0017` — ADR-0017: Stand Up the HoneyDrunk.Capabilities Node — Tool Registry and Dispatch Substrate for the AI Sector (adrs/ADR-0017-stand-up-honeydrunk-capabilities-node.md)
-- `ADR-0029` — ADR-0029: Cloudflare as Registrar, Authoritative DNS, and Edge Platform (adrs/ADR-0029-cloudflare-dns-and-edge-platform.md)
 - `ADR-0032` — ADR-0032: Grid-Wide PR Validation Policy — Coverage Gate and NuGet Update Flagging (adrs/ADR-0032-pr-validation-policy-coverage-gate-and-nuget-flagging.md)
 - `ADR-0058` — ADR-0058: Grid-Wide Caching Strategy (adrs/ADR-0058-grid-wide-caching-strategy.md)
 - `ADR-0089` — ADR-0089: Program Tier for Multi-ADR Product Efforts (adrs/ADR-0089-program-tier-for-multi-adr-product-efforts.md)

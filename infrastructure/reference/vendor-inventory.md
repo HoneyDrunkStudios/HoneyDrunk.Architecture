@@ -2,7 +2,7 @@
 
 External vendors, services, and third-party dependencies across the HoneyDrunk Grid.
 
-**Last Updated:** 2026-05-30
+**Last Updated:** 2026-06-07
 
 > **Related:** this file is the **product-level** vendor inventory ("which SaaS products do we use"). The **artifact-level** index ("which credentials, identifiers, and identity bindings do we hold against each vendor, plus everything else load-bearing") lives in [`sensitive-inventory.md`](./sensitive-inventory.md) per ADR-0083. For any vendor below whose credentials the Grid holds — SonarCloud (`SONAR_TOKEN`), NuGet.org (`NUGET_API_KEY`), GitHub (PATs / App keys), Azure (tenant/subscription IDs, OIDC, Key Vault), Anthropic / OpenAI (API keys) — see that file for the rotation posture and expiration tracking.
 
@@ -34,12 +34,13 @@ External vendors, services, and third-party dependencies across the HoneyDrunk G
 
 ---
 
-## DNS / CDN / Domain
+## Domain Registrar, DNS, and Edge
 
 | Vendor | Product | Purpose | Tier |
 |--------|---------|---------|------|
-| GoDaddy | Domain registrar | Domain registration and management | Paid |
-| Cloudflare | DNS, CDN, DDoS protection | DNS management, edge caching, security | Free tier / Pro |
+| Cloudflare | Registrar, authoritative DNS, CDN, DDoS protection, WAF | Domain registration, DNS management, edge caching, security | Free tier (registrar at-cost; Pro if a future Node justifies it) |
+
+> Per ADR-0029, Cloudflare is the Grid's registrar, authoritative DNS, and edge platform of choice. All three Grid-owned domains (`honeydrunkstudios.com`, `tatteddev.com`, `honeyhub.app` — see [`owned-domains.md`](./owned-domains.md)) are at Cloudflare Registrar as of 2026-06-07. GoDaddy is no longer a Grid vendor.
 
 ---
 
@@ -142,6 +143,7 @@ External vendors, services, and third-party dependencies across the HoneyDrunk G
 | Risk Level | Area | Detail |
 |------------|------|--------|
 | **High** | Azure | 10 services in use. Mitigated partially by Vault/Transport provider-slot pattern (swap implementations without changing consumers). |
+| **Medium** | Cloudflare | Registrar + authoritative DNS + edge for every Grid-owned domain (consolidated per ADR-0029). Single point of compromise for external-surface integrity. Mitigations: hardware-key-backed 2FA on the account (mandatory per ADR-0029; TOTP interim acceptable), Registrar-level transfer lock per zone, per-zone API tokens scoped narrowly (D5). Reversibility: domain transfer-out and zone export are mechanically supported by Cloudflare — the exit door stays open. |
 | **Medium** | GitHub | Source control + CI/CD + container registry + code scanning. Migration would require workflow rewrites. |
 | **Medium** | Vercel | Website hosting. Next.js is portable; Vercel-specific features (edge functions, analytics) not heavily used. |
 | **Low** | Resend / Twilio | Notification providers behind `INotificationProvider` abstraction. Swappable. |
