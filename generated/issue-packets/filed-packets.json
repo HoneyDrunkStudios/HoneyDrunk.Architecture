@@ -507,5 +507,15 @@
   "generated/issue-packets/active/adr-0077-iac-bicep/18-architecture-adr-0077-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/575",
   "generated/issue-packets/active/adr-0077-iac-bicep/11-infrastructure-repo-standup-and-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Infrastructure/issues/4",
   "generated/issue-packets/active/adr-0077-iac-bicep/13-infrastructure-first-module-set.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Infrastructure/issues/5",
-  "generated/issue-packets/active/adr-0077-iac-bicep/14-infrastructure-platform-shared-foundation.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Infrastructure/issues/6"
+  "generated/issue-packets/active/adr-0077-iac-bicep/14-infrastructure-platform-shared-foundation.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Infrastructure/issues/6",
+  "generated/issue-packets/active/honeyhub-v1/01-architecture-honeyhub-catalog-registration.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/590",
+  "generated/issue-packets/active/honeyhub-v1/02-architecture-create-honeyhub-repo.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/591",
+  "generated/issue-packets/active/honeyhub-v1/03-honeyhub-node-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.HoneyHub/issues/1",
+  "generated/issue-packets/active/honeyhub-v1/04-honeyhub-bridge-core.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.HoneyHub/issues/2",
+  "generated/issue-packets/active/honeyhub-v1/05-honeyhub-pairing-and-allowlist.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.HoneyHub/issues/3",
+  "generated/issue-packets/active/honeyhub-v1/06-honeyhub-claude-code-adapter.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.HoneyHub/issues/4",
+  "generated/issue-packets/active/honeyhub-v1/07-honeyhub-local-store-and-notifications.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.HoneyHub/issues/5",
+  "generated/issue-packets/active/honeyhub-v1/08-honeyhub-minimal-run-screen.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.HoneyHub/issues/6",
+  "generated/issue-packets/active/honeyhub-v1/09-honeyhub-phase3-plus-outline.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.HoneyHub/issues/7",
+  "generated/issue-packets/active/honeyhub-v1/10-actions-honeyhub-repo-to-node-mapping.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/193"
 }
