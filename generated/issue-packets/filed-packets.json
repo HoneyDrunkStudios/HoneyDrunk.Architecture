@@ -504,5 +504,8 @@
   "generated/issue-packets/active/adr-0077-iac-bicep/15-architecture-nodes-leaf-template-scaffold-pattern.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/573",
   "generated/issue-packets/active/adr-0077-iac-bicep/16-actions-job-deploy-bicep-workflow.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/187",
   "generated/issue-packets/active/adr-0077-iac-bicep/17-architecture-bicep-import-existing-resources-playbook.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/574",
-  "generated/issue-packets/active/adr-0077-iac-bicep/18-architecture-adr-0077-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/575"
+  "generated/issue-packets/active/adr-0077-iac-bicep/18-architecture-adr-0077-acceptance.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/575",
+  "generated/issue-packets/active/adr-0077-iac-bicep/11-infrastructure-repo-standup-and-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Infrastructure/issues/4",
+  "generated/issue-packets/active/adr-0077-iac-bicep/13-infrastructure-first-module-set.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Infrastructure/issues/5",
+  "generated/issue-packets/active/adr-0077-iac-bicep/14-infrastructure-platform-shared-foundation.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Infrastructure/issues/6"
 }
