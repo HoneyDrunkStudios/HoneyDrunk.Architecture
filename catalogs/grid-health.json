@@ -1,7 +1,7 @@
 {
   "_meta": {
     "description": "Live health snapshot of every Node in the Grid. Written by CI workflows and agents; read by Claude Code, HoneyHub (when live), and the developer. Not a substitute for the Project board — this tracks repo-level readiness, not individual work items.",
-    "updated": "2026-05-25",
+    "updated": "2026-06-07",
     "schema_version": "1.2",
     "changelog": [
       "1.1: added tracked_workflows per repo for ADR-0012 grid-health aggregator",
@@ -314,6 +314,26 @@
       "tracked_workflows": []
     },
     {
+      "id": "honeydrunk-honeyhub",
+      "name": "HoneyDrunk.HoneyHub",
+      "sector": "Meta",
+      "signal": "Seed",
+      "version": "0.0.0",
+      "canary_status": "none",
+      "last_release": null,
+      "active_blockers": [
+        "GitHub repo setup packet not fully reconciled",
+        "Scaffold packet not yet executed"
+      ],
+      "notes": "Agent Cockpit Node per ADR-0091. Stands up as studios-typescript-native: React/Vite PWA plus Tauri-class shell and Rust bridge in one workspace. No Grid package published at v1.",
+      "tracked_workflows": [
+        "pr.yml",
+        "grid-review-request.yml",
+        "nightly-deps.yml",
+        "nightly-security.yml"
+      ]
+    },
+    {
       "id": "honeydrunk-agents",
       "name": "HoneyDrunk.Agents",
       "sector": "AI",
@@ -500,11 +520,11 @@
     }
   ],
   "summary": {
-    "total_nodes": 27,
+    "total_nodes": 28,
     "live": 13,
-    "seed": 14,
+    "seed": 15,
     "canary_passing": 13,
-    "canary_none": 14,
+    "canary_none": 15,
     "canary_failing": 0,
     "blocked_nodes": [
       "honeydrunk-vault-rotation",
@@ -514,6 +534,7 @@
       "honeydrunk-actions",
       "honeydrunk-lore",
       "honeydrunk-architecture",
+      "honeydrunk-honeyhub",
       "honeydrunk-agents",
       "honeydrunk-ai",
       "honeydrunk-memory",
