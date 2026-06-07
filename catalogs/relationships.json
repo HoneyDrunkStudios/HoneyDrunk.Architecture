@@ -194,7 +194,7 @@
       "id": "honeydrunk-architecture",
       "consumes": [],
       "consumed_by": [],
-      "consumed_by_planned": [],
+      "consumed_by_planned": ["honeydrunk-honeyhub"],
       "blocked_by": [],
       "exposes": {
         "contracts": [],
@@ -227,10 +227,22 @@
       "consumes_detail": {}
     },
     {
+      "id": "honeydrunk-honeyhub",
+      "consumes": [],
+      "consumed_by": [],
+      "consumed_by_planned": [],
+      "blocked_by": [],
+      "exposes": {
+        "contracts": ["DispatchSession", "DispatchRun", "DispatchMessage", "DispatchControlEvent", "DispatchArtifact", "UsageSignal", "PolicyHint"],
+        "packages": []
+      },
+      "consumes_detail": {}
+    },
+    {
       "id": "honeydrunk-ai",
       "consumes": ["honeydrunk-kernel", "honeydrunk-vault"],
       "consumed_by": [],
-      "consumed_by_planned": ["honeydrunk-agents", "honeydrunk-memory", "honeydrunk-knowledge", "honeydrunk-evals", "honeydrunk-sim", "honeydrunk-lore"],
+      "consumed_by_planned": ["honeydrunk-agents", "honeydrunk-memory", "honeydrunk-knowledge", "honeydrunk-evals", "honeydrunk-sim", "honeydrunk-lore", "honeydrunk-honeyhub"],
       "blocked_by": [],
       "exposes": {
         "contracts": ["IChatClient", "IEmbeddingGenerator", "IModelProvider", "IModelRouter", "IRoutingPolicy", "ModelCapabilityDeclaration", "ICostLedger"],

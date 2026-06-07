@@ -4,6 +4,25 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 ## In Progress
 
+### HoneyHub v1 — Agent Cockpit Standup + Phase 2
+**Status:** In Progress — Phase A registration started; active packet set filed under `generated/issue-packets/active/honeyhub-v1/`
+**Scope:** Architecture (catalog/context registration), Actions (`repo-to-node.yml` mapping), and **HoneyDrunk.HoneyHub** (NEW — React/Vite PWA + Tauri-class shell + Rust bridge workspace)
+**Initiative:** `honeyhub-v1`
+**Program:** [HoneyHub](programs/honeyhub.md)
+**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
+**Description:** Stand up `HoneyDrunk.HoneyHub` as the Agent Cockpit Node per ADR-0091: a `studios-typescript-native` workspace with one shared React PWA, a Tauri-class desktop shell, and a Rust local runner bridge. Phase 2 then implements the bridge core, pairing and allowlists, the first backend adapter (`claude.local`), local-first DispatchSession storage, state-only notifications, and the minimal run screen. PDR-0009's internal read layer remains a later HoneyHub layer; v1 is the free local cockpit per PDR-0011.
+
+**Tracking (honeyhub-v1 packets):**
+- [ ] **Wave 1 — Architecture packet 01:** Register `honeydrunk-honeyhub` in catalogs, sector map, grid-health, roadmap, active initiatives, and `repos/HoneyDrunk.HoneyHub/`.
+- [ ] **Wave 2 — Human packet 02:** Reconcile GitHub repo settings, branch protection on `pr / build`, labels, local clone, and ADR-0086 runner-host enablement.
+- [ ] **Wave 3 — HoneyHub packet 03 + Actions packet 10:** Scaffold the mixed TypeScript/Rust workspace, add the Actions repo-to-node mapping, and add shared Actions TypeScript/Rust reusable jobs consumed by HoneyHub.
+- [ ] **Wave 4 — HoneyHub packets 04/05:** Bridge core plus pairing and allowlists.
+- [ ] **Wave 5 — HoneyHub packets 06/07:** Claude Code adapter plus local store and notifications.
+- [ ] **Wave 6 — HoneyHub packet 08:** Minimal run screen; first shippable Phase 2 slice.
+- [ ] **Wave 7 — HoneyHub packet 09:** Phase 3+ outline tracking for Codex/Copilot, routing, coaching, packaging, and relay.
+
+> **Sync (2026-06-07):** Local `HoneyDrunk.HoneyHub` repo exists with only the main branch ruleset reported by the operator. Architecture registration is being reconciled first so subsequent scaffold and mapping work has a Node identity.
+
 
 ### ADR-0077 Infrastructure-as-Code — Bicep (amended 2026-06-02)
 **Status:** In Progress — ADR-0077 Accepted (amended); re-cut packets filed (Arch #571–575, Actions #122/#187); START sequence underway

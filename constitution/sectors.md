@@ -43,6 +43,7 @@ The ecosystem's self-awareness — registries, documentation, and knowledge syst
 | **Architecture** | Live | Grid command center — ADRs, routing, catalogs, agent workflows |
 | **Studios** | Live | HoneyDrunk Studios public website |
 | **Lore** | Seed | LLM-compiled living knowledge wiki — ingests, compiles, self-maintains, answers |
+| **HoneyHub** | Seed | Agent Cockpit — mobile PWA + desktop shell that drives local Codex / Claude Code / Copilot sessions via their official CLIs under the user's own local auth; bundled local runner bridge; local-first session/usage store; usage governance + routing |
 
 ## HoneyNet
 

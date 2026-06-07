@@ -615,6 +615,50 @@
     "cooldown_days": 14
   },
   {
+    "id": "honeydrunk-honeyhub",
+    "type": "node",
+    "name": "HoneyDrunk.HoneyHub",
+    "public_name": "HoneyHub",
+    "short": "Agent Cockpit for local AI coding sessions",
+    "description": "Mobile PWA and desktop shell for starting, watching, interrupting, and governing local Codex, Claude Code, and Copilot sessions through their official CLIs.",
+    "sector": "Meta",
+    "signal": "Seed",
+    "cluster": "orchestration",
+    "energy": 0,
+    "priority": 85,
+    "flow": 0,
+    "tags": ["agent-cockpit", "local-runner-bridge", "pwa", "tauri-class-shell", "rust-bridge", "usage-governance", "dispatch-session"],
+    "links": {
+      "repo": "https://github.com/HoneyDrunkStudios/HoneyDrunk.HoneyHub"
+    },
+    "long_description": {
+      "overview": "HoneyDrunk.HoneyHub is the Agent Cockpit Node: one shared React and Vite PWA across mobile and desktop, wrapped by a Tauri-class desktop shell that bundles a local Rust runner bridge. The v1 cockpit drives local Codex, Claude Code, and Copilot sessions through their official CLIs under the user's own local auth, records DispatchSession and UsageSignal metadata locally, and provides usage visibility, session control, and advisory governance.",
+      "why_it_exists": "Developers using local AI coding agents need one trusted surface to start sessions, watch progress, answer blocking questions, interrupt runs, see artifacts, and understand usage without turning HoneyHub into an editor, terminal, or hosted execution service.",
+      "primary_audience": "HoneyDrunk operators and individual developers governing local AI coding-agent sessions from desktop and mobile.",
+      "value_props": [
+        "Start, watch, reply to, stop, and resume local AI coding-agent sessions from one cockpit",
+        "One shared responsive PWA for desktop and mobile, plus a Tauri-class shell that bundles the local bridge",
+        "Local-first session and transcript storage with explicit sync opt-in",
+        "UsageSignal fidelity model for exact, derived, and estimated usage visibility",
+        "PRs-as-artifacts write boundary so durable changes remain reviewable"
+      ],
+      "monetization_signal": "Free local cockpit at v1. The only gated paid candidate is BYOK cloud execution after validation, and cloud execution is BYO API key only, never subscription auth.",
+      "roadmap_focus": "Stand up the mixed TypeScript PWA plus Rust bridge repo, then ship Phase 2: bridge core, pairing and allowlists, one Claude Code backend, local store, notifications, and a minimal run screen.",
+      "grid_relationship": "No live runtime Grid-Node dependency at v1. Later reads Architecture as the structural backend for the Dev-surface layer and consumes HoneyDrunk.AI's IRoutingPolicy for routing.",
+      "integration_depth": "shallow",
+      "demo_path": "Pair the PWA to the local bridge -> start a Claude Code session in an allowlisted repo -> watch the stream -> reply or stop -> view artifacts and exact usage.",
+      "signal_quote": "Run the agents without losing the thread.",
+      "stability_tier": "seed",
+      "impact_vector": "developer velocity"
+    },
+    "foundational": false,
+    "strategy_base": 10,
+    "tier": "none",
+    "time_pressure": 3,
+    "done": false,
+    "cooldown_days": 14
+  },
+  {
     "id": "honeydrunk-standards",
     "type": "node",
     "name": "HoneyDrunk.Standards",
