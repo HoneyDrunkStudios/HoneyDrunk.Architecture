@@ -4,6 +4,7 @@
 **Sector:** AI
 **Governing ADR:** [ADR-0023 — Stand Up the HoneyDrunk.Evals Node](../../../../adrs/ADR-0023-stand-up-honeydrunk-evals-node.md) (Proposed 2026-04-19; flips to Accepted after merge).
 **Trigger:** ADR-0023 in the Proposed queue. Agents (agent-behavior suites), Knowledge (retrieval-quality), Memory (memory-workflow), Flow (workflow-level), Sim, Lore, HoneyHub when live all need a shared evaluation substrate.
+**Consumer driver (2026-06-07 — pulled forward):** [ADR-0093 Loop Engineering](../../../../adrs/ADR-0093-loop-engineering-closed-loop-agent-orchestration.md) D4 names Evals the **Tier-B loop-autonomy gate** — the automated gate a loop's worker cannot game by editing its own output, which is what lets loops run without the operator as the per-step bottleneck (the parallel-products unlock). This is the forcing function that pulls Evals' standup ahead of the other eight AI Nodes (`initiatives/current-focus.md` #5; `initiatives/roadmap.md` Q3). The loop gate is a **consumer** of the existing D3 contracts (`IEvaluator` / `IEvalScorer` / `IEvalSuite` / `IEvalTarget` + `EvalCase` / `EvalReport`), **not** a contract change — no packet below changes shape for it; ADR-0093 wires the first loop gate against this substrate as separate follow-up work.
 **Type:** Multi-repo (3 repos: `HoneyDrunk.Architecture` + `HoneyDrunk.Evals` creation chore + `HoneyDrunk.Evals` scaffold)
 **Site sync required:** No.
 **Rollback plan:** Pre-tag revert; post-tag fix-forward.
