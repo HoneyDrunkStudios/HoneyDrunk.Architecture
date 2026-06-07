@@ -93,6 +93,8 @@ Within a wave, packets can run in parallel (05 depends only on 04; 07 depends on
 | 08 | [Minimal React PWA run screen — start/watch/reply/stop/see artifacts](./08-honeyhub-minimal-run-screen.md) | HoneyHub | 6 | Agent | packet:06, packet:07 |
 | 09 | [Phase 3+ outline (Codex/Copilot, usage+cost, routing, coaching, packaging, relay)](./09-honeyhub-phase3-plus-outline.md) | HoneyHub | 7 | Agent | packet:08 |
 
+**Full standup =** packets 01/02/03/10 **PLUS** the operator's runner-host `host.psd1` enablement (Step 8 of packet 02 — a manual, non-delegable step that adds HoneyHub to the ADR-0086 local worker's `Repositories` + `Safety.AllowedReviewRepositories` and clones it on the runner host, so Grid review actually fires). CodeRabbit (ADR-0079 Global Overrides) and the hive-field mirror (`file-packets.yml` + the Hive refresh workflow) are automatic/central — no per-repo wiring needed for either.
+
 ## Handoffs (wave-transition batons)
 - [`handoff-standup-to-phase2.md`](./handoff-standup-to-phase2.md) — read at the Wave 3→4 transition (scaffold landed → build the bridge): the session contract, the build order, the `[Firm]` boundaries, the Phase 2 kill-criterion gate.
 - [`handoff-phase2-bringup.md`](./handoff-phase2-bringup.md) — read at Phase 2 bringup: the human-run live Claude Code CLI smoke (the kill-criterion check, referenced by packets 06/08) and the mobile-over-Tailscale relay exercise (referenced by packets 05/08).
@@ -122,9 +124,9 @@ Per the operator's standing process (ADR-0008 amendment), this initiative closes
 
 ## Filing
 
-These packets are authored in **`generated/issue-packets/proposed/honeyhub-v1/`** per **invariant 108** (agent-generated packets land in `proposed/`; a human is the only authority for the `proposed/` → `active/` promotion — agents do not self-promote). **Filing is gated on that human promotion step.**
+These packets were **operator-elected for filing** and promoted `proposed/` → `active/honeyhub-v1/` on 2026-06-06 — the human-authority step **invariant 108** requires (agents do not self-promote; a human is the only authority for the `proposed/` → `active/` transition). They now sit in `active/`, ready to file.
 
-When you're ready to file: **promote** the set by moving `proposed/honeyhub-v1/` → `active/honeyhub-v1/` in a commit. `file-packets.yml` triggers automatically on push to `generated/issue-packets/active/**/*.md` and runs `file-packets.sh` — it creates each issue, adds it to The Hive (project #4), sets Status/Wave/Node/Tier/Actor/Initiative/ADR fields from frontmatter, and wires `addBlockedBy` from each packet's `dependencies:` array. **No `gh issue create` / `gh project item-add` / `addBlockedBy` commands here** — they run automatically once the promoted packets land on `main`. Verify a wave landed by checking The Hive for the new items + their blocked-by chains.
+On merge to `main`, `file-packets.yml` triggers automatically on the `active/**/*.md` packets and runs `file-packets.sh` — it creates each issue, adds it to The Hive (project #4), sets Status/Wave/Node/Tier/Actor/Initiative/ADR fields from frontmatter, and wires `addBlockedBy` from each packet's `dependencies:` array. **No `gh issue create` / `gh project item-add` / `addBlockedBy` commands here** — they run automatically once the packets land on `main`. Verify a wave landed by checking The Hive for the new items + their blocked-by chains.
 
 Filing-order note: once promoted to `active/`, packets 01–10 can all land together — the `dependencies:` frontmatter wires the blocking edges so the board reflects the strict cross-wave ordering automatically (packet 02 blocked-by 01; 03 blocked-by 01+02; 10 blocked-by 02 [Actions-targeted, parallel to 03]; 04 blocked-by 03; etc.). The human packet (02), the Actions routing packet (10), and the Phase 3+ tracker (09) file the same way.
 

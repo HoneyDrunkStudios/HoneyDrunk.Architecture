@@ -55,6 +55,7 @@ HoneyDrunk.HoneyHub/
 ├── CLAUDE.md  .github/copilot-instructions.md
 ├── .github/workflows/
 │   ├── pr.yml                        (self-contained; runs Node + Rust lanes directly; job name `build` → check `pr / build`)
+│   ├── grid-review-request.yml      (per-repo Grid-review trigger; calls Actions' reusable job-review-request.yml — enqueues the Grid review)
 │   ├── nightly-deps.yml              (grouped deps per ADR-0009 — Node + cargo)
 │   └── nightly-security.yml          (audit; manual close)
 ├── packages/
@@ -87,10 +88,38 @@ A minimal shell package that wraps the `ui` build and declares the intent to bun
 ### CI — self-contained dual-lane `pr.yml`
 `pr.yml` is **self-contained** — it does **not** call `pr-core.yml`. There is no `pr-typescript.yml` reusable workflow in HoneyDrunk.Actions (the PR reusable workflows are `pr-core.yml`/`pr-sdk.yml`/`pr-review.yml`, all .NET-shaped), and `pr-core.yml` assumes a .NET solution shape this repo does not have. Per the `studios-typescript-native` class and ADR-0082 D5y's "invoke CLIs directly until that workflow is built" path, `pr.yml` runs both lanes directly: the Node lane (`npm ci`/`pnpm install` → `build` → `test` → `lint`) and the Rust lane (`cargo build` → `cargo test` → `cargo clippy -- -D warnings`), both via direct CLI calls (invariant 38), wired so either lane's failure fails the gate. The workflow's job is named `build` so its required status check on `main` is **`pr / build`** (the check packet 02 wires into branch protection). The workflow declares its own `permissions:` block scoped to what the lanes need (read contents, write checks/PR status) — there is no reusable-workflow permissions-superset to satisfy here, since nothing is being called. When a shared `pr-typescript.yml` is later built, the repo can migrate `pr.yml` to call it (and re-point the required check); until then it is self-contained. `nightly-deps.yml` and `nightly-security.yml` consume the reusable workflows (ADR-0009); the deps job covers both Node and cargo dependency graphs.
 
+### Grid review wiring — `grid-review-request.yml`
+Separate from `pr.yml` (the self-contained CI), HoneyHub ships the standard **per-repo Grid-review trigger** at `.github/workflows/grid-review-request.yml`. It is the workflow that **enqueues** the Grid review for the ADR-0086 local worker — without it, HoneyHub PRs still get tier-1 CI (`pr / build`) and CodeRabbit, but **no Grid-review verdict** ever fires (the local worker only claims jobs that a `grid-review-request.yml` run has enqueued). This file is **repo-agnostic** — copy it **verbatim** from the canonical one (it calls the Actions-side reusable `job-review-request.yml`):
+
+```yaml
+name: Grid Review Request
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  request-grid-review:
+    uses: HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/job-review-request.yml@main
+    with:
+      review-config-path: .honeydrunk-review.yaml
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+```
+
+This is **separate from `pr.yml`**: making `pr.yml` self-contained does **not** affect Grid-review wiring, since the Grid-review trigger was always its own workflow file (it never lived inside `pr.yml`/`pr-core.yml`). The two are independent — `pr.yml` runs the build gate; `grid-review-request.yml` enqueues the Grid-review verdict.
+
+The **hive-field mirror is central** (driven by `file-packets.yml` + the refresh workflow on The Hive project) — no per-repo mirror workflow is needed for HoneyHub.
+
 ### Repo hygiene files
 - **`README.md`** (invariant 12) — purpose, the three surfaces, local-dev setup for the dual Node+Rust toolchain, link to `repos/HoneyDrunk.HoneyHub/overview.md`. Do **not** cite ADR numbers in narrative prose.
 - **`CHANGELOG.md`** (invariant 12) — first entry `## [0.1.0] - YYYY-MM-DD` (scaffold), not `## Unreleased`.
-- **`LICENSE`** — MIT (placed by packet 02; verify content).
+- **`LICENSE`** — Apache-2.0 (placed by packet 02; verify content). The operator chose Apache-2.0 for this public repo.
 - **`.honeydrunk-review.yaml`** with `enabled: true` (invariant 52 — a missing file is a silent disable).
 - **`.github/copilot-instructions.md`** — per-repo file pointing back to Architecture's copilot-instructions + HoneyHub addenda.
 - **`CLAUDE.md`** — links to `repos/HoneyDrunk.HoneyHub/overview.md` and notes the dual Node+Rust local-dev toolchain.
@@ -106,7 +135,8 @@ Each package/crate (`ui`, `shell`, `shared-types`, `bridge`) gets a `README.md` 
 - [ ] `packages/shell` builds as a minimal Tauri-class wrapper; bridge bundling + installer packaging + code-signing recorded as `[Provisional]` follow-ups, not delivered.
 - [ ] A **self-contained** `pr.yml` (NOT calling `pr-core.yml`) runs both the Node lane and the Rust lane (cargo build/test/clippy via direct CLI), wired so either lane's failure fails the gate; the job is named `build` so the required check is `pr / build`; `pr.yml` declares its own `permissions:` block scoped to the lanes' needs (no reusable-workflow superset applies since nothing is called); first PR is green.
 - [ ] `nightly-deps.yml` + `nightly-security.yml` consume the reusable workflows and cover Node + cargo graphs.
-- [ ] `.honeydrunk-review.yaml` (`enabled: true`), `.github/copilot-instructions.md`, `CLAUDE.md`, repo `README.md`, repo `CHANGELOG.md` (`## [0.1.0]`), `LICENSE` (MIT) all present.
+- [ ] `.github/workflows/grid-review-request.yml` present and calling `HoneyDrunk.Actions`'s `job-review-request.yml` (enqueues the Grid review on PRs).
+- [ ] `.honeydrunk-review.yaml` (`enabled: true`), `.github/copilot-instructions.md`, `CLAUDE.md`, repo `README.md`, repo `CHANGELOG.md` (`## [0.1.0]`), `LICENSE` (Apache-2.0) all present.
 - [ ] Each package/crate has a `README.md` + `CHANGELOG.md` from the first commit (invariant 12).
 - [ ] CHANGELOG entries are dated and SemVer-bumped (`## [0.1.0] - YYYY-MM-DD`), not under `## Unreleased`.
 - [ ] No Grid npm/NuGet package is published; no tag is pushed by the agent (invariant 27 — agents never push tags); the PR body notes HoneyHub publishes no Grid package at v1.
@@ -129,7 +159,7 @@ Each package/crate (`ui`, `shell`, `shared-types`, `bridge`) gets a `README.md` 
 **Context:**
 - Goal: stand up the HoneyHub Agent Cockpit Node so Phase 2 has a structured workspace.
 - Feature: Phase C scaffold (ADR-0082) for the Grid's first mixed TS+Rust repo.
-- ADRs: ADR-0091 (stack: React+Vite PWA, Tauri-class shell bundling the Rust bridge, one workspace repo, Cloudflare Pages static host), ADR-0090 (session contract + capability flags — shipped here as TS types only), ADR-0092 (UsageSignal.fidelity field), ADR-0082 (standup procedure), ADR-0070 (React is the Grid web stack), ADR-0039 (MIT license).
+- ADRs: ADR-0091 (stack: React+Vite PWA, Tauri-class shell bundling the Rust bridge, one workspace repo, Cloudflare Pages static host), ADR-0090 (session contract + capability flags — shipped here as TS types only), ADR-0092 (UsageSignal.fidelity field), ADR-0082 (standup procedure), ADR-0070 (React is the Grid web stack), ADR-0039 (license policy — Apache-2.0 chosen for this public repo).
 
 **Acceptance Criteria:** as listed above.
 

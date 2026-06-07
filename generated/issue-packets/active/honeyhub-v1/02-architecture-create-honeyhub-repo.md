@@ -39,7 +39,7 @@ Create the public `HoneyDrunkStudios/HoneyDrunk.HoneyHub` GitHub repo (Phase B o
    - **Repository name:** `HoneyDrunk.HoneyHub`
    - **Description:** `HoneyHub — the Agent Cockpit. A mobile PWA + desktop shell that starts, watches, interrupts, and governs local Codex / Claude Code / Copilot sessions via their official CLIs under your own local auth. Bundled local runner bridge (Rust); local-first session/usage store; usage governance + routing.`
    - **Visibility:** **Public** (Grid default per ADR-0039; no revenue/compliance/experiment carve-out applies — the free local cockpit is build-in-public substrate).
-   - **Initialize with:** check `.gitignore` (template: `Node` — the dominant surface; the scaffold extends it with Rust `target/` and Tauri build artifacts), check `LICENSE` (template: `MIT` — matches other Grid public repos). Do **not** add a README (packet 03 authors it).
+   - **Initialize with:** check `.gitignore` (template: `Node` — the dominant surface; the scaffold extends it with Rust `target/` and Tauri build artifacts), check `LICENSE` (template: `Apache License 2.0` — the operator's choice for this public repo). Do **not** add a README (packet 03 authors it).
 3. Click **Create repository**.
 4. Open repo Settings — confirm default branch `main`, Visibility Public, Issues + Actions enabled.
 
@@ -95,9 +95,29 @@ The clone should land at `c:/Users/tatte/source/repos/HoneyDrunkStudios/HoneyDru
 ### Step 7 — Confirm Architecture-side prereq
 Confirm packet 01 (the catalog registration packet) has merged to `main` so `repos/HoneyDrunk.HoneyHub/` and the catalog rows exist. The GitHub-side actions here are technically independent of packet 01's merge, but the scaffold (packet 03) is not — surfacing the dependency here keeps the chain visible on The Hive.
 
+### Step 8 — Enable HoneyHub on the ADR-0086 local-worker runner host (operator machine)
+The ADR-0086 local worker only claims Grid-review jobs for repos that are **explicitly enabled in its runner-host config**. Packet 03 ships `grid-review-request.yml`, which *enqueues* Grid-review jobs for HoneyHub PRs — but the worker will silently **skip** those jobs (Grid review no-ops on every HoneyHub PR) until HoneyHub is added to the runner host's local config and cloned there.
+
+On the operator's runner machine, edit the runner's **`host.psd1`** (the gitignored local config; the committed template is `infrastructure/workers/grid-agent-runner/config/host.psd1.example`):
+1. Add HoneyHub to the **`Repositories`** map — a local clone path, e.g.:
+   ```
+   "HoneyDrunk.HoneyHub" = "C:\Users\tatte\source\repos\HoneyDrunkStudios\HoneyDrunk.HoneyHub"
+   ```
+2. Add HoneyHub to **`Safety.AllowedReviewRepositories`**:
+   ```
+   "HoneyDrunkStudios/HoneyDrunk.HoneyHub"
+   ```
+3. **Clone HoneyHub on the runner host** at that path (if the runner host is a different machine than the dev machine in Step 6, clone it there too):
+   ```
+   git clone https://github.com/HoneyDrunkStudios/HoneyDrunk.HoneyHub.git
+   ```
+
+**Consequence if skipped:** without this, the local worker will NOT claim HoneyHub Grid-review jobs even though `grid-review-request.yml` (packet 03) enqueues them — i.e. Grid review silently no-ops on every HoneyHub PR (CI + CodeRabbit still run; only the Grid-review verdict is missing). This is **local operator config on the runner host, NOT a repo PR**, and **cannot be delegated to an agent**.
+
 ## Acceptance Criteria
 - [ ] `HoneyDrunkStudios/HoneyDrunk.HoneyHub` repo exists, is public, default branch `main`, Issues + Actions enabled.
-- [ ] Repo initialized with `.gitignore` (Node template) and `LICENSE` (MIT).
+- [ ] **Runner-host enablement (operator machine, local config — not a PR):** the runner's `host.psd1` has HoneyHub in both the `Repositories` map (local clone path) and `Safety.AllowedReviewRepositories` (`HoneyDrunkStudios/HoneyDrunk.HoneyHub`), and HoneyHub is cloned on the runner host at that path. (Without this, the ADR-0086 local worker silently skips the Grid-review jobs that packet 03's `grid-review-request.yml` enqueues.)
+- [ ] Repo initialized with `.gitignore` (Node template) and `LICENSE` (Apache-2.0).
 - [ ] Branch protection on `main` requires **`pr / build`** (the repo's own self-contained `pr.yml` job, NOT `pr-core / core`), no force-pushes, no deletions, signed commits not required.
 - [ ] Dependabot alerts Enabled; Dependabot security updates Off; CodeQL default-setup Off; Secret scanning + push protection Enabled.
 - [ ] Labels `feature`, `chore`, `tier-1`, `tier-2`, `tier-3`, `honeyhub`, `scaffold`, `adr-0090`, `adr-0091`, `adr-0092`, `wave-2`, `wave-3`, `wave-4`, `human-only`, `out-of-band` all exist on the repo.
@@ -110,6 +130,7 @@ Confirm packet 01 (the catalog registration packet) has merged to `main` so `rep
 - [ ] Org-admin role on `HoneyDrunkStudios` (create repo, branch protection, labels, org-secret bindings) — see `infrastructure/walkthroughs/org-secret-repo-binding.md` for the per-secret Selected-repositories flow.
 - [ ] Browser with GitHub session logged in as the org owner.
 - [ ] `gh` CLI installed and authenticated as the org owner.
+- [ ] Access to the **ADR-0086 local-worker runner host** to edit its gitignored `host.psd1` (template: `infrastructure/workers/grid-agent-runner/config/host.psd1.example`) and clone HoneyHub there — required for Step 8 (Grid-review enablement). This is local operator config, not agent-delegable.
 - [ ] Packet 01 merged to `main` (confirms catalog rows + `repos/HoneyDrunk.HoneyHub/` exist).
 
 ## Dependencies
