@@ -2,15 +2,17 @@
 
 HoneyDrunk-controlled domain inventory for DNS, registrar, tunnel, and public-surface planning.
 
-**Last Updated:** 2026-06-01
+**Last Updated:** 2026-06-07
+
+> **Registrar:** all domains below are at **Cloudflare Registrar** with Cloudflare authoritative DNS as of 2026-06-07 (ADR-0029). GoDaddy is no longer the registrar for any Grid domain; all GoDaddy auto-renewals were cancelled at cutover. Keep Cloudflare auto-renew **on** for every domain. ICANN registrant-contact verification is required after a transfer — confirm each domain clears "Email Verification Required" in the Cloudflare Registrations dashboard.
 
 ---
 
 | Domain | Intended Use | Current Notes |
 |--------|--------------|---------------|
-| `honeydrunkstudios.com` | Primary HoneyDrunk Studios public/studio domain; preferred parent for Grid and product subdomains. | ADR-0088 retired the former ADR-0044 `grid-review.honeydrunkstudios.com` Cloudflare Tunnel endpoint. No inbound Grid Review tunnel is active; ADR-0086 owns review execution through the pull-based local worker. |
-| `honeyhub.app` | HoneyHub product/application domain. | Reserve for HoneyHub-facing product surfaces; avoid using for internal Grid review plumbing. |
-| `tatteddev.com` | Personal/developer domain. | Keep separate from HoneyDrunk Studios production surfaces unless explicitly needed. |
+| `honeydrunkstudios.com` | Primary HoneyDrunk Studios public/studio domain; preferred parent for Grid and product subdomains. | Cloudflare Registrar (transferred 2026-06-07; expires 2029-07-25). Email is Microsoft 365 **direct from Microsoft** (not GoDaddy-resold), independent of the registrar. ADR-0088 retired the former ADR-0044 `grid-review.honeydrunkstudios.com` Cloudflare Tunnel endpoint; ADR-0086 owns review execution through the pull-based local worker. |
+| `honeyhub.app` | HoneyHub product/application domain. | Cloudflare Registrar (was parked at GoDaddy; onboarded as a Cloudflare zone then transferred 2026-06-07; expires 2027-09-20). `.app` is an HSTS-preloaded HTTPS-only TLD. Reserve for HoneyHub-facing product surfaces; avoid using for internal Grid review plumbing. |
+| `tatteddev.com` | Personal/developer domain. | Cloudflare Registrar (transferred 2026-06-07; expires 2027-09-20). Keep separate from HoneyDrunk Studios production surfaces unless explicitly needed. |
 
 ---
 
