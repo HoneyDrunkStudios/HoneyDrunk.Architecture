@@ -1,7 +1,7 @@
 {
   "_meta": {
     "description": "Registry of public contracts (interfaces, types, HTTP endpoints, signal events) exposed by each Node. Derived from relationships.json exposes.contracts but expanded with kind, package, and status. Use this before writing code that crosses a Node boundary to find the exact interface to depend on.",
-    "updated": "2026-05-05",
+    "updated": "2026-06-07",
     "schema_version": "1.0"
   },
   "contracts": [
@@ -294,6 +294,36 @@
           "name": "job-bicep-lint.yml",
           "kind": "workflow",
           "description": "Reusable bicep lint + build-params PR gate per ADR-0077 D3. Fails on error-severity findings against the consuming repo's bicepconfig.json. Consumed by HoneyDrunk.Infrastructure's pr.yml."
+        },
+        {
+          "name": "job-node-workspace.yml",
+          "kind": "workflow",
+          "description": "Reusable Node.js workspace validation workflow for TypeScript/JavaScript repos. Installs dependencies, then runs configurable build, test, and lint commands."
+        },
+        {
+          "name": "job-rust-workspace.yml",
+          "kind": "workflow",
+          "description": "Reusable Rust workspace validation workflow. Installs a validated Rust toolchain, then runs configurable cargo fmt, build, test, and clippy commands."
+        },
+        {
+          "name": "job-node-dependency-report.yml",
+          "kind": "workflow",
+          "description": "Reusable Node.js dependency report workflow. Installs dependencies, runs a configurable outdated-dependency command, and uploads the JSON report artifact."
+        },
+        {
+          "name": "job-rust-dependency-report.yml",
+          "kind": "workflow",
+          "description": "Reusable Rust dependency report workflow. Generates Cargo metadata and tree reports for Cargo workspaces and uploads report artifacts."
+        },
+        {
+          "name": "job-node-security-audit.yml",
+          "kind": "workflow",
+          "description": "Reusable Node.js security audit workflow. Installs dependencies, runs a configurable npm audit command, and uploads the JSON audit artifact."
+        },
+        {
+          "name": "job-rust-security-audit.yml",
+          "kind": "workflow",
+          "description": "Reusable Rust security audit workflow. Installs cargo-audit, runs cargo audit, and uploads the JSON audit artifact."
         }
       ]
     },

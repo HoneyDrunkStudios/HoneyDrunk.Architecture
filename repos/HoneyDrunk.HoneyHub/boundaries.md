@@ -1,3 +1,10 @@
+---
+title: HoneyDrunk.HoneyHub - Boundaries
+description: Ownership scope and boundary rules for the HoneyHub Agent Cockpit Node.
+type: node-context/boundaries
+node: honeydrunk-honeyhub
+---
+
 # HoneyDrunk.HoneyHub - Boundaries
 
 ## What HoneyHub Owns

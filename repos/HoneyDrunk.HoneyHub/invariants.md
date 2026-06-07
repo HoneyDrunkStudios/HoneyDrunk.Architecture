@@ -1,3 +1,10 @@
+---
+title: HoneyDrunk.HoneyHub - Local Invariants
+description: Node-local operating rules for HoneyHub inherited from PDR-0011 and ADR-0090 through ADR-0092.
+type: node-context/invariants
+node: honeydrunk-honeyhub
+---
+
 # HoneyDrunk.HoneyHub - Local Invariants
 
 HoneyHub adds no `constitution/invariants.md` entry at standup. These are Node-local operating rules inherited from PDR-0011 and ADR-0090 through ADR-0092.

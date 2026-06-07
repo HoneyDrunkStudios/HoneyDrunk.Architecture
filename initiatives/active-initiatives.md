@@ -14,7 +14,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 **Tracking (honeyhub-v1 packets):**
 - [ ] **Wave 1 — Architecture packet 01:** Register `honeydrunk-honeyhub` in catalogs, sector map, grid-health, roadmap, active initiatives, and `repos/HoneyDrunk.HoneyHub/`.
-- [ ] **Wave 2 — Human packet 02:** Reconcile GitHub repo settings, branch protection on the HoneyHub PR workflow's Node/Rust checks, labels, local clone, and ADR-0086 runner-host enablement.
+- [ ] **Wave 2 — Human packet 02:** Reconcile GitHub repo settings, branch protection on `pr / build`, labels, local clone, and ADR-0086 runner-host enablement.
 - [ ] **Wave 3 — HoneyHub packet 03 + Actions packet 10:** Scaffold the mixed TypeScript/Rust workspace, add the Actions repo-to-node mapping, and add shared Actions TypeScript/Rust reusable jobs consumed by HoneyHub.
 - [ ] **Wave 4 — HoneyHub packets 04/05:** Bridge core plus pairing and allowlists.
 - [ ] **Wave 5 — HoneyHub packets 06/07:** Claude Code adapter plus local store and notifications.

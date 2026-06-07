@@ -1,3 +1,16 @@
+---
+title: HoneyDrunk.HoneyHub - Overview
+description: Node overview, surfaces, and session contract for the HoneyHub Agent Cockpit.
+type: node-context/overview
+node: honeydrunk-honeyhub
+sector: Meta
+signal: Seed
+version: 0.0.0
+repo: HoneyDrunkStudios/HoneyDrunk.HoneyHub
+node_class: studios-typescript-native
+stack: TypeScript, React, Vite, PWA, Tauri-class shell, Rust bridge
+---
+
 # HoneyDrunk.HoneyHub - Overview
 
 **Sector:** Meta

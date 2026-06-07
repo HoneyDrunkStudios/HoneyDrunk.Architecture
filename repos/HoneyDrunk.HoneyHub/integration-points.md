@@ -1,3 +1,11 @@
+---
+title: HoneyDrunk.HoneyHub - Integration Points
+description: Runtime dependencies, planned grid integrations, and external dependencies for HoneyHub.
+type: node-context/integration-points
+node: honeydrunk-honeyhub
+version: v1
+---
+
 # HoneyDrunk.HoneyHub - Integration Points
 
 ## Runtime Dependencies at v1

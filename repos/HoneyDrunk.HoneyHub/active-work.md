@@ -1,3 +1,12 @@
+---
+title: HoneyDrunk.HoneyHub - Active Work
+description: Current initiative, resolved standup class, and active work phases for HoneyHub.
+type: node-context/active-work
+node: honeydrunk-honeyhub
+initiative: honeyhub-v1
+node_class: studios-typescript-native
+---
+
 # HoneyDrunk.HoneyHub - Active Work
 
 ## Current Initiative
@@ -12,7 +21,7 @@ Standup implications:
 
 - Dual Node and Cargo workspace.
 - Self-contained `pr.yml`.
-- Required main checks after shared Actions TypeScript/Rust support lands: `PR / Node Workspace` and `PR / Rust Workspace`.
+- Required standup check: `pr / build`.
 - No `pr-core.yml`.
 - No NuGet or HoneyDrunk.Standards requirement.
 - No org secret required by default.
