@@ -143,7 +143,7 @@ External vendors, services, and third-party dependencies across the HoneyDrunk G
 | Risk Level | Area | Detail |
 |------------|------|--------|
 | **High** | Azure | 10 services in use. Mitigated partially by Vault/Transport provider-slot pattern (swap implementations without changing consumers). |
-| **Medium** | Cloudflare | Registrar + authoritative DNS + edge for every Grid-owned domain (consolidated per ADR-0029). Single point of compromise for external-surface integrity. Mitigations: hardware-key-backed 2FA on the account (mandatory per ADR-0029; TOTP interim acceptable), Registrar-level transfer lock per zone, per-zone API tokens scoped narrowly (D5). Reversibility: domain transfer-out and zone export are mechanically supported by Cloudflare — the exit door stays open. |
+| **Medium** | Cloudflare | Registrar + authoritative DNS + edge for every Grid-owned domain (consolidated per ADR-0029). Single point of compromise for external-surface integrity. Mitigations: hardware-key-backed 2FA on the account (mandatory per ADR-0029 — **currently TOTP; hardware key pending**, tracked as a follow-up in the implementation notes), Registrar-level transfer lock per zone, per-zone API tokens scoped narrowly (D5). Reversibility: domain transfer-out and zone export are mechanically supported by Cloudflare — the exit door stays open. |
 | **Medium** | GitHub | Source control + CI/CD + container registry + code scanning. Migration would require workflow rewrites. |
 | **Medium** | Vercel | Website hosting. Next.js is portable; Vercel-specific features (edge functions, analytics) not heavily used. |
 | **Low** | Resend / Twilio | Notification providers behind `INotificationProvider` abstraction. Swappable. |
