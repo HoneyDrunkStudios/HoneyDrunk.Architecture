@@ -1,15 +1,12 @@
 # Proposed ADR/PDR Queue
 
-**Last Updated:** 2026-06-06
+**Last Updated:** 2026-06-08
 
 ## Awaiting Implementing Packets
 
 - `ADR-0017` — ADR-0017: Stand Up the HoneyDrunk.Capabilities Node — Tool Registry and Dispatch Substrate for the AI Sector (adrs/ADR-0017-stand-up-honeydrunk-capabilities-node.md)
 - `ADR-0032` — ADR-0032: Grid-Wide PR Validation Policy — Coverage Gate and NuGet Update Flagging (adrs/ADR-0032-pr-validation-policy-coverage-gate-and-nuget-flagging.md)
 - `ADR-0058` — ADR-0058: Grid-Wide Caching Strategy (adrs/ADR-0058-grid-wide-caching-strategy.md)
-- `ADR-0089` — ADR-0089: Program Tier for Multi-ADR Product Efforts (adrs/ADR-0089-program-tier-for-multi-adr-product-efforts.md)
-- `ADR-0090` — ADR-0090: HoneyHub Local Runner Bridge for Agent Cockpit Sessions (adrs/ADR-0090-honeyhub-local-runner-bridge.md)
-- `ADR-0091` — ADR-0091: HoneyHub App Stack and Repo / Node Home (adrs/ADR-0091-honeyhub-app-stack-and-repo-node-home.md)
 - `ADR-0092` — ADR-0092: HoneyHub Session, Usage Telemetry, and Routing (adrs/ADR-0092-honeyhub-session-usage-telemetry-and-routing.md)
 - `PDR-0002` — PDR-0002: HoneyDrunk Notify — First Commercial Product on the Grid (pdrs/PDR-0002-notify-as-a-service-first-commercial-product.md)
 - `PDR-0003` — PDR-0003: Lately — A Currents-Based Connection App for Regular Humans (pdrs/PDR-0003-lately-currents-based-connection-app.md)
@@ -58,10 +55,11 @@
 - `ADR-0072` — ADR-0072: Data Access Stance — EF Core Default, Dapper for Hot-Path Reads — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#339
 - `ADR-0073` — ADR-0073: Notify Default Providers — Resend (Email), Twilio (SMS), Expo (Push) — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#427
 - `ADR-0074` — ADR-0074: Testing Library Stack — xUnit + NSubstitute + AwesomeAssertions — 0/4 accepting packet issues closed; open: HoneyDrunk.Architecture#372, HoneyDrunk.Architecture#373, HoneyDrunk.Standards#46, HoneyDrunk.Architecture#374
-- `ADR-0077` — ADR-0077: Infrastructure-as-Code — Bicep (Azure-native) — 0/3 accepting packet issues closed; open: HoneyDrunk.Architecture#384, HoneyDrunk.Architecture#385, HoneyDrunk.Architecture#386
 - `ADR-0078` — ADR-0078: End-User Identity — Microsoft Entra External ID — 0/5 accepting packet issues closed; open: HoneyDrunk.Architecture#437, HoneyDrunk.Architecture#438, HoneyDrunk.Architecture#439, HoneyDrunk.Architecture#440, HoneyDrunk.Architecture#441
 - `ADR-0085` — ADR-0085: Grid-Wide Documentation Currency Agent (`docs-sync`) — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#483
 - `ADR-0087` — ADR-0087: Per-Change Risk Scoring for the Double-Review Gate — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#536
+- `ADR-0091` — ADR-0091: HoneyHub App Stack and Repo / Node Home — 1/4 accepting packet issues closed; open: HoneyDrunk.Architecture#590, HoneyDrunk.Architecture#591, HoneyDrunk.Actions#193
+- `ADR-0093` — ADR-0093: Loop Engineering — Closed-Loop Agent Orchestration — 0/4 accepting packet issues closed; open: HoneyDrunk.Architecture#594, HoneyDrunk.Architecture#595, HoneyDrunk.Architecture#596, HoneyDrunk.Architecture#597
 
 ## Pending Flip
 
