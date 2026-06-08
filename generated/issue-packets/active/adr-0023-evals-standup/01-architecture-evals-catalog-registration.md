@@ -6,7 +6,7 @@ target_repo: HoneyDrunkStudios/HoneyDrunk.Architecture
 labels: ["chore", "tier-2", "architecture", "ai", "adr-0023"]
 dependencies: []
 adrs: ["ADR-0023"]
-accepts: ADR-0023
+accepts: ["ADR-0023"]
 wave: 1
 initiative: adr-0023-evals-standup
 node: honeydrunk-evals
@@ -20,7 +20,7 @@ Reflect ADR-0023 in catalogs. **Reconcile a three-way drift** between `catalogs/
 
 Widen `consumes` to add seven missing edges (Kernel, Agents, Capabilities, Operator, Knowledge, Memory). Widen AI `consumes_detail`. Update `roadmap_focus` prose in `nodes.json`. Refresh `grid-health.json`. Align `constitution/ai-sector-architecture.md` Evals section. Add `integration-points.md` and `active-work.md` under `repos/HoneyDrunk.Evals/`.
 
-ADR-0023 stays Proposed.
+ADR-0023 auto-flips to **Accepted** when this packet's issue closes — this packet carries `accepts: ["ADR-0023"]`, so `hive-sync` flips it per ADR-0014 D7 (acceptance = decision + catalog reconciliation; the scaffold in packet 04 is downstream).
 
 ## Target Repo
 `HoneyDrunkStudios/HoneyDrunk.Architecture`

@@ -2,11 +2,11 @@
 
 High-level roadmap for the HoneyDrunk Grid.
 
-**Last Updated:** 2026-06-06
+**Last Updated:** 2026-06-07
 
 For the near-term ranked priority list, see [current-focus.md](current-focus.md); this roadmap is the quarterly horizon.
 
-The studio is currently building three product threads in 2026 — **HoneyHub** (now the lead thread; v1 re-scoped per PDR-0011 to the **Agent-Cockpit** wedge — govern/monitor local AI coding-agent sessions — with the internal daily-driver workspace of PDR-0009 sequenced as a later layer), **Notify Cloud** (PDR-0002, the Grid's first commercial trial, re-sequenced behind the **ADR-0077** IaC consolidation its cloud bring-up composes on), and **Curiosities** (PDR-0008, discovery-first city app) — on top of the substrate. The first game thread begins in 2027. Per the [charter](../constitution/charter.md), foundation work is real work, *and* it has to serve the workshop rather than consume it; ADRs on this roadmap are filtered to those that materially move the substrate forward for the product threads in flight. AI-sector standup ADRs (0017–0025) and other future-tense surfaces live in **Future** until a real consumer pulls them in.
+The studio is currently building three product threads in 2026 — **HoneyHub** (now the lead thread; v1 re-scoped per PDR-0011 to the **Agent-Cockpit** wedge — govern/monitor local AI coding-agent sessions — with the internal daily-driver workspace of PDR-0009 sequenced as a later layer), **Notify Cloud** (PDR-0002, the Grid's first commercial trial, re-sequenced behind the **ADR-0077** IaC consolidation its cloud bring-up composes on), and **Curiosities** (PDR-0008, discovery-first city app) — on top of the substrate. The first game thread begins in 2027. Per the [charter](../constitution/charter.md), foundation work is real work, *and* it has to serve the workshop rather than consume it; ADRs on this roadmap are filtered to those that materially move the substrate forward for the product threads in flight. AI-sector standup ADRs (0017–0025) and other future-tense surfaces live in **Future** until a real consumer pulls them in. A new substrate thread — **loop engineering (ADR-0093)** — cuts across all three product threads: it is how one operator runs many product build and maintenance loops in parallel, and it pulls **HoneyDrunk.Evals (ADR-0023)** forward from Future as the Tier-B gate that makes those loops autonomous (the operator-not-the-per-step-bottleneck unlock).
 
 ## Q1 2026 (Jan–Mar)
 
@@ -35,6 +35,7 @@ The studio is currently building three product threads in 2026 — **HoneyHub** 
 - [x] **ADR-0033 environment-gated trigger packets — completed 2026-06-01** — unblocked Notify/Pulse dev deploy trigger model under ADR-0015 *(3/3 issues closed; ADR-0033 Accepted)*
 - [ ] **ADR-0077 Infrastructure-as-Code (Bicep) consolidation — start** — accept the amended ADR (pending in PR #580; invariants 90–92) and stand up the new `HoneyDrunk.Infrastructure` repo (`modules/` + `platform/` + `nodes/`); module registry dropped, deploy/lint pipeline stays in Actions per ADR-0012. Forcing function: the ADR-0015 dev deploy proved the hand-provisioning pain (apps built live via `az rest`). Runs in parallel with HoneyHub; Notify Cloud's cloud bring-up composes on the reproducible provisioning this delivers.
 - [ ] **ADR-0043 Backlog Generation — Phase 1 kickoff** — closes the ADR → packet auto-generation loop; Strategic source feeds on ADR acceptances
+- [ ] **ADR-0093 Loop Engineering — substrate (Tier A) kickoff** — accept ADR-0093 and land the Tier-A substrate (doctrine `constitution/loop-engineering.md`, the `loops/` LDR catalog + template, backfilled LDRs for the 6 loops the Grid already runs). The generalization of ADR-0043: how the operator runs many product loops in parallel. PR #593. Higher autonomy tiers gated — Tier B on Evals (ADR-0023), the build-loop gate on ADR-0032, autonomy routing on ADR-0087; the HoneyHub Loop Console on HoneyHub v1.
 - [x] **ADR-0015 Container Apps Rollout — completed 2026-06-04** *(5/5 issues closed; ready for archive/exit-criteria review; underwrites Notify Cloud deploy substrate)*
 - [ ] **Archive / exit-criteria review** — sweep closed rollouts (ADR-0005/0006, 0009, 0014, 0030, 0032, Lore, Vault.Rotation, Kernel Adoption) into `archived-initiatives.md`
 
@@ -76,6 +77,8 @@ The studio is currently building three product threads in 2026 — **HoneyHub** 
 **Foundation / Substrate**
 
 - [ ] **ADR-0043 Backlog Generation — Phase 1 ship** — Strategic source event-driven on ADR acceptance + Reactive source for drift; `generated/issue-packets/proposed/` directory live
+- [ ] **ADR-0023 Evals standup — the loop-autonomy gate (pulled forward from Q4)** — stand up `HoneyDrunk.Evals` (Abstractions `IEvaluator`/`IEvalScorer`/`IEvalSuite`/`IEvalTarget` + InMemory) as the ADR-0093 Tier-B gate that lets loops run without the operator as the per-step bottleneck. New forcing function: loop engineering, not just a product-eval need; stands up independently of the other 8 AI Nodes.
+- [ ] **ADR-0093 Loop Engineering — Tier B (eval-gated loops)** — with Evals as the gate, promote selected backfilled loops from Tier A (human-gated) to Tier B (eval-gated); this is the slice that actually unlocks parallel product build/maintenance loops.
 - [ ] **ADR-0046 Specialist Review Agents — Phase 1** — `cfo` agent authored and retroactively invoked against cost-touching PRs; `agent-capability-matrix.md` updated
 - [ ] **ADR-0047 Phase 2 — Tier 2a integration CI** — `job-integration-tests.yml` live in Actions and wired into `pr-core.yml`; closes ADR-0011 Gap 1
 - [x] **ADR-0079 Multi-Perspective PR Review Stack — Acceptance** — substantive-PR classifier defined; per-PR cost ceiling committed; ADR-0044 amended with billing-path discipline *(Reviewer 4 path unlocked 2026-06-15 by Claude Max Agent SDK launch)* *(ADR accepted; 5/5 accepting packet issues closed)*
@@ -99,7 +102,7 @@ The studio is currently building three product threads in 2026 — **HoneyHub** 
 - [ ] **Auth — Multi-tenant identity federation** *(forcing function: Notify Cloud tenant model in production)*
 - [ ] **Grid v0.5 planning** — Next contract evolution based on Notify Cloud production learnings
 - [ ] **HoneyDrunk.Operator** — Human oversight, approval gates, circuit breakers, cost controls, audit trail *(gated on first AI-sector consumer that needs policy enforcement)*
-- [ ] **HoneyDrunk.Evals** — Prompt evaluation, regression testing, model comparison *(gated on first ship-blocking eval need from Notify Cloud or Curiosities AI surfaces)*
+- [ ] **HoneyDrunk.Evals** — Prompt evaluation, regression testing, model comparison — **pulled forward to Q3** as the ADR-0093 Tier-B loop-autonomy gate (loop engineering is an earlier forcing function than the product-eval need). The original driver *(first ship-blocking eval need from Notify Cloud or Curiosities AI surfaces)* still applies as a second consumer.
 - [ ] **Lore — Birdclaw optional X sourcing lane** *(gated on Q3 Lore → Grid bridge ADR landing first consumer wiring; until ingestion has a real downstream destination, expanding capture lanes is write-only churn)* — adds Birdclaw as a targeted, opt-in capture lane for X/Twitter signals via JSON→raw converter; website/RSS remains the default automated path; per [standalone Birdclaw packet](../generated/issue-packets/active/standalone/2026-05-24-lore-birdclaw-optional-x-sourcing-lane.md)
 - [ ] Data — Cosmos DB provider exploration *(deferrable — only pull forward if a production workload pressures the relational default)*
 - [x] ~~HoneyDrunk.Tools~~ — Scrapped; scanning logic moved to HoneyDrunk.Actions composite actions
