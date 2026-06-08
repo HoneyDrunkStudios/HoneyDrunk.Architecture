@@ -72,7 +72,7 @@ Evals composes AI + Agents + Capabilities + Operator + Knowledge + Memory at the
 
 ## Status flip
 
-ADR-0023 stays Proposed for duration.
+ADR-0023 auto-flips to **Accepted** when packet 01's issue closes — packet 01 carries `accepts: ["ADR-0023"]`, so `hive-sync` flips it per ADR-0014 D7 (the AI-sector pattern: acceptance = decision + catalog reconciliation; the scaffold in packet 04 is downstream). The scope agent assigns final invariant numbers at flip per the ADR-0023 follow-up checklist. *(Normalized 2026-06-07: the frontmatter already carried `accepts:`; this prose was corrected to match.)*
 
 ## Filing
 
