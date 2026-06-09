@@ -1,16 +1,12 @@
 # Proposed ADR/PDR Queue
 
-**Last Updated:** 2026-06-06
+**Last Updated:** 2026-06-09
 
 ## Awaiting Implementing Packets
 
 - `ADR-0017` — ADR-0017: Stand Up the HoneyDrunk.Capabilities Node — Tool Registry and Dispatch Substrate for the AI Sector (adrs/ADR-0017-stand-up-honeydrunk-capabilities-node.md)
 - `ADR-0032` — ADR-0032: Grid-Wide PR Validation Policy — Coverage Gate and NuGet Update Flagging (adrs/ADR-0032-pr-validation-policy-coverage-gate-and-nuget-flagging.md)
 - `ADR-0058` — ADR-0058: Grid-Wide Caching Strategy (adrs/ADR-0058-grid-wide-caching-strategy.md)
-- `ADR-0089` — ADR-0089: Program Tier for Multi-ADR Product Efforts (adrs/ADR-0089-program-tier-for-multi-adr-product-efforts.md)
-- `ADR-0090` — ADR-0090: HoneyHub Local Runner Bridge for Agent Cockpit Sessions (adrs/ADR-0090-honeyhub-local-runner-bridge.md)
-- `ADR-0091` — ADR-0091: HoneyHub App Stack and Repo / Node Home (adrs/ADR-0091-honeyhub-app-stack-and-repo-node-home.md)
-- `ADR-0092` — ADR-0092: HoneyHub Session, Usage Telemetry, and Routing (adrs/ADR-0092-honeyhub-session-usage-telemetry-and-routing.md)
 - `PDR-0002` — PDR-0002: HoneyDrunk Notify — First Commercial Product on the Grid (pdrs/PDR-0002-notify-as-a-service-first-commercial-product.md)
 - `PDR-0003` — PDR-0003: Lately — A Currents-Based Connection App for Regular Humans (pdrs/PDR-0003-lately-currents-based-connection-app.md)
 - `PDR-0005` — PDR-0005: Hearth — Personal Growth as a Living Town (pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md)
@@ -19,6 +15,8 @@
 - `PDR-0009` — PDR-0009: HoneyHub as Internal Daily-Driver Workspace (pdrs/PDR-0009-honeyhub-as-internal-daily-driver-workspace.md)
 
 ## In Progress
+
+> _Note (2026-06-09): closed/open issue counts below are preserved verbatim from the 2026-06-06 run. This pass ran local-file only (no `gh` access), so per-packet counts were not recomputed and may be stale; a future live-`gh` hive-sync pass owns refreshing them. ADR-0077 was removed from this section because its frontmatter is now `Accepted (amended 2026-06-02)`; its 0/3 count and any closed accepting-packet issues still need a live-`gh` confirmation pass._
 
 - `ADR-0018` — ADR-0018: Stand Up the HoneyDrunk.Operator Node — Human-Policy Enforcement and Audit Substrate for the AI Sector — 0/4 accepting packet issues closed; open: HoneyDrunk.Architecture#121, HoneyDrunk.Architecture#122, HoneyDrunk.Architecture#123, HoneyDrunk.Operator#3
 - `ADR-0020` — ADR-0020: Stand Up the HoneyDrunk.Agents Node — Agent Runtime Substrate for the AI Sector — 0/4 accepting packet issues closed; open: HoneyDrunk.Architecture#125, HoneyDrunk.Architecture#126, HoneyDrunk.Architecture#127, HoneyDrunk.Agents#2
@@ -58,7 +56,6 @@
 - `ADR-0072` — ADR-0072: Data Access Stance — EF Core Default, Dapper for Hot-Path Reads — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#339
 - `ADR-0073` — ADR-0073: Notify Default Providers — Resend (Email), Twilio (SMS), Expo (Push) — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#427
 - `ADR-0074` — ADR-0074: Testing Library Stack — xUnit + NSubstitute + AwesomeAssertions — 0/4 accepting packet issues closed; open: HoneyDrunk.Architecture#372, HoneyDrunk.Architecture#373, HoneyDrunk.Standards#46, HoneyDrunk.Architecture#374
-- `ADR-0077` — ADR-0077: Infrastructure-as-Code — Bicep (Azure-native) — 0/3 accepting packet issues closed; open: HoneyDrunk.Architecture#384, HoneyDrunk.Architecture#385, HoneyDrunk.Architecture#386
 - `ADR-0078` — ADR-0078: End-User Identity — Microsoft Entra External ID — 0/5 accepting packet issues closed; open: HoneyDrunk.Architecture#437, HoneyDrunk.Architecture#438, HoneyDrunk.Architecture#439, HoneyDrunk.Architecture#440, HoneyDrunk.Architecture#441
 - `ADR-0085` — ADR-0085: Grid-Wide Documentation Currency Agent (`docs-sync`) — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#483
 - `ADR-0087` — ADR-0087: Per-Change Risk Scoring for the Double-Review Gate — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#536
@@ -81,4 +78,4 @@ _None._
 
 ## Flipped This Run
 
-_None._
+_None — this 2026-06-09 pass ran local-file only (no `gh` access); no auto-flips were attempted. ADR-0091, ADR-0092, ADR-0093 were already flipped to Accepted by a prior pass / their landing PRs and are correctly absent from this queue. ADR-0077 (now `Accepted (amended 2026-06-02)`) was pruned from the In Progress list above without a flip (hive-sync did not change its status)._

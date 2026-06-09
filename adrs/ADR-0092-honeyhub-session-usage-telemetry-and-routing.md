@@ -1,7 +1,8 @@
 # ADR-0092: HoneyHub Session, Usage Telemetry, and Routing
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-06-06
+**Accepted:** 2026-06-09 — HoneyHub v1 has shipped; the session/usage-telemetry + routing decision is realized. Acceptance is operator-confirmed reconciliation (the decision was conceptually accepted with v1; this flips the on-disk status to match).
 **Deciders:** HoneyDrunk Studios
 **Sector:** Meta / AI / Platform
 **Implements:** [PDR-0011](../pdrs/PDR-0011-honeyhub-v1-agent-cockpit-and-usage-governance.md) (HoneyHub v1 — Agent Cockpit) §F (usage governance is product-critical) + §H (data minimization / retention) + Amendment §1/§8 (optimization routing as a FREE-tier "optimize your own subscriptions" feature, explicitly **not** cap-dodging).
