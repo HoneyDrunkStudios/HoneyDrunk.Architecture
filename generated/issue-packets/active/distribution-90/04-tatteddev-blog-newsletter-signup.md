@@ -2,7 +2,8 @@
 name: Newsletter Signup on tatteddev.com
 type: repo-feature
 tier: 1
-target_repo: tatteddev/tatteddev-blog
+target_repo: HoneyDrunkStudios/HoneyDrunk.Architecture
+work_repo: tatteddev/tatteddev-blog
 labels: ["feature", "tier-1", "meta", "distribution-90"]
 dependencies: []
 adrs: ["PDR-0011"]
@@ -15,6 +16,8 @@ actor: agent
 ---
 
 # Feature: Add newsletter signup (Buttondown) to the blog layout
+
+> **Work location:** the code change lands in `tatteddev/tatteddev-blog` (personal account, outside the org GitHub App's installation — the 2026-06-09 filing run got HTTP 403 there). The issue is tracked here in HoneyDrunk.Architecture; the implementing PR opens in the blog repo and links back to this issue.
 
 ## Summary
 Wire a newsletter signup form (Buttondown free tier) into the tatteddev.com blog layout so the back-catalog syndication loop (packet 12) and the HoneyHub launch post (packet 10) have a durable capture surface. Today a reader who likes a post has no way to hear about the next one.

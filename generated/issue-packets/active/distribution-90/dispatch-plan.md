@@ -28,10 +28,10 @@ Operator commitment following the 2026-06-09 org-wide strategy review.
 ## Wave Diagram
 
 ### Wave 1 — Instrumentation + passive surfaces (week 1, zero exposure)
-- [ ] tatteddev/tatteddev-blog: Cloudflare Web Analytics beacon on tatteddev.com — [01](01-tatteddev-blog-cloudflare-web-analytics.md)
+- [ ] HoneyDrunk.Architecture (work in tatteddev/tatteddev-blog): Cloudflare Web Analytics beacon on tatteddev.com — [01](01-tatteddev-blog-cloudflare-web-analytics.md)
 - [ ] HoneyDrunkStudios/HoneyDrunkStudios: Cloudflare Web Analytics beacon on honeydrunkstudios.com — [02](02-studios-website-cloudflare-web-analytics.md)
 - [ ] HoneyDrunk.Architecture: NuGet/stars/traffic baseline + weekly metrics log — [03](03-architecture-distribution-metrics-log.md)
-- [ ] tatteddev/tatteddev-blog: newsletter signup (Buttondown) — [04](04-tatteddev-blog-newsletter-signup.md)
+- [ ] HoneyDrunk.Architecture (work in tatteddev/tatteddev-blog): newsletter signup (Buttondown) — [04](04-tatteddev-blog-newsletter-signup.md)
 
 ### Wave 2 — Waitlist, loop bring-up, decisions (weeks 1–3)
 - [ ] HoneyDrunkStudios/HoneyDrunkStudios: HoneyHub BYOK cloud-execution waitlist page (PDR-0011 §5 probe) — [05](05-studios-website-honeyhub-byok-waitlist-page.md)
@@ -45,11 +45,11 @@ Operator commitment following the 2026-06-09 org-wide strategy review.
   - Blocked by: Wave 2 — packet 06
 - [ ] HoneyDrunk.HoneyHub: record 2-minute demo (Actor=Human) — [09](09-honeyhub-demo-recording.md)
   - Blocked by: Wave 2 — packet 06
-- [ ] tatteddev/tatteddev-blog: HoneyHub launch blog post — [10](10-tatteddev-blog-honeyhub-launch-post.md)
+- [ ] HoneyDrunk.Architecture (work in tatteddev/tatteddev-blog): HoneyHub launch blog post — [10](10-tatteddev-blog-honeyhub-launch-post.md)
   - Blocked by: Wave 3 — packets 08, 09
 
 ### Wave 4 — Launch submissions (weeks 2–8)
-- [ ] tatteddev/tatteddev-blog: Show HN + subreddit submission drafts (operator click-to-submit) — [11](11-tatteddev-blog-launch-submissions.md)
+- [ ] HoneyDrunk.Architecture (work in tatteddev/tatteddev-blog): Show HN + subreddit submission drafts (operator click-to-submit) — [11](11-tatteddev-blog-launch-submissions.md)
   - Blocked by: Wave 2 — packet 05; Wave 3 — packets 08, 10
 
 ### Wave 5 — Close-out
@@ -65,7 +65,7 @@ Partially self-covering: packets 02 and 05 *are* the website changes. No separat
 ## Known Drift / Flags
 
 - `catalogs/nodes.json` (`honeydrunk-studios`) points at `https://github.com/HoneyDrunkStudios/HoneyDrunk.Studios`, which does not exist; the live website repo is `HoneyDrunkStudios/HoneyDrunkStudios` (Next.js app under `honeydrunk-website/`). Catalog correction is deliberately OUT of this initiative's scope (guardrail 1) — left for hive-sync/tactical audit.
-- `tatteddev/tatteddev-blog` is outside the HoneyDrunkStudios org and is not a Grid Node. Its packets carry `node: none`; adding its issues to The Hive board may not be desired — operator's call at filing time.
+- `tatteddev/tatteddev-blog` is outside the HoneyDrunkStudios org and is not a Grid Node. The 2026-06-09 filing run failed there with HTTP 403 (the org GitHub App is not installed on the personal account), so its four packets (01, 04, 10, 11) carry `target_repo: HoneyDrunkStudios/HoneyDrunk.Architecture` (issue tracking) plus `work_repo: tatteddev/tatteddev-blog` (where the implementing PR opens). They keep `node: none`.
 - The strategy-review brief described "both Astro sites"; only the blog is Astro. The website is Next.js 16. Packets reflect ground truth.
 
 ## Rollback Plan
@@ -76,10 +76,10 @@ Everything in Waves 1–2 is additive and independently revertible (a beacon `<s
 
 ```bash
 # Wave 1
-gh issue create --repo tatteddev/tatteddev-blog --title "Add Cloudflare Web Analytics beacon to tatteddev.com" --body-file "generated/issue-packets/active/distribution-90/01-tatteddev-blog-cloudflare-web-analytics.md" --label "feature"
+gh issue create --repo HoneyDrunkStudios/HoneyDrunk.Architecture --title "Add Cloudflare Web Analytics beacon to tatteddev.com" --body-file "generated/issue-packets/active/distribution-90/01-tatteddev-blog-cloudflare-web-analytics.md" --label "feature,tier-1,meta,distribution-90"
 gh issue create --repo HoneyDrunkStudios/HoneyDrunkStudios --title "Add Cloudflare Web Analytics beacon to honeydrunkstudios.com" --body-file "generated/issue-packets/active/distribution-90/02-studios-website-cloudflare-web-analytics.md" --label "feature,tier-1,meta,distribution-90"
 gh issue create --repo HoneyDrunkStudios/HoneyDrunk.Architecture --title "Create the distribution metrics log with NuGet/stars/traffic baseline" --body-file "generated/issue-packets/active/distribution-90/03-architecture-distribution-metrics-log.md" --label "chore,tier-1,meta,distribution-90"
-gh issue create --repo tatteddev/tatteddev-blog --title "Add newsletter signup (Buttondown) to the blog layout" --body-file "generated/issue-packets/active/distribution-90/04-tatteddev-blog-newsletter-signup.md" --label "feature"
+gh issue create --repo HoneyDrunkStudios/HoneyDrunk.Architecture --title "Add newsletter signup (Buttondown) to the blog layout" --body-file "generated/issue-packets/active/distribution-90/04-tatteddev-blog-newsletter-signup.md" --label "feature,tier-1,meta,distribution-90"
 
 # Wave 2
 gh issue create --repo HoneyDrunkStudios/HoneyDrunkStudios --title "Ship the HoneyHub BYOK cloud-execution waitlist page (PDR-0011 §5)" --body-file "generated/issue-packets/active/distribution-90/05-studios-website-honeyhub-byok-waitlist-page.md" --label "feature,tier-2,meta,distribution-90"
@@ -90,17 +90,18 @@ gh issue create --repo HoneyDrunkStudios/HoneyDrunk.Architecture --title "Establ
 # Wave 3
 gh issue create --repo HoneyDrunkStudios/HoneyDrunk.HoneyHub --title "Tag and release HoneyHub v0.1.0 (first release)" --body-file "generated/issue-packets/active/distribution-90/08-honeyhub-release-v0-1-0.md" --label "chore,tier-2,ai,distribution-90"
 gh issue create --repo HoneyDrunkStudios/HoneyDrunk.HoneyHub --title "Record the 2-minute HoneyHub demo (phone over Tailscale)" --body-file "generated/issue-packets/active/distribution-90/09-honeyhub-demo-recording.md" --label "chore,tier-1,ai,distribution-90,human-only"
-gh issue create --repo tatteddev/tatteddev-blog --title "Write and publish the HoneyHub v0.1.0 launch post" --body-file "generated/issue-packets/active/distribution-90/10-tatteddev-blog-honeyhub-launch-post.md" --label "feature"
+gh issue create --repo HoneyDrunkStudios/HoneyDrunk.Architecture --title "Write and publish the HoneyHub v0.1.0 launch post" --body-file "generated/issue-packets/active/distribution-90/10-tatteddev-blog-honeyhub-launch-post.md" --label "feature,tier-1,meta,distribution-90,honeyhub"
 
 # Wave 4
-gh issue create --repo tatteddev/tatteddev-blog --title "Draft HoneyHub launch submissions (Show HN + subreddits)" --body-file "generated/issue-packets/active/distribution-90/11-tatteddev-blog-launch-submissions.md" --label "feature"
+gh issue create --repo HoneyDrunkStudios/HoneyDrunk.Architecture --title "Draft HoneyHub launch submissions (Show HN + subreddits)" --body-file "generated/issue-packets/active/distribution-90/11-tatteddev-blog-launch-submissions.md" --label "feature,tier-1,meta,distribution-90,honeyhub"
 
 # Wave 5
 gh issue create --repo HoneyDrunkStudios/HoneyDrunk.Architecture --title "Author the Distribution 90 implementation-notes record" --body-file "generated/issue-packets/active/distribution-90/13-implementation-notes.md" --label "chore,tier-1,meta,distribution-90"
 ```
 
-Note: `tatteddev/tatteddev-blog` has no Grid label set; create issues there with whatever labels exist (or none). Board add (`gh project item-add 4 --owner HoneyDrunkStudios --url ...`) works for org repos; cross-org board adds for the blog repo are at the operator's discretion.
+Note: all 13 issues now file into org repos (the four blog-work packets track in HoneyDrunk.Architecture with `work_repo: tatteddev/tatteddev-blog`), so every issue can join The Hive board normally.
 
 ## Wave Log
 
 - **2026-06-09** — Initiative scoped; 13 packets authored; awaiting operator review and filing.
+- **2026-06-09** — First filing run failed: the org GitHub App got HTTP 403 on `tatteddev/tatteddev-blog` (personal account, App not installed). Pre-filing amendment (invariant 24): packets 01/04/10/11 retargeted to file in HoneyDrunk.Architecture with `work_repo: tatteddev/tatteddev-blog`; no issues had been created, so no duplicates.

@@ -2,7 +2,8 @@
 name: HoneyHub Launch Submissions
 type: repo-feature
 tier: 1
-target_repo: tatteddev/tatteddev-blog
+target_repo: HoneyDrunkStudios/HoneyDrunk.Architecture
+work_repo: tatteddev/tatteddev-blog
 labels: ["feature", "tier-1", "meta", "distribution-90", "honeyhub"]
 dependencies: ["packet:05", "packet:08", "packet:10"]
 adrs: ["PDR-0011"]
@@ -15,6 +16,8 @@ actor: agent
 ---
 
 # Feature: Draft HoneyHub launch submissions (Show HN + subreddits) for operator click-to-submit
+
+> **Work location:** the drafts land in `tatteddev/tatteddev-blog` (personal account, outside the org GitHub App's installation — the 2026-06-09 filing run got HTTP 403 there). The issue is tracked here in HoneyDrunk.Architecture; the implementing PR opens in the blog repo and links back to this issue.
 
 ## Summary
 Draft the submission texts for the HoneyHub v0.1.0 launch — one Show HN and 1–2 relevant subreddits — committed as a reviewable file in the blog repo. The operator reviews, edits, and clicks submit. Drafting is agent work; submitting is irreversibly public and stays human.

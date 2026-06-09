@@ -2,7 +2,8 @@
 name: Cloudflare Web Analytics on tatteddev.com
 type: repo-feature
 tier: 1
-target_repo: tatteddev/tatteddev-blog
+target_repo: HoneyDrunkStudios/HoneyDrunk.Architecture
+work_repo: tatteddev/tatteddev-blog
 labels: ["feature", "tier-1", "meta", "distribution-90"]
 dependencies: []
 adrs: ["PDR-0011"]
@@ -15,6 +16,8 @@ actor: agent
 ---
 
 # Feature: Add Cloudflare Web Analytics beacon to tatteddev.com
+
+> **Work location:** the code change lands in `tatteddev/tatteddev-blog` (personal account, outside the org GitHub App's installation — the 2026-06-09 filing run got HTTP 403 there). The issue is tracked here in HoneyDrunk.Architecture; the implementing PR opens in the blog repo and links back to this issue.
 
 ## Summary
 Add the Cloudflare Web Analytics beacon to the tatteddev.com Astro blog so the Distribution 90 initiative has traffic measurement from week 1. Today the blog has zero analytics — launch posts and syndication (packets 10–12) would otherwise ship blind.
