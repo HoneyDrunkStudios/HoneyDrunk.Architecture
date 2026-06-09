@@ -595,8 +595,8 @@ function Invoke-ReviewAgentPasses {
         $Context.ReviewRiskClass = Get-TrustedReviewRiskClass -RepoPath $repoPath -Context $Context -Logger $Logger
     }
     catch {
-        $Context.ReviewRiskClass = "unknown"
-        Write-RunnerLog -Logger $Logger -Level "WARN" -Message "Trusted review risk metadata could not be resolved; continuing with mandatory dual-pass review." -Data @{
+        $Context.ReviewRiskClass = "high"
+        Write-RunnerLog -Logger $Logger -Level "WARN" -Message "Trusted review risk metadata could not be resolved; forcing high-risk review context." -Data @{
             reason = "trusted-risk-metadata-invalid"
         }
     }
