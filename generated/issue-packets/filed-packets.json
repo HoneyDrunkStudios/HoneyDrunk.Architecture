@@ -523,5 +523,6 @@
   "generated/issue-packets/completed/honeyhub-v1/05-honeyhub-pairing-and-allowlist.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.HoneyHub/issues/3",
   "generated/issue-packets/completed/honeyhub-v1/06-honeyhub-claude-code-adapter.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.HoneyHub/issues/4",
   "generated/issue-packets/completed/honeyhub-v1/07-honeyhub-local-store-and-notifications.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.HoneyHub/issues/5",
-  "generated/issue-packets/completed/honeyhub-v1/08-honeyhub-minimal-run-screen.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.HoneyHub/issues/6"
+  "generated/issue-packets/completed/honeyhub-v1/08-honeyhub-minimal-run-screen.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.HoneyHub/issues/6",
+  "generated/issue-packets/active/adr-0023-evals-standup/04-evals-node-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Evals/issues/2"
 }
