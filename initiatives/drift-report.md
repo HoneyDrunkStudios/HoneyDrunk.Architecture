@@ -183,8 +183,8 @@ _None._ Both `HoneyDrunk.Infrastructure` (named in ADR-0077, Accepted/amended) a
 
 ---
 
-## Flagged this run — README index Date divergence (D8, needs human/live decision)
+## README index Date divergence (D8) — RESOLVED 2026-06-09
 
-- **Item:** ADR-0029 README Date column (`2026-06-07`) ≠ frontmatter `**Date:** 2026-05-08`
-  - **First Surfaced:** 2026-06-09
-  - **Detail:** `adrs/README.md` shows the ADR-0029 row with Date `2026-06-07` (the **acceptance-event** date noted in the ADR body), but the file's `**Date:**` frontmatter field is `2026-05-08` (the **authoring** date). D8's deterministic rule is to reconcile the README Date column to frontmatter, which would set it to `2026-05-08`. This pass **did not auto-change it** because the divergence is semantically meaningful (authoring vs acceptance date) and pre-existing — a human or the next live pass should decide whether the README index column tracks authoring dates (sync to `2026-05-08`) or acceptance dates (then ADR-0029 frontmatter `**Date:**` is the field that is stale). ADR-0091/0092/0093 README Status/Date columns were already correct (Accepted / correct dates); no other README row diverged.
+- **Item:** ADR-0029 README Date column (`2026-06-07`) ≠ frontmatter `**Date:** 2026-05-08` — **resolved.**
+  - **First Surfaced:** 2026-06-09 · **Resolved:** 2026-06-09 (PR #603)
+  - **Detail:** Operator decided the README index tracks the **authoring** date (consistent with every other row and the D8 rule that README Date mirrors frontmatter). The ADR-0029 README Date column was synced to `2026-05-08` to match its frontmatter. No other README row diverged; ADR-0091/0092/0093 Status/Date columns were already correct.
