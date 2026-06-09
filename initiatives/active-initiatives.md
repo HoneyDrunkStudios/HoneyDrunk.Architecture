@@ -4,6 +4,40 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 ## In Progress
 
+### Distribution 90 — Outward Shipping Push (2026-06-09 → 2026-09-07)
+**Status:** Scoped — 13 packets authored, awaiting operator review and filing
+**Scope:** tatteddev/tatteddev-blog (analytics, newsletter, launch post, submissions) + HoneyDrunkStudios/HoneyDrunkStudios website (analytics, BYOK waitlist page) + HoneyDrunk.HoneyHub (launch checkpoint, v0.1.0 release, demo) + Architecture (metrics log, weekly loop, Notify go/slip decision, implementation notes)
+**Initiative:** `distribution-90`
+**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
+**Decision anchors:** [PDR-0011 amended §5](../pdrs/PDR-0011-honeyhub-v1-agent-cockpit-and-usage-governance.md) (BYOK cloud-execution waitlist probe), [PDR-0002](../pdrs/PDR-0002-notify-as-a-service-first-commercial-product.md) (Notify Cloud 2026-09-15 launch target), and the charter's career-artifact motivation. **No new ADR** — no architectural boundary changes; this initiative only executes already-decided probes and dates.
+**Description:** A 90-day operator-priority push to take external distribution from zero to measured. The 2026-06-09 org-wide strategy review found the engineering/governance side excellent while distribution is at zero (1 star org-wide, 0 forks, 0 external issue authors, no analytics, no newsletter, no waitlists live, no release announcements ever). Workstreams: instrumentation (Cloudflare Web Analytics on both domains, a NuGet/stars/traffic metrics log), passive surfaces (newsletter + the PDR-0011 §5 BYOK waitlist page with a concrete price), the HoneyHub v0.1.0 public launch (checkpoint → first-ever tag → 2-minute demo → launch post → Show HN + subreddit submissions), a weekly distribution loop (one syndicated back-catalog post + 15-minute metrics review + every-release announcements — run as ~12 checklist reps in `metrics-log.md`, deliberately not as packets), and the explicit Notify Cloud go/slip decision by 2026-06-23 so the 2026-09-15 date cannot fail by sequencing default.
+
+**Guardrails (initiative-scoped, NOT invariants):**
+- No new process/governance ADRs during the 90 days unless they block shipping. This initiative must not become a governance project.
+- ADR-0043 Strategic backlog generation deferred or gated while The Hive's Backlog:Ready ratio exceeds ~10:1.
+- Recurring weekly work lives as a standing checklist in the metrics log, not as additional packets; packets stay day-scale or smaller.
+
+**Tracking (distribution-90 packets — [dispatch plan](../generated/issue-packets/active/distribution-90/dispatch-plan.md)):**
+- [ ] **Wave 1 — packet 01:** Cloudflare Web Analytics beacon on tatteddev.com (tatteddev/tatteddev-blog).
+- [ ] **Wave 1 — packet 02:** Cloudflare Web Analytics beacon on honeydrunkstudios.com (HoneyDrunkStudios/HoneyDrunkStudios).
+- [ ] **Wave 1 — packet 03:** `initiatives/metrics-log.md` with NuGet/stars/traffic day-0 baseline (Architecture).
+- [ ] **Wave 1 — packet 04:** Newsletter signup (Buttondown) in the blog layout.
+- [ ] **Wave 2 — packet 05:** HoneyHub BYOK cloud-execution waitlist page — concrete price + reserve button (PDR-0011 §5 probe; pre-set 30-day threshold recorded here before go-live: ___).
+- [ ] **Wave 2 — packet 06:** HoneyHub launch-blocking checkpoint (routing #33, agent-discovery rework, Sonar #35).
+- [ ] **Wave 2 — packet 07:** Notify Cloud go/slip decision by 2026-06-23 (Actor=Human; commit → scaffolding scoping + landing page, or slip → dated PDR-0002 amendment).
+- [ ] **Wave 2 — packet 12:** Weekly distribution loop + back-catalog syndication queue established in the metrics log.
+- [ ] **Wave 3 — packet 08:** HoneyHub v0.1.0 — CHANGELOG freeze, version alignment, stranger-grade README; operator pushes the first-ever tag.
+- [ ] **Wave 3 — packet 09:** 2-minute demo — real Claude Code session driven from a phone over Tailscale (Actor=Human).
+- [ ] **Wave 3 — packet 10:** Launch blog post on tatteddev.com (demo embedded, three CTAs).
+- [ ] **Wave 4 — packet 11:** Show HN + 1–2 subreddit submission drafts; operator click-to-submit.
+- [ ] **Wave 5 — packet 13:** Implementation-notes record (invariant 110) + PDR-0011/PDR-0002 pointer sections.
+
+**Day-90 success criteria (reps and decisions, not growth targets — per the charter, no kill clock):**
+- HoneyHub v0.1.0+ publicly launched with demo, and the BYOK waitlist live and measured against its pre-set threshold.
+- ≥12 reps of the weekly distribution loop completed.
+- Notify Cloud decision recorded by 2026-06-23 and acted on (committed with scaffolding underway, or slipped with a dated PDR-0002 amendment).
+- `initiatives/metrics-log.md` carries the baseline plus 12 weekly entries.
+
 ### ADR-0093 Loop Engineering — Closed-Loop Agent Orchestration (Tier A)
 **Status:** _Tracking pending hive-sync ground-truth pass._ <!-- netrunner 2026-06-09: ADR-0093 Accepted; Tier-A substrate shipped on branch claude/work-prioritization-6t11r8 (commit 4f3baf6), via PR #603. Substrate is on-disk and complete → exit-review. hive-sync to own this Status field and the per-artifact checkboxes on its next pass. -->
 **Scope:** Architecture (doctrine, `loops/` registry, LDR template + six backfilled LDRs, runner loop-job convention, capability-matrix loop-owner note, naming-conventions LDR-id rule) — substrate only; higher tiers sequenced behind named prerequisites
