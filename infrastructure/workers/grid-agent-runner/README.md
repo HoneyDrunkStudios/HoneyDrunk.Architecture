@@ -30,6 +30,33 @@ Portable scheduled agent runner for ADR-0086. The runner is operator-machine aut
 
 Committed job specs live in `config/jobs/*.psd1`. Machine-specific paths and Vault settings live in `config/host.psd1`, which is intentionally not committed.
 
+## Loop Jobs (ADR-0093 convention)
+
+Some runner jobs are **loops** in the ADR-0093 sense — they close: they evaluate their
+output against a gate and write the result back so the next iteration improves. A runner
+job that has a trigger and a synthesizer but **no gate and no feedback sink is a cron
+job, not a loop**, and is not registered as a Loop Definition Record (LDR).
+
+For a job that *is* a loop, the convention is:
+
+- **`JobId` equals the LDR `id`** (e.g. `hive-sync` ↔ `loop-0001-hive-sync`), so the
+  schedule/execution wiring and the decision record cross-reference by identity. The LDR
+  lives at `loops/{loop-id}.md`; the job spec is its execution half.
+- **`WriteMode = "pr"`** is the floor — artifacts are the write boundary; no loop mutates
+  authoritative state outside a reviewable branch/PR.
+- **The gate and feedback sink are named in the LDR**, not invented in the job spec. The
+  job spec's `OutputContract` should point at the same feedback sink the LDR declares.
+- **The kill switch is `Enabled = $false`** on the spec (or unregistering the task), and
+  is the control the LDR's `kill_switch` field names.
+- **Budget maps to `TimeoutMinutes`** (the per-run cap) and the ADR-0052 cost caps the
+  LDR declares.
+
+Loop runner jobs in `config/jobs/` today: `hive-sync` (loop-0001), `backlog-strategic-scope`
+(loop-0002), `backlog-tactical-audit` (loop-0003), `backlog-opportunistic-scout` (loop-0004),
+and the reactive drift-conversion that rides `hive-sync` (loop-0005). The PR-activity autofix
+loop (loop-0006) is **not** a runner job — it is driven by the PR-activity subscription, not a
+schedule. Pure cron-style jobs (no gate/feedback sink) are not loops and carry no LDR.
+
 ## Safety Model
 
 The runner is clone-safe by default. A fresh checkout has no `config/host.psd1`, and the example config keeps `Safety.Enabled = $false`; non-dry-run jobs refuse to start until the operator explicitly enables the local safety gate.

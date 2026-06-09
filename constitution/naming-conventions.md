@@ -102,6 +102,7 @@ Used in `catalogs/services.json` to identify deployable processes.
 | Test files | `{TypeName}Tests.cs` | `GridContextTests.cs` |
 | Issue packets | `{YYYY-MM-DD}-{repo-short}-{description}.md` | `2026-03-22-kernel-add-websocket-mapper.md` |
 | ADRs | `ADR-{NNNN}-{kebab-case-title}.md` | `ADR-0001-node-vs-service.md` |
+| LDRs (Loop Definition Records) | `loop-{NNNN}-{kebab-case-slug}.md` in `loops/` | `loop-0001-hive-sync.md` |
 | Config/YAML | Descriptive, kebab-case | `pr-core.yml`, `local.settings.json` |
 
 ---
@@ -112,6 +113,20 @@ Used in `catalogs/services.json` to identify deployable processes.
 - **Prefixes:** `feat:`, `fix:`, `chore:`, `docs:`, `test:`, `refactor:`
 - **First line:** Present tense, under 50 characters
 - **Examples:** `feat: add WebSocket context mapper`, `fix: correlation mismatch in outbox`
+
+---
+
+## Loop IDs (LDRs)
+
+Used in `loops/` and in the matching ADR-0086 runner job specs.
+
+- **Format:** `loop-{NNNN}-{slug}` (zero-padded sequence + kebab-case slug)
+- **Examples:** `loop-0001-hive-sync`, `loop-0002-backlog-strategic`
+- **Never reused:** a loop `id` is the unit of fleet identity (ADR-0093 D1/D8). Retired
+  loops keep their id; the number is not recycled.
+- **Runner jobs match the id:** a loop's runner job `JobId` equals its LDR `id` so the
+  schedule and the decision record cross-reference (ADR-0093 D7; see the runner README's
+  loop-job convention).
 
 ---
 

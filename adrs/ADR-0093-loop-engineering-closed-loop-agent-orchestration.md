@@ -1,7 +1,8 @@
 # ADR-0093: Loop Engineering — Closed-Loop Agent Orchestration
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-06-07
+**Accepted:** 2026-06-09 — Tier-A substrate (D1, D2, D3, D6, D7) landed: `constitution/loop-engineering.md` (doctrine), the `loops/` + `loops/proposed/` directories, `loops/LDR-TEMPLATE.md`, the `loops/` registry index, and six backfilled LDRs (`loop-0001-hive-sync`, the four ADR-0043 sources `loop-0002`–`loop-0005`, and `loop-0006-pr-activity-autofix`). The runner loop-job convention, the HoneyHub Loop Console phase row, the loop-owning-agents matrix note, and the LDR id naming rule landed with it. Higher autonomy tiers and the fleet/console surfaces remain sequenced behind their named prerequisites per the Prerequisites and Sequencing table — only the substrate is realized by this acceptance.
 **Deciders:** HoneyDrunk Studios
 **Sector:** Meta / AI / Platform
 

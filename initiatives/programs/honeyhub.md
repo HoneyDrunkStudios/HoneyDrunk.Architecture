@@ -19,6 +19,7 @@ The phase spine is PDR-0011's Rollout (dates live on `roadmap.md`, not here).
 | P3 — Second backend + estimated usage + dogfood | 2nd adapter; `UsageSignal`s + advisory `PolicyHint`s; routing + subscription-governance; operator dogfoods vs kill criteria | ADR-0092 Routing + session/usage-telemetry (drafting) | Not started |
 | P4 — Individual desktop tier | Desktop layout, personal usage analytics, per-repo/per-task reporting | ADR-0091 App-stack (covers packaging) | Not started |
 | P5 — Later layers (v2) | Cloud/API over the same contract; team metadata + admin policy; PDR-0009 read-layer on the dispatch substrate | BYOK-cloud, Dev-surface, team-governance, learned-coaching ADRs | Gated |
+| P6 — Loop Console (loop engineering surface) | Define an LDR, launch a loop run, watch its heartbeat, approve the one human gate, see per-loop cost; composes (does not fork) the ADR-0090 session model + ADR-0092 `UsageSignal`/routing; becomes the fleet console at scale | ADR-0093 (Loop Console = D9); reuses ADR-0090/0092 contracts | Gated (on v1 shipping) |
 
 ## ADR Dependency Map
 
@@ -31,6 +32,7 @@ The phase spine is PDR-0011's Rollout (dates live on `roadmap.md`, not here).
 | **Dev-surface ADR** (vendor-neutral GitHub + ADO work/decisions/wiki; the re-sequenced PDR-0009 read-layer; internal-default) | gated | A design partner pays over bundled incumbent AI (Amendment §2 differentiation kill) | — | P5 / v2 |
 | **Team/org-governance ADR** (cross-user metadata aggregation + admin policy) | gated | Privacy decision + reliable backend capability detection | — | P5 / v2 |
 | **Learned-coaching ADR** (per-user learned model; paid enrichment of the free rules-based coach) | gated | Free rules-based coach shipped + retention signal | — | P5 / v2 |
+| **[ADR-0093](../../adrs/ADR-0093-loop-engineering-closed-loop-agent-orchestration.md) Loop Console** (D9 — operator surface for loop engineering; LDR define / launch / heartbeat / one-gate-approve / per-loop cost; fleet console at scale) | gated | HoneyHub v1 *shipped* (ADR-0091 app stack + ADR-0092 session/usage); composes both | Fleet console; loop-observability meta-loop; long-horizon ADR-0003 control plane | P6 |
 
 **Status legend:** `needed → drafting → accepted → implemented`, or `gated` (deliberately blocked behind a PDR gate / kill-criterion / validation probe).
 

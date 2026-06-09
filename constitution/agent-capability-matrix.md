@@ -22,6 +22,28 @@ Quick-reference card for all Claude Code agents in `.claude/agents/`. Use this t
 
 ---
 
+## Loop-owning agents (ADR-0093)
+
+Several of these agents are the **synthesizer** of a registered loop — they are the
+behavior the loop invokes on each iteration. The loop is the first-class artifact (the
+Loop Definition Record in `loops/`); the agent is one part of its anatomy. See
+[`loop-engineering.md`](loop-engineering.md) and the [`loops/`](../loops/) registry.
+
+| Loop | LDR | Synthesizer agent(s) | Tier |
+|------|-----|----------------------|------|
+| Hive reconciliation | `loop-0001-hive-sync` | `hive-sync` | A |
+| Backlog — Strategic | `loop-0002-backlog-strategic` | `scope` | A |
+| Backlog — Tactical | `loop-0003-backlog-tactical` | `node-audit` → `scope` | A |
+| Backlog — Opportunistic | `loop-0004-backlog-opportunistic` | `product-strategist` → `pdr-composer` | A |
+| Backlog — Reactive | `loop-0005-backlog-reactive` | `hive-sync` / `scope` | A |
+| PR-activity autofix | `loop-0006-pr-activity-autofix` | session agent (build loop) | A |
+
+**Authorship gate (`[Firm]`):** an agent may *propose* a new loop into `loops/proposed/`;
+**only a human promotes** an LDR into `loops/`. No agent self-promotes a loop into
+existence — the same discipline `scope` follows for packets (`proposed/` → `active/`).
+
+---
+
 ## Decision Tree: Which Agent?
 
 ```
