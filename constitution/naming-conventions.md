@@ -2,7 +2,7 @@
 
 Canonical naming rules for all artifacts in the HoneyDrunk Grid.
 
-**Last Updated:** 2026-05-17
+**Last Updated:** 2026-06-09
 
 ---
 
@@ -124,9 +124,12 @@ Used in `loops/` and in the matching ADR-0086 runner job specs.
 - **Examples:** `loop-0001-hive-sync`, `loop-0002-backlog-strategic`
 - **Never reused:** a loop `id` is the unit of fleet identity (ADR-0093 D1/D8). Retired
   loops keep their id; the number is not recycled.
-- **Runner jobs match the id:** a loop's runner job `JobId` equals its LDR `id` so the
-  schedule and the decision record cross-reference (ADR-0093 D7; see the runner README's
-  loop-job convention).
+- **Maps to a runner job (not identical to it):** for a runner-backed loop, the LDR `id`
+  embeds the runner `JobId` as its slug — `loop-{NNNN}-{job-id}` (e.g. JobId `hive-sync`
+  ↔ LDR `loop-0001-hive-sync`). The two map 1:1 but are not the same string; the LDR's
+  `runner_job` field records the job-spec path under
+  `infrastructure/workers/grid-agent-runner/config/jobs/` (ADR-0093 D7; see the runner
+  README's loop-job convention).
 
 ---
 

@@ -7,7 +7,7 @@ owner: operator
 trigger: "schedule: Mon/Wed/Fri 09:00 local"
 write_mode: pr
 governing_decisions: [ADR-0093, ADR-0014, ADR-0086]
-runner_job: config/jobs/hive-sync.psd1
+runner_job: infrastructure/workers/grid-agent-runner/config/jobs/hive-sync.psd1
 created: 2026-06-09
 last_validated: 2026-06-09
 revalidation_cadence: quarterly, or on any change to hive-sync's mutation surface
@@ -35,7 +35,7 @@ revalidation_cadence: quarterly, or on any change to hive-sync's mutation surfac
 ## Governance envelope
 
 - **budget:** `TimeoutMinutes = 45`; one run per schedule tick; `MaxMissedRuns = 2`
-- **kill_switch:** set `Enabled = $false` in `config/jobs/hive-sync.psd1` or unregister the Task Scheduler task
+- **kill_switch:** set `Enabled = $false` in `infrastructure/workers/grid-agent-runner/config/jobs/hive-sync.psd1` or unregister the Task Scheduler task
 - **idempotency:** one date-based branch per run; `ConcurrencyKey = "hive-sync"`; the PR is updated in place, not duplicated
 - **blast radius:** low–medium (Architecture-repo files only; **never** mutates The Hive board)
 

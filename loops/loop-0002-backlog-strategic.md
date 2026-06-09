@@ -7,7 +7,7 @@ owner: operator
 trigger: "schedule: after hive-sync (acceptance/age detection)"
 write_mode: pr
 governing_decisions: [ADR-0093, ADR-0043, ADR-0086]
-runner_job: config/jobs/backlog-strategic-scope.psd1
+runner_job: infrastructure/workers/grid-agent-runner/config/jobs/backlog-strategic-scope.psd1
 created: 2026-06-09
 last_validated: 2026-06-09
 revalidation_cadence: on any ADR-0043 cadence/prompt amendment

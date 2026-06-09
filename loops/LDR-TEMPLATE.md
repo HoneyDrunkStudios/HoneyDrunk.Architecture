@@ -10,7 +10,7 @@ owner: operator               # accountable human
 trigger: {clock or event}     # e.g. "schedule: Mon/Wed/Fri 09:00 local" or "event: CI failed on watched PR"
 write_mode: pr                # pr (floor) — artifacts are the write boundary; never authoritative mutation outside a branch/PR
 governing_decisions: [ADR-0093]
-runner_job: config/jobs/{loop-id}.psd1   # the ADR-0086 job spec, if runner-hosted; else "n/a"
+runner_job: infrastructure/workers/grid-agent-runner/config/jobs/{job-id}.psd1   # ADR-0086 job-spec path (keyed by the short JobId, e.g. hive-sync), if runner-hosted; else "n/a"
 created: YYYY-MM-DD
 last_validated: YYYY-MM-DD
 revalidation_cadence: {e.g. "quarterly" or "on ADR-0043 amendment"}

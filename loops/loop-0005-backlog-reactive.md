@@ -7,7 +7,7 @@ owner: operator
 trigger: "event-driven, continuous (drift / CVE / incident / canary), severity-gated"
 write_mode: pr
 governing_decisions: [ADR-0093, ADR-0043, ADR-0086, ADR-0084]
-runner_job: config/jobs/hive-sync.psd1   # reactive conversion rides the hive-sync run; CVE/incident/canary emitters feed it
+runner_job: infrastructure/workers/grid-agent-runner/config/jobs/hive-sync.psd1   # reactive conversion rides the hive-sync run; CVE/incident/canary emitters feed it
 created: 2026-06-09
 last_validated: 2026-06-09
 revalidation_cadence: as reactive emitters (CVE, incident, canary) mature

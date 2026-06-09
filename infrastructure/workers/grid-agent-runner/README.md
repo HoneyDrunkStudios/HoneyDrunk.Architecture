@@ -39,9 +39,12 @@ job, not a loop**, and is not registered as a Loop Definition Record (LDR).
 
 For a job that *is* a loop, the convention is:
 
-- **`JobId` equals the LDR `id`** (e.g. `hive-sync` ↔ `loop-0001-hive-sync`), so the
-  schedule/execution wiring and the decision record cross-reference by identity. The LDR
-  lives at `loops/{loop-id}.md`; the job spec is its execution half.
+- **Each loop job maps 1:1 to an LDR, by name.** The runner `JobId` is the short job
+  name (e.g. `hive-sync`); its LDR `id` is `loop-NNNN-{job-id}` — the LDR id embeds the
+  JobId as its slug (e.g. `hive-sync` ↔ `loop-0001-hive-sync`). They map 1:1 but are
+  **not** the same string. The LDR lives at `loops/{loop-id}.md` and names the job in its
+  `runner_job` field; the job spec is its execution half. See
+  `constitution/naming-conventions.md` for the id format.
 - **`WriteMode = "pr"`** is the floor — artifacts are the write boundary; no loop mutates
   authoritative state outside a reviewable branch/PR.
 - **The gate and feedback sink are named in the LDR**, not invented in the job spec. The

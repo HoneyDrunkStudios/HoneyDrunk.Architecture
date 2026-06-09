@@ -180,9 +180,10 @@ already has:
 | Gates | ADR-0044/0079 review, ADR-0032 coverage, ADR-0087 risk routing, ADR-0023 evals |
 
 A loop's runner job spec lives at
-`infrastructure/workers/grid-agent-runner/config/jobs/{loop-id}.psd1` and follows the
-**loop-job convention** documented in that directory's README. The LDR is the decision
-record; the job spec is the schedule + execution wiring; the two cross-reference by `id`.
+`infrastructure/workers/grid-agent-runner/config/jobs/{job-id}.psd1` (keyed by the short
+`JobId`, e.g. `hive-sync`) and follows the **loop-job convention** documented in that
+directory's README. The LDR is the decision record; the job spec is the schedule +
+execution wiring; the LDR `id` (`loop-NNNN-{job-id}`) maps 1:1 to the `JobId`.
 
 ---
 
@@ -291,7 +292,8 @@ is buildable today and does not wait on HoneyHub.
 5. Declare cost fidelity, the per-run cost ceiling, and the cost-per-outcome target.
 6. Set the re-validation cadence.
 7. If the loop runs on the runner, author the matching
-   `config/jobs/{loop-id}.psd1` job spec per the loop-job convention.
+   `infrastructure/workers/grid-agent-runner/config/jobs/{job-id}.psd1` job spec per the
+   loop-job convention.
 8. Leave it in `loops/proposed/` for **human promotion**. An agent never moves its own LDR
    to `loops/`.
 

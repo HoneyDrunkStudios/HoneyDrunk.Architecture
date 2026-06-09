@@ -15,7 +15,7 @@ not here).
 
 ## Layout
 
-```
+```text
 loops/
 ├── README.md            ← this file (the live registry index)
 ├── LDR-TEMPLATE.md      ← copy this to author a new LDR
