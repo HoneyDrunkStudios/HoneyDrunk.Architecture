@@ -70,10 +70,15 @@ governance envelope is what makes it safe to run unattended.
 
 ## The Success Definition (centerpiece)
 
-A loop can only be trusted to "run until done" if **done is a machine-checkable
-predicate**, not prose. Every LDR carries a **Success Definition** in four parts,
-expressed as executable checks (commands + expected outcomes), not bullet points a
-human interprets:
+A loop can only be trusted to run **unattended** if **done is a machine-checkable
+predicate**, not prose. Every LDR carries a **Success Definition** in the same four parts —
+but how *executable* those parts must be scales with the autonomy tier the loop claims
+(see "Rigor scales with autonomy" below). At **Tier A** (human-gated, `WriteMode=pr`, a human
+promotes every result) the bands may be **human-verifiable predicates** — a reviewer can
+read them and rule. To graduate **above Tier A** — where no human is in the per-iteration
+loop — every band must be an **executable check** (command + expected outcome), not a bullet
+a human interprets. The four-part shape is mandatory at every tier; the executability is the
+dial:
 
 | Part | Question | Example substrate |
 |------|----------|-------------------|

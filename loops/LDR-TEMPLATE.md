@@ -40,8 +40,10 @@ revalidation_cadence: {e.g. "quarterly" or "on ADR-0043 amendment"}
 
 ## Success Definition
 
-> Executable checks (commands + expected outcomes), **authored separately from the worker.**
-> A loop above Tier A requires all four bands complete and machine-checkable.
+> Four bands, **authored separately from the worker.** Executability scales with the
+> autonomy tier: at **Tier A** (human-gated) the bands may be human-verifiable predicates a
+> reviewer can rule on; **above Tier A** every band must be a machine-checkable executable
+> check (command + expected outcome). The four-part shape is required at every tier.
 
 - **Done-when:** {did the intended thing happen? — the command(s) that prove it}
 - **Still-true:** {did nothing else break? — regression/canary/coverage + the per-run cost ceiling}

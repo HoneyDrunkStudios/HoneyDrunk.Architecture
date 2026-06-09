@@ -39,12 +39,21 @@ job, not a loop**, and is not registered as a Loop Definition Record (LDR).
 
 For a job that *is* a loop, the convention is:
 
-- **Each loop job maps 1:1 to an LDR, by name.** The runner `JobId` is the short job
-  name (e.g. `hive-sync`); its LDR `id` is `loop-NNNN-{job-id}` — the LDR id embeds the
-  JobId as its slug (e.g. `hive-sync` ↔ `loop-0001-hive-sync`). They map 1:1 but are
-  **not** the same string. The LDR lives at `loops/{loop-id}.md` and names the job in its
-  `runner_job` field; the job spec is its execution half. See
-  `constitution/naming-conventions.md` for the id format.
+- **A loop is linked to its runner job by the LDR's `runner_job` field — not by the slug
+  string.** The LDR lives at `loops/{loop-id}.md` and records the job-spec path in
+  `runner_job`; the job spec is its execution half. The mapping is **usually** 1:1 (JobId
+  `hive-sync` ↔ `loop-0001-hive-sync`), and the slug normally echoes the job, but neither
+  is a hard rule:
+  - **Many-to-one is allowed.** Several LDRs may ride one job — `loop-0005-backlog-reactive`
+    rides the `hive-sync` run (reactive conversion is a sink of that pass), so both
+    `loop-0001` and `loop-0005` point `runner_job` at `hive-sync.psd1`.
+  - **Slugs may abbreviate the JobId.** `loop-0002-backlog-strategic` ↔ JobId
+    `backlog-strategic-scope`; the slug names the loop's purpose, the `runner_job` field is
+    the authoritative link.
+  - **A loop need not have a scheduled job at all.** `loop-0006-pr-activity-autofix` is
+    driven by the PR-activity subscription (`runner_job: n/a`), not an ADR-0086 cron job.
+
+  See `constitution/naming-conventions.md` for the id format.
 - **`WriteMode = "pr"`** is the floor — artifacts are the write boundary; no loop mutates
   authoritative state outside a reviewable branch/PR.
 - **The gate and feedback sink are named in the LDR**, not invented in the job spec. The
