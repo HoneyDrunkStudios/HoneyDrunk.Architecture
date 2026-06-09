@@ -524,5 +524,8 @@
   "generated/issue-packets/completed/honeyhub-v1/06-honeyhub-claude-code-adapter.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.HoneyHub/issues/4",
   "generated/issue-packets/completed/honeyhub-v1/07-honeyhub-local-store-and-notifications.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.HoneyHub/issues/5",
   "generated/issue-packets/completed/honeyhub-v1/08-honeyhub-minimal-run-screen.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.HoneyHub/issues/6",
-  "generated/issue-packets/active/adr-0023-evals-standup/04-evals-node-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Evals/issues/2"
+  "generated/issue-packets/active/adr-0023-evals-standup/04-evals-node-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Evals/issues/2",
+  "generated/issue-packets/active/adr-0018-operator-standup/04-operator-auth-delegation.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Operator/issues/14",
+  "generated/issue-packets/active/adr-0018-operator-standup/05-operator-durable-state-atomic-cost.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Operator/issues/15",
+  "generated/issue-packets/active/adr-0018-operator-standup/06-operator-production-wiring-validation.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Operator/issues/16"
 }
