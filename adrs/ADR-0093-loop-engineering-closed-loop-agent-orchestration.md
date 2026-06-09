@@ -1,7 +1,8 @@
 # ADR-0093: Loop Engineering — Closed-Loop Agent Orchestration
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-06-07
+**Accepted:** 2026-06-09 — Tier-A substrate (D1, D2, D3, D6, D7) landed: `constitution/loop-engineering.md` (doctrine), the `loops/` + `loops/proposed/` directories, `loops/LDR-TEMPLATE.md`, the `loops/` registry index, and six backfilled LDRs (`loop-0001-hive-sync`, the four ADR-0043 sources `loop-0002`–`loop-0005`, and `loop-0006-pr-activity-autofix`). The runner loop-job convention, the HoneyHub Loop Console phase row, the loop-owning-agents matrix note, and the LDR id naming rule landed with it. Higher autonomy tiers and the fleet/console surfaces remain sequenced behind their named prerequisites per the Prerequisites and Sequencing table — only the substrate is realized by this acceptance.
 **Deciders:** HoneyDrunk Studios
 **Sector:** Meta / AI / Platform
 
@@ -54,9 +55,9 @@ An automation that has a trigger and a synthesizer but **no gate and no feedback
 
 Open-loop automation generates and hopes; closed-loop evaluates the output and lets the evaluation change the next input. Every LDR must close: it must name a `gate` and a `feedback_sink`. The human is an allowed gate (and is the v1 default gate for most loops, preserving the ADR-0043 `proposed → active` discipline), but "no gate" is never allowed.
 
-### D3 — Success Definition is a required, executable, separately-authored section (centerpiece)
+### D3 — Success Definition is a required, separately-authored section with tier-scaled rigor (centerpiece)
 
-A loop can only be trusted to "run until done" if **done is a machine-checkable predicate**, not prose. Every LDR carries a **Success Definition** with four parts, expressed as executable checks (commands + expected outcomes), not bullet points a human interprets:
+A loop can only be trusted to run **unattended** if **done is a machine-checkable predicate**, not prose. Every LDR carries a **Success Definition** with the same four parts — the four-part shape is required at every tier — but how *executable* those parts must be scales with the autonomy tier the loop claims (D4). At **Tier A** (human-gated, `WriteMode=pr`, a human promotes every result) the parts may be **human-verifiable predicates** a reviewer can rule on; **above Tier A**, where no human is in the per-iteration loop, every part must be an **executable check** (command + expected outcome), not a bullet a human interprets:
 
 | Part | Question it answers | Example substrate |
 |------|---------------------|-------------------|
@@ -209,7 +210,7 @@ Rejected as a *loop* substrate (it remains correct for pure cron per ADR-0068). 
 
 ### Defer the success-definition rigor as a later refinement
 
-Rejected. The executable, separately-authored Success Definition (D3) is the load-bearing part of every autonomous loop; deferring it would mean shipping autonomy on prose criteria, which is precisely the failure mode (thrash or false-green) this ADR exists to prevent.
+Rejected. The executable, separately-authored Success Definition (D3) is the load-bearing part of every loop running **above Tier A** (autonomous); deferring it would mean shipping autonomy on prose criteria, which is precisely the failure mode (thrash or false-green) this ADR exists to prevent. (Tier-A loops stay human-gated, so they may carry human-verifiable predicates — the rigor is what graduates a loop off the human gate.)
 
 ---
 
@@ -219,7 +220,7 @@ Per the HoneyHub flexibility posture (PDR-0011 Amendment §7), load-bearing line
 
 - **`[Firm]`** — do not move without a new decision:
   - a loop is closed by definition — **a gate and a feedback sink are required** (D2);
-  - the **Success Definition is executable and authored separately from the worker** (D3);
+  - the **Success Definition is separately authored from the worker; the four-part shape is required at every tier, and the checks are executable/machine-checkable above Tier A (human-verifiable predicates allowed at Tier A)** (D3);
   - **agents propose loops; only a human promotes one into existence** (D6);
   - **`WriteMode = "pr"`; artifacts are the write boundary** (D4; inherits ADR-0090 D9);
   - **load-bearing gate checks live outside the worker's write scope** (D5);
@@ -233,7 +234,7 @@ Per the HoneyHub flexibility posture (PDR-0011 Amendment §7), load-bearing line
 
 | Question | Owner | Status |
 |----------|-------|--------|
-| Does the live-state fleet index live in `loops/`, a catalog (`catalogs/loops.json`), or Pulse? | Architecture | Open — substrate packet decides the v1 shape |
+| Does the live-state fleet index live in `loops/`, a catalog (`catalogs/loops.json`), or Pulse? | Architecture | Open — **deferred** to follow-up packet `generated/issue-packets/proposed/2026-06-09-architecture-loop-fleet-live-state-index.md`; this substrate does **not** decide it |
 | What is the exact stuck-detector signal (iteration count, gate-delta, or both)? | Architecture / Ops | Open (D5 `[Provisional]`) |
 | Does the Loop Console reuse `DispatchSession` directly or define a `LoopRun` sibling? | Product / Architecture | Deferred to the HoneyHub-program phase (D9) |
 | What concurrent-autonomous-loop count triggers the fleet orchestrator (D8 gated set)? | Architecture | Open — named, not yet quantified |

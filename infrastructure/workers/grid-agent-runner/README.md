@@ -30,6 +30,45 @@ Portable scheduled agent runner for ADR-0086. The runner is operator-machine aut
 
 Committed job specs live in `config/jobs/*.psd1`. Machine-specific paths and Vault settings live in `config/host.psd1`, which is intentionally not committed.
 
+## Loop Jobs (ADR-0093 convention)
+
+Some runner jobs are **loops** in the ADR-0093 sense — they close: they evaluate their
+output against a gate and write the result back so the next iteration improves. A runner
+job that has a trigger and a synthesizer but **no gate and no feedback sink is a cron
+job, not a loop**, and is not registered as a Loop Definition Record (LDR).
+
+For a job that *is* a loop, the convention is:
+
+- **A loop is linked to its runner job by the LDR's `runner_job` field — not by the slug
+  string.** The LDR lives at `loops/{loop-id}.md` and records the job-spec path in
+  `runner_job`; the job spec is its execution half. The mapping is **usually** 1:1 (JobId
+  `hive-sync` ↔ `loop-0001-hive-sync`), and the slug normally echoes the job, but neither
+  is a hard rule:
+  - **Many-to-one is allowed.** Several LDRs may ride one job — `loop-0005-backlog-reactive`
+    rides the `hive-sync` run (reactive conversion is a sink of that pass), so both
+    `loop-0001` and `loop-0005` point `runner_job` at `hive-sync.psd1`.
+  - **Slugs may abbreviate the JobId.** `loop-0002-backlog-strategic` ↔ JobId
+    `backlog-strategic-scope`; the slug names the loop's purpose, the `runner_job` field is
+    the authoritative link.
+  - **A loop need not have a scheduled job at all.** `loop-0006-pr-activity-autofix` is
+    driven by the PR-activity subscription (`runner_job: n/a`), not an ADR-0086 cron job.
+
+  See `constitution/naming-conventions.md` for the id format.
+- **`WriteMode = "pr"`** is the floor — artifacts are the write boundary; no loop mutates
+  authoritative state outside a reviewable branch/PR.
+- **The gate and feedback sink are named in the LDR**, not invented in the job spec. The
+  job spec's `OutputContract` should point at the same feedback sink the LDR declares.
+- **The kill switch is `Enabled = $false`** on the spec (or unregistering the task), and
+  is the control the LDR's `kill_switch` field names.
+- **Budget maps to `TimeoutMinutes`** (the per-run cap) and the ADR-0052 cost caps the
+  LDR declares.
+
+Loop runner jobs in `config/jobs/` today: `hive-sync` (loop-0001), `backlog-strategic-scope`
+(loop-0002), `backlog-tactical-audit` (loop-0003), `backlog-opportunistic-scout` (loop-0004),
+and the reactive drift-conversion that rides `hive-sync` (loop-0005). The PR-activity autofix
+loop (loop-0006) is **not** a runner job — it is driven by the PR-activity subscription, not a
+schedule. Pure cron-style jobs (no gate/feedback sink) are not loops and carry no LDR.
+
 ## Safety Model
 
 The runner is clone-safe by default. A fresh checkout has no `config/host.psd1`, and the example config keeps `Safety.Enabled = $false`; non-dry-run jobs refuse to start until the operator explicitly enables the local safety gate.

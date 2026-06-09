@@ -1,7 +1,8 @@
 # ADR-0091: HoneyHub App Stack and Repo / Node Home
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-06-06
+**Accepted:** 2026-06-09 — HoneyHub v1 has shipped; the app-stack / repo-Node-home decision is realized. Acceptance is operator-confirmed reconciliation (the decision was conceptually accepted with v1; this flips the on-disk status to match).
 **Deciders:** HoneyDrunk Studios
 **Sector:** Meta / AI / Platform
 **Implements:** [PDR-0011](../pdrs/PDR-0011-honeyhub-v1-agent-cockpit-and-usage-governance.md) (HoneyHub v1 — Agent Cockpit) §"Architecture Implications" + Amendment §6 (the `[Provisional]` app-stack / Tauri-class-shell / mobile-relay decision the PDR named as a follow-up artifact).

@@ -1,13 +1,12 @@
 # Proposed ADR/PDR Queue
 
-**Last Updated:** 2026-06-08
+**Last Updated:** 2026-06-09
 
 ## Awaiting Implementing Packets
 
 - `ADR-0017` — ADR-0017: Stand Up the HoneyDrunk.Capabilities Node — Tool Registry and Dispatch Substrate for the AI Sector (adrs/ADR-0017-stand-up-honeydrunk-capabilities-node.md)
 - `ADR-0032` — ADR-0032: Grid-Wide PR Validation Policy — Coverage Gate and NuGet Update Flagging (adrs/ADR-0032-pr-validation-policy-coverage-gate-and-nuget-flagging.md)
 - `ADR-0058` — ADR-0058: Grid-Wide Caching Strategy (adrs/ADR-0058-grid-wide-caching-strategy.md)
-- `ADR-0092` — ADR-0092: HoneyHub Session, Usage Telemetry, and Routing (adrs/ADR-0092-honeyhub-session-usage-telemetry-and-routing.md)
 - `PDR-0002` — PDR-0002: HoneyDrunk Notify — First Commercial Product on the Grid (pdrs/PDR-0002-notify-as-a-service-first-commercial-product.md)
 - `PDR-0003` — PDR-0003: Lately — A Currents-Based Connection App for Regular Humans (pdrs/PDR-0003-lately-currents-based-connection-app.md)
 - `PDR-0005` — PDR-0005: Hearth — Personal Growth as a Living Town (pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md)
@@ -17,7 +16,8 @@
 
 ## In Progress
 
-- `ADR-0018` — ADR-0018: Stand Up the HoneyDrunk.Operator Node — Human-Policy Enforcement and Audit Substrate for the AI Sector — 0/4 accepting packet issues closed; open: HoneyDrunk.Architecture#121, HoneyDrunk.Architecture#122, HoneyDrunk.Architecture#123, HoneyDrunk.Operator#3
+> _Note (2026-06-09): closed/open issue counts below are preserved verbatim from the 2026-06-06 run. This pass ran local-file only (no `gh` access), so per-packet counts were not recomputed and may be stale; a future live-`gh` hive-sync pass owns refreshing them. **ADR-0077** and **ADR-0018** were removed from this section because their frontmatter is now Accepted (ADR-0077 `Accepted (amended 2026-06-02)`; ADR-0018 `Accepted (2026-06-09)` via PR #604) — their counts and any closed accepting-packet issues still need a live-`gh` confirmation pass. ADR-0023 (also Accepted 2026-06-09) is already absent from this list._
+
 - `ADR-0020` — ADR-0020: Stand Up the HoneyDrunk.Agents Node — Agent Runtime Substrate for the AI Sector — 0/4 accepting packet issues closed; open: HoneyDrunk.Architecture#125, HoneyDrunk.Architecture#126, HoneyDrunk.Architecture#127, HoneyDrunk.Agents#2
 - `ADR-0021` — ADR-0021: Stand Up the HoneyDrunk.Knowledge Node — External Knowledge Ingestion and Retrieval Substrate for the AI Sector — 0/4 accepting packet issues closed; open: HoneyDrunk.Architecture#129, HoneyDrunk.Architecture#130, HoneyDrunk.Architecture#131, HoneyDrunk.Knowledge#2
 - `ADR-0022` — ADR-0022: Stand Up the HoneyDrunk.Memory Node — Agent-Memory Substrate for the AI Sector — 0/4 accepting packet issues closed; open: HoneyDrunk.Architecture#134, HoneyDrunk.Architecture#135, HoneyDrunk.Architecture#136, HoneyDrunk.Memory#2
@@ -58,8 +58,6 @@
 - `ADR-0078` — ADR-0078: End-User Identity — Microsoft Entra External ID — 0/5 accepting packet issues closed; open: HoneyDrunk.Architecture#437, HoneyDrunk.Architecture#438, HoneyDrunk.Architecture#439, HoneyDrunk.Architecture#440, HoneyDrunk.Architecture#441
 - `ADR-0085` — ADR-0085: Grid-Wide Documentation Currency Agent (`docs-sync`) — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#483
 - `ADR-0087` — ADR-0087: Per-Change Risk Scoring for the Double-Review Gate — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#536
-- `ADR-0091` — ADR-0091: HoneyHub App Stack and Repo / Node Home — 1/4 accepting packet issues closed; open: HoneyDrunk.Architecture#590, HoneyDrunk.Architecture#591, HoneyDrunk.Actions#193
-- `ADR-0093` — ADR-0093: Loop Engineering — Closed-Loop Agent Orchestration — 0/4 accepting packet issues closed; open: HoneyDrunk.Architecture#594, HoneyDrunk.Architecture#595, HoneyDrunk.Architecture#596, HoneyDrunk.Architecture#597
 
 ## Pending Flip
 
@@ -79,4 +77,4 @@ _None._
 
 ## Flipped This Run
 
-_None._
+_None — this 2026-06-09 pass ran local-file only (no `gh` access); no auto-flips were attempted. ADR-0091, ADR-0092, ADR-0093 were already flipped to Accepted by a prior pass / their landing PRs and are correctly absent from this queue. ADR-0077 (now `Accepted (amended 2026-06-02)`) was pruned from the In Progress list above without a flip (hive-sync did not change its status)._
