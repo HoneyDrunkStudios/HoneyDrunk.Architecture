@@ -212,13 +212,17 @@ HoneyDrunk.Knowledge.Providers.InMemory
 - Inference execution (delegates to HoneyDrunk.AI)
 - Agent behavior rules (that's HoneyDrunk.Operator for safety, HoneyDrunk.Agents for runtime)
 
-**Key Contracts:**
-- `IEvaluator` — run an evaluation suite, return scored results
-- `IEvalDataset` — collection of eval cases with expected outputs
-- `IEvalScorer` — scoring function (automated or model-as-judge)
-- `IEvalReport` — structured evaluation results
+**Key Contracts (ADR-0023 D3 — definitive set):**
+- `IEvaluator` — run a suite of cases against a target, return an `EvalReport`
+- `IEvalScorer` — scoring function (automated or model-as-judge), marked deterministic vs not
+- `IEvalSuite` — named, versioned collection of `EvalCase`s with a rubric + sensitivity flag (D10)
+- `IEvalTarget` — the thing under evaluation; owns the D6 router-bypass model pin
+- `EvalCase` *(record)* — a single case: input, expected/rubric, metadata, `TenantId`
+- `EvalReport` *(record)* — structured results with full run provenance (D12); durable (D13)
 
-**Depends on:** AI (inference for running evaluations), Pulse (emitting evaluation metrics)
+> Reconciled from the earlier drifted prose: `IEvalDataset` → `IEvalSuite`; `IEvalReport` → `EvalReport` (record); `IEvalTarget`, `EvalCase` added per ADR-0023.
+
+**Depends on:** Kernel (`TenantId`, telemetry), AI (inference + model surfaces for targets/judge), Operator (`ISafetyFilter`/`ICostGuard` observation-only per D7), Audit (`IAuditLog` observation); emits to Pulse (no runtime edge). Agents/Capabilities/Knowledge/Memory targets are deferred to scaffold per D3.
 
 **Integration with Pulse:** Evaluation results are emitted as Pulse signals. HoneyHub can consume these to detect quality regressions tied to specific deployments or model changes, closing the feedback loop between model updates and product quality.
 

@@ -4,6 +4,36 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 ## In Progress
 
+### ADR-0018 HoneyDrunk.Operator Standup
+**Status:** In Progress — ADR-0018 Accepted (2026-06-09); scaffold PR open on `claude/node-evals-standup-tvu57v`
+**Scope:** Architecture (catalog/contracts/relationships/grid-health reconciliation, invariants 116–119, repo context) + **HoneyDrunk.Operator** (NEW scaffold — three packages) + Actions (`repo-to-node.yml` already mapped)
+**Initiative:** `adr-0018-operator-standup`
+**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
+**Description:** Stand up `HoneyDrunk.Operator` as the AI sector's human-policy enforcement substrate per ADR-0018: `Abstractions` (eight Operator-owned D3 contracts — `IApprovalGate`, `ICircuitBreaker`, `ICostGuard`, `IDecisionPolicy`, `ISafetyFilter` + `ApprovalRequest`, `ApprovalDecision`, `CostEvent`), runtime defaults, `Testing` fixtures, CI + contract-shape canary. `IAuditLog`/`AuditEntry` consumed from `HoneyDrunk.Audit.Abstractions` per the ADR-0030/0031 relocation (not redefined). `ICostController` → `ICostGuard`. Invariants 116–119 landed (the packets' 47–50 default was stale; 54–98 are reserved by in-flight Proposed ADRs). Auth delegation (D5) + durable persistence (D12) carry `TODO` markers for follow-ups.
+
+**Tracking:**
+- [x] Architecture: contracts/relationships/grid-health reconciled; invariants 116–119 added; ADR-0018 → Accepted; Operator `integration-points.md` + `active-work.md` added.
+- [x] HoneyDrunk.Operator: scaffold pushed (`claude/node-evals-standup-tvu57v`).
+- [ ] Merge scaffold PR → push `v0.1.0` tag → first NuGet publish.
+- [ ] Throwaway breaking-change PR to confirm the canary fires; add `api-compatibility` to required checks.
+- [ ] Follow-ups: `TODO(auth)` Auth delegation, `TODO(data)` durable persistence, approval-transport wire shape, SonarCloud onboarding.
+
+### ADR-0023 HoneyDrunk.Evals Standup
+**Status:** In Progress — ADR-0023 Accepted (2026-06-09); scaffold PR open on `claude/node-evals-standup-tvu57v`
+**Scope:** Architecture (D3 contract reconciliation across `contracts.json`/`relationships.json`/`nodes.json`/`grid-health.json`/`ai-sector-architecture.md`/`overview.md`, invariants 120–126, repo context) + **HoneyDrunk.Evals** (NEW scaffold — three packages) + Actions (`repo-to-node.yml` mapping added)
+**Initiative:** `adr-0023-evals-standup`
+**Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
+**Description:** Stand up `HoneyDrunk.Evals` as the AI sector's evaluation/quality substrate per ADR-0023: `Abstractions` (D3 set — `IEvaluator`, `IEvalScorer`, `IEvalSuite`, `IEvalTarget` + `EvalCase`, `EvalReport`), runtime (`DefaultEvaluator`, `ChatTarget` D6 router-bypass, rubric + model-as-judge scorers, observation-only Operator/Audit observers D7, `EvalsTelemetry` D10 carve-out), `Providers.InMemory`, CI + contract-shape canary. Reconciled the three drifted cataloged sources to the D3 set. Depends on Operator's `Abstractions` (same branch). Invariants 120–126 landed (the packets' 67–73 was reserved by ADR-0050/0063).
+
+**Tracking:**
+- [x] Architecture: `contracts.json`/`relationships.json` reconciled to D3; `nodes.json` roadmap/relationship; `grid-health.json`; `ai-sector-architecture.md` + `overview.md` aligned; invariants 120–126 added; ADR-0023 → Accepted; Evals `integration-points.md` + `active-work.md` added.
+- [x] Actions: `HoneyDrunk.Evals: honeydrunk-evals` added to `repo-to-node.yml`.
+- [x] HoneyDrunk.Evals: scaffold pushed (`claude/node-evals-standup-tvu57v`).
+- [ ] Merge after Operator publishes (runtime references `HoneyDrunk.Operator.Abstractions 0.1.0`) → push `v0.1.0` tag → first NuGet publish.
+- [ ] Throwaway breaking-change PR to confirm the canary fires; add `api-compatibility` to required checks.
+- [ ] Follow-ups: concrete `AgentTarget`/`RetrievalTarget`/`MemoryTarget`, production `EvalReport` store, SonarCloud onboarding.
+
+
 ### HoneyHub v1 — Agent Cockpit Standup + Phase 2
 **Status:** In Progress — Phase A registration started; active packet set filed under `generated/issue-packets/active/honeyhub-v1/`
 **Scope:** Architecture (catalog/context registration), Actions (`repo-to-node.yml` mapping), and **HoneyDrunk.HoneyHub** (NEW — React/Vite PWA + Tauri-class shell + Rust bridge workspace)

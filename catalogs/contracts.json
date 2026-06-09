@@ -231,9 +231,12 @@
       "package": "HoneyDrunk.Evals.Abstractions",
       "status": "seed",
       "interfaces": [
-        { "name": "IEvalRunner", "kind": "interface", "description": "Run a prompt evaluation set and return scored results." },
-        { "name": "IEvalScorer", "kind": "interface", "description": "Score an inference result against expected criteria." },
-        { "name": "IEvalSuite", "kind": "interface", "description": "A named collection of evaluation cases with expected outputs and scoring criteria." }
+        { "name": "IEvaluator", "kind": "interface", "description": "Run a suite of cases against a target, collect scored results, and produce an EvalReport. The top-level orchestration surface (ADR-0023 D3)." },
+        { "name": "IEvalScorer", "kind": "interface", "description": "Scoring function over a case output — automated (regex, schema, rubric) or model-as-judge. Marked deterministic vs non-deterministic." },
+        { "name": "IEvalSuite", "kind": "interface", "description": "Named, versioned collection of EvalCases with a rubric spec and a sensitivity flag (D10). Replaces the prior IEvalDataset prose." },
+        { "name": "IEvalTarget", "kind": "interface", "description": "The thing under evaluation — chat model, agent, retrieval pipeline, or memory-backed workflow. Owns the D6 router-bypass model pin." },
+        { "name": "EvalCase", "kind": "type", "description": "A single evaluation case — input, expected output or rubric criteria, per-case metadata, and TenantId. Record (ADR-0023 D3)." },
+        { "name": "EvalReport", "kind": "type", "description": "Structured evaluation results — per-case scores, inputs/outputs (subject to D10), rubric breakdown, and full run provenance. Durable per D13. Record (ADR-0023 D3)." }
       ]
     },
     {
@@ -266,7 +269,12 @@
       "interfaces": [
         { "name": "IApprovalGate", "kind": "interface", "description": "Require human approval before an agent action proceeds." },
         { "name": "ICircuitBreaker", "kind": "interface", "description": "Halt agent or workflow execution when safety thresholds are breached." },
-        { "name": "ICostController", "kind": "interface", "description": "Enforce per-agent and per-tenant inference cost limits." },
+        { "name": "ICostGuard", "kind": "interface", "description": "Enforce per-scope cost limits over a rolling window. Renamed successor to the seed-era ICostController (ADR-0018 D3)." },
+        { "name": "IDecisionPolicy", "kind": "interface", "description": "Evaluate whether an action is allowed, denied, or requires human approval (ADR-0018 D3)." },
+        { "name": "ISafetyFilter", "kind": "interface", "description": "Validate content against a configured safety rule set before it leaves the system (ADR-0018 D3)." },
+        { "name": "ApprovalRequest", "kind": "type", "description": "A request for human approval of a constrained action. Record (ADR-0018 D3)." },
+        { "name": "ApprovalDecision", "kind": "type", "description": "The decision recorded against an ApprovalRequest. Record (ADR-0018 D3)." },
+        { "name": "CostEvent", "kind": "type", "description": "A single recorded unit of attributable spend. Record (ADR-0018 D3)." },
         { "name": "IAuditLog", "kind": "interface", "description": "RELOCATED to honeydrunk-audit (HoneyDrunk.Audit.Abstractions) and generalized Grid-wide per ADR-0030 D5. Operator no longer owns this contract — it is reclassified from owner to consumer/emitter and emits AuditEntry against the IAuditLog it now consumes from HoneyDrunk.Audit.Abstractions. See ADR-0030 and ADR-0018's additive amendment note." }
       ]
     },
