@@ -25,7 +25,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 **Exit criteria:** ADR-0093 Accepted (met); Tier-A substrate on-disk and reviewable (met); the HoneyHub Loop Console registered as a future program phase; initiative walked to exit-review/archive once the substrate is confirmed by hive-sync and the Console phase row is added. *(Cross-ref: current-focus #1.)*
 
 ### HoneyHub v1 — Agent Cockpit Standup + Phase 2
-**Status:** In Progress — 6/10 packet issues closed; Phase 2 implementation packets 04–08 closed; architecture registration, repo-settings, Actions mapping, and Phase 3+ outline remain open
+**Status:** In Progress (reconciliation/exit) — HoneyHub v1 cockpit **shipped**; Phase 2 implementation packets 04–08 closed (6/10 issues). The remaining open items are reconciliation/admin, **not core build**: `honeydrunk-honeyhub` catalog registration (already present in `catalogs/nodes.json`; issues #590/#591), repo-settings, the Actions repo-to-node mapping (#193), and Phase 3+ outline tracking (HoneyHub#7). The Wave checkboxes below reflect live GitHub issue state (hive-sync-owned) and close out as that live state is reconciled.
 **Scope:** Architecture (catalog/context registration), Actions (`repo-to-node.yml` mapping), and **HoneyDrunk.HoneyHub** (NEW — React/Vite PWA + Tauri-class shell + Rust bridge workspace)
 **Initiative:** `honeyhub-v1`
 **Program:** [HoneyHub](programs/honeyhub.md)
