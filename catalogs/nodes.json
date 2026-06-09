@@ -1088,8 +1088,8 @@
         "Pulse integration for quality signals and alerting"
       ],
       "monetization_signal": "Internal-first. Eval infrastructure enables confident model upgrades.",
-      "roadmap_focus": "Core contracts (IEvaluator, IEvalDataset, IEvalScorer), basic model-as-judge scorer, Pulse signal emission.",
-      "grid_relationship": "Consumes AI (inference for running evaluations), Pulse (emitting eval metrics). Consumed by HoneyHub (quality correlation to features).",
+      "roadmap_focus": "Definitive D3 contracts (IEvaluator, IEvalScorer, IEvalSuite, IEvalTarget, EvalCase, EvalReport), default ChatTarget with the D6 router-bypass model pin, rubric + model-as-judge scorers, observation-only Operator scoring (D7), Providers.InMemory report store, Pulse signal emission with the D10 content carve-out.",
+      "grid_relationship": "Consumes Kernel (TenantId, telemetry), AI (IChatClient/IEmbeddingGenerator/IModelProvider/ModelCapabilityDeclaration for targets + model-as-judge), Operator (ISafetyFilter/ICostGuard as observation-only scoring signals), Audit (IAuditLog observation), and — at the contract level for deferred targets — Agents, Capabilities, Knowledge, Memory. Emits eval signals to Pulse (no runtime edge). Consumed by Agents, Knowledge, Memory, Flow, Sim, Lore, and HoneyHub when live.",
       "integration_depth": "medium",
       "demo_path": "Define an eval dataset → run against two models → compare scores → observe Pulse signals for regression detection.",
       "signal_quote": "Trust, but verify.",
