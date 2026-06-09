@@ -49,7 +49,8 @@ See [`proposed/`](proposed/). Empty until an agent proposes a loop candidate.
 ## Live-state index
 
 The "what is the fleet doing right now" live-state surface (per-loop last run, success
-rate, escalation count, cost) is an open question deferred to a substrate follow-up
-(ADR-0093 Open Questions): it may live here as `loops/state.json`, in a catalog, or in
-Pulse. Until then, per-loop heartbeat is read from the runner state/logs and the Pulse
+rate, escalation count, cost) is an open question deferred to a follow-up packet
+(ADR-0093 Open Questions → `generated/issue-packets/proposed/2026-06-09-architecture-loop-fleet-live-state-index.md`):
+it may live here as `loops/state.json`, in a catalog, or in Pulse. This substrate does not
+decide it. Until then, per-loop heartbeat is read from the runner state/logs and the Pulse
 loop-health metrics named in each LDR.

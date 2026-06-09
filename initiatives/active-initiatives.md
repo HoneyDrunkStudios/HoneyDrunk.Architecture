@@ -5,7 +5,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 ## In Progress
 
 ### ADR-0093 Loop Engineering — Closed-Loop Agent Orchestration (Tier A)
-**Status:** _Tracking pending hive-sync ground-truth pass._ <!-- netrunner 2026-06-09: ADR-0093 Accepted; Tier-A substrate shipped directly on branch claude/work-prioritization-6t11r8 (commit 4f3baf6), not via PR. Substrate is on-disk and complete → exit-review. hive-sync to own this Status field and the per-artifact checkboxes on its next pass. -->
+**Status:** _Tracking pending hive-sync ground-truth pass._ <!-- netrunner 2026-06-09: ADR-0093 Accepted; Tier-A substrate shipped on branch claude/work-prioritization-6t11r8 (commit 4f3baf6), via PR #603. Substrate is on-disk and complete → exit-review. hive-sync to own this Status field and the per-artifact checkboxes on its next pass. -->
 **Scope:** Architecture (doctrine, `loops/` registry, LDR template + six backfilled LDRs, runner loop-job convention, capability-matrix loop-owner note, naming-conventions LDR-id rule) — substrate only; higher tiers sequenced behind named prerequisites
 **Initiative:** `adr-0093-loop-engineering`
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)

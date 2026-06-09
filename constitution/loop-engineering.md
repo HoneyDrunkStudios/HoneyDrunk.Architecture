@@ -188,7 +188,10 @@ A loop's runner job spec lives at
 `infrastructure/workers/grid-agent-runner/config/jobs/{job-id}.psd1` (keyed by the short
 `JobId`, e.g. `hive-sync`) and follows the **loop-job convention** documented in that
 directory's README. The LDR is the decision record; the job spec is the schedule +
-execution wiring; the LDR `id` (`loop-NNNN-{job-id}`) maps 1:1 to the `JobId`.
+execution wiring. The LDR's `runner_job` field is the authoritative link to its job — the
+mapping is usually 1:1, but not required to be (several LDRs may ride one job; a loop may
+have no scheduled job), so the slug is descriptive rather than an identity with the `JobId`.
+See the runner README's loop-job convention.
 
 ---
 
