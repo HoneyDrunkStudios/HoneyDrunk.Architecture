@@ -537,7 +537,7 @@ No runtime performance assessment was completed because the review stopped at th
 No compatibility assessment was completed because the review stopped at the guardrail.
 
 🛡️ Failure Handling
-The guardrail failed closed instead of posting an approval-style verdict from an incomplete high-risk review.
+The guardrail failed closed instead of posting an approval-style verdict from an incomplete dual-perspective review.
 
 🧵 Concurrency / State Safety
 Head-SHA claim checks ran before the verdict was posted; reviewed head SHA: $($Context.QueueHeadSha).
@@ -552,7 +552,7 @@ No rollout assessment was completed beyond preserving the queued PR's fail-close
 Restore the secondary agent path or fallback before treating this review as complete.
 
 🧬 Reusability Potential
-The guardrail behavior is reusable for all high-risk Grid review jobs.
+The guardrail behavior is reusable for all Grid review jobs.
 
 📚 Knowledge Capture
 The verdict records why the automated review could not complete and points at the missing multi-perspective requirement.
@@ -570,7 +570,7 @@ Authorship: $($Context.AuthorshipClass); reviewed through the ADR-0086 local run
 
 Packet / PR scope: Trusted base-branch review queue metadata and runner job configuration were checked.
 Governing ADRs: ADR-0011, ADR-0044, ADR-0079, ADR-0081, ADR-0086.
-Grid invariants: Review could not complete the required high-risk independent-review discipline.
+Grid invariants: Review could not complete the required independent-review discipline.
 Contracts / downstream: Not evaluated beyond runner control-plane safety because the review guardrail fired.
 Security / secrets: Host credential isolation and no-PR-head-execution posture remain in force.
 Cost / CI discipline: No additional agent pass was launched after the guardrail condition was detected.
@@ -596,13 +596,9 @@ function Invoke-ReviewAgentPasses {
     }
     catch {
         $Context.ReviewRiskClass = "unknown"
-        Write-RunnerLog -Logger $Logger -Level "ERROR" -Message "Trusted review risk metadata could not be resolved; failing closed." -Data @{
+        Write-RunnerLog -Logger $Logger -Level "WARN" -Message "Trusted review risk metadata could not be resolved; continuing with mandatory dual-pass review." -Data @{
             reason = "trusted-risk-metadata-invalid"
         }
-
-        return New-ReviewRunnerGuardrailVerdict -Context $Context `
-            -Summary "The runner could not safely resolve trusted review risk metadata for this PR. The review cannot continue because high-risk routing must not fail open to a normal Codex-only pass." `
-            -Finding "Trusted review risk metadata could not be parsed or read; fail closed and repair `catalogs/grid-health.json` before rerunning the review."
     }
 
     $prompt = @"
@@ -669,9 +665,9 @@ Load the canonical review prompt, ADR-0086 context, the PR diff from GitHub, and
             $passStatus.Unavailable = $true
             $passStatus.Reason = $failureReason
 
-            if (($Context.ReviewRiskClass -eq "high") -and $command.ContainsKey("FallbackCommand")) {
+            if ($command.ContainsKey("FallbackCommand")) {
                 $fallback = $command.FallbackCommand
-                Write-RunnerLog -Logger $Logger -Level "WARN" -Message "Optional high-risk review agent unavailable; running contrarian fallback." -Data @{
+                Write-RunnerLog -Logger $Logger -Level "WARN" -Message "Optional secondary review agent unavailable; running contrarian fallback." -Data @{
                     agent = $command.Name
                     fallback_agent = $fallback.Name
                     review_risk_class = $Context.ReviewRiskClass
@@ -728,15 +724,17 @@ Load the canonical review prompt, ADR-0086 context, the PR diff from GitHub, and
         [void]$passStatuses.Add([pscustomobject]$passStatus)
     }
 
-    if (($Context.ReviewRiskClass -eq "high") -and ($results.Count -lt 2)) {
-        Write-RunnerLog -Logger $Logger -Level "ERROR" -Message "High-risk review did not produce enough independent review outputs." -Data @{
+    $minimumReviewOutputs = Get-MinimumReviewOutputCount -JobSpec $JobSpec -Context $Context
+    if ($results.Count -lt $minimumReviewOutputs) {
+        Write-RunnerLog -Logger $Logger -Level "ERROR" -Message "Grid review did not produce enough independent review outputs." -Data @{
             review_risk_class = $Context.ReviewRiskClass
             result_count = $results.Count
+            minimum_review_outputs = $minimumReviewOutputs
         }
 
         return New-ReviewRunnerGuardrailVerdict -Context $Context `
-            -Summary "This PR was classified as high risk, but the runner produced fewer than two independent review outputs. The review cannot be treated as complete until the secondary agent or its configured fallback succeeds." `
-            -Finding "High-risk ADR-0086 review requires two independent perspectives before a PR-facing verdict can pass; rerun after restoring the secondary agent path or fixing the fallback failure."
+            -Summary "The runner produced fewer than $minimumReviewOutputs independent review output(s). The review cannot be treated as complete until the configured review pass discipline succeeds." `
+            -Finding "This job requires $minimumReviewOutputs independent review output(s) before a PR-facing verdict can pass; rerun after restoring the secondary agent path or fixing the fallback failure."
     }
 
     if ($JobSpec.ContainsKey("SynthesisCommand") -and $results.Count -ge 1) {
@@ -770,7 +768,7 @@ function Get-TrustedReviewRiskClass {
 
     $gridHealthPath = Join-Path $RepoPath "catalogs/grid-health.json"
     if (-not (Test-Path -LiteralPath $gridHealthPath)) {
-        Write-RunnerLog -Logger $Logger -Level "INFO" -Message "D8 deferred - catalogs/grid-health.json not present."
+        Write-RunnerLog -Logger $Logger -Level "INFO" -Message "Trusted review risk metadata not present; using normal risk context."
         return "normal"
     }
 
@@ -778,7 +776,7 @@ function Get-TrustedReviewRiskClass {
         $gridHealth = Get-Content -LiteralPath $gridHealthPath -Raw | ConvertFrom-Json
     }
     catch {
-        Write-RunnerLog -Logger $Logger -Level "ERROR" -Message "D8 blocked - failed to parse trusted catalogs/grid-health.json." -Data @{
+        Write-RunnerLog -Logger $Logger -Level "ERROR" -Message "Failed to parse trusted review risk metadata." -Data @{
             reason = "trusted-risk-metadata-invalid"
         }
         throw "trusted-risk-metadata-invalid"
@@ -786,7 +784,7 @@ function Get-TrustedReviewRiskClass {
     $nodes = @($gridHealth.nodes)
     $nodesWithRiskClass = @($nodes | Where-Object { $null -ne $_.review_risk_class })
     if ($nodesWithRiskClass.Count -eq 0) {
-        Write-RunnerLog -Logger $Logger -Level "INFO" -Message "D8 deferred - review_risk_class not present in catalogs/grid-health.json."
+        Write-RunnerLog -Logger $Logger -Level "INFO" -Message "Trusted review risk metadata has no review_risk_class values; using normal risk context."
         return "normal"
     }
 
@@ -798,6 +796,23 @@ function Get-TrustedReviewRiskClass {
     }
 
     return "normal"
+}
+
+function Get-MinimumReviewOutputCount {
+    param(
+        [hashtable]$JobSpec,
+        [hashtable]$Context
+    )
+
+    if ($JobSpec.ContainsKey("MinimumReviewOutputs")) {
+        return [Math]::Max(1, [int]$JobSpec.MinimumReviewOutputs)
+    }
+
+    if ($Context.ReviewRiskClass -eq "high") {
+        return 2
+    }
+
+    return 1
 }
 
 function Get-ReviewAgentFailureReason {
@@ -864,7 +879,7 @@ function New-ContrarianReviewPrompt {
     return @"
 $BasePrompt
 
-Contrarian fallback mode: the independent reviewer '$UnavailableAgent' was unavailable for a high-risk D8 review. Run a second independent pass with a deliberately contrarian posture. Challenge the first-pass assumptions, search for missed invariant/security/contract risks, and still obey the Grid Review output format. Do not fabricate findings; if the PR is clean after adversarial review, say so.
+Contrarian fallback mode: the independent reviewer '$UnavailableAgent' was unavailable. Run a second independent pass with a deliberately contrarian posture. Challenge the first-pass assumptions, search first for missed correctness, runtime, security, data-integrity, invariant, and contract risks, and still obey the Grid Review output format. Do not fabricate findings; if the PR is clean after adversarial review, say so.
 "@
 }
 
@@ -885,7 +900,7 @@ function Test-ReviewAgentCommandEnabled {
         return $true
     }
 
-    Write-RunnerLog -Logger $Logger -Level "INFO" -Message "D8 deferred for review agent command outside configured risk class." -Data @{
+    Write-RunnerLog -Logger $Logger -Level "INFO" -Message "Review agent command outside configured risk class." -Data @{
         agent = $CommandSpec.Name
         review_risk_class = $currentRiskClass
         enabled_risk_classes = $riskClasses
