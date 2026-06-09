@@ -1,81 +1,25 @@
 # Hive Sync Drift Report
 
-**Last Updated:** 2026-06-09
+**Last Updated:** 2026-06-08
 
 Fully rewritten by `hive-sync`; First Surfaced dates are sticky for persistent findings.
 
-> **Run scope (2026-06-09):** This was a **local-file-only** pass — the `gh` CLI was
-> unavailable, so no live GitHub issue/board/repo state could be queried. Categories that
-> are deterministically computable from repo files were **recomputed this run**:
-> **1** (invariants named in Accepted ADRs vs `constitution/invariants.md`),
-> **2** (capability-matrix rows vs agent files),
-> **3** (agent files vs capability-matrix rows),
-> **5** (HoneyDrunk node names in Accepted ADRs vs `catalogs/nodes.json`).
-> Category **4** (node GitHub repos that fail to resolve) **requires `gh repo view` and was
-> NOT re-verified this run** — its prior findings are carried forward unverified below and a
-> future live-`gh` pass owns re-confirming or clearing them. Categories **6, 12, 14, 15, 16**
-> depend on live board state and/or `grid-health.json` reconciliation that this pass did not
-> run; their prior findings are carried forward verbatim (with sticky First Surfaced dates)
-> and are likewise owed a refresh by the next live-`gh` hive-sync pass.
-
----
-
-## Recomputed this run (local-file)
-
-### Category 1: invariants named in Accepted ADRs but missing from `constitution/invariants.md`
-
-_None._ Every invariant number referenced in an Accepted ADR (including 53, 102, 103, 107, 108, 110, 111, 112) is defined in `constitution/invariants.md` (defined set: 1–53, 90–92, 99–115).
-
-### Category 2: capability-matrix rows with no `.claude/agents/{name}.md` file
-
-_None._ Every agent in `constitution/agent-capability-matrix.md` (scope, adr-composer, pdr-composer, netrunner, file-issues, review, node-audit, refine, site-sync, hive-sync, docs-sync) has a matching file in `.claude/agents/`.
-
-### Category 3: agent files with no capability-matrix row
-
-- **Item:** marketing-strategist
+- **Category 3: agent file missing capability matrix row**
+  - **Item:** marketing-strategist
   - **First Surfaced:** 2026-05-30
-  - **Detail:** `.claude/agents/marketing-strategist.md` exists without a capability matrix row. (`product-strategist.md` also lacks a row but is on the intentional meta-agent exclusion list; `marketing-strategist` is not, so it remains a finding.)
-
-### Category 5: HoneyDrunk node names in Accepted ADRs missing from `catalogs/nodes.json`
-
-_None._ Both `HoneyDrunk.Infrastructure` (named in ADR-0077, Accepted/amended) and `HoneyDrunk.HoneyHub` (named in ADR-0091/0092/0093, Accepted) are now present in `catalogs/nodes.json`, so neither surfaces. All other `HoneyDrunk.*` names appearing in Accepted ADR text are deliberate false positives and were excluded:
-
-  - `HoneyDrunk.Billing` (ADR-0037/0052) — explicitly a *future* Node, not yet committed; correctly absent.
-  - `HoneyDrunk.CostLedger` (ADR-0052) — *future* promotion-path Node ("not created at v1"); correctly absent.
-  - `HoneyDrunk.Tenancy` / `HoneyDrunk.Tenancy.Abstractions` (ADR-0026) — explicitly a **rejected** alternative.
-  - `HoneyDrunk.OperatorBus` (ADR-0084) — explicitly a **rejected** alternative.
-  - `HoneyDrunk.CIConfig` (ADR-0012) — explicitly a **rejected** alternative.
-  - `HoneyDrunk.Web` / `HoneyDrunk.Web.UI` (ADR-0091/0071) — placeholder name **rejected** in favor of `HoneyDrunk.HoneyHub`; `HoneyDrunk.Web.UI` is governed by the still-**Proposed** ADR-0071.
-  - `HoneyDrunk.Prompts` (ADR-0064, referenced in Accepted ADR-0082's class table) — governed by the still-**Proposed** ADR-0064; correctly absent until that ADR is Accepted.
-  - `HoneyDrunk.Telemetry.OpenTelemetry`, `*.Tests`, `*.Abstractions`, `*.slnx`, etc. — file paths / sub-package artifacts, not standalone Nodes.
-
----
-
-## Carried forward — NOT re-verified this run (needs live `gh`)
-
-### Category 4: node GitHub repo missing
-
-> _Carried forward unverified from the 2026-06-05 report. `gh repo view` was unavailable this
-> run; a future live-`gh` pass owns re-confirming or clearing each entry._
-
-- **Item:** HoneyDrunk.Evals
+  - **Detail:** `.claude/agents/marketing-strategist.md` exists without a capability matrix row.
+- **Category 4: node GitHub repo missing**
+  - **Item:** HoneyDrunk.Evals
   - **First Surfaced:** 2026-05-25
-  - **Detail:** `gh repo view` could not resolve this repo (last checked prior run).
-- **Item:** HoneyDrunk.Sim
+  - **Detail:** `gh repo view` could not resolve this repo.
+- **Category 4: node GitHub repo missing**
+  - **Item:** HoneyDrunk.Sim
   - **First Surfaced:** 2026-05-25
-  - **Detail:** `gh repo view` could not resolve this repo (last checked prior run).
-- **Item:** HoneyDrunk.Studios
+  - **Detail:** `gh repo view` could not resolve this repo.
+- **Category 4: node GitHub repo missing**
+  - **Item:** HoneyDrunk.Studios
   - **First Surfaced:** 2026-05-25
-  - **Detail:** `gh repo view` could not resolve this repo (last checked prior run).
-
----
-
-## Carried forward — live-state / grid-health categories (out of scope this run)
-
-> _These categories depend on live board state and/or `grid-health.json` reconciliation that
-> this local-file pass did not run. Preserved verbatim with sticky First Surfaced dates; owed
-> a refresh by the next live-`gh` hive-sync pass._
-
+  - **Detail:** `gh repo view` could not resolve this repo.
 - **Category 6: grid-health node missing from compatibility matrix**
   - **Item:** honeydrunk-actions
   - **First Surfaced:** 2026-05-25
@@ -107,6 +51,14 @@ _None._ Both `HoneyDrunk.Infrastructure` (named in ADR-0077, Accepted/amended) a
 - **Category 6: grid-health node missing from compatibility matrix**
   - **Item:** honeydrunk-flow
   - **First Surfaced:** 2026-05-25
+  - **Detail:** Hive-sync does not auto-add compatibility rows.
+- **Category 6: grid-health node missing from compatibility matrix**
+  - **Item:** honeydrunk-honeyhub
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Hive-sync does not auto-add compatibility rows.
+- **Category 6: grid-health node missing from compatibility matrix**
+  - **Item:** honeydrunk-infrastructure
+  - **First Surfaced:** 2026-06-08
   - **Detail:** Hive-sync does not auto-add compatibility rows.
 - **Category 6: grid-health node missing from compatibility matrix**
   - **Item:** honeydrunk-knowledge
@@ -148,6 +100,134 @@ _None._ Both `HoneyDrunk.Infrastructure` (named in ADR-0077, Accepted/amended) a
   - **Item:** ADR-0033 focus row still marked Open
   - **First Surfaced:** 2026-06-03
   - **Detail:** ADR-0033 auto-flipped to Accepted and all three accepting packet issues are closed; `current-focus.md` is netrunner-owned.
+- **Category 14: current-focus drift**
+  - **Item:** ADR-0077 focus row still shows start work open
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** ADR-0077 has 19/19 tracked packet issues closed on 2026-06-07; `current-focus.md` is netrunner-owned.
+- **Category 14: current-focus drift**
+  - **Item:** HoneyHub focus row does not reflect closed Phase 2 packets
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** HoneyHub#1–#6 closed between 2026-06-07 and 2026-06-08; `current-focus.md` is netrunner-owned.
+- **Category 15: alert-routing-table drift**
+  - **Item:** adr-only: App Insights internal-Grid error spike ([ADR-0045](./ADR-0045-grid-wide-error-tracking.md)) | `#ops-alerts` | High | `🐞 {node}: {error-fingerprint} firing {rate}/h — {link}`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
+- **Category 15: alert-routing-table drift**
+  - **Item:** adr-only: Azure budget 50% threshold ([ADR-0052](./ADR-0052-cost-governance-budget-alerts-and-kill-switches.md)) | `#ops-alerts` | Info | `💰 budget at 50% ({category}, ${spend}/${cap})`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
+- **Category 15: alert-routing-table drift**
+  - **Item:** adr-only: Azure budget 75% threshold ([ADR-0052](./ADR-0052-cost-governance-budget-alerts-and-kill-switches.md)) | `#ops-alerts` | Medium | `💰 budget at 75% ({category})`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
+- **Category 15: alert-routing-table drift**
+  - **Item:** adr-only: Azure budget 90% / 100% threshold ([ADR-0052](./ADR-0052-cost-governance-budget-alerts-and-kill-switches.md)) | `#ops-alerts` + `#security-alerts` | Critical | `💰🔥 budget at {pct}% ({category}) — kill-switch posture: {posture}`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
+- **Category 15: alert-routing-table drift**
+  - **Item:** adr-only: CodeRabbit P0/P1 finding ([ADR-0079](./ADR-0079-multi-perspective-pr-review-stack.md)) | `#security-alerts` | High | `🐰 CodeRabbit {severity} on {repo}#{pr} — {pr-link}`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
+- **Category 15: alert-routing-table drift**
+  - **Item:** adr-only: Credential rotation T+0 (expired) ([ADR-0083](./ADR-0083-external-saas-credential-rotation.md)) | `#security-alerts` + `#audit-sensitive` | Critical | `🔑🔥 {credential} EXPIRED — {incident-record-link}`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
+- **Category 15: alert-routing-table drift**
+  - **Item:** adr-only: Credential rotation escalation T-30 ([ADR-0083](./ADR-0083-external-saas-credential-rotation.md)) | `#ops-alerts` | Medium | `🔑 {credential} expires in 30 days — {rotation-walkthrough-link}`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
+- **Category 15: alert-routing-table drift**
+  - **Item:** adr-only: Credential rotation escalation T-7 ([ADR-0083](./ADR-0083-external-saas-credential-rotation.md)) | `#ops-alerts` + `#security-alerts` | High | `🔑⚠️ {credential} expires in 7 days — {rotation-walkthrough-link}`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
+- **Category 15: alert-routing-table drift**
+  - **Item:** adr-only: Deploy failure ([ADR-0033](./ADR-0033-environment-gated-deploy-trigger-model.md)) | `#ops-alerts` + `#release` | High | `🔥 {node} {tag} → {env} FAILED — {link-to-run}`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
+- **Category 15: alert-routing-table drift**
+  - **Item:** adr-only: Deploy success ([ADR-0033](./ADR-0033-environment-gated-deploy-trigger-model.md)) | `#release` | Info | `🚀 {node} {tag} → {env} ({duration})`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
+- **Category 15: alert-routing-table drift**
+  - **Item:** adr-only: Grid Health aggregator drift ([ADR-0012](./ADR-0012-grid-cicd-control-plane.md) D6) | `#ops-alerts` | Medium | `🕸️ grid-health: {drift-summary} — {issue-link}`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
+- **Category 15: alert-routing-table drift**
+  - **Item:** adr-only: NuGet publish failure ([ADR-0034](./ADR-0034-public-package-distribution-and-nuget-policy.md)) | `#ops-alerts` + `#release` | High | `📦❌ {package} {version} publish failed — {link-to-run}`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
+- **Category 15: alert-routing-table drift**
+  - **Item:** adr-only: NuGet publish success ([ADR-0034](./ADR-0034-public-package-distribution-and-nuget-policy.md)) | `#release` | Info | `📦 {package} {version} published to nuget.org`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
+- **Category 15: alert-routing-table drift**
+  - **Item:** adr-only: [ADR-0014](./ADR-0014-hive-architecture-reconciliation-agent.md) hive-sync drift finding | `#hive-activity` | Medium | `🔄 hive-sync: {finding-summary} — {issue-link}`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
+- **Category 15: alert-routing-table drift**
+  - **Item:** adr-only: [ADR-0044](./ADR-0044-grid-aware-cloud-code-review-and-ai-authored-pr-discipline.md) review verdict (Approve / Request Changes / Comment) | `#agent-activity` | Info | `🐝 review on {repo}#{pr}: {verdict} — {pr-link}`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
+- **Category 15: alert-routing-table drift**
+  - **Item:** adr-only: [ADR-0046](./ADR-0046-specialist-review-agents.md) specialist invocation | `#agent-activity` | Info | `🎯 {specialist} on {repo}#{pr}: {verdict} — {pr-link}`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
+- **Category 15: alert-routing-table drift**
+  - **Item:** live-only: App Insights internal-Grid error spike ([ADR-0045](../adrs/ADR-0045-grid-wide-error-tracking.md)) | `#ops-alerts` | High | `🐞 {node}: {error-fingerprint} firing {rate}/h — {link}`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
+- **Category 15: alert-routing-table drift**
+  - **Item:** live-only: Azure budget 50% threshold ([ADR-0052](../adrs/ADR-0052-cost-governance-budget-alerts-and-kill-switches.md)) | `#ops-alerts` | Info | `💰 budget at 50% ({category}, ${spend}/${cap})`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
+- **Category 15: alert-routing-table drift**
+  - **Item:** live-only: Azure budget 75% threshold ([ADR-0052](../adrs/ADR-0052-cost-governance-budget-alerts-and-kill-switches.md)) | `#ops-alerts` | Medium | `💰 budget at 75% ({category})`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
+- **Category 15: alert-routing-table drift**
+  - **Item:** live-only: Azure budget 90% / 100% threshold ([ADR-0052](../adrs/ADR-0052-cost-governance-budget-alerts-and-kill-switches.md)) | `#ops-alerts` + `#security-alerts` | Critical | `💰🔥 budget at {pct}% ({category}) — kill-switch posture: {posture}`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
+- **Category 15: alert-routing-table drift**
+  - **Item:** live-only: CodeRabbit P0/P1 finding ([ADR-0079](../adrs/ADR-0079-multi-perspective-pr-review-stack.md)) | `#security-alerts` | High | `🐰 CodeRabbit {severity} on {repo}#{pr} — {pr-link}`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
+- **Category 15: alert-routing-table drift**
+  - **Item:** live-only: Credential rotation T+0 (expired) ([ADR-0083](../adrs/ADR-0083-external-saas-credential-rotation.md)) | `#security-alerts` + `#audit-sensitive` | Critical | `🔑🔥 {credential} EXPIRED — {incident-record-link}`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
+- **Category 15: alert-routing-table drift**
+  - **Item:** live-only: Credential rotation escalation T-30 ([ADR-0083](../adrs/ADR-0083-external-saas-credential-rotation.md)) | `#ops-alerts` | Medium | `🔑 {credential} expires in 30 days — {rotation-walkthrough-link}`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
+- **Category 15: alert-routing-table drift**
+  - **Item:** live-only: Credential rotation escalation T-7 ([ADR-0083](../adrs/ADR-0083-external-saas-credential-rotation.md)) | `#ops-alerts` + `#security-alerts` | High | `🔑⚠️ {credential} expires in 7 days — {rotation-walkthrough-link}`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
+- **Category 15: alert-routing-table drift**
+  - **Item:** live-only: Deploy failure ([ADR-0033](../adrs/ADR-0033-environment-gated-deploy-trigger-model.md)) | `#ops-alerts` + `#release` | High | `🔥 {node} {tag} → {env} FAILED — {link-to-run}`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
+- **Category 15: alert-routing-table drift**
+  - **Item:** live-only: Deploy success ([ADR-0033](../adrs/ADR-0033-environment-gated-deploy-trigger-model.md)) | `#release` | Info | `🚀 {node} {tag} → {env} ({duration})`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
+- **Category 15: alert-routing-table drift**
+  - **Item:** live-only: Grid Health aggregator drift ([ADR-0012](../adrs/ADR-0012-grid-cicd-control-plane.md) D6) | `#ops-alerts` | Medium | `🕸️ grid-health: {drift-summary} — {issue-link}`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
+- **Category 15: alert-routing-table drift**
+  - **Item:** live-only: NuGet publish failure ([ADR-0034](../adrs/ADR-0034-public-package-distribution-and-nuget-policy.md)) | `#ops-alerts` + `#release` | High | `📦❌ {package} {version} publish failed — {link-to-run}`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
+- **Category 15: alert-routing-table drift**
+  - **Item:** live-only: NuGet publish success ([ADR-0034](../adrs/ADR-0034-public-package-distribution-and-nuget-policy.md)) | `#release` | Info | `📦 {package} {version} published to nuget.org`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
+- **Category 15: alert-routing-table drift**
+  - **Item:** live-only: [ADR-0014](../adrs/ADR-0014-hive-architecture-reconciliation-agent.md) hive-sync drift finding | `#hive-activity` | Medium | `🔄 hive-sync: {finding-summary} — {issue-link}`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
 - **Category 15: alert-routing-table drift**
   - **Item:** live-only: [ADR-0043](../adrs/ADR-0043-continuous-backlog-generation-strategy.md) opportunistic Scout backlog source run | `#hive-activity` | Info | `backlog-scout: {recommendation}, {packets-created} packets — {report-or-pr-link}`
   - **First Surfaced:** 2026-06-05
@@ -173,18 +253,42 @@ _None._ Both `HoneyDrunk.Infrastructure` (named in ADR-0077, Accepted/amended) a
   - **First Surfaced:** 2026-06-05
   - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
 - **Category 15: alert-routing-table drift**
+  - **Item:** live-only: [ADR-0044](../adrs/ADR-0044-grid-aware-cloud-code-review-and-ai-authored-pr-discipline.md) review verdict (Approve / Request Changes / Comment) | `#agent-activity` | Info | `🐝 review on {repo}#{pr}: {verdict} — {pr-link}`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
+- **Category 15: alert-routing-table drift**
+  - **Item:** live-only: [ADR-0046](../adrs/ADR-0046-specialist-review-agents.md) specialist invocation | `#agent-activity` | Info | `🎯 {specialist} on {repo}#{pr}: {verdict} — {pr-link}`
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
+- **Category 15: alert-routing-table drift**
   - **Item:** live-only: [ADR-0085](../adrs/ADR-0085-grid-wide-documentation-currency-agent.md) docs-sync run report | `#hive-activity` | Info | `docs-sync: {summary-counts} — {report-or-pr-link}`
   - **First Surfaced:** 2026-06-03
   - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
 - **Category 16: ADR-0043 backlog-source drift**
-  - **Item:** PDR-0001 has no implementation packet coverage
-  - **First Surfaced:** 2026-06-05
+  - **Item:** ADR-0089 has no implementation packet coverage
+  - **First Surfaced:** 2026-06-08
   - **Detail:** Accepted decision has no proposed, active, or completed packet referencing it through `adrs:`; backlog-generation jobs own packet creation.
-
----
-
-## README index Date divergence (D8) — RESOLVED 2026-06-09
-
-- **Item:** ADR-0029 README Date column (`2026-06-07`) ≠ frontmatter `**Date:** 2026-05-08` — **resolved.**
-  - **First Surfaced:** 2026-06-09 · **Resolved:** 2026-06-09 (PR #603)
-  - **Detail:** Operator decided the README index tracks the **authoring** date (consistent with every other row and the D8 rule that README Date mirrors frontmatter). The ADR-0029 README Date column was synced to `2026-05-08` to match its frontmatter. No other README row diverged; ADR-0091/0092/0093 Status/Date columns were already correct.
+- **Category 17: implementation-notes completion-gate hold**
+  - **Item:** adr-0015-container-apps-rollout
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** governing decision lacks exact `## Implementation Notes (YYYY-MM-DD)` pointer heading. Hive-sync must hold this initiative In Progress until the implementing agent authors the conforming record.
+- **Category 17: implementation-notes completion-gate hold**
+  - **Item:** adr-0044-cloud-code-review
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** packet-folder `implementation-notes.md` missing; governing decision lacks exact `## Implementation Notes (YYYY-MM-DD)` pointer heading. Hive-sync must hold this initiative In Progress until the implementing agent authors the conforming record.
+- **Category 17: implementation-notes completion-gate hold**
+  - **Item:** adr-0077-iac-bicep
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** packet-folder `implementation-notes.md` missing; governing decision lacks exact `## Implementation Notes (YYYY-MM-DD)` pointer heading. Hive-sync must hold this initiative In Progress until the implementing agent authors the conforming record.
+- **Category 17: implementation-notes completion-gate hold**
+  - **Item:** adr-0083-external-saas-credentials
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** packet-folder `implementation-notes.md` missing; governing decision lacks exact `## Implementation Notes (YYYY-MM-DD)` pointer heading. Hive-sync must hold this initiative In Progress until the implementing agent authors the conforming record.
+- **Category 17: implementation-notes completion-gate hold**
+  - **Item:** adr-0086-pull-based-local-worker-grid-review
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** packet-folder `implementation-notes.md` missing; governing decision lacks exact `## Implementation Notes (YYYY-MM-DD)` pointer heading. Hive-sync must hold this initiative In Progress until the implementing agent authors the conforming record.
+- **Category 17: implementation-notes completion-gate hold**
+  - **Item:** adr-0088-openclaw-decommission
+  - **First Surfaced:** 2026-06-08
+  - **Detail:** packet-folder `implementation-notes.md` missing; governing decision lacks exact `## Implementation Notes (YYYY-MM-DD)` pointer heading. Hive-sync must hold this initiative In Progress until the implementing agent authors the conforming record.

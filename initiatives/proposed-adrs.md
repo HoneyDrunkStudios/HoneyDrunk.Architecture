@@ -59,6 +59,8 @@
 - `ADR-0078` — ADR-0078: End-User Identity — Microsoft Entra External ID — 0/5 accepting packet issues closed; open: HoneyDrunk.Architecture#437, HoneyDrunk.Architecture#438, HoneyDrunk.Architecture#439, HoneyDrunk.Architecture#440, HoneyDrunk.Architecture#441
 - `ADR-0085` — ADR-0085: Grid-Wide Documentation Currency Agent (`docs-sync`) — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#483
 - `ADR-0087` — ADR-0087: Per-Change Risk Scoring for the Double-Review Gate — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#536
+- `ADR-0091` — ADR-0091: HoneyHub App Stack and Repo / Node Home — 1/4 accepting packet issues closed; open: HoneyDrunk.Architecture#590, HoneyDrunk.Architecture#591, HoneyDrunk.Actions#193
+- `ADR-0093` — ADR-0093: Loop Engineering — Closed-Loop Agent Orchestration — 0/4 accepting packet issues closed; open: HoneyDrunk.Architecture#594, HoneyDrunk.Architecture#595, HoneyDrunk.Architecture#596, HoneyDrunk.Architecture#597
 
 ## Pending Flip
 
