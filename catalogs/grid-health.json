@@ -419,14 +419,21 @@
       "name": "HoneyDrunk.Evals",
       "sector": "AI",
       "signal": "Seed",
-      "version": "0.0.0",
-      "canary_status": "none",
+      "version": "0.1.0",
+      "canary_status": "pending-baseline",
       "last_release": null,
       "active_blockers": [
-        "Repo not yet scaffolded"
+        "Scaffold PR (ADR-0023) open on claude/node-evals-standup-tvu57v — awaiting merge; v0.1.0 tag + first NuGet publish pending",
+        "Runtime references HoneyDrunk.Operator.Abstractions 0.1.0 (unpublished until Operator standup PR merges + tags)"
       ],
-      "notes": "Prompt evaluation, regression testing, model comparison.",
-      "tracked_workflows": []
+      "notes": "Evaluation & quality substrate. Scaffolded per ADR-0023 D3: IEvaluator, IEvalScorer, IEvalSuite, IEvalTarget + EvalCase, EvalReport. Contract-shape canary (invariant 126) wired on .Abstractions, baseline set on merge.",
+      "tracked_workflows": [
+        "pr.yml",
+        "nightly-security.yml",
+        "publish.yml",
+        "weekly-deps.yml",
+        "api-compatibility.yml"
+      ]
     },
     {
       "id": "honeydrunk-capabilities",
@@ -473,19 +480,19 @@
       "name": "HoneyDrunk.Operator",
       "sector": "AI",
       "signal": "Seed",
-      "version": "0.0.0",
-      "canary_status": "none",
+      "version": "0.1.0",
+      "canary_status": "pending-baseline",
       "last_release": null,
       "active_blockers": [
-        "Repo not yet scaffolded"
+        "Scaffold PR (ADR-0018) open on claude/node-evals-standup-tvu57v — awaiting merge; v0.1.0 tag + first NuGet publish pending"
       ],
-      "notes": "Human oversight — approvals, safety, circuit breakers, cost controls, audit.",
+      "notes": "Human-policy enforcement substrate. Scaffolded per ADR-0018 D3: IApprovalGate, ICircuitBreaker, ICostGuard, IDecisionPolicy, ISafetyFilter + ApprovalRequest, ApprovalDecision, CostEvent. Consumes IAuditLog from HoneyDrunk.Audit (ADR-0030/0031). Contract-shape canary (invariant 119) wired on .Abstractions. Auth delegation (D5) + durable persistence (D12) carry TODO markers for follow-up packets.",
       "tracked_workflows": [
         "pr.yml",
         "nightly-security.yml",
         "publish.yml",
         "weekly-deps.yml",
-        "hive-field-mirror.yml"
+        "api-compatibility.yml"
       ]
     },
     {

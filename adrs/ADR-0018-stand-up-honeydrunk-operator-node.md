@@ -1,9 +1,17 @@
 # ADR-0018: Stand Up the HoneyDrunk.Operator Node — Human-Policy Enforcement and Audit Substrate for the AI Sector
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-04-19
+**Accepted:** 2026-06-09
 **Deciders:** HoneyDrunk Studios
 **Sector:** AI
+
+> **Acceptance note (2026-06-09):** Accepted on standup. The four Operator invariants from the
+> Consequences section landed in `constitution/invariants.md` as **116–119** (downstream coupling /
+> App-Config sourcing / approval event-out / contract-shape canary) under the new
+> `## AI Sector — Operator Invariants` section. The default 47–50 in the packets was stale; 47–53 were
+> already taken. `IAuditLog` / `AuditEntry` remain relocated to `HoneyDrunk.Audit.Abstractions` per the
+> 2026-05-16 ADR-0030 D5 amendment — Operator consumes, does not own, the audit contract.
 
 ## If Accepted — Required Follow-Up Work in Architecture Repo
 

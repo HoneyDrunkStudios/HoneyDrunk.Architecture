@@ -335,32 +335,37 @@
     },
     {
       "id": "honeydrunk-operator",
-      "consumes": ["honeydrunk-kernel", "honeydrunk-auth", "honeydrunk-data"],
+      "consumes": ["honeydrunk-kernel", "honeydrunk-auth", "honeydrunk-data", "honeydrunk-vault", "honeydrunk-audit"],
       "consumed_by": [],
-      "consumed_by_planned": ["honeydrunk-audit"],
+      "consumed_by_planned": ["honeydrunk-ai", "honeydrunk-capabilities", "honeydrunk-agents", "honeydrunk-flow", "honeydrunk-evals", "honeydrunk-sim"],
       "blocked_by": [],
       "exposes": {
-        "contracts": ["IApprovalGate", "ICircuitBreaker", "ICostGuard", "IAuditLog", "IDecisionPolicy", "ISafetyFilter"],
-        "packages": ["HoneyDrunk.Operator.Abstractions", "HoneyDrunk.Operator"]
+        "contracts": ["IApprovalGate", "ICircuitBreaker", "ICostGuard", "IDecisionPolicy", "ISafetyFilter"],
+        "packages": ["HoneyDrunk.Operator.Abstractions", "HoneyDrunk.Operator", "HoneyDrunk.Operator.Testing"]
       },
       "consumes_detail": {
-        "honeydrunk-kernel": ["IGridContext", "HoneyDrunk.Kernel.Abstractions"],
+        "honeydrunk-kernel": ["ITelemetryActivityFactory", "IGridContext", "HoneyDrunk.Kernel.Abstractions"],
         "honeydrunk-auth": ["IAuthorizationPolicy", "HoneyDrunk.Auth.Abstractions"],
-        "honeydrunk-data": ["IRepository", "IUnitOfWork", "HoneyDrunk.Data.Abstractions"]
+        "honeydrunk-data": ["IRepository", "IUnitOfWork", "HoneyDrunk.Data.Abstractions"],
+        "honeydrunk-vault": ["IConfigProvider", "HoneyDrunk.Vault.Abstractions"],
+        "honeydrunk-audit": ["IAuditLog", "AuditEntry", "HoneyDrunk.Audit.Abstractions"]
       }
     },
     {
       "id": "honeydrunk-evals",
-      "consumes": ["honeydrunk-ai"],
+      "consumes": ["honeydrunk-kernel", "honeydrunk-ai", "honeydrunk-agents", "honeydrunk-capabilities", "honeydrunk-operator", "honeydrunk-knowledge", "honeydrunk-memory", "honeydrunk-audit"],
       "consumed_by": [],
-      "consumed_by_planned": [],
+      "consumed_by_planned": ["honeydrunk-agents", "honeydrunk-knowledge", "honeydrunk-memory", "honeydrunk-flow", "honeydrunk-sim", "honeydrunk-lore", "honeydrunk-honeyhub"],
       "blocked_by": [],
       "exposes": {
-        "contracts": ["IEvaluator", "IEvalDataset", "IEvalScorer", "IEvalReport"],
-        "packages": ["HoneyDrunk.Evals.Abstractions", "HoneyDrunk.Evals"]
+        "contracts": ["IEvaluator", "IEvalScorer", "IEvalSuite", "IEvalTarget", "EvalCase", "EvalReport"],
+        "packages": ["HoneyDrunk.Evals.Abstractions", "HoneyDrunk.Evals", "HoneyDrunk.Evals.Providers.InMemory"]
       },
       "consumes_detail": {
-        "honeydrunk-ai": ["IChatClient", "HoneyDrunk.AI.Abstractions"]
+        "honeydrunk-kernel": ["TenantId", "ITelemetryActivityFactory", "HoneyDrunk.Kernel.Abstractions"],
+        "honeydrunk-ai": ["IChatClient", "IEmbeddingGenerator", "IModelProvider", "ModelCapabilityDeclaration", "HoneyDrunk.AI.Abstractions"],
+        "honeydrunk-operator": ["ISafetyFilter", "ICostGuard", "HoneyDrunk.Operator.Abstractions"],
+        "honeydrunk-audit": ["IAuditLog", "HoneyDrunk.Audit.Abstractions"]
       }
     },
     {

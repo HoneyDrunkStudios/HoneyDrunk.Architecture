@@ -1,9 +1,19 @@
 # ADR-0023: Stand Up the HoneyDrunk.Evals Node — Evaluation and Quality Substrate for the AI Sector
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-04-19
+**Accepted:** 2026-06-09
 **Deciders:** HoneyDrunk Studios
 **Sector:** AI
+
+> **Acceptance note (2026-06-09):** Accepted on standup. The seven Evals invariants from the
+> Consequences section landed in `constitution/invariants.md` as **120–126** (downstream coupling /
+> read-only observer / `EvalReport` provenance / `EvalReport` durable / eval-signal content carve-out /
+> router-bypass via `IEvalTarget` only / contract-shape canary) under the new
+> `## AI Sector — Evals Invariants` section. The default 67–73 in the packets was stale (reserved by
+> ADR-0050 and ADR-0063); 120–126 is the next free block after Operator's 116–119. The three drifted
+> cataloged sources (`contracts.json`, `relationships.json`, repo overview) were reconciled to the D3
+> definitive set: `IEvaluator`, `IEvalScorer`, `IEvalSuite`, `IEvalTarget`, `EvalCase`, `EvalReport`.
 
 ## If Accepted — Required Follow-Up Work in Architecture Repo
 

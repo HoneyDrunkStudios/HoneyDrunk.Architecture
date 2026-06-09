@@ -15,6 +15,7 @@
     Repo = "HoneyDrunk.Architecture"
     WorkingDirectory = "."
     PromptPath = ".claude/agents/review.md"
+    MinimumReviewOutputs = 2
     AgentCommands = @(
         @{
             Name = "codex"
@@ -27,7 +28,6 @@
             Executable = "claude"
             Arguments = @("--print", "--permission-mode", "plan", "--no-session-persistence")
             PromptStdin = $true
-            RiskClasses = @("high")
             Optional = $true
             FallbackCommand = @{
                 Name = "codex-contrarian"
