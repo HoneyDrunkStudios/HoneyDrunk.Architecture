@@ -5,7 +5,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 ## In Progress
 
 ### Distribution 90 — Outward Shipping Push (2026-06-09 → 2026-09-07)
-**Status:** Scoped — 13 packets authored, awaiting operator review and filing
+**Status:** In Progress — 0/13 packet issues closed; all filed issues remain open
 **Scope:** tatteddev/tatteddev-blog (analytics, newsletter, launch post, submissions) + HoneyDrunkStudios/HoneyDrunkStudios website (analytics, BYOK waitlist page) + HoneyDrunk.HoneyHub (launch checkpoint, v0.1.0 release, demo) + Architecture (metrics log, weekly loop, Notify go/slip decision, implementation notes)
 **Initiative:** `distribution-90`
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
@@ -37,6 +37,8 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - ≥12 reps of the weekly distribution loop completed.
 - Notify Cloud decision recorded by 2026-06-23 and acted on (committed with scaffolding underway, or slipped with a dated PDR-0002 amendment).
 - `initiatives/metrics-log.md` carries the baseline plus 12 weekly entries.
+
+> **Sync (2026-06-10):** Live GitHub issue state shows 0/13 Distribution 90 packet issues closed; all 13 packets are filed on The Hive and remain open.
 
 ### ADR-0093 Loop Engineering — Closed-Loop Agent Orchestration (Tier A)
 **Status:** _Tracking pending hive-sync ground-truth pass._ <!-- netrunner 2026-06-09: ADR-0093 Accepted; Tier-A substrate shipped on branch claude/work-prioritization-6t11r8 (commit 4f3baf6), via PR #603. Substrate is on-disk and complete → exit-review. hive-sync to own this Status field and the per-artifact checkboxes on its next pass. -->
