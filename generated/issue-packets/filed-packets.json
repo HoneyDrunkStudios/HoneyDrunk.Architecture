@@ -527,5 +527,18 @@
   "generated/issue-packets/active/adr-0023-evals-standup/04-evals-node-scaffold.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Evals/issues/2",
   "generated/issue-packets/active/adr-0018-operator-standup/04-operator-auth-delegation.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Operator/issues/14",
   "generated/issue-packets/active/adr-0018-operator-standup/05-operator-durable-state-atomic-cost.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Operator/issues/15",
-  "generated/issue-packets/active/adr-0018-operator-standup/06-operator-production-wiring-validation.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Operator/issues/16"
+  "generated/issue-packets/active/adr-0018-operator-standup/06-operator-production-wiring-validation.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Operator/issues/16",
+  "generated/issue-packets/active/distribution-90/01-tatteddev-blog-cloudflare-web-analytics.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/609",
+  "generated/issue-packets/active/distribution-90/02-studios-website-cloudflare-web-analytics.md": "https://github.com/HoneyDrunkStudios/HoneyDrunkStudios/issues/3",
+  "generated/issue-packets/active/distribution-90/03-architecture-distribution-metrics-log.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/610",
+  "generated/issue-packets/active/distribution-90/04-tatteddev-blog-newsletter-signup.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/611",
+  "generated/issue-packets/active/distribution-90/05-studios-website-honeyhub-byok-waitlist-page.md": "https://github.com/HoneyDrunkStudios/HoneyDrunkStudios/issues/4",
+  "generated/issue-packets/active/distribution-90/06-honeyhub-launch-blocking-checkpoint.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.HoneyHub/issues/37",
+  "generated/issue-packets/active/distribution-90/07-architecture-notify-cloud-go-slip-decision.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/612",
+  "generated/issue-packets/active/distribution-90/08-honeyhub-release-v0-1-0.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.HoneyHub/issues/38",
+  "generated/issue-packets/active/distribution-90/09-honeyhub-demo-recording.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.HoneyHub/issues/39",
+  "generated/issue-packets/active/distribution-90/10-tatteddev-blog-honeyhub-launch-post.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/613",
+  "generated/issue-packets/active/distribution-90/11-tatteddev-blog-launch-submissions.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/614",
+  "generated/issue-packets/active/distribution-90/12-architecture-weekly-distribution-loop.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/615",
+  "generated/issue-packets/active/distribution-90/13-implementation-notes.md": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/616"
 }
