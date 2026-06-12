@@ -2,7 +2,7 @@
 
 Non-initiative items currently on HoneyDrunkStudios org Project #4. Fully rewritten by `hive-sync`.
 
-**Last Updated:** 2026-06-08
+**Last Updated:** 2026-06-12
 
 ## security
 
@@ -10,7 +10,6 @@ Non-initiative items currently on HoneyDrunkStudios org Project #4. Fully rewrit
 
 ## grid-health
 
-- [HoneyDrunk.AI#18](https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/18) — [grid-health] publish.yml unhealthy (open)
 - [HoneyDrunk.Actions#135](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/135) — [grid-health] nightly-accessibility.yml unhealthy (open)
 - [HoneyDrunk.Actions#136](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/136) — [grid-health] nightly-deps.yml unhealthy (open)
 - [HoneyDrunk.Actions#137](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/137) — [grid-health] nightly-security.yml unhealthy (open)
@@ -24,6 +23,7 @@ Non-initiative items currently on HoneyDrunkStudios org Project #4. Fully rewrit
 - [HoneyDrunk.Actions#191](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/191) — [grid-health] seed-labels-fanout.yml unhealthy (open)
 - [HoneyDrunk.Agents#4](https://github.com/HoneyDrunkStudios/HoneyDrunk.Agents/issues/4) — [grid-health] publish.yml unhealthy (open)
 - [HoneyDrunk.Agents#5](https://github.com/HoneyDrunkStudios/HoneyDrunk.Agents/issues/5) — [grid-health] weekly-deps.yml unhealthy (closed; closed 2026-05-26)
+- [HoneyDrunk.AI#18](https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/18) — [grid-health] publish.yml unhealthy (open)
 - [HoneyDrunk.Capabilities#4](https://github.com/HoneyDrunkStudios/HoneyDrunk.Capabilities/issues/4) — [grid-health] publish.yml unhealthy (open)
 - [HoneyDrunk.Capabilities#5](https://github.com/HoneyDrunkStudios/HoneyDrunk.Capabilities/issues/5) — [grid-health] weekly-deps.yml unhealthy (closed; closed 2026-05-26)
 - [HoneyDrunk.Data#34](https://github.com/HoneyDrunkStudios/HoneyDrunk.Data/issues/34) — [grid-health] nightly-deps.yml unhealthy (open)
@@ -49,16 +49,16 @@ Non-initiative items currently on HoneyDrunkStudios org Project #4. Fully rewrit
 
 ## other
 
-- [HoneyDrunk.AI#1](https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/1) — Feature: Add `IModelRouter`, `IRoutingPolicy`, `ModelCapabilityDeclaration` to `HoneyDrunk.AI.Abstractions` (closed; closed 2026-05-21; labels: feature, tier-2, ai, contracts, adr-0010, blocked, wave-2, initiative-adr-0010-observe-ai-routing-phase-1)
-- [HoneyDrunk.AI#2](https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/2) — Feature: Stand up the HoneyDrunk.AI repo — solution, packages, contracts, CI, InMemory provider (closed; closed 2026-05-20; labels: feature, tier-2, ai, scaffold, adr-0016, initiative-adr-0016-honeydrunk-ai-standup)
-- [HoneyDrunk.AI#3](https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/3) — Feature: Add `IModelRouter`, `IRoutingPolicy`, `ModelCapabilityDeclaration` to `HoneyDrunk.AI.Abstractions` (closed; closed 2026-05-21; labels: feature, tier-2, ai, contracts, adr-0010, blocked, wave-2, initiative-adr-0010-observe-ai-routing-phase-1)
-- [HoneyDrunk.AI#24](https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/24) — 📦 Outdated Dependencies (open; labels: dependencies)
 - [HoneyDrunk.Actions#50](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/50) — Follow-up: add Container Apps deploy smoke test (closed; closed 2026-05-16; labels: ci, tier-2, adr-0015)
 - [HoneyDrunk.Actions#73](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/73) — Consolidate Actions deploy and GitHub helpers (closed; closed 2026-05-19; labels: chore, tier-2, ops, initiative-standalone)
 - [HoneyDrunk.Actions#77](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/77) — CI Change: Blocking coverage gate + non-blocking outdated-NuGet summary section in `pr-core.yml` (closed; closed 2026-05-19; labels: feature, tier-2, wave-1, ci-cd, meta, adr-0032, initiative-adr-0032-pr-validation-policy)
 - [HoneyDrunk.Actions#78](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/78) — CI Change: `nightly-deps.yml` opens/updates a single grouped `📦 Outdated Dependencies` issue per repo (closed; closed 2026-05-19; labels: feature, tier-2, wave-1, ci-cd, meta, adr-0032, initiative-adr-0032-pr-validation-policy)
 - [HoneyDrunk.Actions#134](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/134) — Grid Health (open)
 - [HoneyDrunk.Actions#150](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/150) — fix(pr-core): pr-metadata-check needs pull-requests:write to auto-apply out-of-band label (closed; closed 2026-05-29; labels: chore, tier-1, ci-cd, adr-0011)
+- [HoneyDrunk.AI#1](https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/1) — Feature: Add `IModelRouter`, `IRoutingPolicy`, `ModelCapabilityDeclaration` to `HoneyDrunk.AI.Abstractions` (closed; closed 2026-05-21; labels: feature, tier-2, ai, contracts, adr-0010, blocked, wave-2, initiative-adr-0010-observe-ai-routing-phase-1)
+- [HoneyDrunk.AI#2](https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/2) — Feature: Stand up the HoneyDrunk.AI repo — solution, packages, contracts, CI, InMemory provider (closed; closed 2026-05-20; labels: feature, tier-2, ai, scaffold, adr-0016, initiative-adr-0016-honeydrunk-ai-standup)
+- [HoneyDrunk.AI#3](https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/3) — Feature: Add `IModelRouter`, `IRoutingPolicy`, `ModelCapabilityDeclaration` to `HoneyDrunk.AI.Abstractions` (closed; closed 2026-05-21; labels: feature, tier-2, ai, contracts, adr-0010, blocked, wave-2, initiative-adr-0010-observe-ai-routing-phase-1)
+- [HoneyDrunk.AI#24](https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/24) — 📦 Outdated Dependencies (open; labels: dependencies)
 - [HoneyDrunk.Architecture#33](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/33) — Feature: Accept ADR-0010 — register HoneyDrunk.Observe, wire AI routing contracts into catalogs, finalize invariants (closed; closed 2026-05-21; labels: feature, tier-2, wave-1, docs, meta, catalog, adr-0010, initiative-adr-0010-observe-ai-routing-phase-1)
 - [HoneyDrunk.Architecture#34](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/34) — Chore: Create `HoneyDrunk.Observe` GitHub repo (human-only) (closed; closed 2026-05-16; labels: chore, tier-1, wave-1, new-node, human-only, meta, adr-0010, initiative-adr-0010-observe-ai-routing-phase-1)
 - [HoneyDrunk.Architecture#35](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/35) — Feature: Accept ADR-0010 — register HoneyDrunk.Observe, wire AI routing contracts into catalogs, finalize invariants (closed; closed 2026-05-21; labels: feature, tier-2, wave-1, docs, meta, catalog, adr-0010, initiative-adr-0010-observe-ai-routing-phase-1)

@@ -1,6 +1,6 @@
 # Hive Sync Drift Report
 
-**Last Updated:** 2026-06-08
+**Last Updated:** 2026-06-12
 
 Fully rewritten by `hive-sync`; First Surfaced dates are sticky for persistent findings.
 
@@ -8,10 +8,6 @@ Fully rewritten by `hive-sync`; First Surfaced dates are sticky for persistent f
   - **Item:** marketing-strategist
   - **First Surfaced:** 2026-05-30
   - **Detail:** `.claude/agents/marketing-strategist.md` exists without a capability matrix row.
-- **Category 4: node GitHub repo missing**
-  - **Item:** HoneyDrunk.Evals
-  - **First Surfaced:** 2026-05-25
-  - **Detail:** `gh repo view` could not resolve this repo.
 - **Category 4: node GitHub repo missing**
   - **Item:** HoneyDrunk.Sim
   - **First Surfaced:** 2026-05-25
@@ -264,10 +260,6 @@ Fully rewritten by `hive-sync`; First Surfaced dates are sticky for persistent f
   - **Item:** live-only: [ADR-0085](../adrs/ADR-0085-grid-wide-documentation-currency-agent.md) docs-sync run report | `#hive-activity` | Info | `docs-sync: {summary-counts} — {report-or-pr-link}`
   - **First Surfaced:** 2026-06-03
   - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
-- **Category 16: ADR-0043 backlog-source drift**
-  - **Item:** ADR-0089 has no implementation packet coverage
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Accepted decision has no proposed, active, or completed packet referencing it through `adrs:`; backlog-generation jobs own packet creation.
 - **Category 17: implementation-notes completion-gate hold**
   - **Item:** adr-0015-container-apps-rollout
   - **First Surfaced:** 2026-06-08

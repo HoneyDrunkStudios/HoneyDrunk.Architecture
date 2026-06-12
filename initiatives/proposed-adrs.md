@@ -1,6 +1,6 @@
 # Proposed ADR/PDR Queue
 
-**Last Updated:** 2026-06-09
+**Last Updated:** 2026-06-12
 
 ## Awaiting Implementing Packets
 
@@ -16,12 +16,12 @@
 
 ## In Progress
 
-> _Note (2026-06-09): closed/open issue counts below are preserved verbatim from the 2026-06-06 run. This pass ran local-file only (no `gh` access), so per-packet counts were not recomputed and may be stale; a future live-`gh` hive-sync pass owns refreshing them. **ADR-0077** and **ADR-0018** were removed from this section because their frontmatter is now Accepted (ADR-0077 `Accepted (amended 2026-06-02)`; ADR-0018 `Accepted (2026-06-09)` via PR #604) — their counts and any closed accepting-packet issues still need a live-`gh` confirmation pass. ADR-0023 (also Accepted 2026-06-09) is already absent from this list._
-
 - `ADR-0020` — ADR-0020: Stand Up the HoneyDrunk.Agents Node — Agent Runtime Substrate for the AI Sector — 0/4 accepting packet issues closed; open: HoneyDrunk.Architecture#125, HoneyDrunk.Architecture#126, HoneyDrunk.Architecture#127, HoneyDrunk.Agents#2
 - `ADR-0021` — ADR-0021: Stand Up the HoneyDrunk.Knowledge Node — External Knowledge Ingestion and Retrieval Substrate for the AI Sector — 0/4 accepting packet issues closed; open: HoneyDrunk.Architecture#129, HoneyDrunk.Architecture#130, HoneyDrunk.Architecture#131, HoneyDrunk.Knowledge#2
 - `ADR-0022` — ADR-0022: Stand Up the HoneyDrunk.Memory Node — Agent-Memory Substrate for the AI Sector — 0/4 accepting packet issues closed; open: HoneyDrunk.Architecture#134, HoneyDrunk.Architecture#135, HoneyDrunk.Architecture#136, HoneyDrunk.Memory#2
 - `ADR-0024` — ADR-0024: Stand Up the HoneyDrunk.Flow Node — Workflow-Orchestration Substrate for the AI Sector — 0/4 accepting packet issues closed; open: HoneyDrunk.Architecture#141, HoneyDrunk.Architecture#142, HoneyDrunk.Architecture#143, HoneyDrunk.Flow#2
+- `ADR-0025` — ADR-0025: Stand Up the HoneyDrunk.Sim Node — Simulation and Plan-Evaluation Substrate for the AI Sector — 0/4 accepting packet issues closed; open: HoneyDrunk.Architecture#145, HoneyDrunk.Architecture#146, HoneyDrunk.Architecture#147, missing-state:generated/issue-packets/active/adr-0025-sim-standup/04-sim-node-scaffold.md
+- `ADR-0027` — ADR-0027: Stand Up the HoneyDrunk.Notify.Cloud Node — Multi-Tenant Commercial Wrapper Above Notify — 0/6 accepting packet issues closed; open: HoneyDrunk.Architecture#149, HoneyDrunk.Architecture#150, HoneyDrunk.Notify#21, HoneyDrunk.Communications#18, HoneyDrunk.Architecture#151, missing-state:generated/issue-packets/active/adr-0027-notify-cloud-standup/06-notify-cloud-node-scaffold.md
 - `ADR-0028` — ADR-0028: Event-Driven Architecture and Messaging — Use-Case-First Backing Selection — 0/4 accepting packet issues closed; open: HoneyDrunk.Architecture#117, HoneyDrunk.Architecture#118, HoneyDrunk.Architecture#119, HoneyDrunk.Communications#17
 - `ADR-0034` — ADR-0034: Public Package Distribution and NuGet Policy — 0/6 accepting packet issues closed; open: HoneyDrunk.Architecture#208, HoneyDrunk.Architecture#209, HoneyDrunk.Standards#40, HoneyDrunk.Actions#94, HoneyDrunk.Vault#34, HoneyDrunk.Architecture#210
 - `ADR-0035` — ADR-0035: Abstractions Versioning and Deprecation Policy — 0/5 accepting packet issues closed; open: HoneyDrunk.Architecture#211, HoneyDrunk.Standards#42, HoneyDrunk.Architecture#212, HoneyDrunk.Actions#95, HoneyDrunk.Architecture#213
@@ -43,6 +43,9 @@
 - `ADR-0055` — ADR-0055: Feature Flag and Progressive Rollout Strategy — 0/4 accepting packet issues closed; open: HoneyDrunk.Architecture#322, HoneyDrunk.Architecture#324, HoneyDrunk.Architecture#325, HoneyDrunk.Architecture#326
 - `ADR-0056` — ADR-0056: Threat Model and Security Review Cadence — 0/10 accepting packet issues closed; open: HoneyDrunk.Architecture#328, HoneyDrunk.Architecture#329, HoneyDrunk.Architecture#331, HoneyDrunk.Architecture#332, HoneyDrunk.Architecture#333, HoneyDrunk.Architecture#334, HoneyDrunk.Architecture#335, HoneyDrunk.Architecture#336, HoneyDrunk.Actions#108, HoneyDrunk.Architecture#337
 - `ADR-0057` — ADR-0057: Public HTTP API Versioning and Client SDK Strategy — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#417
+- `ADR-0059` — ADR-0059: Stand Up the HoneyDrunk.Cache Node — Home for Distributed Cache Backings — 0/3 accepting packet issues closed; open: HoneyDrunk.Architecture#389, HoneyDrunk.Architecture#390, missing-state:generated/issue-packets/active/adr-0059-cache-standup/03-cache-node-scaffold.md
+- `ADR-0060` — ADR-0060: Stand Up the HoneyDrunk.Identity Node — User Record, Credential Seam, and Erasure Fan-Out — 0/4 accepting packet issues closed; open: HoneyDrunk.Architecture#391, HoneyDrunk.Architecture#392, HoneyDrunk.Architecture#393, missing-state:generated/issue-packets/active/adr-0060-identity-standup/04-identity-node-scaffold.md
+- `ADR-0061` — ADR-0061: Stand Up the HoneyDrunk.Files Node — Blob Storage, Media Processing, and Signed-URL Delivery — 0/4 accepting packet issues closed; open: HoneyDrunk.Architecture#410, HoneyDrunk.Architecture#411, HoneyDrunk.Architecture#412, missing-state:generated/issue-packets/active/adr-0061-files-standup/04-files-node-scaffold.md
 - `ADR-0062` — ADR-0062: Inbound Webhook Verification and Receiver Pattern — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#307
 - `ADR-0063` — ADR-0063: Grid-Wide Date, Time, and Clock Policy — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#291
 - `ADR-0064` — ADR-0064: Prompt and Persona Registry with Versioning — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#422
@@ -52,9 +55,12 @@
 - `ADR-0068` — ADR-0068: Background Job and Recurring Work Substrate — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#383
 - `ADR-0069` — ADR-0069: Currency Handling and Money Representation — 0/2 accepting packet issues closed; open: HoneyDrunk.Architecture#297, HoneyDrunk.Architecture#298
 - `ADR-0070` — ADR-0070: Frontend Platform Stack — React for Web, Blazor for Simple Admin, React Native + Expo for Mobile — 0/6 accepting packet issues closed; open: HoneyDrunk.Architecture#366, HoneyDrunk.Architecture#367, HoneyDrunk.Architecture#368, HoneyDrunk.Architecture#369, HoneyDrunk.Architecture#370, HoneyDrunk.Architecture#371
+- `ADR-0071` — ADR-0071: Stand Up the HoneyDrunk.Web.UI Node — Shared Frontend Design System — 0/4 accepting packet issues closed; open: HoneyDrunk.Architecture#431, HoneyDrunk.Architecture#432, HoneyDrunk.Architecture#433, missing-state:generated/issue-packets/active/adr-0071-web-ui-standup/04-web-ui-node-scaffold.md
 - `ADR-0072` — ADR-0072: Data Access Stance — EF Core Default, Dapper for Hot-Path Reads — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#339
 - `ADR-0073` — ADR-0073: Notify Default Providers — Resend (Email), Twilio (SMS), Expo (Push) — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#427
 - `ADR-0074` — ADR-0074: Testing Library Stack — xUnit + NSubstitute + AwesomeAssertions — 0/4 accepting packet issues closed; open: HoneyDrunk.Architecture#372, HoneyDrunk.Architecture#373, HoneyDrunk.Standards#46, HoneyDrunk.Architecture#374
+- `ADR-0075` — ADR-0075: Documentation Tooling — Scalar (In-Product OpenAPI) and Docusaurus (Public Docs) — 0/6 accepting packet issues closed; open: HoneyDrunk.Architecture#375, HoneyDrunk.Architecture#376, HoneyDrunk.Web.Rest#24, HoneyDrunk.Architecture#377, HoneyDrunk.Actions#115, missing-state:generated/issue-packets/active/adr-0075-docs-tooling/04-web-ui-docs-preset-docusaurus-package.md
+- `ADR-0076` — ADR-0076: Cache Backing — Azure Cache for Redis with Cost-Aware Sizing — 0/6 accepting packet issues closed; open: HoneyDrunk.Architecture#434, HoneyDrunk.Architecture#435, HoneyDrunk.Architecture#436, missing-state:generated/issue-packets/active/adr-0076-cache-backing-redis/03-cache-redis-implementation.md, missing-state:generated/issue-packets/active/adr-0076-cache-backing-redis/04-cache-redis-telemetry-and-health.md, missing-state:generated/issue-packets/active/adr-0076-cache-backing-redis/05-cache-redis-classification-encryption.md
 - `ADR-0078` — ADR-0078: End-User Identity — Microsoft Entra External ID — 0/5 accepting packet issues closed; open: HoneyDrunk.Architecture#437, HoneyDrunk.Architecture#438, HoneyDrunk.Architecture#439, HoneyDrunk.Architecture#440, HoneyDrunk.Architecture#441
 - `ADR-0085` — ADR-0085: Grid-Wide Documentation Currency Agent (`docs-sync`) — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#483
 - `ADR-0087` — ADR-0087: Per-Change Risk Scoring for the Double-Review Gate — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#536
@@ -65,7 +71,6 @@ _None._
 
 ## Anomalies
 
-- ADR-0023: 1 accepts packet(s) have no filed issue state: generated/issue-packets/active/adr-0023-evals-standup/04-evals-node-scaffold.md
 - ADR-0025: 1 accepts packet(s) have no filed issue state: generated/issue-packets/active/adr-0025-sim-standup/04-sim-node-scaffold.md
 - ADR-0027: 1 accepts packet(s) have no filed issue state: generated/issue-packets/active/adr-0027-notify-cloud-standup/06-notify-cloud-node-scaffold.md
 - ADR-0059: 1 accepts packet(s) have no filed issue state: generated/issue-packets/active/adr-0059-cache-standup/03-cache-node-scaffold.md
@@ -77,4 +82,4 @@ _None._
 
 ## Flipped This Run
 
-_None — this 2026-06-09 pass ran local-file only (no `gh` access); no auto-flips were attempted. ADR-0091, ADR-0092, ADR-0093 were already flipped to Accepted by a prior pass / their landing PRs and are correctly absent from this queue. ADR-0077 (now `Accepted (amended 2026-06-02)`) was pruned from the In Progress list above without a flip (hive-sync did not change its status)._
+_None._
