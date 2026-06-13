@@ -7,7 +7,7 @@
 
 ## If Accepted — Required Follow-Up Work in Architecture Repo
 
-Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale). Per the project convention, the Node is **not** added to `catalogs/nodes.json` until acceptance:
+Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up work items (do not accept and leave the catalogs stale). Per the project convention, the Node is **not** added to `catalogs/nodes.json` until acceptance:
 
 - [ ] Create `HoneyDrunk.Web.UI` GitHub repo as **public** (Grid default per [ADR-0039](./ADR-0039-grid-open-source-license-policy.md); design tokens and CSS are the kind of substrate the build-in-public stance covers naturally)
 - [ ] Add `honeydrunk-web-ui` Node entry to `catalogs/nodes.json` with Creator sector, `signal: "seed"`, `cluster: "frontend"`

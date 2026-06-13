@@ -8,7 +8,7 @@
 
 ## If Accepted — Required Follow-Up Work in Architecture Repo
 
-Accepting this ADR creates Kernel and cross-Node obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
+Accepting this ADR creates Kernel and cross-Node obligations that must be completed as follow-up work items (do not accept and leave the catalogs stale):
 
 - [x] Kernel packet — promote `IGridContext.TenantId` from `string?` to `TenantId` (non-nullable; the existing `HoneyDrunk.Kernel.Abstractions.Identity.TenantId` ULID record struct), update `GridContextMiddleware`, mappers, and `GridContextSerializer` to parse the `X-Tenant-Id` header into the strong type and apply the `TenantId.Internal` default at request entry when no header is present so consumers never read null
 - [x] Kernel packet — add `TenantId.Internal` static (well-known sentinel ULID for non-multi-tenant Grid usage) and `TenantId.IsInternal` predicate; add canary tests pinning the sentinel value

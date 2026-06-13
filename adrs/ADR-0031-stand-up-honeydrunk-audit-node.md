@@ -7,7 +7,7 @@
 
 ## If Accepted — Required Follow-Up Work in Architecture Repo
 
-Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
+Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up work items (do not accept and leave the catalogs stale):
 
 - [x] Create the `HoneyDrunk.Audit` GitHub repo as **public** (Grid default; no revenue/compliance/experiment carve-out applies — audit substrate is a reusable Core primitive)
 - [x] Add `honeydrunk-audit` Node entry to `catalogs/nodes.json` (Core sector, `signal: "seed"`)
@@ -31,7 +31,7 @@ ADR-0030 decided that durable, attributable Grid-wide security and action audit 
 
 This ADR follows the standup-ADR convention set 2026-04-19 (memory rule: every empty cataloged Node — and, by extension, every Node ADR-0030 newly introduces — gets its own stand-up ADR before scaffolding lands). It mirrors the stand-up shape used by ADR-0016 (AI), ADR-0017 (Capabilities), and ADR-0018 (Operator): contracts live in an `Abstractions` package, runtime composition is a separate package, downstream Nodes compile against `Abstractions` only, and a contract-shape canary freezes the hot contracts from the first scaffold.
 
-This ADR is the **stand-up decision** for the Audit Node — what it owns, what it does not own, which contracts it exposes, how downstream Nodes couple to it, and what scaffolds in the first PR. It is not a scaffolding packet. Filing the repo, adding CI, wiring the in-memory fixture, and producing the first shippable packages all follow as separate issue packets once this ADR is accepted. The capability rationale (why a Node, why not Operator, why not Kernel, the phased-integrity scope discipline, the honest tamper-evidence limitation) lives in ADR-0030 and is not re-litigated here.
+This ADR is the **stand-up decision** for the Audit Node — what it owns, what it does not own, which contracts it exposes, how downstream Nodes couple to it, and what scaffolds in the first PR. It is not a scaffolding packet. Filing the repo, adding CI, wiring the in-memory fixture, and producing the first shippable packages all follow as separate work items once this ADR is accepted. The capability rationale (why a Node, why not Operator, why not Kernel, the phased-integrity scope discipline, the honest tamper-evidence limitation) lives in ADR-0030 and is not re-litigated here.
 
 ## Decision
 

@@ -9,21 +9,21 @@
 - **Architecture catalogs still advertise Kernel 0.7.0 while the repo is 0.8.0**
   - Recommendation: promote
   - Why: Kernel is the root dependency for the Grid. Architecture `repos/HoneyDrunk.Kernel/overview.md` and `catalogs/compatibility.json` still identify the Node as `0.7.0`, while both shipped Kernel projects set `<Version>0.8.0</Version>`. This misleads downstream compatibility and release planning.
-  - Proposed packet path: `generated/issue-packets/proposed/2026-06-09-architecture-reconcile-kernel-080-catalog-drift.md`
+  - Proposed packet path: `generated/work-items/proposed/2026-06-09-architecture-reconcile-kernel-080-catalog-drift.md`
   - Human action: Review and promote the Architecture reconciliation packet if Kernel `0.8.0` is the intended current source of truth.
   - Urgency: high
   - Dedupe/Skipped reason: _None._
 - **Kernel.Abstractions carries a non-permitted third-party runtime dependency**
   - Recommendation: promote
   - Why: `HoneyDrunk.Kernel.Abstractions.csproj` directly references `Ulid` 1.4.1, and public identity types expose `Ulid` members. Grid invariant 1 and the Kernel repo invariant require Abstractions packages to remain dependency-light and limited to permitted abstractions.
-  - Proposed packet path: `generated/issue-packets/proposed/2026-06-09-kernel-remove-ulid-abstractions-dependency.md`
+  - Proposed packet path: `generated/work-items/proposed/2026-06-09-kernel-remove-ulid-abstractions-dependency.md`
   - Human action: Review whether to promote the Kernel contract-cleanup packet; this is a breaking pre-1.0 contract cleanup and should be treated as a focused Kernel release.
   - Urgency: high
   - Dedupe/Skipped reason: _None._
 - **Repository-level changelog does not have a released 0.8.0 heading**
   - Recommendation: promote
   - Why: The package changelogs contain `## [0.8.0] - 2026-05-26`, but the repo-level changelog keeps those release notes under `## [Unreleased]` with `Changed (breaking - v0.8.0)`. Invariant 12 makes the repo-level changelog the source for release notes and requires every shipped version to have an entry.
-  - Proposed packet path: `generated/issue-packets/proposed/2026-06-09-kernel-add-repo-changelog-080-entry.md`
+  - Proposed packet path: `generated/work-items/proposed/2026-06-09-kernel-add-repo-changelog-080-entry.md`
   - Human action: Promote the small Kernel docs/release-hygiene packet if no existing Kernel PR already corrects the changelog on origin.
   - Urgency: normal
   - Dedupe/Skipped reason: _None._

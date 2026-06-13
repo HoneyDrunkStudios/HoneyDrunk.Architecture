@@ -7,7 +7,7 @@
 
 ## If Accepted — Required Follow-Up Work in Architecture Repo
 
-Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
+Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up work items (do not accept and leave the catalogs stale):
 
 - [ ] Update [`infrastructure/reference/tech-stack.md`](../infrastructure/reference/tech-stack.md) — remove `HoneyDrunk.Jobs` from "Planned Nodes" (or move to "Deferred — substrate covered by Container Apps Jobs" per D4)
 - [ ] Update [`initiatives/roadmap.md`](../initiatives/roadmap.md) line 67 — remove `HoneyDrunk.Jobs — Background job scheduling with Grid integration` from the Future section, or move to a "Deferred — substrate decided" subsection per D4

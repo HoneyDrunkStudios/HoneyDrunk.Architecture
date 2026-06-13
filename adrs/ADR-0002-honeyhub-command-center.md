@@ -28,7 +28,7 @@ The `HoneyDrunk.Architecture` repository serves as the **command center** ("Agen
 6. **Issue Templates** — Structured templates for generating GitHub Issues
 7. **Repo Context** — Per-repo overviews, boundaries, invariants, and integration points
 8. **Copilot Instructions** — Global agent behavior rules
-9. **Generated Artifacts** — Output directory for issue packets, site-sync packets, and ADR drafts
+9. **Generated Artifacts** — Output directory for work items, site-sync packets, and ADR drafts
 
 Agents read this repo as context before performing cross-repo operations.
 

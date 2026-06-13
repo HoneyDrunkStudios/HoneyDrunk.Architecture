@@ -8,4 +8,4 @@ The `backlog-tactical-audit` runner job writes one report per audited Node:
 generated/audits/{node}-{YYYY-MM-DD}.md
 ```
 
-Audit reports are durable evidence that a Node was reviewed. They may exist even when no issue packet is created. Actionable findings become proposed packets under `generated/issue-packets/proposed/` with `source: tactical` and `generator: node-audit`.
+Audit reports are durable evidence that a Node was reviewed. They may exist even when no work item is created. Actionable findings become proposed packets under `generated/work-items/proposed/` with `source: tactical` and `generator: node-audit`.

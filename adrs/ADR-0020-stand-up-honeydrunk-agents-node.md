@@ -7,7 +7,7 @@
 
 ## If Accepted — Required Follow-Up Work in Architecture Repo
 
-Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
+Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up work items (do not accept and leave the catalogs stale):
 
 - [ ] Reconcile `catalogs/contracts.json` entries for `honeydrunk-agents`: confirm the five stand-up interfaces (`IAgent`, `IAgentExecutionContext`, `IAgentLifecycle`, `IToolInvoker`, `IAgentMemory`), ensure `IAgentLifecycle` is present, and flag that no records are introduced at stand-up (record shapes are a scaffold-packet concern per D2)
 - [ ] Add `honeydrunk-memory` and `honeydrunk-operator` to `catalogs/relationships.json` `consumes` for `honeydrunk-agents`, each with a `consumes_detail` contract list (Memory: `IMemoryStore`, `IMemoryScope`, `HoneyDrunk.Memory.Abstractions`; Operator: `IApprovalGate`, `ICircuitBreaker`, `HoneyDrunk.Operator.Abstractions`)
@@ -44,7 +44,7 @@ There is also a three-way term collision to pin before it spreads. The word "age
 
 This ADR always means the Node when it says "Agents" with a capital A, and always means a runtime agent (an instance executing inside `HoneyDrunk.Agents`) when it says "an agent" in lowercase. The authoring files in `.claude/agents/` are never referred to by this ADR's running text.
 
-This ADR is the **stand-up decision** for the Agents Node — what it owns, what it does not own, which contracts it exposes, how downstream Nodes couple to it, and how it interacts with AI, Capabilities, Operator, Memory, and Flow. "Node" is used throughout in the ADR-0001 sense — a library-level building block producing one or more NuGet packages, not a deployable service. This ADR is not a scaffolding packet. Filing the repo, adding CI, wiring the in-memory fixture, and producing the first shippable packages all follow as separate issue packets once this ADR is accepted.
+This ADR is the **stand-up decision** for the Agents Node — what it owns, what it does not own, which contracts it exposes, how downstream Nodes couple to it, and how it interacts with AI, Capabilities, Operator, Memory, and Flow. "Node" is used throughout in the ADR-0001 sense — a library-level building block producing one or more NuGet packages, not a deployable service. This ADR is not a scaffolding packet. Filing the repo, adding CI, wiring the in-memory fixture, and producing the first shippable packages all follow as separate work items once this ADR is accepted.
 
 ## Decision
 

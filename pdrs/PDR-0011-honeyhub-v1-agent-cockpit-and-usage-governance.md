@@ -202,7 +202,7 @@ The cockpit is the **lead near-term build focus** among the studio's parallel po
 | **`AgentBackend`** | Codex local, Claude Code local, future cloud/API providers, or an approved Copilot-compatible local workflow. |
 | **`DispatchSession`** | One chat-shaped conversation/run bound to exactly one backend. |
 | **`DispatchRun`** | One execution attempt within a session, with status and artifacts. |
-| **`Artifact`** | Branch, diff, PR, issue packet, ADR/PDR draft, report, or failure note — the write boundary. |
+| **`Artifact`** | Branch, diff, PR, work item, ADR/PDR draft, report, or failure note — the write boundary. |
 | **`UsageSignal`** | Exact or estimated usage/cost/context/duration/turn metric. |
 | **`PolicyHint`** | Recommendation, warning, or (later) block reason surfaced before/during a session. |
 

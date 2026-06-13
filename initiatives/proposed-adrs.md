@@ -71,14 +71,14 @@ _None._
 
 ## Anomalies
 
-- ADR-0025: 1 accepts packet(s) have no filed issue state: generated/issue-packets/active/adr-0025-sim-standup/04-sim-node-scaffold.md
-- ADR-0027: 1 accepts packet(s) have no filed issue state: generated/issue-packets/active/adr-0027-notify-cloud-standup/06-notify-cloud-node-scaffold.md
-- ADR-0059: 1 accepts packet(s) have no filed issue state: generated/issue-packets/active/adr-0059-cache-standup/03-cache-node-scaffold.md
-- ADR-0060: 1 accepts packet(s) have no filed issue state: generated/issue-packets/active/adr-0060-identity-standup/04-identity-node-scaffold.md
-- ADR-0061: 1 accepts packet(s) have no filed issue state: generated/issue-packets/active/adr-0061-files-standup/04-files-node-scaffold.md
-- ADR-0071: 1 accepts packet(s) have no filed issue state: generated/issue-packets/active/adr-0071-web-ui-standup/04-web-ui-node-scaffold.md
-- ADR-0075: 1 accepts packet(s) have no filed issue state: generated/issue-packets/active/adr-0075-docs-tooling/04-web-ui-docs-preset-docusaurus-package.md
-- ADR-0076: 3 accepts packet(s) have no filed issue state: generated/issue-packets/active/adr-0076-cache-backing-redis/03-cache-redis-implementation.md, generated/issue-packets/active/adr-0076-cache-backing-redis/04-cache-redis-telemetry-and-health.md, generated/issue-packets/active/adr-0076-cache-backing-redis/05-cache-redis-classification-encryption.md
+- ADR-0025: 1 accepts packet(s) have no filed issue state: generated/work-items/active/adr-0025-sim-standup/04-sim-node-scaffold.md
+- ADR-0027: 1 accepts packet(s) have no filed issue state: generated/work-items/active/adr-0027-notify-cloud-standup/06-notify-cloud-node-scaffold.md
+- ADR-0059: 1 accepts packet(s) have no filed issue state: generated/work-items/active/adr-0059-cache-standup/03-cache-node-scaffold.md
+- ADR-0060: 1 accepts packet(s) have no filed issue state: generated/work-items/active/adr-0060-identity-standup/04-identity-node-scaffold.md
+- ADR-0061: 1 accepts packet(s) have no filed issue state: generated/work-items/active/adr-0061-files-standup/04-files-node-scaffold.md
+- ADR-0071: 1 accepts packet(s) have no filed issue state: generated/work-items/active/adr-0071-web-ui-standup/04-web-ui-node-scaffold.md
+- ADR-0075: 1 accepts packet(s) have no filed issue state: generated/work-items/active/adr-0075-docs-tooling/04-web-ui-docs-preset-docusaurus-package.md
+- ADR-0076: 3 accepts packet(s) have no filed issue state: generated/work-items/active/adr-0076-cache-backing-redis/03-cache-redis-implementation.md, generated/work-items/active/adr-0076-cache-backing-redis/04-cache-redis-telemetry-and-health.md, generated/work-items/active/adr-0076-cache-backing-redis/05-cache-redis-classification-encryption.md
 
 ## Flipped This Run
 

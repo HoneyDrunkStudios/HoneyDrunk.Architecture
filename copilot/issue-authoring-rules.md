@@ -1,6 +1,6 @@
 # Issue Authoring Rules
 
-Rules for agents when generating GitHub Issues or issue packets.
+Rules for agents when generating GitHub Issues or work items.
 
 ## Structure
 
@@ -16,11 +16,11 @@ Every issue must include:
 
 ## Packet Lifecycle and Frontmatter
 
-Issue packets authored after ADR-0043 acceptance use the three-state lifecycle:
+Work items authored after ADR-0043 acceptance use the three-state lifecycle:
 
-- `generated/issue-packets/proposed/` — agent-generated or draft packets awaiting human triage. Not filed.
-- `generated/issue-packets/active/` — human-promoted packets ready for `file-issues` and GitHub issue creation.
-- `generated/issue-packets/completed/` — closed packets moved by `hive-sync`.
+- `generated/work-items/proposed/` — agent-generated or draft packets awaiting human triage. Not filed.
+- `generated/work-items/active/` — human-promoted packets ready for `file-issues` and GitHub issue creation.
+- `generated/work-items/completed/` — closed packets moved by `hive-sync`.
 
 Agents write new backlog-generation packets to `proposed/` only. A human moves a packet to `active/` when it is selected for execution. `hive-sync` is the only agent that moves packets from `active/` to `completed/`.
 
@@ -38,10 +38,10 @@ The `dependencies:` array in packet frontmatter is the **canonical, machine-read
 
 Each entry must use one of two qualified reference forms:
 
-- **`"packet:NN"`** — another packet in the **same initiative folder**, identified by its two-digit ordinal prefix (or `NN` + suffix letter, e.g. `"packet:07a"`). Resolved at filing time once the referenced packet has a manifest entry.
-  - Example: `dependencies: ["packet:01", "packet:04"]`
+- **`"work-item:NN"`** — another packet in the **same initiative folder**, identified by its two-digit ordinal prefix (or `NN` + suffix letter, e.g. `"work-item:07a"`). Resolved at filing time once the referenced packet has a manifest entry.
+  - Example: `dependencies: ["work-item:01", "work-item:04"]`
 - **`"{Repo}#N"` or `"{owner}/{repo}#N"`** — already-filed issue in another repo. Bare `Repo` short-names expand to `HoneyDrunkStudios/HoneyDrunk.{Repo}` (so `"Architecture#9"` → `HoneyDrunkStudios/HoneyDrunk.Architecture#9`).
-  - Example: `dependencies: ["packet:01", "Architecture#9"]`
+  - Example: `dependencies: ["work-item:01", "Architecture#9"]`
 
 Forbidden — these were ambiguous and silently broke the wiring step:
 
@@ -49,9 +49,9 @@ Forbidden — these were ambiguous and silently broke the wiring step:
 - Narrative strings: `dependencies: ["Issue #1 (scaffold)"]` or `dependencies: ["Architecture#NN — ADR text (packet 01)"]`
 - Filename slugs: `dependencies: ["01-foo-bar"]`
 
-The filing pipeline (`HoneyDrunk.Actions/scripts/file-packets.sh`) consumes this field, resolves each entry to an issue node ID, then calls `addBlockedBy` so the relationship surfaces natively in the GitHub UI and on The Hive board. Any unresolvable entry produces a `::warning::` in the workflow log; the build does not fail, so check the summary on every run.
+The filing pipeline (`HoneyDrunk.Actions/scripts/file-work-items.sh`) consumes this field, resolves each entry to an issue node ID, then calls `addBlockedBy` so the relationship surfaces natively in the GitHub UI and on The Hive board. Any unresolvable entry produces a `::warning::` in the workflow log; the build does not fail, so check the summary on every run.
 
-## Naming Convention for Issue Packets
+## Naming Convention for Work Items
 
 `{YYYY-MM-DD}-{repo-short-name}-{kebab-case-description}.md`
 
@@ -62,7 +62,7 @@ Examples:
 
 ## Quality Checks
 
-Before finalizing an issue packet:
+Before finalizing an work item:
 
 - [ ] Title is action-oriented and under 80 characters
 - [ ] Acceptance criteria are specific (not "works correctly")

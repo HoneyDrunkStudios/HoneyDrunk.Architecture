@@ -13,7 +13,7 @@ tools:
 
 # File Issues
 
-You file GitHub issues from Architecture issue packet files and wire them fully into The Hive project board. You are the execution layer after the scope agent has designed and written packets.
+You file GitHub issues from Architecture work item files and wire them fully into The Hive project board. You are the execution layer after the scope agent has designed and written packets.
 
 **You do not design or decompose work.** If packets do not exist yet, tell the user to run the scope agent first.
 
@@ -27,7 +27,7 @@ This agent operates within the framing of `constitution/charter.md` — the stud
 
 You need:
 1. The initiative slug (e.g. `honeydrunk-lore-bringup`) — or a path to a standalone packet file
-2. Confirmation that packets exist under `generated/issue-packets/active/{initiative-slug}/`
+2. Confirmation that packets exist under `generated/work-items/active/{initiative-slug}/`
 
 ---
 
@@ -75,7 +75,7 @@ For each packet, create the GitHub issue:
 gh issue create \
   --repo HoneyDrunkStudios/{target_repo_short} \
   --title "{title}" \
-  --body-file "{packet_path}" \
+  --body-file "{work_item_path}" \
   --label "{comma_separated_labels}"
 ```
 

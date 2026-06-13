@@ -167,7 +167,7 @@ OpenClaw is **operator-internal automation infrastructure, not a Node** (per `co
 
 ## Follow-up Execution Packets
 
-This ADR is the decision record. The teardown work is **scoped and committed** under `generated/issue-packets/completed/adr-0088-openclaw-decommission/` (dispatch-plan + 9 packets across Waves 0–4), produced via `adr-composer → scope → refine → re-scope` and ordered to honor D3's groups and the invariant-103 gate.
+This ADR is the decision record. The teardown work is **scoped and committed** under `generated/work-items/completed/adr-0088-openclaw-decommission/` (dispatch-plan + 9 packets across Waves 0–4), produced via `adr-composer → scope → refine → re-scope` and ordered to honor D3's groups and the invariant-103 gate.
 
 - **`00a`** *(Wave 0, Architecture, agent)* — author + smoke-test a `docs-sync` job spec at `infrastructure/workers/grid-agent-runner/config/jobs/` so docs-sync keeps automated (Friday) scheduling on the ADR-0086 local worker before its OpenClaw schedule is stopped. The one OpenClaw-hosted workload that lacked a local-worker home; gates packet 02. (Operator chose this over dropping docs-sync to its manual-dispatch floor.)
 - **`00`** *(Wave 1, Architecture, agent)* — flip ADR-0088 to Accepted; flip ADR-0081 to `Superseded by ADR-0088`; update `adrs/README.md` + remove ADR-0081 from `initiatives/proposed-adrs.md`; register the initiative. Records the concrete Group-1 prerequisite gate (Part A review-path already green on `main`; Part B = the scheduled-job smoke records incl. 00a). No teardown side effects.

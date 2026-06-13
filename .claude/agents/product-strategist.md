@@ -149,7 +149,7 @@ The ADR-0086 `backlog-opportunistic-scout` job invokes Scout mode as ADR-0043's 
 - If no opportunity clears the bar, write the report anyway and create no packets.
 - For a product-level opportunity, create a proposed packet asking for a PDR composition pass rather than writing the PDR yourself.
 - For a smaller in-scope improvement, create a proposed packet directly.
-- Proposed packets land in `generated/issue-packets/proposed/` with `source: opportunistic` and `generator: product-strategist`.
+- Proposed packets land in `generated/work-items/proposed/` with `source: opportunistic` and `generator: product-strategist`.
 - Name proposed packets using `{YYYY-MM-DD}-{repo}-{description}.md` so downstream indexing can rely on the filename shape.
 - Dedupe against existing proposed, active, and completed packets before creating anything.
 - Never self-promote packets to `active/` and never mutate GitHub Projects.

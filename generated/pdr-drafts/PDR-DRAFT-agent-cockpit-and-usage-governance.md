@@ -276,7 +276,7 @@ Notify Cloud should not be cancelled. It should move behind the Agent Cockpit v1
 | `AgentBackend` | Codex local, Claude Code local, future cloud/API providers, or approved Copilot-compatible workflow |
 | `DispatchSession` | One chat-shaped conversation/run bound to one backend |
 | `DispatchRun` | One execution attempt within a session, with status and artifacts |
-| `Artifact` | Branch, diff, PR, issue packet, ADR/PDR draft, report, or failure note |
+| `Artifact` | Branch, diff, PR, work item, ADR/PDR draft, report, or failure note |
 | `UsageSignal` | Exact or estimated usage/cost/context metric |
 | `PolicyHint` | Recommendation or warning surfaced before/during a session |
 

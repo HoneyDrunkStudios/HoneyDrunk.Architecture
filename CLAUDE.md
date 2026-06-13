@@ -17,7 +17,7 @@ You are operating inside `HoneyDrunk.Architecture`, the command center (Agent HQ
 **Top ADRs to know:**
 - ADR-0005/0006 — Config & secrets strategy (env-var-driven Vault bootstrap, per-Node Key Vaults). **Accepted.**
 - ADR-0007 — `.claude/agents/` is the single source of truth for agent definitions. **Accepted.**
-- ADR-0008 — Work tracking (issue packets → GitHub Issues → org Project board → Codex execution). **Accepted.** D4/D5/D6 gaps all RESOLVED (2026-04-12 / 2026-05-20); see the 2026-05-21 D10 amendment for the initiative-slug naming convention (ADR-driven vs PDR-driven vs BDR-driven slugs).
+- ADR-0008 — Work tracking (work items → GitHub Issues → org Project board → Codex execution). **Accepted.** D4/D5/D6 gaps all RESOLVED (2026-04-12 / 2026-05-20); see the 2026-05-21 D10 amendment for the initiative-slug naming convention (ADR-driven vs PDR-driven vs BDR-driven slugs).
 - ADR-0030 — Grid-Wide Audit Substrate (Audit Node, append-only-by-interface). **Accepted.** Standup governed by ADR-0031.
 - ADR-0019 — HoneyDrunk.Communications boundary refactor (decision/orchestration vs Notify intake/delivery). **Accepted.**
 - ADR-0010 — Observation Layer + AI Routing. **Accepted.** Phase 1 Observe-side scaffolding underway; AI routing parked on manifest reconciliation.
@@ -45,7 +45,7 @@ This is not a code repo. It is the organizational brain — catalogs, routing ru
 You are the **planning and orchestration surface** in a three-surface SDLC:
 
 1. **You (Claude Code)** — plan, decompose, generate issues/handoffs, architectural decisions
-2. **Codex** — cloud execution of scoped tasks (receives your issue packets and handoffs)
+2. **Codex** — cloud execution of scoped tasks (receives your work items and handoffs)
 3. **GitHub Copilot** — in-IDE coding when the developer needs to work hands-on
 
 See `routing/sdlc.md` for the full lifecycle and handoff protocols.
@@ -82,9 +82,9 @@ For cross-sector work, also load:
 ## For Issue Generation
 
 1. `issues/templates/` — use the appropriate template
-2. `copilot/issue-authoring-rules.md` — quality standards for issue packets
+2. `copilot/issue-authoring-rules.md` — quality standards for work items
 3. `routing/execution-rules.md` — handoff format for Codex
-4. Output to `generated/issue-packets/`
+4. Output to `generated/work-items/`
 
 ## For Architecture Decisions
 
@@ -119,7 +119,7 @@ The HoneyHub control plane architecture is defined in `repos/HoneyHub/`:
 - No application code lives here — only architecture artifacts
 - ADRs follow the format in `adrs/ADR-0001-node-vs-service.md`
 - PDRs follow the format in `pdrs/PDR-0001-honeyhub-platform-observation-and-ai-routing.md`
-- Issue packets follow the naming convention: `{YYYY-MM-DD}-{repo}-{description}.md`
+- Work items follow the naming convention: `{YYYY-MM-DD}-{repo}-{description}.md`
 - Conventional commits: `feat:`, `fix:`, `chore:`, `docs:`
 - When generating handoffs for Codex, use the structured format in `routing/sdlc.md`
 

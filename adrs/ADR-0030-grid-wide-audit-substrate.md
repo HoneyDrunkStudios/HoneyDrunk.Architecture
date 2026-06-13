@@ -7,7 +7,7 @@
 
 ## If Accepted — Required Follow-Up Work in Architecture Repo
 
-Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
+Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up work items (do not accept and leave the catalogs stale):
 
 - [ ] Add `honeydrunk-audit` Node entry to `catalogs/nodes.json` (Core sector, `signal: "seed"`, contract surface per D3)
 - [ ] Add `honeydrunk-audit` entries and the new edges to `catalogs/relationships.json` — `honeydrunk-audit` → `honeydrunk-data` (consumes), `honeydrunk-auth` → `honeydrunk-audit` (consumes, first emitter), `honeydrunk-operator` → `honeydrunk-audit` (consumes, reconciled per 2a)

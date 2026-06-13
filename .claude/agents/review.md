@@ -32,7 +32,7 @@ Load this context for the target repo. This list is the **authoritative context-
 9. `repos/{node-name}/boundaries.md` — what it must NOT do
 10. `repos/{node-name}/invariants.md` — repo-specific rules (if exists)
 11. `copilot/pr-review-rules.md` — checklist and severity levels
-12. The **issue packet** referenced from the PR body (see "Resolve the Packet" below)
+12. The **work item** referenced from the PR body (see "Resolve the Packet" below)
 13. The **PR diff**
 
 When running under the OpenClaw/Codex Grid Review Runner, the context above is read from the `HoneyDrunk.Architecture` checkout prepared by the runner. Treat that checkout as the canonical Architecture context source for invariants, catalogs, repo boundary files, `copilot/pr-review-rules.md`, and packets.
@@ -45,9 +45,9 @@ Prioritize findings in this order: correctness bugs, broken runtime behavior, se
 
 ### 0. Resolve the Packet
 
-Per ADR-0011 D3 and D9, the issue packet is the canonical statement of scope for a work item and is the **primary scope anchor** for the review.
+Per ADR-0011 D3 and D9, the work item is the canonical statement of scope for a work item and is the **primary scope anchor** for the review.
 
-1. Read the PR body. Look for a link to an issue packet in `HoneyDrunk.Architecture/generated/issue-packets/active/`.
+1. Read the PR body. Look for a link to an work item in `HoneyDrunk.Architecture/generated/work-items/active/`.
 2. If the link is present: read the packet file. It defines what the PR was *supposed* to do — acceptance criteria, constraints, referenced invariants, governing ADRs, key files. Use this as the primary scope anchor throughout the review. Scope creep, scope shortfall, and undocumented side effects are findings against the packet.
 3. If the link is absent: the PR is **out-of-band** per ADR-0011 D9. Verify the PR carries the `out-of-band` label (flag as a finding if missing per invariant 32). Continue the review against the Grid context only (invariants, boundaries, relationships, contracts, diff). Skip the packet-scope questions in section 1 below, and note in the Summary that scope was not verified because no packet was linked.
 

@@ -45,7 +45,7 @@ Each agent lives in `agents/canonical/{name}.md` within the Architecture repo (a
 name: scope
 description: >-
   Scope and plan work for the HoneyDrunk Grid. Decomposes features, bugs, and
-  initiatives into actionable tasks with issue packets and agent handoffs.
+  initiatives into actionable tasks with work items and agent handoffs.
 capabilities:
   - read_files
   - search_code

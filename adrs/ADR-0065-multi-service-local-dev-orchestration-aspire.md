@@ -221,7 +221,7 @@ This ADR identifies the updates required at acceptance. The updates themselves a
 
 ### Follow-up Work
 
-- File the Notify+Pulse dev-deploy packet: includes the `Notify.AppHost` project as part of the work.
+- File the Notify+Pulse dev-deploy work-item: includes the `Notify.AppHost` project as part of the work.
 - File the Standards packet that adds the AppHost project template and the Aspire extension methods (D6). Standards version bumps per [ADR-0035](./ADR-0035-abstractions-versioning-and-deprecation-policy.md); the extension methods are new public surface, additive, minor bump.
 - File the Pulse migration packet (gives Pulse a `Pulse.AppHost`; aligns the Pulse dev-deploy with the Notify+Pulse story).
 - File the `HoneyDrunk.Workshop` standup ADR as a separate paired follow-up.

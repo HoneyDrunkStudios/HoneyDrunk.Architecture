@@ -107,7 +107,7 @@ Tier-specific additions:
 - Tier 2b Cosmos: `Testcontainers.CosmosDb` or the documented emulator module/package available at implementation time
 - Tier 2b Storage: Azurite/Testcontainers module or explicit container image wrapper
 
-> **Invariant 26:** Every issue packet that touches code must include a `## NuGet Dependencies` section listing packages added, removed, or version-changed, with rationale.
+> **Invariant 26:** Every work item that touches code must include a `## NuGet Dependencies` section listing packages added, removed, or version-changed, with rationale.
 
 ## Boundary Check
 - [ ] Test belongs in the target Node repo, not Architecture or Standards

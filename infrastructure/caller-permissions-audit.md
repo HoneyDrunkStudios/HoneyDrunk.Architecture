@@ -3,7 +3,7 @@
 **Date:** 2026-05-26
 **ADR:** ADR-0012 Grid CI/CD Control Plane
 **Invariant:** 39 — caller workflows declare a permissions block that is a superset of reusable workflow needs
-**Packet:** ADR-0012 packet 08
+**Work Item:** ADR-0012 packet 08
 
 ## Purpose
 
@@ -37,7 +37,7 @@ The following caller jobs were missing or under-granted relative to the baseline
 |---|---|---|---|---|
 | `HoneyDrunk.Agents` | `pr.yml` | `pr-core.yml` | job | consumer-usage.md canonical baseline; missing/under-granted issues: write |
 | `HoneyDrunk.Agents` | `weekly-deps.yml` | `nightly-deps.yml` | top-level | consumer-usage.md canonical baseline; missing/under-granted issues: write |
-| `HoneyDrunk.Architecture` | `file-packets.yml` | `file-packets.yml` | missing | derived from callee workflow permissions; missing/under-granted contents: read; no explicit caller permissions block found |
+| `HoneyDrunk.Architecture` | `file-work-items.yml` | `file-work-items.yml` | missing | derived from callee workflow permissions; missing/under-granted contents: read; no explicit caller permissions block found |
 | `HoneyDrunk.Audit` | `weekly-deps.yml` | `nightly-deps.yml` | top-level | consumer-usage.md canonical baseline; missing/under-granted issues: write |
 | `HoneyDrunk.Capabilities` | `pr.yml` | `pr-core.yml` | job | consumer-usage.md canonical baseline; missing/under-granted issues: write |
 | `HoneyDrunk.Capabilities` | `weekly-deps.yml` | `nightly-deps.yml` | top-level | consumer-usage.md canonical baseline; missing/under-granted issues: write |
@@ -87,7 +87,7 @@ The following caller jobs were missing or under-granted relative to the baseline
 | PASS | `HoneyDrunk.AI` | `pr.yml` | `job-sonarcloud.yml` | job | checks: write, contents: read, pull-requests: write | checks: write, contents: read, pull-requests: write | derived from callee workflow permissions |
 | PASS | `HoneyDrunk.AI` | `publish.yml` | `release.yml` | job | contents: read, id-token: write, packages: write, security-events: write | contents: read, id-token: write, packages: write, security-events: write | consumer-usage.md canonical baseline |
 | PASS | `HoneyDrunk.AI` | `weekly-deps.yml` | `nightly-deps.yml` | job | contents: write, issues: write, pull-requests: write | contents: write, issues: write, pull-requests: write | consumer-usage.md canonical baseline |
-| FAIL | `HoneyDrunk.Architecture` | `file-packets.yml` | `file-packets.yml` | missing | none | contents: read | derived from callee workflow permissions; missing/under-granted contents: read; no explicit caller permissions block found |
+| FAIL | `HoneyDrunk.Architecture` | `file-work-items.yml` | `file-work-items.yml` | missing | none | contents: read | derived from callee workflow permissions; missing/under-granted contents: read; no explicit caller permissions block found |
 | PASS | `HoneyDrunk.Architecture` | `grid-review-request.yml` | `job-review-request.yml` | top-level | contents: read, issues: write, pull-requests: read | contents: read, issues: write, pull-requests: read | consumer-usage.md canonical baseline |
 | PASS | `HoneyDrunk.Audit` | `api-compatibility.yml` | `job-api-compatibility.yml` | top-level | contents: read, pull-requests: write | contents: read | derived from callee workflow permissions |
 | PASS | `HoneyDrunk.Audit` | `nightly-security.yml` | `nightly-security.yml` | top-level | contents: read, issues: write, security-events: write | contents: read, issues: write, security-events: write | consumer-usage.md canonical baseline |
@@ -219,4 +219,4 @@ This is a one-time ADR-0012 baseline audit. Re-run it when Grid Health reports a
 - [ADR-0012: Grid CI/CD Control Plane](../adrs/ADR-0012-grid-cicd-control-plane.md)
 - [Grid invariants](../constitution/invariants.md) — invariant 39
 - [HoneyDrunk.Actions consumer usage](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/blob/main/docs/consumer-usage.md#caller-permissions--the-load-bearing-rule)
-- [ADR-0012 packet 05: consumer usage refresh](../generated/issue-packets/active/adr-0012-grid-cicd-control-plane/05-actions-consumer-usage-refresh.md)
+- [ADR-0012 packet 05: consumer usage refresh](../generated/work-items/active/adr-0012-grid-cicd-control-plane/05-actions-consumer-usage-refresh.md)

@@ -19,7 +19,7 @@ This does **not** un-accept the ADR — the Communications Node is genuinely sto
 
 ## If Accepted — Required Follow-Up Work in Architecture Repo
 
-Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
+Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up work items (do not accept and leave the catalogs stale):
 
 - [x] Create `HoneyDrunk.Communications` GitHub repo (human-only step — public default per Grid posture)
 - [x] Scaffold packet — solution structure with `HoneyDrunk.Communications.Abstractions` and `HoneyDrunk.Communications`, HoneyDrunk.Standards wiring, CI pipeline via HoneyDrunk.Actions shared workflows, InMemory fixtures for preference store and cadence policy

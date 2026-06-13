@@ -24,10 +24,10 @@ revalidation_cadence: on any ADR-0043 cadence/prompt amendment
 | Part | This loop |
 |------|-----------|
 | **trigger** | The `backlog-strategic-scope` runner job, scheduled after `loop-0001`; fires on ADR/PDR status changes to `Accepted` (or a `Proposed` decision aged past 14 days) with missing implementation packets |
-| **inputs** | `adrs/`/`pdrs/` frontmatter + acceptance signals from hive-sync; `generated/issue-packets/**` (to detect missing packets); catalogs, repo boundaries |
+| **inputs** | `adrs/`/`pdrs/` frontmatter + acceptance signals from hive-sync; `generated/work-items/**` (to detect missing packets); catalogs, repo boundaries |
 | **synthesizer** | `scope`-like decomposition via `prompts/backlog-strategic-scope.md` (one packet per implied implementation step; one dispatch plan per multi-repo rollout) |
 | **gate** | Human `proposed/` → `active/` triage at the weekly briefing; `refine` runs against any dispatch plan implying > 3 packets before packets land |
-| **feedback_sink** | `generated/issue-packets/proposed/` packets (each carrying `source: strategic` + `generator`) and a per-run source report |
+| **feedback_sink** | `generated/work-items/proposed/` packets (each carrying `source: strategic` + `generator`) and a per-run source report |
 | **stop** | **Done:** the acceptance/age scan completes and proposed packets are written. **Stuck:** no actionable decisions → no-op run. **Over-budget:** runner timeout. |
 
 ## Governance envelope

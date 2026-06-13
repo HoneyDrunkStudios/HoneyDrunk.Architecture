@@ -182,7 +182,7 @@ Scheduled tactical output from the writer-capable runner job:
 - Writes the durable report to `generated/audits/{node}-{YYYY-MM-DD}.md`.
 - Updates only the selected row in `initiatives/audit-rotation.md`.
 - Creates packets only for high-confidence actionable findings.
-- Lands packets in `generated/issue-packets/proposed/`.
+- Lands packets in `generated/work-items/proposed/`.
 - Uses `source: tactical` and `generator: node-audit` to identify the audit rubric that produced the finding.
 - Does not move packets to `active/`; human triage owns promotion.
 - Cites the audit report path in Context.

@@ -17,7 +17,7 @@ The existing layers, from coarse to fine:
 - **`current-focus.md`** — the ranked, strict-ordinal priority list. A product surfaces here as *one row at a time* (HoneyHub is rank #1 today as "promote the local-runner-bridge ADR"), never as a whole multi-ADR effort. By design — `current-focus.md` rows are single phases, not rollouts.
 - **`proposed-adrs.md`** — the pre-acceptance queue for individual ADRs/PDRs. It tracks each decision's packet-closure state in isolation; it does not express that ADR X cites ADR Y's contract, or that phase 3 can't build until phase 2 ships.
 - **`active-initiatives.md`** — tracks rollouts that are **~1:1 with a single ADR** (or a single ADR family). An "initiative" today is one decision's implementation: its packets, its waves, its Hive issues, its exit criteria. ADR-0077, ADR-0043, ADR-0052 each get one initiative entry.
-- **Packets** (`generated/issue-packets/`) → **Hive issues** (org Project #4) → **PRs** — the execution substrate. The `file-issues` agent wires *build-dependency* blocking relationships between implementation issues on the board.
+- **Packets** (`generated/work-items/`) → **Hive issues** (org Project #4) → **PRs** — the execution substrate. The `file-issues` agent wires *build-dependency* blocking relationships between implementation issues on the board.
 
 The gap is concrete and the operator hit it starting HoneyHub. **PDR-0011 (Accepted) spawns 5+ ADRs**, each with its own initiative, in a dependency chain:
 
@@ -55,7 +55,7 @@ PDR  (the product decision — pdrs/PDR-*.md)
  └── Program  (the live cross-ADR tracker — initiatives/programs/{slug}.md)   ← NEW
       ├── ADR  (a decision the program needs — adrs/ADR-*.md)
       │    └── Initiative  (that ADR's rollout — active-initiatives.md)
-      │         └── Packet  (generated/issue-packets/)
+      │         └── Packet  (generated/work-items/)
       │              └── Hive issue  (org Project #4)
       │                   └── PR
       ├── ADR → Initiative → ...

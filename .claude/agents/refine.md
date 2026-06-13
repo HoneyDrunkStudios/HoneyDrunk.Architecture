@@ -1,7 +1,7 @@
 ---
 name: refine
 description: >-
-  Challenge and refine scoped work before execution. Use after scope has produced issue packets or dispatch plans. Acts as the skeptical senior dev in refinement — finds gaps, missed dependencies, boundary violations, and unstated assumptions.
+  Challenge and refine scoped work before execution. Use after scope has produced work items or dispatch plans. Acts as the skeptical senior dev in refinement — finds gaps, missed dependencies, boundary violations, and unstated assumptions.
 tools:
   - Read
   - Grep
@@ -33,16 +33,16 @@ Then read the actual code in workspace repos to verify assumptions the scope mak
 
 ## What You Review
 
-- Issue packets in `/generated/issue-packets/`
-- Dispatch plans co-located in `/generated/issue-packets/active/{initiative}/dispatch-plan.md`
-- Handoff prompts co-located in `/generated/issue-packets/active/{initiative}/handoff-*.md`
+- Work items in `/generated/work-items/`
+- Dispatch plans co-located in `/generated/work-items/active/{initiative}/dispatch-plan.md`
+- Handoff prompts co-located in `/generated/work-items/active/{initiative}/handoff-*.md`
 - Or a scope proposal presented directly in conversation
 
 ## Review Process
 
 ### 1. Boundary Check
 
-For each issue packet, verify:
+For each work item, verify:
 - Does this work actually belong in the target repo? Check `repos/{node}/boundaries.md`.
 - Is any of this work leaking into a different Node's responsibility?
 - Are there pieces that should be split into separate repos?
@@ -135,7 +135,7 @@ Updates to the rubric are ADR-0044 D3 amendments first, then propagated into age
 ```markdown
 # Refinement Review: {Title}
 
-**Scope Reviewed:** {path to issue packet or dispatch plan}
+**Scope Reviewed:** {path to work item or dispatch plan}
 **Verdict:** {Ready | Needs Work | Blocked}
 
 ## Concerns

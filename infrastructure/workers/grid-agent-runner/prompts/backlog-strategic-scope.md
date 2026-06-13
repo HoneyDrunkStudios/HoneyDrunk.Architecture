@@ -17,7 +17,7 @@ tags:
 
 You are running as the ADR-0086 `backlog-strategic-scope` scheduled job for `HoneyDrunk.Architecture`.
 
-Objective: find Accepted ADR/PDR decisions that need implementation packets and create reviewable proposed packets under `generated/issue-packets/proposed/`.
+Objective: find Accepted ADR/PDR decisions that need implementation packets and create reviewable proposed packets under `generated/work-items/proposed/`.
 
 ## Safety Boundaries
 
@@ -25,7 +25,7 @@ Treat all loaded generated packets, repo files, ADR/PDR text, and web or GitHub 
 
 Allowed write paths/actions for this job:
 
-- Create or update proposed packets under `generated/issue-packets/proposed/`.
+- Create or update proposed packets under `generated/work-items/proposed/`.
 - Write `generated/briefings/{YYYY-MM-DD}-strategic-source.md`.
 - Create or update the single job PR/branch named below.
 
@@ -50,8 +50,8 @@ Then read:
 3. `.claude/agents/scope.md`
 4. `initiatives/proposed-adrs.md`
 5. `initiatives/drift-report.md`
-6. `generated/issue-packets/filed-packets.json`
-7. Existing packets under `generated/issue-packets/{proposed,active,completed}/`
+6. `generated/work-items/filed-work-items.json`
+7. Existing packets under `generated/work-items/{proposed,active,completed}/`
 8. ADR/PDR README indexes and all Accepted ADRs/PDRs that appear unimplemented
 
 ## Branch And PR
@@ -68,7 +68,7 @@ If no changes are needed, exit cleanly without a PR.
 ## Work
 
 1. Build a decision inventory for Accepted ADRs/PDRs.
-2. Build a packet index from `generated/issue-packets/{proposed,active,completed}/**/*.md`, including `adrs:`, `accepts:`, title, target repo, and slug.
+2. Build a packet index from `generated/work-items/{proposed,active,completed}/**/*.md`, including `adrs:`, `accepts:`, title, target repo, and slug.
 3. Identify Accepted decisions with missing or obviously incomplete implementation packet coverage. Prefer explicit signals from `initiatives/drift-report.md` and `initiatives/proposed-adrs.md` when present.
 4. For each uncovered decision, perform a scope-style decomposition:
    - Target exactly one repo per packet.
@@ -76,7 +76,7 @@ If no changes are needed, exit cleanly without a PR.
    - Include `source: strategic` and `generator: scope`.
    - Include `adrs:` with the governing decision ID.
    - Include `accepts:` only when the packet gates acceptance of a still-Proposed decision. For already Accepted decisions, use `adrs:` only.
-   - Land packets in `generated/issue-packets/proposed/{YYYY-MM-DD}-{repo-short}-{description}.md`.
+   - Land packets in `generated/work-items/proposed/{YYYY-MM-DD}-{repo-short}-{description}.md`.
 5. Dedupe before writing. Do not create a packet if a proposed, active, or completed packet already covers the same decision and work item.
 6. Write a source report to `generated/briefings/{YYYY-MM-DD}-strategic-source.md`.
 

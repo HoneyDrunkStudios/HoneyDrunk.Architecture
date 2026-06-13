@@ -7,7 +7,7 @@
 
 ## Context
 
-HoneyDrunk spans 11+ repos operated by a solo developer with AI agents as collaborators. Work flows from ADRs into scoped issue packets, then into execution inside target repos, and finally into PRs. Until now there has been no documented convention for how a packet becomes a live work item, how its state is tracked, or how a cloud agent consumes it.
+HoneyDrunk spans 11+ repos operated by a solo developer with AI agents as collaborators. Work flows from ADRs into scoped work items, then into execution inside target repos, and finally into PRs. Until now there has been no documented convention for how a packet becomes a live work item, how its state is tracked, or how a cloud agent consumes it.
 
 With ADR-0005 and ADR-0006 about to generate roughly 15 issues across 10 repos, the execution machinery has to be formalized before first use. Otherwise every rollout reinvents the same conventions — label schemes, field schemas, auto-add rules, agent trigger contracts — and drift starts on day one.
 
@@ -71,7 +71,7 @@ Label-gated auto-add (e.g. requiring an `hd-tracked` label) is explicitly reject
 
 Five stages, one owner each:
 
-1. **Spec** — Issue packet in `HoneyDrunk.Architecture/generated/issue-packets/*.md`. Owned by the scope agent. **Immutable once written.**
+1. **Spec** — Work item in `HoneyDrunk.Architecture/generated/work-items/*.md`. Owned by the scope agent. **Immutable once written.**
 2. **Ticket** — GitHub Issue in the target repo. Body is short and links to the packet file. Created by a batch-filing script.
 3. **Dashboard** — Project board item, created via the auto-add workflow. Live state lives in custom fields.
 4. **Execution** — Claude Agent SDK (cloud) or local Claude Code, triggered when `Status` transitions to `Ready`. The agent reads the packet via the issue link, executes against the target repo, and opens a PR.
@@ -81,7 +81,7 @@ Five stages, one owner each:
 
 This formalizes what the scope agent already emits, and pins down what each artifact is **for**.
 
-- **Issue packet** — the spec. Immutable. One source of truth for *what* and *why*.
+- **Work item** — the spec. Immutable. One source of truth for *what* and *why*.
 - **Dispatch plan** — the initiative narrative. Why the rollout exists, wave dependencies, rollback plan, exit criteria. **Not** a live tracker; it is a historical record updated at wave boundaries.
 - **Handoff** — the baton pass between waves. Read once at wave transition. Documents the public surface Wave N+1 may assume from Wave N. Ephemeral.
 - **GitHub Issue** — the execution ticket. Short body, links to the packet. State lives in Project custom fields.
@@ -110,7 +110,7 @@ Packets, dispatch plans, and handoffs are grouped by **initiative**, and the fil
 **Layout:**
 
 ```
-generated/issue-packets/
+generated/work-items/
 ├── active/
 │   └── {initiative-slug}/
 │       ├── dispatch-plan.md
@@ -161,7 +161,7 @@ A decision (ADR/PDR/BDR) and its packets are written *before* the work. Implemen
 - **Deliverable:** `implementation-notes.md` in the initiative folder, alongside `dispatch-plan.md`. For a decision-driven initiative it *also* appends a dated `## Implementation Notes (YYYY-MM-DD)` pointer section to the governing ADR/PDR/BDR, so the delta is discoverable at the decision — not buried in the packet folder.
 - **Contents (minimum):** (1) what shipped, in a paragraph; (2) **deltas** — each material way the implementation diverged from the decision and/or the packets, written as *decided ➜ as-built*; (3) **why** each delta happened (the implementation learning); (4) PR/commit pointers; (5) follow-ups surfaced during the work; (6) known deviations from conventions, made explicit rather than silent. The original decision and packets are **not** edited — the notes are a retrospective overlay that preserves the decision history while recording reality.
 - **New artifact type (extends D7).** Implementation notes join the taxonomy: *spec* (packet — immutable), *narrative* (dispatch plan — mutable at wave boundaries), *baton* (handoff — ephemeral), and now *as-built* (implementation notes — authored once by the implementer at initiative close, a retrospective record, neither a spec nor live state; edited only to correct error).
-- **Scope-agent + filing.** The scope agent definition is updated in this change (`.claude/agents/scope.md` § Implementation-Notes Packet) to always emit the Implementation-Notes packet as the final task. `file-packets.yml` files it like any other packet — no filing change needed.
+- **Scope-agent + filing.** The scope agent definition is updated in this change (`.claude/agents/scope.md` § Implementation-Notes Packet) to always emit the Implementation-Notes packet as the final task. `file-work-items.yml` files it like any other packet — no filing change needed.
 
 **Work Tracking Invariant 110** (in `constitution/invariants.md`): *Every initiative closes with an implementation-notes record authored by the implementing agent, capturing what shipped and why it diverged from the decision and its packets. `hive-sync` **verifies the record exists and gates completion/archival on it** — an initiative whose tracked issues are all closed but whose record is missing is held `In Progress` and flagged, not completed. `hive-sync` flips status and moves the folder to `completed/`; it never authors the record.*
 
@@ -182,7 +182,7 @@ A decision (ADR/PDR/BDR) and its packets are written *before* the work. Implemen
 The following invariants must be added to `constitution/invariants.md` under a new **Work Tracking Invariants** section:
 
 23. **Every tracked work item has a GitHub Issue in its target repo.** No work tracked exclusively in packet files, chat logs, or external tools.
-24. **Issue packets are immutable specifications.** State lives on the Project board, never in the packet file. If requirements change materially, write a new packet rather than editing the old one.
+24. **Work items are immutable specifications.** State lives on the Project board, never in the packet file. If requirements change materially, write a new packet rather than editing the old one.
 25. **Dispatch plans are initiative narratives, not live state.** The org Project board is the source of truth for in-flight work. Dispatch plans are updated at wave boundaries as historical records.
 
 ### Follow-up Work
@@ -190,7 +190,7 @@ The following invariants must be added to `constitution/invariants.md` under a n
 None of the following is part of this ADR. Each is a discrete follow-up and should be scoped separately.
 
 - One-time org Project setup — create / confirm the Project, add the six custom fields from D3, configure auto-add with `repo:HoneyDrunkStudios/*`, and save canonical views (By Wave, By Node, Blocked). Portal walkthrough in `HoneyDrunk.Architecture/infrastructure/`.
-- Packet-filing script in `HoneyDrunk.Actions` (e.g. `scripts/file-packets.sh`) to batch-file packets from `generated/issue-packets/` into their target repos with correct labels.
+- Packet-filing script in `HoneyDrunk.Actions` (e.g. `scripts/file-work-items.sh`) to batch-file packets from `generated/work-items/` into their target repos with correct labels.
 - Minor update to the scope agent definition referencing ADR-0008 as its output schema contract.
 - Minor update to the adr-composer agent definition referencing ADR-0008 when it tells the user to delegate to the scope agent.
 
@@ -210,7 +210,7 @@ These are known gaps in the ADR-0008 system that have been identified but not ye
 
 **Why D5 is not the right solution for the primary path:**
 
-The primary flow is: issue packets are authored in Architecture repo → PR merged → a batch-filing action in `HoneyDrunk.Actions` reads packets and creates issues in target repos. That action calls `hive-project-mirror.sh` immediately after each `gh issue create`, so the issue lands on The Hive with all fields populated at filing time. No per-repo event triggers, no auto-add, no deferred sync needed.
+The primary flow is: work items are authored in Architecture repo → PR merged → a batch-filing action in `HoneyDrunk.Actions` reads packets and creates issues in target repos. That action calls `hive-project-mirror.sh` immediately after each `gh issue create`, so the issue lands on The Hive with all fields populated at filing time. No per-repo event triggers, no auto-add, no deferred sync needed.
 
 D6 (batch-filing action — now operational, see below) is the correct fix. With D6 in production and incorporating the mirror step, D5 is fully resolved for all issues filed through the official packet flow.
 
@@ -220,12 +220,12 @@ D6 (batch-filing action — now operational, see below) is the correct fix. With
 
 ### D6 Gap — RESOLVED (operational by 2026-05-20)
 
-The batch-filing action shipped: `HoneyDrunk.Actions/scripts/file-packets.sh` invoked by `HoneyDrunk.Actions/.github/workflows/file-packets.yml`. Both are referenced as existing in standalone packet `2026-05-20-actions-file-packets-body-length-precheck.md`, and `generated/issue-packets/filed-packets.json` shows it has been operating across many initiatives (ADR-0010, 0011, 0012, 0015, 0016, 0017, 0029 and more) — each entry maps a packet path to the auto-filed GitHub issue URL.
+The batch-filing action shipped: `HoneyDrunk.Actions/scripts/file-work-items.sh` invoked by `HoneyDrunk.Actions/.github/workflows/file-work-items.yml`. Both are referenced as existing in standalone packet `2026-05-20-actions-file-work-items-body-length-precheck.md`, and `generated/work-items/filed-work-items.json` shows it has been operating across many initiatives (ADR-0010, 0011, 0012, 0015, 0016, 0017, 0029 and more) — each entry maps a packet path to the auto-filed GitHub issue URL.
 
 What the action does in practice:
 
 1. Triggered from Architecture repo on PR merge to `main` (or manually via `workflow_dispatch`)
-2. Reads frontmatter from newly merged packets in `generated/issue-packets/active/` (target_repo, labels, tier, wave, adrs, initiative, dependencies)
+2. Reads frontmatter from newly merged packets in `generated/work-items/active/` (target_repo, labels, tier, wave, adrs, initiative, dependencies)
 3. Runs `gh issue create` with correct labels in the target repo
 4. Calls `hive-project-mirror.sh` for the new issue URL — adds it to The Hive and sets all fields from frontmatter
 5. Sets issue `Status` to `Backlog` on The Hive
@@ -233,11 +233,11 @@ What the action does in practice:
 
 This single action replaced manual `gh issue create` + `hive-backfill-issue.sh` per packet and eliminated the bottleneck described in the prior framing of this gap.
 
-`HIVE_FIELD_MIRROR_TOKEN` is configured as an org secret (without it the production runs in `filed-packets.json` would not have succeeded).
+`HIVE_FIELD_MIRROR_TOKEN` is configured as an org secret (without it the production runs in `filed-work-items.json` would not have succeeded).
 
 **Residual hardening (tracked separately):**
 
-- **Standalone packet `2026-05-20-actions-file-packets-body-length-precheck.md`** — adds two structural fixes to `scripts/file-packets.sh`:
+- **Standalone packet `2026-05-20-actions-file-work-items-body-length-precheck.md`** — adds two structural fixes to `scripts/file-work-items.sh`:
   1. Pre-flight body-length check (fail fast before any `gh issue create` calls if any packet exceeds the 65k GitHub issue-body cap)
   2. Continue-on-failure for per-packet creation (don't exit on first failure; report a summary)
 

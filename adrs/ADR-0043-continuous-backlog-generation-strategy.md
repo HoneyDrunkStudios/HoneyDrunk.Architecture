@@ -27,7 +27,7 @@ The ADR commits to **what** the sources are, **which agents** own them, the **pa
 
 ### D1 — Four backlog-source streams plus a triage surface
 
-The Grid commits to four named sources of agent-generated packets and one named triage surface. Each source produces packets into `generated/issue-packets/proposed/` (D3); the triage surface reads from there.
+The Grid commits to four named sources of agent-generated packets and one named triage surface. Each source produces packets into `generated/work-items/proposed/` (D3); the triage surface reads from there.
 
 | Source | Trigger | Owning agent | Output |
 |--------|---------|--------------|--------|
@@ -50,14 +50,14 @@ Every source produces packets in the format already governed by `copilot/issue-a
 
 The contract:
 
-- A packet is a markdown file in `generated/issue-packets/proposed/{YYYY-MM-DD}-{repo}-{description}.md` per ADR-0008 D10 naming.
+- A packet is a markdown file in `generated/work-items/proposed/{YYYY-MM-DD}-{repo}-{description}.md` per ADR-0008 D10 naming.
 - The packet's frontmatter includes a new `source` field: `strategic` | `tactical` | `opportunistic` | `reactive` for ADR-0043 generated backlog packets, or `human` for human-authored packets. This is how triage later filters and how `hive-sync` reconciles per-source backlogs.
 - The packet's frontmatter includes a `generator` field naming the agent that produced it. Auditability of "who said this should be done."
 - Reactive packets may also include `priority: urgent` for high+ CVE, production incident, or canary-failure-past-grace items. Non-urgent packets either omit `priority` or set a lower local value for briefing sorting only.
 
 ### D3 — Three-state packet lifecycle: `proposed/` → `active/` → `completed/`
 
-The current `generated/issue-packets/` layout has `active/` and `completed/` as observed conventions. This ADR formalizes a three-state lifecycle with explicit directories:
+The current `generated/work-items/` layout has `active/` and `completed/` as observed conventions. This ADR formalizes a three-state lifecycle with explicit directories:
 
 - **`proposed/`** — agent-generated, awaiting human triage. Not yet a GitHub issue. May be edited or deleted without ceremony. The human's queue.
 - **`active/`** — human-promoted, filed as a GitHub issue via `file-issues`, in flight. Existing convention.
@@ -146,7 +146,7 @@ Each source still has a quality gate, but the runner jobs exist from the start. 
 
 ### Affected Nodes
 
-- **HoneyDrunk.Architecture** (this repo) — primary affected Node; new directories (`generated/issue-packets/proposed/`, `generated/audits/`, `generated/scout-reports/`, `generated/briefings/`), new index file `initiatives/audit-rotation.md`, expanded `hive-sync` responsibilities per D8.
+- **HoneyDrunk.Architecture** (this repo) — primary affected Node; new directories (`generated/work-items/proposed/`, `generated/audits/`, `generated/scout-reports/`, `generated/briefings/`), new index file `initiatives/audit-rotation.md`, expanded `hive-sync` responsibilities per D8.
 - **No code-Node changes.** This is entirely a Meta-sector decision about how work flows into the existing pipeline.
 - **`hive-sync` agent** — gains the ADR-acceptance trigger (D4 Strategic) and the drift-to-packet conversion (D4 Reactive). Both are amendments to its existing run loop; ADR-0014's mandate already permits them.
 
@@ -154,7 +154,7 @@ Each source still has a quality gate, but the runner jobs exist from the start. 
 
 Adds two:
 
-- **Invariant: every agent-generated packet lands in `generated/issue-packets/proposed/`, never directly in `active/`.** Agents do not self-promote; a human is the only `proposed/` → `active/` transition authority.
+- **Invariant: every agent-generated packet lands in `generated/work-items/proposed/`, never directly in `active/`.** Agents do not self-promote; a human is the only `proposed/` → `active/` transition authority.
 - **Invariant: every packet carries `source` and `generator` frontmatter fields.** Auditability of agent-generated work is non-negotiable.
 
 ### Operational Consequences
@@ -167,7 +167,7 @@ Adds two:
 
 ### Follow-up Work
 
-- Create the new directories: `generated/issue-packets/proposed/`, `generated/audits/`, `generated/scout-reports/`, `generated/briefings/`.
+- Create the new directories: `generated/work-items/proposed/`, `generated/audits/`, `generated/scout-reports/`, `generated/briefings/`.
 - Author `initiatives/audit-rotation.md` with the initial 12-Node rotation order.
 - Amend `hive-sync` for the ADR-acceptance trigger and drift-to-packet conversion (per D8).
 - Amend `copilot/issue-authoring-rules.md` to require the `source` and `generator` frontmatter fields.

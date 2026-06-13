@@ -27,7 +27,7 @@
     WriteMode = "pr"
     OutputContract = @{
         LatestOutput = "generated/briefings/{YYYY-MM-DD}-strategic-source.md"
-        Summary = "Creates Strategic source reports and proposed issue packets for unimplemented Accepted decisions."
+        Summary = "Creates Strategic source reports and proposed work items for unimplemented Accepted decisions."
     }
     Notifications = @{
         Discord = @{

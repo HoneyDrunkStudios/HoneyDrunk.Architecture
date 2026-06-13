@@ -17,7 +17,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - ADR-0043 Strategic backlog generation deferred or gated while The Hive's Backlog:Ready ratio exceeds ~10:1.
 - Recurring weekly work lives as a standing checklist in the metrics log, not as additional packets; packets stay day-scale or smaller.
 
-**Tracking (distribution-90 packets — [dispatch plan](../generated/issue-packets/active/distribution-90/dispatch-plan.md)):**
+**Tracking (distribution-90 packets — [dispatch plan](../generated/work-items/active/distribution-90/dispatch-plan.md)):**
 - [ ] **Wave 1 — packet 01:** Cloudflare Web Analytics beacon on tatteddev.com (tatteddev/tatteddev-blog).
 - [ ] **Wave 1 — packet 02:** Cloudflare Web Analytics beacon on honeydrunkstudios.com (HoneyDrunkStudios/HoneyDrunkStudios).
 - [ ] **Wave 1 — packet 03:** `initiatives/metrics-log.md` with NuGet/stars/traffic day-0 baseline (Architecture).
@@ -140,7 +140,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 **Scope:** Architecture governance, generated packet lifecycle, agent prompts, ADR-0086 runner jobs, Discord visibility
 **Initiative:** `adr-0043-continuous-backlog-generation`
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
-**Description:** Close the upstream work-sourcing gap by running Strategic, Tactical, Opportunistic, and Reactive backlog generation through the ADR-0086 Grid Agent Runner. Agent-generated work lands in `generated/issue-packets/proposed/`; humans promote selected packets to `active/`; weekly netrunner briefings provide the triage surface; Discord provides runner visibility and urgent reactive attention. The four backlog-generation sources are now also formalized as LDRs (`loop-0002`–`loop-0005`) under ADR-0093 loop engineering. *(Cross-ref: current-focus #3 — the residual is scheduler registration on the runner host + the first live Strategic run.)*
+**Description:** Close the upstream work-sourcing gap by running Strategic, Tactical, Opportunistic, and Reactive backlog generation through the ADR-0086 Grid Agent Runner. Agent-generated work lands in `generated/work-items/proposed/`; humans promote selected packets to `active/`; weekly netrunner briefings provide the triage surface; Discord provides runner visibility and urgent reactive attention. The four backlog-generation sources are now also formalized as LDRs (`loop-0002`–`loop-0005`) under ADR-0093 loop engineering. *(Cross-ref: current-focus #3 — the residual is scheduler registration on the runner host + the first live Strategic run.)*
 
 **Tracking (Automation substrate):**
 - [x] Accept ADR-0043 and bind D7 to the ADR-0086 runner instead of deferring execution.
@@ -508,7 +508,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
 **Description:** Per-Node Key Vault + shared App Configuration + env-driven bootstrap model (ADR-0005), plus rotation lifecycle, event-driven invalidation, and deploy-gate SLA checks (ADR-0006). Two waves: foundation then per-Node migration.
 **Tracking:**
-- [x] Issue packets authored (15 packets, 2 waves)
+- [x] Work items authored (15 packets, 2 waves)
 - [x] Wave 1 issues filed on board (7/7 — Architecture#8 closed 2026-04-11, unblocking Vault.Rotation scaffold)
 - [x] Wave 1: Vault env-driven `AddVault` wiring (Vault#9 closed 2026-04-12)
 - [x] Wave 1: Vault `AddAppConfiguration` extension (Vault#9 closed 2026-04-12)
@@ -520,7 +520,7 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 - [x] Wave 2: Per-Node bootstrap migrations (Auth#5, Web.Rest#4, Data#4, Notify#1, Pulse#1, Studios#2 closed)
 - [x] Wave 2: Actions direct secret removal + deploy-gate SLA check (Actions#21 closed)
 
-> **Sync (2026-05-16):** 15/15 issue packets remain closed. Completed manifest entries older than 30 days were pruned from `filed-packets.json`; packet files remain archived in `completed/`. Initiative remains ready for exit-criteria review/archive, with release-verification notes still tracked in `initiatives/releases.md`.
+> **Sync (2026-05-16):** 15/15 work items remain closed. Completed manifest entries older than 30 days were pruned from `filed-work-items.json`; packet files remain archived in `completed/`. Initiative remains ready for exit-criteria review/archive, with release-verification notes still tracked in `initiatives/releases.md`.
 
 ### Container Apps Rollout (ADR-0015)
 **Status:** In Progress — all five rollout packet issues closed; implementation-notes pointer heading is non-conforming, so completion is held by invariant 110

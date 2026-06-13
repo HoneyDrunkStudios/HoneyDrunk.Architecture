@@ -9,10 +9,10 @@ Maps agent capabilities to the types of work they can perform in the Grid.
 **Input:** Natural language question about architecture
 **Output:** Structured answer with file references
 
-### Issue Packet Generation
-**Capability:** Generate structured GitHub Issue packets from a description of work. Automatically detects single-repo vs multi-repo scope.
+### Work Item Generation
+**Capability:** Generate structured GitHub Work items from a description of work. Automatically detects single-repo vs multi-repo scope.
 **Input:** Description of feature, bug, change, or initiative
-**Output:** Issue packets in `/generated/issue-packets/`, dispatch plans and handoff prompts in `/generated/` for multi-repo work
+**Output:** Work items in `/generated/work-items/`, dispatch plans and handoff prompts in `/generated/` for multi-repo work
 
 ### Issue Filing
 **Capability:** File packet files as GitHub issues and wire them fully into The Hive. Handles the entire mechanical pipeline so nothing is missed.
@@ -44,15 +44,15 @@ Maps agent capabilities to the types of work they can perform in the Grid.
 | Request Pattern | Primary Skill |
 |----------------|---------------|
 | "What repos are affected by..." | Dependency Impact Analysis |
-| "Create an issue for..." | Issue Packet Generation |
+| "Create an issue for..." | Work Item Generation |
 | "Should we..." / "What if..." | ADR Draft Generation |
-| "Plan the changes for..." | Issue Packet Generation |
+| "Plan the changes for..." | Work Item Generation |
 | "Update the website for..." | Site Sync Packet Generation |
 | "Review this PR" | PR Review |
 | "How does X connect to Y" | Architecture Analysis |
-| "Break this into issues" | Issue Packet Generation |
-| "Scope this work" | Issue Packet Generation |
-| "Hand off X to Y repo" | Issue Packet Generation |
+| "Break this into issues" | Work Item Generation |
+| "Scope this work" | Work Item Generation |
+| "Hand off X to Y repo" | Work Item Generation |
 | "File these issues" | Issue Filing |
 | "Create the issues for..." | Issue Filing |
 | "Push these packets to GitHub" | Issue Filing |
@@ -79,7 +79,7 @@ Complete inventory of agents under `.claude/agents/` that run within the Claude 
 | **pdr-composer** | Facilitate product decisions, produce PDRs | - |
 | **product-strategist** | Product strategy, positioning, roadmap, and commercialization analysis | - |
 | **site-sync** | Sync website with architecture changes | - |
-| **scope** | Scope work into issues - auto-detects single or multi-repo, generates issue packets, dispatch plans, and handoff prompts | adr-composer, site-sync |
+| **scope** | Scope work into issues - auto-detects single or multi-repo, generates work items, dispatch plans, and handoff prompts | adr-composer, site-sync |
 | **file-issues** | File packet files as GitHub issues - creates issues, adds to The Hive, sets all project fields, wires blocking relationships | - |
 | **refine** | Challenge scoped work before execution - finds gaps, missed dependencies, boundary violations, invariant risks | - |
 | **review** | Review PRs against boundary rules, invariants, contract safety, and code conventions | - |

@@ -8,7 +8,7 @@
 
 ## If Accepted — Required Follow-Up Work in Architecture Repo
 
-Accepting this ADR creates catalog obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
+Accepting this ADR creates catalog obligations that must be completed as follow-up work items (do not accept and leave the catalogs stale):
 
 - [x] Add `honeydrunk-observe` to `catalogs/nodes.json` with full metadata (include package families: `HoneyDrunk.Observe.Abstractions`, `HoneyDrunk.Observe`, and the `HoneyDrunk.Observe.Connectors.*` provider slots)
 - [x] Add entries to `catalogs/relationships.json` (consumed_by, exposes.contracts, consumes_detail)
@@ -29,7 +29,7 @@ PDR-0001 introduced two new layers in the HoneyDrunk platform vision:
 
 Both layers were accepted as part of PDR-0001 but were never translated into concrete architectural decisions, ADRs, or work packets. They exist only as principles. This ADR makes them architectural commitments with defined boundaries, so agents can reason about them and work can be scoped.
 
-This ADR does **not** design the full implementation — that belongs in issue packets. It establishes: what each layer owns, what it does not own, its relationship to existing Nodes, and how bring-up will be phased.
+This ADR does **not** design the full implementation — that belongs in work items. It establishes: what each layer owns, what it does not own, its relationship to existing Nodes, and how bring-up will be phased.
 
 ## Decision
 
@@ -108,7 +108,7 @@ The following invariants must be added to `constitution/invariants.md`:
 ### Positive
 
 - PDR-0001's observation and routing layers are now architectural commitments with defined contracts, not just product principles.
-- Agents can now reason about Observe and AI Routing when generating issue packets.
+- Agents can now reason about Observe and AI Routing when generating work items.
 - The provider slot pattern from Vault and Transport is consistently applied to a third domain (observation connectors) and a fourth (model routing policies).
 - External project visibility is decoupled from HoneyHub — Observe can ship before HoneyHub is live.
 

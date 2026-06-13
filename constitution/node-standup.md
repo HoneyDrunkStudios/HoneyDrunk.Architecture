@@ -76,7 +76,7 @@ Lands as one human-only chore packet — exemplar `02-architecture-create-audit-
 - OIDC federated credential subject pattern updated in Microsoft Entra for NuGet-shipping Nodes (`repo:HoneyDrunkStudios/{NodeName}:ref:refs/tags/v*`).
 - Local clone made.
 
-**Gate:** Phase B must complete before Phase C is *fileable* — Invariant 24 (*issue packets are immutable once filed as a GitHub Issue*) means the scaffold packet's `target_repo` must exist before its issue can be filed.
+**Gate:** Phase B must complete before Phase C is *fileable* — Invariant 24 (*work items are immutable once filed as a GitHub Issue*) means the scaffold packet's `target_repo` must exist before its issue can be filed.
 
 ### Phase C — Scaffold landing (agent-eligible)
 
@@ -123,7 +123,7 @@ Eighteen steps. They land across Phases A/B/C as noted in brackets. Skipping any
 
 - **a.** `.slnx` solution at the repo root.
 - **b.** `Directory.Build.props` with `TargetFramework`, `Nullable`, `ImplicitUsings`, `LangVersion`, `TreatWarningsAsErrors`, a shared `Version` (Invariant 27: *all projects in a solution share one version and move together*), `Authors`, `PackageProjectUrl`, `RepositoryUrl`, `RepositoryType`, `PublishRepositoryUrl`, `IncludeSymbols`, `SymbolPackageFormat`, `GenerateDocumentationFile`. Exemplar in the Audit scaffold packet text.
-- **c.** `HoneyDrunk.Standards` reference with `PrivateAssets="all"` on every `.csproj` (Invariant 26: *issue packets for .NET work must include an explicit NuGet Dependencies section, and `HoneyDrunk.Standards` must be explicitly listed on every new .NET project*). StyleCop + EditorConfig + analyzer suite; `.editorconfig` shipped from Standards.
+- **c.** `HoneyDrunk.Standards` reference with `PrivateAssets="all"` on every `.csproj` (Invariant 26: *work items for .NET work must include an explicit NuGet Dependencies section, and `HoneyDrunk.Standards` must be explicitly listed on every new .NET project*). StyleCop + EditorConfig + analyzer suite; `.editorconfig` shipped from Standards.
 - **d.** Test project layout — a `*.Tests.Unit` project always; deployable Nodes also add `*.Tests.Integration`; HTTP-fronted Nodes also add `*.Tests.E2E` (Invariant 50: *every Node has a `*.Tests.Unit` project; deployable Nodes also have a `*.Tests.Integration`; HTTP-fronted Nodes also have a `*.Tests.E2E`; a missing required tier is a CI gate failure*). xUnit + NSubstitute + AwesomeAssertions + coverlet (ADR-0074).
 - **e.** `release.yml` consuming `HoneyDrunk.Actions`'s `release.yml` reusable workflow (ADR-0012 / ADR-0034); tag-triggered (`on: push: tags: [v*.*.*]`); no `secrets: inherit` — explicit named secrets only.
 - **f.** `nightly-deps.yml` consuming the reusable workflow (ADR-0009).

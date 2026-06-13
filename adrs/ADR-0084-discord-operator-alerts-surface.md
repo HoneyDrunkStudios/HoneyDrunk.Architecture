@@ -180,7 +180,7 @@ This table pins the v1 routing for every source above. It lives in this ADR as t
 
 ### D7 — Vendor posture: Hedge, with named hedges
 
-Per [ADR-0080](./ADR-0080-vendor-lock-in-posture-and-exit-readiness-hedges.md)'s three-posture taxonomy, Discord is assigned **Hedge (active)**. The amendment is added to [ADR-0080](./ADR-0080-vendor-lock-in-posture-and-exit-readiness-hedges.md) D2's per-vendor table by follow-up packet:
+Per [ADR-0080](./ADR-0080-vendor-lock-in-posture-and-exit-readiness-hedges.md)'s three-posture taxonomy, Discord is assigned **Hedge (active)**. The amendment is added to [ADR-0080](./ADR-0080-vendor-lock-in-posture-and-exit-readiness-hedges.md) D2's per-vendor table by follow-up work-item:
 
 | Vendor | Surface(s) | Posture | Specific hedges in place | Estimated exit cost |
 |---|---|---|---|---|

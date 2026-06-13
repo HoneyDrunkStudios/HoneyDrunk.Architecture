@@ -7,7 +7,7 @@
 
 ## If Accepted — Required Follow-Up Work in Architecture Repo
 
-Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
+Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up work items (do not accept and leave the catalogs stale):
 
 - [ ] Reconcile `catalogs/contracts.json`: deprecate the existing `ICapability` and `ICapabilityPermission` entries for `honeydrunk-capabilities` and add entries for the four separated contracts — `ICapabilityRegistry`, `CapabilityDescriptor`, `ICapabilityInvoker`, `ICapabilityGuard`
 - [ ] Update `catalogs/grid-health.json` Capabilities entry to reflect the stood-up contract surface and scaffold expectations
@@ -26,7 +26,7 @@ The current `catalogs/contracts.json` entry for `honeydrunk-capabilities` lists 
 
 There is also a naming collision to defuse before it spreads. The superseded ADR-0004 used `capabilities:` as YAML frontmatter on agent definition files to describe the tool primitives an agent needs (read_files, search_code, etc.). That usage is an authoring-time mapping concept and has nothing to do with the runtime tool-registry primitives this Node owns. This ADR names the runtime primitives explicitly and does not borrow the frontmatter word.
 
-This ADR is the **stand-up decision** for the Capabilities Node — what it owns, what it does not own, which contracts it exposes, and how downstream Nodes couple to it. It is not a scaffolding packet. Filing the repo, adding CI, wiring the InMemory fixture, and producing the first shippable packages all follow as separate issue packets once this ADR is accepted.
+This ADR is the **stand-up decision** for the Capabilities Node — what it owns, what it does not own, which contracts it exposes, and how downstream Nodes couple to it. It is not a scaffolding packet. Filing the repo, adding CI, wiring the InMemory fixture, and producing the first shippable packages all follow as separate work items once this ADR is accepted.
 
 ## Decision
 

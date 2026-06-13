@@ -374,6 +374,6 @@ Only after the curated product works: additional districts/cities, trusted-curat
 
 - **Product one-pager:** Curiosities launch-district pitch and target user.
 - **Content safety policy:** allowed/disallowed POI and prompt rules (prerequisite to any publish).
-- **Content pipeline spike packet:** evaluate open data sources and licensing for one city; measure real per-POI production cost (tests Kill Criterion 1).
-- **Prototype packet:** lightweight map + 25 POIs + collection screen.
+- **Content pipeline spike work-item:** evaluate open data sources and licensing for one city; measure real per-POI production cost (tests Kill Criterion 1).
+- **Prototype work-item:** lightweight map + 25 POIs + collection screen.
 - **Future ADR:** only if backend content storage, the curated-content pipeline, an editorial review queue, or AI-assisted content generation are accepted for build.

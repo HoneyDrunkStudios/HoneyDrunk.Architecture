@@ -7,7 +7,7 @@
 
 ## If Accepted — Required Follow-Up Work in Architecture Repo
 
-Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
+Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up work items (do not accept and leave the catalogs stale):
 
 - [ ] Create `HoneyDrunk.Cache` GitHub repo as **public** (per the build-in-public default for non-revenue Nodes)
 - [ ] Add `honeydrunk-cache` entry to `catalogs/nodes.json` with Core sector and empty contracts list (the contract being implemented, `ICacheStore<T>`, lives in Kernel.Abstractions per [ADR-0058](./ADR-0058-grid-wide-caching-strategy.md) D2)
@@ -46,7 +46,7 @@ ADR-0058 Accepted (contract in Kernel.Abstractions, InMemory in Kernel)
 
 The Node does not flip Status → Accepted until the scaffold packet lands and the catalogs reflect the stand-up. The first distributed backing is **not** part of stand-up scope; it lands later as a separate feature packet when a real consumer activates it.
 
-This ADR is the **stand-up decision** for the Cache Node — what it owns, what it does not own, what scaffolds in the first PR, and what does not. It is not a scaffolding packet. Filing the repo, adding CI, and wiring the empty solution all follow as separate issue packets once this ADR is accepted.
+This ADR is the **stand-up decision** for the Cache Node — what it owns, what it does not own, what scaffolds in the first PR, and what does not. It is not a scaffolding packet. Filing the repo, adding CI, and wiring the empty solution all follow as separate work items once this ADR is accepted.
 
 ## Decision
 

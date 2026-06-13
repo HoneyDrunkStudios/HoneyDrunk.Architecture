@@ -26,7 +26,7 @@ revalidation_cadence: quarterly, or on any change to hive-sync's mutation surfac
 | Part | This loop |
 |------|-----------|
 | **trigger** | ADR-0086 runner schedule (Mon/Wed/Fri 09:00 local); manual dispatch available |
-| **inputs** | `filed-packets.json`; `gh` issue states; GraphQL Hive board state; all `catalogs/*.json`; `adrs/ADR-*.md` + `pdrs/PDR-*.md` frontmatter; `initiatives/` files |
+| **inputs** | `filed-work-items.json`; `gh` issue states; GraphQL Hive board state; all `catalogs/*.json`; `adrs/ADR-*.md` + `pdrs/PDR-*.md` frontmatter; `initiatives/` files |
 | **synthesizer** | `.claude/agents/hive-sync.md` run via Codex on the runner (state-delta between Architecture files and live Hive → reconciliation edits) |
 | **gate** | Human review of the reconciliation PR (Tier A) |
 | **feedback_sink** | The reconciliation PR: updated `initiatives/` files, packet moves (`active/`→`completed/`), `board-items.md`, `proposed-adrs.md`, `drift-report.md`, bounded catalog reconciliation, README index Status/Date |

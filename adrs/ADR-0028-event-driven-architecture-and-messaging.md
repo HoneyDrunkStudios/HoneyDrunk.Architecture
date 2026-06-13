@@ -7,7 +7,7 @@
 
 ## If Accepted — Required Follow-Up Work in Architecture Repo
 
-Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
+Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up work items (do not accept and leave the catalogs stale):
 
 - [ ] Add the use-case → backing matrix (D2 below) to `repos/HoneyDrunk.Transport/integration-points.md` so the Transport repo is the authoritative reference for "which backing for which use case"
 - [ ] Update `repos/HoneyDrunk.Transport/boundaries.md` to clarify that Transport is the abstraction layer for **async commands and durable pub/sub** only — telemetry signals (Pulse), CI cron (Actions), and reactive resource events (Event Grid system topics) are out of Transport's scope

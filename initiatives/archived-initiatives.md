@@ -62,7 +62,7 @@ Completed and cancelled initiatives. Active and planned work lives in [active-in
 **Tracking (Wave 1 — foundation):**
 - [x] Architecture: Accept ADR-0011 — flip status, ADR index, invariants 31–33 qualifier strip, `agent_couplings` catalog entry, SonarQube Cloud org walkthrough (packets 01 + 04 bundled)
 - [x] Actions: `job-sonarcloud.yml` reusable workflow (packet 02; merged Actions PR #130)
-- [x] Actions: `agent-run.yml` packet-link injection — workflow asserts canonical `> Packet: <permalink>` line into PR bodies via `gh pr edit` (packet 03; merged Actions PR #130)
+- [x] Actions: `agent-run.yml` packet-link injection — workflow asserts canonical `> Work Item: <permalink>` line into PR bodies via `gh pr edit` (packet 03; merged Actions PR #130)
 - [x] Actions: `sonar.cs.opencover.reportsPaths` flag re-added after sonar-project.properties path proved unviable on .NET (merged Actions PR #132)
 - [x] Actions: `push:main` coverage-generation fallback so main-branch analysis has data even when `pr-core` doesn't run (merged Actions PR #133)
 - [x] Packets 05a/05b superseded by ADR-0044 Actions#86 — `out-of-band` label seeded Grid-wide via the labels-as-code fan-out shipped under that initiative

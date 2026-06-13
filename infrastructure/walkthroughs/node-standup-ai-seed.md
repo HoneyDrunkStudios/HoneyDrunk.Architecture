@@ -23,7 +23,7 @@ Catalog a planned AI-sector (or other-sector) Node before it has been stood up. 
 
 ## Phase A (only)
 
-This is the entire AI Seed procedure. One Architecture packet:
+This is the entire AI Seed procedure. One Architecture work-item:
 
 1. **Catalog rows.** Add the Node row to `catalogs/nodes.json` with:
    - `signal: "seed"`

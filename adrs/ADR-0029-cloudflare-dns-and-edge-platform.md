@@ -5,11 +5,11 @@
 **Deciders:** HoneyDrunk Studios
 **Sector:** Infrastructure
 
-> **Accepted 2026-06-07.** See [`## Acceptance`](#acceptance) and the as-built record in [`generated/issue-packets/completed/adr-0029-cloudflare-dns-rollout/implementation-notes.md`](../generated/issue-packets/completed/adr-0029-cloudflare-dns-rollout/implementation-notes.md). The realized scope was **registrar-only** — DNS authority was already on Cloudflare for two of three domains before this ADR, so the migration reduced to transferring the registration. The decision body below is preserved as written; the implementation notes record where reality diverged.
+> **Accepted 2026-06-07.** See [`## Acceptance`](#acceptance) and the as-built record in [`generated/work-items/completed/adr-0029-cloudflare-dns-rollout/implementation-notes.md`](../generated/work-items/completed/adr-0029-cloudflare-dns-rollout/implementation-notes.md). The realized scope was **registrar-only** — DNS authority was already on Cloudflare for two of three domains before this ADR, so the migration reduced to transferring the registration. The decision body below is preserved as written; the implementation notes record where reality diverged.
 
 ## If Accepted — Required Follow-Up Work in Architecture Repo
 
-Accepting this ADR creates infrastructure and catalog obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
+Accepting this ADR creates infrastructure and catalog obligations that must be completed as follow-up work items (do not accept and leave the catalogs stale):
 
 - [x] Update `infrastructure/reference/vendor-inventory.md` — replace the GoDaddy row with Cloudflare (registrar), keep Cloudflare DNS/CDN row, and update the lock-in assessment to reflect the consolidation *(done in the acceptance PR — GoDaddy row removed; Cloudflare row scoped to registrar + DNS + edge; lock-in row added)*
 - [~] Add `infrastructure/cloudflare-account-provisioning.md` — *descoped: the Cloudflare account already existed (and held the two zones) before this ADR; no provisioning walkthrough was authored. The as-built account posture is captured in the implementation notes.*
@@ -220,4 +220,4 @@ D3 (edge proxy posture), D4 (deferred features), D5 (API token handling — no t
 
 ## Implementation Notes
 
-As-built record (decided ➜ as-built deltas, the registrar-transfer recipe, and the GoDaddy email-billing finding): [`generated/issue-packets/completed/adr-0029-cloudflare-dns-rollout/implementation-notes.md`](../generated/issue-packets/completed/adr-0029-cloudflare-dns-rollout/implementation-notes.md).
+As-built record (decided ➜ as-built deltas, the registrar-transfer recipe, and the GoDaddy email-billing finding): [`generated/work-items/completed/adr-0029-cloudflare-dns-rollout/implementation-notes.md`](../generated/work-items/completed/adr-0029-cloudflare-dns-rollout/implementation-notes.md).

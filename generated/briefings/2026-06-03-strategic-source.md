@@ -7,7 +7,7 @@
 - Dedupe skips: 27
 
 ## Decisions Scoped
-- **ADR-0084**: Discord as the Canonical Operator-Alerts Surface -> [2026-06-03-architecture-reconcile-adr-0084-docs-sync-alert-routing-drift.md](../issue-packets/proposed/2026-06-03-architecture-reconcile-adr-0084-docs-sync-alert-routing-drift.md)
+- **ADR-0084**: Discord as the Canonical Operator-Alerts Surface -> [2026-06-03-architecture-reconcile-adr-0084-docs-sync-alert-routing-drift.md](../work-items/proposed/2026-06-03-architecture-reconcile-adr-0084-docs-sync-alert-routing-drift.md)
 
 ## Skipped
 - **ADR-0001**: No new packet. The Node vs Service distinction is already reflected in terminology/catalog shape and no current drift signal names missing implementation.

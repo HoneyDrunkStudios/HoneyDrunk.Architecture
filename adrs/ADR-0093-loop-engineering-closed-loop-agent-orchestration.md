@@ -68,7 +68,7 @@ A loop can only be trusted to run **unattended** if **done is a machine-checkabl
 
 Two binding rules:
 
-- **The Success Definition is authored separately from the worker.** The party that *defines* done is never the agent that *achieves* it — otherwise the agent grades its own homework. This reuses the existing seam: the issue packet / LDR specifies acceptance criteria (authored by `scope`/human), the execution agent satisfies them. The upgrade is rewriting those criteria from human-interpreted bullets into runner-evaluated predicates.
+- **The Success Definition is authored separately from the worker.** The party that *defines* done is never the agent that *achieves* it — otherwise the agent grades its own homework. This reuses the existing seam: the work item / LDR specifies acceptance criteria (authored by `scope`/human), the execution agent satisfies them. The upgrade is rewriting those criteria from human-interpreted bullets into runner-evaluated predicates.
 - **Rigor scales with autonomy (D4).** "How specific is success" and "how much autonomy" are the same dial. A loop without a complete, executable Success Definition does not qualify for any autonomy tier above A (human-gated).
 
 ### D4 — Autonomy ladder, bounded by blast radius
@@ -234,7 +234,7 @@ Per the HoneyHub flexibility posture (PDR-0011 Amendment §7), load-bearing line
 
 | Question | Owner | Status |
 |----------|-------|--------|
-| Does the live-state fleet index live in `loops/`, a catalog (`catalogs/loops.json`), or Pulse? | Architecture | Open — **deferred** to follow-up packet `generated/issue-packets/proposed/2026-06-09-architecture-loop-fleet-live-state-index.md`; this substrate does **not** decide it |
+| Does the live-state fleet index live in `loops/`, a catalog (`catalogs/loops.json`), or Pulse? | Architecture | Open — **deferred** to follow-up packet `generated/work-items/proposed/2026-06-09-architecture-loop-fleet-live-state-index.md`; this substrate does **not** decide it |
 | What is the exact stuck-detector signal (iteration count, gate-delta, or both)? | Architecture / Ops | Open (D5 `[Provisional]`) |
 | Does the Loop Console reuse `DispatchSession` directly or define a `LoopRun` sibling? | Product / Architecture | Deferred to the HoneyHub-program phase (D9) |
 | What concurrent-autonomous-loop count triggers the fleet orchestrator (D8 gated set)? | Architecture | Open — named, not yet quantified |

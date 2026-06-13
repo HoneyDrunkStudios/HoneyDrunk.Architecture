@@ -7,7 +7,7 @@
 
 ## If Accepted — Required Follow-Up Work in Architecture Repo
 
-Accepting this ADR creates Kernel.Abstractions, Billing, and cross-Node obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
+Accepting this ADR creates Kernel.Abstractions, Billing, and cross-Node obligations that must be completed as follow-up work items (do not accept and leave the catalogs stale):
 
 - [ ] Kernel.Abstractions packet — introduce `Money` (record) and `CurrencyCode` (record struct or static-validated string wrapper, per D4) in `HoneyDrunk.Kernel.Abstractions.Money/`; ship the ISO 4217 alpha-3 validator with the major-currency seed list from D4
 - [ ] Kernel.Abstractions packet — add canary tests pinning `Money` arithmetic, rounding mode (D3), serialization (D9), and the currency-mismatch throw behavior (D2)

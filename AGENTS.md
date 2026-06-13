@@ -10,7 +10,7 @@ For the planning surface's instructions, see `CLAUDE.md`.
 
 You are the **execution surface**:
 
-1. **Claude Code** — plans work, decomposes goals, generates issue packets (reads `CLAUDE.md`)
+1. **Claude Code** — plans work, decomposes goals, generates work items (reads `CLAUDE.md`)
 2. **Codex (You)** — executes scoped tasks in target repos, opens PRs (reads `AGENTS.md`)
 3. **GitHub Copilot** — assists the developer in-IDE for hands-on coding
 
@@ -32,7 +32,7 @@ When you receive a task:
 
 - Implement features scoped to a single repo
 - Write tests for new or existing behavior
-- Apply refactors described in issue packets
+- Apply refactors described in work items
 - Version bumps, changelog updates, dependency upgrades
 - CI-related changes within a repo
 

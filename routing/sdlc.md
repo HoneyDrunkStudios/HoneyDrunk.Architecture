@@ -14,7 +14,7 @@ How work moves from intent to execution across the HoneyDrunk Grid. Three AI sur
 **Responsibilities:**
 - Goal decomposition → Features → Tasks
 - Cross-repo impact analysis using catalogs and relationships
-- Issue packet generation (structured GitHub Issues)
+- Work item generation (structured GitHub Issues)
 - ADR drafting when changes cross boundaries
 - Codex handoff generation (task prompt + context bundle)
 - Signal interpretation and plan adjustment
@@ -39,7 +39,7 @@ How work moves from intent to execution across the HoneyDrunk Grid. Three AI sur
 **Responsibilities:**
 - Implement features scoped to a single repo
 - Write tests for new or existing behavior
-- Apply refactors described in issue packets
+- Apply refactors described in work items
 - Version bumps, changelog updates, dependency upgrades
 - CI-related changes within a repo
 
@@ -70,7 +70,7 @@ How work moves from intent to execution across the HoneyDrunk Grid. Three AI sur
 - Exploratory work — "let me try this approach and see"
 - Anything where the developer needs to be in the loop line-by-line
 
-**Does not:** Plan cross-repo work. Generate issue packets. Reason about Grid topology.
+**Does not:** Plan cross-repo work. Generate work items. Reason about Grid topology.
 
 ---
 
@@ -80,7 +80,7 @@ How work moves from intent to execution across the HoneyDrunk Grid. Three AI sur
 
 ```
 Developer (intent)
-  → Claude Code (scope + issue packet)
+  → Claude Code (scope + work item)
     → Codex (execute, open PR)
       → PR review (automated checks + developer glance)
         → Merge
@@ -148,7 +148,7 @@ When Claude Code generates work for Codex, the handoff must include:
 ```
 
 This can be delivered as:
-- A GitHub Issue body (generated via issue packet template)
+- A GitHub Issue body (generated via work item template)
 - A direct prompt to Codex with the above structure
 
 ---

@@ -132,7 +132,7 @@ Tasks 1 executes first. Tasks 2 and 4 can run in parallel after Task 1 completes
 
 For each task transitioning from `Blocked` to `Pending` (dependencies satisfied):
 
-1. **Generate issue packet** — Structured GitHub Issue body containing:
+1. **Generate work item** — Structured GitHub Issue body containing:
    - Task description
    - Upstream context: which Goal and Feature this serves
    - Governing ADRs

@@ -4,7 +4,7 @@ How work is executed after routing. See `/routing/sdlc.md` for the full three-su
 
 ## Pre-Execution Checklist
 
-Before generating any artifact (issue packet, PR, code change):
+Before generating any artifact (work item, PR, code change):
 
 1. **Load repo context** — Read `/repos/{node-name}/overview.md` and `boundaries.md` if they exist. If no repo context directory exists for the target Node, fall back to `catalogs/nodes.json` for the Node's description, sector, and relationships.
 2. **Check invariants** — Verify the proposed change doesn't violate `/constitution/invariants.md`
@@ -12,9 +12,9 @@ Before generating any artifact (issue packet, PR, code change):
 4. **Determine tier** — Use `/catalogs/flow_tiers.json` to classify the change
 5. **Check dependencies** — Use `/catalogs/relationships.json` to identify cascade effects
 
-## Issue Packet Generation
+## Work Item Generation
 
-When creating an issue packet in `/generated/issue-packets/`:
+When creating an work item in `/generated/work-items/`:
 
 1. Use the appropriate template from `/issues/templates/`
 2. Include frontmatter with: target repo, request type, tier, dependencies, affected packages
@@ -35,7 +35,7 @@ When creating an issue packet in `/generated/issue-packets/`:
 
 When Claude Code generates work for Codex execution:
 
-1. Generate the artifact in `/generated/` (issue packet or handoff prompt)
+1. Generate the artifact in `/generated/` (work item or handoff prompt)
 2. Include the structured handoff format defined in `/routing/sdlc.md`:
    - Task description (imperative)
    - Target repo and branch
@@ -43,7 +43,7 @@ When Claude Code generates work for Codex execution:
    - Acceptance criteria
    - Dependencies (PRs that must merge first)
    - Constraints (boundaries, invariants)
-3. Create a GitHub Issue in the target repo using the issue packet, or provide the handoff prompt directly to Codex
+3. Create a GitHub Issue in the target repo using the work item, or provide the handoff prompt directly to Codex
 
 ### Codex → Developer
 
@@ -67,6 +67,6 @@ When in-IDE work reveals systemic issues:
 If a change causes canary failures in downstream repos:
 
 1. Do not force-push or revert without understanding the failure
-2. Create a canary investigation issue packet
+2. Create a canary investigation work item
 3. If the upstream change was correct, fix the downstream canary
 4. If the upstream change was wrong, revert it and update the ADR

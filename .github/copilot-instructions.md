@@ -31,7 +31,7 @@ You received a task from Claude Code via a GitHub Issue or handoff prompt. Follo
 The developer is working directly in this repo. Help them with:
 - Editing catalogs, ADRs, PDRs, routing rules, or repo context files
 - Understanding the Grid topology (read `catalogs/` and `repos/`)
-- Drafting ADRs, PDRs, or issue packets
+- Drafting ADRs, PDRs, or work items
 
 ## Context Files (Read Before Acting)
 
@@ -55,7 +55,7 @@ Custom agents are defined in `.github/agents/`. Each agent has a specific purpos
 
 | Agent | Purpose |
 |-------|---------|
-| `scope` | Decompose work into issue packets |
+| `scope` | Decompose work into work items |
 | `refine` | Challenge scoped work for gaps |
 | `review` | Review PRs against boundaries and invariants |
 | `adr-composer` | Facilitate architecture decisions |
@@ -123,6 +123,6 @@ Squash-merge PR titles must also be a valid Conventional Commit — the title be
 - Markdown with structured frontmatter, JSON catalogs
 - No application code in this repo
 - Commits follow Conventional Commits — see **Commit Format** above
-- Issue packet naming: `{YYYY-MM-DD}-{repo}-{description}.md`
+- Work item naming: `{YYYY-MM-DD}-{repo}-{description}.md`
 - ADR format follows `adrs/ADR-0001-node-vs-service.md`
 - PDR format follows `pdrs/PDR-0001-honeyhub-platform-observation-and-ai-routing.md`

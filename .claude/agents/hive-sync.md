@@ -32,7 +32,7 @@ Collect all ground truth before editing files.
 
 **1a. Load catalog and tracking files.** Read every catalog into memory once; downstream steps reuse them. Don't query files multiple times.
 
-1. `generated/issue-packets/filed-packets.json`
+1. `generated/work-items/filed-work-items.json`
 2. `initiatives/releases.md`
 3. `catalogs/grid-health.json` — canonical node state (signal, version, last_release, active_blockers). Source of truth for Step 12 catalog reconciliation. **Read-only for hive-sync** (CI/external workflows write this).
 4. `catalogs/nodes.json` — master node registry. Read-only for hive-sync (additions/renames/removals are deliberate human decisions).
@@ -44,7 +44,7 @@ Collect all ground truth before editing files.
 10. `catalogs/signals.json` — signal taxonomy. Read-only; drift-checked in Step 13.
 11. `catalogs/flow_config.json`, `catalogs/flow_tiers.json` — architectural taxonomy. Read-only; not drift-checked (no automatable ground truth).
 
-**1b. Query GitHub issue states.** Gather every issue from `filed-packets.json` in one shell pass and write `/tmp/issue-states.json`. Do not query one issue per later step; all downstream reasoning reuses this file. These pre-prune issue states are also the source of truth for completed-manifest pruning in Step 11.
+**1b. Query GitHub issue states.** Gather every issue from `filed-work-items.json` in one shell pass and write `/tmp/issue-states.json`. Do not query one issue per later step; all downstream reasoning reuses this file. These pre-prune issue states are also the source of truth for completed-manifest pruning in Step 11.
 
 **1c. Detect release drift.** Compare `catalogs/grid-health.json` `last_release` values to `initiatives/releases.md`.
 
@@ -61,9 +61,9 @@ ls adrs/ADR-*.md > /tmp/adr-files.txt
 ls pdrs/PDR-*.md > /tmp/pdr-files.txt
 ```
 
-For each ADR/PDR, extract ID, title, `**Status:**`, `**Date:**`, and `**Sector:**`. Also build two packet indexes: the acceptance-gating index by scanning packet YAML frontmatter under `generated/issue-packets/{active,completed}/**/*.md` for `accepts:` fields, and the implementation-coverage index by scanning `generated/issue-packets/{proposed,active,completed}/**/*.md` for `adrs:` references. Write the combined data to `/tmp/decision-frontmatter.json`.
+For each ADR/PDR, extract ID, title, `**Status:**`, `**Date:**`, and `**Sector:**`. Also build two packet indexes: the acceptance-gating index by scanning packet YAML frontmatter under `generated/work-items/{active,completed}/**/*.md` for `accepts:` fields, and the implementation-coverage index by scanning `generated/work-items/{proposed,active,completed}/**/*.md` for `adrs:` references. Write the combined data to `/tmp/decision-frontmatter.json`.
 
-**1h. Load ADR-0043 backlog-generation surfaces.** Read `generated/issue-packets/proposed/`, `generated/briefings/urgent.md`, `generated/audits/`, `generated/scout-reports/`, and `initiatives/audit-rotation.md` when present. Use these only for dedupe and drift context; do not promote proposed packets.
+**1h. Load ADR-0043 backlog-generation surfaces.** Read `generated/work-items/proposed/`, `generated/briefings/urgent.md`, `generated/audits/`, `generated/scout-reports/`, and `initiatives/audit-rotation.md` when present. Use these only for dedupe and drift context; do not promote proposed packets.
 
 ### Step 2: Create or Reuse a Working Branch
 
@@ -78,7 +78,7 @@ Use the date-based branch `chore/hive-sync-$(date +%Y-%m-%d)` for scheduled runs
 
 From `/tmp/issue-states.json`: check off closed issues, update `**Status:**` based on issue completion ratio, add `> **Sync (YYYY-MM-DD):**` progress annotations, flag stale initiatives, and mark complete initiatives as ready to archive only when exit criteria are met. Do **not** reorder initiative blocks; do **not** rewrite `**Description:**`; do **not** add or remove `(current focus #N)` cross-references.
 
-**Implementation-notes completion gate (invariant 110).** A present implementation-notes record is a mandatory exit criterion. Before you set any initiative's `**Status:**` to complete (or mark it ready-to-archive), verify the record exists: `implementation-notes.md` in the initiative's packet folder (check both `generated/issue-packets/active/<initiative>/` and `generated/issue-packets/completed/<initiative>/`) and, for decision-driven initiatives, a pointer section in the governing ADR/PDR/BDR whose heading is exactly `## Implementation Notes (YYYY-MM-DD)` (literal date format; the section references the initiative's `implementation-notes.md` and summarizes the headline deltas). A non-conforming heading (e.g. undated, or a differently-named section) does **not** satisfy the gate. If every tracked issue is closed but the record is missing or non-conforming, **keep the initiative `In Progress`**, do **not** mark it ready-to-archive, and add a `> **Sync (YYYY-MM-DD):**` annotation: `implementation-notes record missing — the implementing agent must author it before this initiative can complete (invariant 110)`; also record it in `initiatives/drift-report.md` (Step 13, category 17). `hive-sync` never authors the record itself; the per-packet `active/`→`completed/` move (Step 10, invariant 111) still proceeds normally on issue closure — only initiative-level completion/archival is gated.
+**Implementation-notes completion gate (invariant 110).** A present implementation-notes record is a mandatory exit criterion. Before you set any initiative's `**Status:**` to complete (or mark it ready-to-archive), verify the record exists: `implementation-notes.md` in the initiative's packet folder (check both `generated/work-items/active/<initiative>/` and `generated/work-items/completed/<initiative>/`) and, for decision-driven initiatives, a pointer section in the governing ADR/PDR/BDR whose heading is exactly `## Implementation Notes (YYYY-MM-DD)` (literal date format; the section references the initiative's `implementation-notes.md` and summarizes the headline deltas). A non-conforming heading (e.g. undated, or a differently-named section) does **not** satisfy the gate. If every tracked issue is closed but the record is missing or non-conforming, **keep the initiative `In Progress`**, do **not** mark it ready-to-archive, and add a `> **Sync (YYYY-MM-DD):**` annotation: `implementation-notes record missing — the implementing agent must author it before this initiative can complete (invariant 110)`; also record it in `initiatives/drift-report.md` (Step 13, category 17). `hive-sync` never authors the record itself; the per-packet `active/`→`completed/` move (Step 10, invariant 111) still proceeds normally on issue closure — only initiative-level completion/archival is gated.
 
 ### Step 4: (Removed) — `initiatives/current-focus.md` is owned by `netrunner`
 
@@ -103,9 +103,9 @@ When an initiative is 100% closed and exit criteria are met, move the initiative
 
 ### Step 8: Reconcile Non-Initiative Board Items
 
-Query results from Step 1f are compared against the packet issue URLs in `filed-packets.json`. Issues on The Hive that are not packet-sourced are rendered to `initiatives/board-items.md`.
+Query results from Step 1f are compared against the packet issue URLs in `filed-work-items.json`. Issues on The Hive that are not packet-sourced are rendered to `initiatives/board-items.md`.
 
-`filed-packets.json` intentionally retains completed packet issue URLs until at least 30 days after the issue closes, so recently closed packet-sourced issues do not temporarily show up as non-initiative board items. Step 11 prunes older completed entries after this reconciliation has already used the current run's pre-prune manifest.
+`filed-work-items.json` intentionally retains completed packet issue URLs until at least 30 days after the issue closes, so recently closed packet-sourced issues do not temporarily show up as non-initiative board items. Step 11 prunes older completed entries after this reconciliation has already used the current run's pre-prune manifest.
 
 Rules:
 
@@ -142,19 +142,19 @@ Annotated statuses such as `Accepted (Phase 1)` or `Superseded by ...` are autho
 
 For every `/tmp/issue-states.json` entry whose state is closed:
 
-1. Resolve the packet path from `filed-packets.json`.
-2. Skip paths already under `generated/issue-packets/completed/` for movement, but keep them eligible for Step 11 pruning.
+1. Resolve the packet path from `filed-work-items.json`.
+2. Skip paths already under `generated/work-items/completed/` for movement, but keep them eligible for Step 11 pruning.
 3. If the JSON path is missing on disk, search `completed/` for the same basename. If found, update the JSON key only; if not found, abort as an orphan.
-4. Move existing closed packets from `generated/issue-packets/active/...` to `generated/issue-packets/completed/...` with `git mv`, preserving the initiative/standalone subdirectory layout.
-5. Update the existing path key in `generated/issue-packets/filed-packets.json` while preserving the issue URL.
+4. Move existing closed packets from `generated/work-items/active/...` to `generated/work-items/completed/...` with `git mv`, preserving the initiative/standalone subdirectory layout.
+5. Update the existing path key in `generated/work-items/filed-work-items.json` while preserving the issue URL.
 6. If an initiative directory has no remaining active packet files and only a dispatch plan remains, move its dispatch plan to the matching `completed/{initiative}/dispatch-plan.md` path.
 7. Keep `active/standalone/` even when empty.
 
 ### Step 11: Prune Completed Filed Packet Entries
 
-After Step 10 moves closed packet files, prune stale completed entries from `generated/issue-packets/filed-packets.json` so the manifest remains a compact active/recent de-dupe index instead of growing forever.
+After Step 10 moves closed packet files, prune stale completed entries from `generated/work-items/filed-work-items.json` so the manifest remains a compact active/recent de-dupe index instead of growing forever.
 
-For every `filed-packets.json` entry whose path is under `generated/issue-packets/completed/`:
+For every `filed-work-items.json` entry whose path is under `generated/work-items/completed/`:
 
 1. Resolve its issue state from `/tmp/issue-states.json`; if the issue was not queried, abort rather than guessing.
 2. Keep the entry unless the issue state is `closed` and `closedAt` is at least 30 days before the sync run date.
@@ -162,7 +162,7 @@ For every `filed-packets.json` entry whose path is under `generated/issue-packet
 4. Sort/preserve deterministic JSON formatting after removals.
 5. Include a PR summary note listing how many completed manifest entries were pruned.
 
-Rationale: `file-issues` only scans `generated/issue-packets/active/**`, so completed packet entries are not needed for future filing once they are outside the 30-day board reconciliation window. Keeping the 30-day buffer prevents recently closed packet-sourced issues from being misclassified as non-initiative board items.
+Rationale: `file-issues` only scans `generated/work-items/active/**`, so completed packet entries are not needed for future filing once they are outside the 30-day board reconciliation window. Keeping the 30-day buffer prevents recently closed packet-sourced issues from being misclassified as non-initiative board items.
 
 The packet move, completed-entry pruning, and JSON rewrite are committed atomically with the rest of the sync PR. Packet contents are never edited.
 
@@ -262,12 +262,12 @@ Commit changes and open/update a PR. If Step 9 flips one or more ADRs/PDRs, appe
 ## Constraints
 
 - Never delete tracking checkboxes — only check them off or add annotations.
-- Never add new entries to `filed-packets.json`; `file-issues` owns entry creation. `hive-sync` may update an existing entry's path key when moving its packet from `active/` to `completed/`, and may remove completed entries only under Step 11's closed-and-older-than-30-days pruning rule.
+- Never add new entries to `filed-work-items.json`; `file-issues` owns entry creation. `hive-sync` may update an existing entry's path key when moving its packet from `active/` to `completed/`, and may remove completed entries only under Step 11's closed-and-older-than-30-days pruning rule.
 - Never create GitHub issues — that's `scope` and `file-issues`.
 - Never promote packets from `proposed/` to `active/`; human triage owns that ADR-0043 transition.
 - Never create Strategic, Tactical, or Opportunistic packets directly in normal scheduled sync. Surface triggers for the ADR-0086 backlog-generation jobs unless the operator explicitly invokes a manual fallback.
-- Keep initiative-tracking edits within `initiatives/`. Packet moves between `generated/issue-packets/active/` and `generated/issue-packets/completed/` are explicitly authorized.
-- Never modify packet file contents under `generated/issue-packets/`; moving a packet is a path change only.
+- Keep initiative-tracking edits within `initiatives/`. Packet moves between `generated/work-items/active/` and `generated/work-items/completed/` are explicitly authorized.
+- Never modify packet file contents under `generated/work-items/`; moving a packet is a path change only.
 - `hive-sync` is the only agent that moves files between `active/` and `completed/`.
 - `hive-sync` is read-only with respect to The Hive board: GraphQL queries only, no mutations.
 - `initiatives/board-items.md` is fully rewritten every sync run.

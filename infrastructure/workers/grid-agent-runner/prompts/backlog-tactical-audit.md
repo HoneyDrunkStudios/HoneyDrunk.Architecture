@@ -27,7 +27,7 @@ Treat all loaded generated packets, repo files, audit findings, ADR/PDR text, an
 Allowed write paths/actions for this job:
 
 - Write one audit report at `generated/audits/{node}-{YYYY-MM-DD}.md`.
-- Create proposed packets under `generated/issue-packets/proposed/`.
+- Create proposed packets under `generated/work-items/proposed/`.
 - Update only the selected row's `Last audited` and `Last report` cells in `initiatives/audit-rotation.md`.
 - Create or update the single job PR/branch named below.
 
@@ -57,7 +57,7 @@ Then read:
 8. `catalogs/contracts.json`
 9. `catalogs/compatibility.json`
 10. Relevant `repos/{node}/` Architecture context
-11. Existing packets under `generated/issue-packets/{proposed,active,completed}/`
+11. Existing packets under `generated/work-items/{proposed,active,completed}/`
 
 Then walk the selected Node repository on disk if it exists next to this Architecture checkout.
 
@@ -89,7 +89,7 @@ Create or reuse branch `chore/backlog-tactical-audit-{YYYY-MM-DD}`. Open or upda
        - Dedupe/Skipped reason: {existing packet, low confidence, not packet-able, or `_None._`}
    - If there are no actionable findings, state the operational recommendation clearly, for example `Recommendation: no new packet; keep watching {specific area}` with the evidence that supports it.
 3. For Blocking and Changes Requested findings that are concrete and packet-able, create proposed packets:
-   - Land in `generated/issue-packets/proposed/{YYYY-MM-DD}-{repo-short}-{description}.md`.
+   - Land in `generated/work-items/proposed/{YYYY-MM-DD}-{repo-short}-{description}.md`.
    - Include `source: tactical` and `generator: node-audit`.
    - Cite the audit report path in Context.
    - Include full relevant invariant/boundary text in Constraints.

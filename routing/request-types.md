@@ -19,7 +19,7 @@ A feature or enhancement scoped to a single repo.
 ### `cross-repo-change`
 A change that requires coordinated modifications across multiple repos.
 - **Tier:** 2 or 3 depending on whether contracts change
-- **Starts in:** This repo (issue packets per repo)
+- **Starts in:** This repo (work items per repo)
 - **Signals:** "affects Kernel and Transport", "version bump across", "rename across"
 
 ### `bug-fix`

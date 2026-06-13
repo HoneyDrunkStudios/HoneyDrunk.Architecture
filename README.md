@@ -15,16 +15,16 @@ Three AI surfaces share responsibility for the full development lifecycle, and t
 ## How Work Moves Through the Grid
 
 ```
-Intent → Classify → Scope → Issue Packets → GitHub Issues → Execute → PR → Merge → Site Sync
+Intent → Classify → Scope → Work Items → GitHub Issues → Execute → PR → Merge → Site Sync
 ```
 
 1. **Classify** — Every request is typed (`repo-feature`, `cross-repo-change`, `architecture-decision`, `bug-fix`, `ci-change`, `dependency-upgrade`, `canary`, `site-sync`) and assigned a tier using `routing/request-types.md`.
 
 2. **Route** — `routing/repo-discovery-rules.md` determines which repo(s) own the work. For cross-repo changes, `catalogs/relationships.json` reveals the dependency graph and cascade order.
 
-3. **Scope** — The `scope` agent decomposes work into issue packets grouped by initiative under `generated/issue-packets/active/{initiative}/`. Multi-repo work gets a dispatch plan and wave diagram. The `refine` agent challenges the plan before execution.
+3. **Scope** — The `scope` agent decomposes work into work items grouped by initiative under `generated/work-items/active/{initiative}/`. Multi-repo work gets a dispatch plan and wave diagram. The `refine` agent challenges the plan before execution.
 
-4. **File** — Issue packets become GitHub Issues via `scripts/file-packets.ps1`. Each issue lands on **The Hive** project board with Status, Wave, Node, Tier, Actor, and Initiative fields. Blocking relationships are wired via GraphQL.
+4. **File** — Work items become GitHub Issues via `scripts/file-work-items.ps1`. Each issue lands on **The Hive** project board with Status, Wave, Node, Tier, Actor, and Initiative fields. Blocking relationships are wired via GraphQL.
 
 5. **Execute** — Codex picks up issues and opens PRs in target repos. The `review` agent validates PRs against invariants and boundaries.
 
@@ -48,7 +48,7 @@ Intent → Classify → Scope → Issue Packets → GitHub Issues → Execute �
 
 **Agent Definitions** — Custom agents under `.claude/agents/` handle specialized tasks (scoping, refining, reviewing, ADR authoring, site syncing, issue filing). Each agent has a defined purpose, tool access, and execution protocol.
 
-**ADRs and PDRs** — Architecture and product decisions are versioned records under `adrs/` and `pdrs/`. They govern how the Grid evolves and are referenced by issue packets so executors understand the "why" behind the work.
+**ADRs and PDRs** — Architecture and product decisions are versioned records under `adrs/` and `pdrs/`. They govern how the Grid evolves and are referenced by work items so executors understand the "why" behind the work.
 
 ## Directory Overview
 
@@ -63,8 +63,8 @@ Intent → Classify → Scope → Issue Packets → GitHub Issues → Execute �
 | `repos/` | Per-Node context — boundaries, invariants, overview, integration points for every Grid repo |
 | `initiatives/` | Active initiatives, current focus, roadmap, release history |
 | `infrastructure/` | Azure provisioning guides, naming conventions, resource inventory, deployment maps |
-| `issues/templates/` | Issue packet templates by type (feature, bug, cross-repo, CI, canary, etc.) |
-| `generated/` | Output directory for issue packets, ADR drafts, PDR drafts, site sync packets, incident logs |
+| `issues/templates/` | Work item templates by type (feature, bug, cross-repo, CI, canary, etc.) |
+| `generated/` | Output directory for work items, ADR drafts, PDR drafts, site sync packets, incident logs |
 | `copilot/` | Agent behavior rules — issue authoring standards, PR review checklists, global instructions |
 | `.claude/agents/` | Claude Code agent definitions (scope, refine, review, node-audit, adr-composer, pdr-composer, netrunner, site-sync, file-issues, hive-sync) |
 | `scripts/` | Automation scripts for issue filing and board management |
