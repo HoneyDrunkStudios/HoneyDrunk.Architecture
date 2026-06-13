@@ -28,7 +28,7 @@ revalidation_cadence: as reactive emitters (CVE, incident, canary) mature
 | **inputs** | `drift-report.md`; the nightly CVE scan; `generated/incidents/`; canary run state |
 | **synthesizer** | `hive-sync` / `scope` — one packet per actionable item, severity carried into frontmatter |
 | **gate** | Human triage at the weekly briefing; `priority: urgent` items are surfaced **out-of-band** (not skipped) |
-| **feedback_sink** | `generated/issue-packets/proposed/` (`source: reactive`); `generated/briefings/urgent.md` (rolling) for urgent items; Discord routing per `constitution/alert-routing.md` |
+| **feedback_sink** | `generated/work-items/proposed/` (`source: reactive`); `generated/briefings/urgent.md` (rolling) for urgent items; Discord routing per `constitution/alert-routing.md` |
 | **stop** | **Done:** one deduped packet per actionable event. **Stuck:** no new actionable events → no-op. **Over-budget:** runner timeout. |
 
 ## Governance envelope

@@ -28,7 +28,7 @@ PDR-0001's narrative is dominated by the external-adoption story. The correspond
 
 ### 2. The Architecture repo's true role is under-stated
 
-PDR-0001 describes the Architecture repo as "static context" HoneyHub consumes alongside Pulse signals and Observe events. That description is accurate but flat. In current practice, `catalogs/nodes.json`, `catalogs/relationships.json`, `catalogs/contracts.json`, `catalogs/grid-health.json`, `adrs/`, `pdrs/`, `initiatives/`, `generated/issue-packets/`, and `constitution/` form a structured knowledge graph in markdown + JSON that already answers most of the questions a HoneyHub UI would ask. If HoneyHub builds a parallel backend that mirrors this state, it duplicates state, breaks Architecture-as-code, and forces a migration. The repo *is* the structural backend.
+PDR-0001 describes the Architecture repo as "static context" HoneyHub consumes alongside Pulse signals and Observe events. That description is accurate but flat. In current practice, `catalogs/nodes.json`, `catalogs/relationships.json`, `catalogs/contracts.json`, `catalogs/grid-health.json`, `adrs/`, `pdrs/`, `initiatives/`, `generated/work-items/`, and `constitution/` form a structured knowledge graph in markdown + JSON that already answers most of the questions a HoneyHub UI would ask. If HoneyHub builds a parallel backend that mirrors this state, it duplicates state, breaks Architecture-as-code, and forces a migration. The repo *is* the structural backend.
 
 ### 3. The composition model for "what HoneyHub UI sits over" is unspecified
 
@@ -69,7 +69,7 @@ PDR-0001's "static context" framing is upgraded. The Architecture repo *is* Hone
 | `adrs/` | Architecture Decision Records (markdown + frontmatter) |
 | `pdrs/` | Product Decision Records (markdown + frontmatter) |
 | `initiatives/` | Initiative narratives, active and archived |
-| `generated/issue-packets/` | Filed and pending packets (markdown + `filed-packets.json`) |
+| `generated/work-items/` | Filed and pending packets (markdown + `filed-work-items.json`) |
 | `constitution/` | Invariants, sectors, AI-sector architecture, naming rules |
 | `repos/{Node}/` | Per-Node overviews, boundaries, invariants, domain models |
 

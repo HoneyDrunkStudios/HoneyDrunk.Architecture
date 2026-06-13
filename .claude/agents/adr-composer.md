@@ -89,7 +89,7 @@ Once the user decides:
 {Each alternative with why it was rejected.}
 ```
 
-4. If the decision requires work in repos, tell the user to delegate to the scope agent to generate issue packets.
+4. If the decision requires work in repos, tell the user to delegate to the scope agent to generate work items.
 
 ## Research Techniques
 

@@ -28,9 +28,9 @@
       "steps": [
         "Discuss design question with developer",
         "Generate ADR draft in /generated/adr-drafts/",
-        "Optionally decompose into tasks and generate issue packets"
+        "Optionally decompose into tasks and generate work items"
       ],
-      "outputs": ["adr-draft", "issue-packets"],
+      "outputs": ["adr-draft", "work-items"],
       "next_surface": "codex"
     },
     {
@@ -42,10 +42,10 @@
       "steps": [
         "Identify affected Nodes from catalogs",
         "Determine dependency order for changes",
-        "Generate issue packet per repo with handoff context",
+        "Generate work item per repo with handoff context",
         "Generate site-sync packet if public surface changes"
       ],
-      "outputs": ["issue-packets", "handoff-prompts", "site-sync-packets"],
+      "outputs": ["work-items", "handoff-prompts", "site-sync-packets"],
       "next_surface": "codex"
     },
     {
@@ -57,9 +57,9 @@
       "steps": [
         "Load repo context from /repos/{name}/",
         "Validate feature against repo boundaries and invariants",
-        "Generate issue packet with handoff context"
+        "Generate work item with handoff context"
       ],
-      "outputs": ["issue-packets", "handoff-prompts"],
+      "outputs": ["work-items", "handoff-prompts"],
       "next_surface": "codex"
     },
     {
@@ -114,9 +114,9 @@
       "steps": [
         "Identify which invariant was violated",
         "Trace the violation to the responsible repo",
-        "Generate fix issue packet with invariant reference"
+        "Generate fix work item with invariant reference"
       ],
-      "outputs": ["issue-packets"],
+      "outputs": ["work-items"],
       "next_surface": "codex or copilot depending on complexity"
     }
   ]

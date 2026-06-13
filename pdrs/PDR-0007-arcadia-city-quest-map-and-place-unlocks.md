@@ -418,6 +418,6 @@ Only after the curated product works:
 
 - **Product one-pager:** Arcadia launch-district MVP pitch and target user.
 - **Content safety policy:** Rules for allowed/disallowed POIs and quest prompts.
-- **Prototype packet:** Scope a no-code/lightweight prototype with 25 POIs.
+- **Prototype work-item:** Scope a no-code/lightweight prototype with 25 POIs.
 - **Content pipeline spike:** Evaluate public data sources and licensing for one city.
 - **Future ADR:** Only if backend architecture, location storage, moderation queues, or AI-assisted content generation are accepted for build.

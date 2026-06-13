@@ -60,7 +60,7 @@ Everything else below is identical between the two subclasses.
 7. OIDC federated credential subject pattern added to the Grid's NuGet publishing identity in Microsoft Entra: `repo:HoneyDrunkStudios/HoneyDrunk.{NodeName}:ref:refs/tags/v*`. Walkthrough: `oidc-federated-credentials.md`.
 8. Local clone made.
 
-**Gate:** Phase B complete before the Phase C scaffold packet can be filed — Invariant 24 (issue packets immutable once filed) means the `target_repo` must exist before the issue is created.
+**Gate:** Phase B complete before the Phase C scaffold packet can be filed — Invariant 24 (work items immutable once filed) means the `target_repo` must exist before the issue is created.
 
 ## Phase C — Scaffold landing (agent-eligible — bootstrap PR)
 

@@ -7,7 +7,7 @@
 
 ## If Accepted — Required Follow-Up Work in Architecture Repo
 
-Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
+Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up work items (do not accept and leave the catalogs stale):
 
 - [x] Add entries to `catalogs/contracts.json` for the seven exposed contracts: `IChatClient`, `IEmbeddingGenerator`, `IModelProvider`, `IModelRouter`, `IRoutingPolicy`, `ModelCapabilityDeclaration`, `ICostLedger`
 - [x] Add `honeydrunk-ai` Node entry and per-contract entries to `catalogs/grid-health.json`
@@ -27,7 +27,7 @@ ADR-0010 already committed to two things that live inside AI but were never stoo
 
 Outside routing, the AI sector also needs a small number of cross-cutting primitives that have no natural home in any other Node: cost accounting, provider health surfacing, and the canonical chat/embedding request shape that every downstream consumer compiles against. Without these landing in one place, each dependent Node either invents its own or waits.
 
-This ADR is the **stand-up decision** for the AI Node — what it owns, what it does not own, which contracts it exposes, and how downstream Nodes couple to it. It is not a scaffolding packet. Filing the repo, adding CI, wiring an InMemory provider, and producing the first shippable packages all follow as separate issue packets once this ADR is accepted.
+This ADR is the **stand-up decision** for the AI Node — what it owns, what it does not own, which contracts it exposes, and how downstream Nodes couple to it. It is not a scaffolding packet. Filing the repo, adding CI, wiring an InMemory provider, and producing the first shippable packages all follow as separate work items once this ADR is accepted.
 
 ## Decision
 

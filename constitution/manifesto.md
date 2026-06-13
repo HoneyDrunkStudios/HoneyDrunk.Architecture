@@ -94,4 +94,4 @@ HoneyDrunk may evolve into a multi-agent, multi-node creative OS connecting SDKs
 
 - **Architecture-first.** Changes that cross Node boundaries start here, in this repo, as an ADR or initiative.
 - **Agent-assisted.** Custom agents use this repo as their source of truth for routing, context, and issue generation.
-- **Issue-driven.** Work is tracked via GitHub Issues. This repo generates issue packets that agents can execute against target repos.
+- **Issue-driven.** Work is tracked via GitHub Issues. This repo generates work items that agents can execute against target repos.

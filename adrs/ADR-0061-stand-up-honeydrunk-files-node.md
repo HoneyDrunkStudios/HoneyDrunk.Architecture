@@ -7,7 +7,7 @@
 
 ## If Accepted — Required Follow-Up Work in Architecture Repo
 
-Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
+Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up work items (do not accept and leave the catalogs stale):
 
 - [ ] Create `HoneyDrunk.Files` GitHub repo as **public** (per the build-in-public default for non-revenue Nodes; the bytes and metadata stored are the consuming Node's data, not Files' data — see D5)
 - [ ] Add `honeydrunk-files` entry to `catalogs/nodes.json` with Core sector and the contract list from D6 (`IFileStore`, `IFileUploadSession`, `IFileMetadata`, `IFileProcessor`, `IFileQuotaPolicy`)

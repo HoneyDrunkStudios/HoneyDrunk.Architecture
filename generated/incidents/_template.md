@@ -62,7 +62,7 @@ until a restart forced a fresh resolution.
 
 ## Follow-up Work
 
-*Any issue packets or ADRs that should be filed as a result of this incident.*
+*Any work items or ADRs that should be filed as a result of this incident.*
 
 - [ ] {Description} — target: {repo}
 - [ ] {Description} — target: {repo}

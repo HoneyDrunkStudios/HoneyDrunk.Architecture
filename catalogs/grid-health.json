@@ -248,7 +248,7 @@
         "weekly-governance.yml",
         "grid-health-report.yml",
         "hive-field-mirror.yml",
-        "file-packets.yml",
+        "file-work-items.yml",
         "release.yml",
         "seed-labels.yml",
         "seed-labels-fanout.yml",
@@ -284,7 +284,7 @@
       ],
       "notes": "Command center. Grid-health.json, contracts.json, sector-interaction-map.md added 2026-04-12.",
       "tracked_workflows": [
-        "file-packets.yml"
+        "file-work-items.yml"
       ]
     },
     {

@@ -32,7 +32,7 @@ Rules for determining which repo(s) are affected by a given request.
 
 When a change affects a Node's **Abstractions** package:
 1. Identify all downstream Nodes from `catalogs/relationships.json`
-2. Generate issue packets for each downstream Node to update their dependency
+2. Generate work items for each downstream Node to update their dependency
 3. Order execution: upstream first, then downstream (Kernel → Transport → Vault → Auth → Web.Rest → Data)
 
 When a change affects a Node's **runtime** package only:

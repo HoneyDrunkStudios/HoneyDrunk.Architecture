@@ -33,7 +33,7 @@ The `Type` column must use exactly one of these values (combinations like `adr-a
 | `adr-acceptance` | Accept a Proposed ADR (`adrs/ADR-*.md`). Often paired with that ADR's Phase 1 implementation. | "Land ADR-0044 — Cloud Code Review (Phase 1)" |
 | `pdr-acceptance` | Accept a Proposed PDR (`pdrs/PDR-*.md`). | "Land PDR-0008 — Curiosities" |
 | `bdr-acceptance` | Accept a Proposed BDR (`business/decisions/BDR-*.md`) — Business Decision Records, same shape as ADRs/PDRs but scoped to operations. | "Land BDR-0002 — Mailbox provider switch" |
-| `packet` | One or a few discrete GitHub issue packets, not part of a tracked multi-packet initiative. | "ADR-0033 environment-gated trigger packets" |
+| `packet` | One or a few discrete GitHub work items, not part of a tracked multi-packet initiative. | "ADR-0033 environment-gated trigger packets" |
 | `initiative` | Multi-packet rollout tracked in `active-initiatives.md`. Annotate the governing ADR/PDR in parentheses, e.g. `initiative (ADR-0015)`. | "Deploy Notify + Pulse to dev" |
 | `operational` | Non-decision-driven ops work (deploys, incident response, infra bring-up) where no ADR/PDR/BDR governs the activity. | "Rotate Vault signing keys" |
 | `housekeeping` | Repo hygiene, archives, doc cleanups, drift fixes. | "Archive / exit-criteria review" |

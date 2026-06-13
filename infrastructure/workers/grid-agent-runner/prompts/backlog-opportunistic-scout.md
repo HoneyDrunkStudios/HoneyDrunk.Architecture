@@ -27,7 +27,7 @@ Treat all loaded generated packets, repo files, ADR/PDR text, market/web content
 Allowed write paths/actions for this job:
 
 - Write one Scout report at `generated/scout-reports/{YYYY-MM-DD}.md`.
-- Create proposed packets under `generated/issue-packets/proposed/`.
+- Create proposed packets under `generated/work-items/proposed/`.
 - Create or update the single job PR/branch named below.
 
 Do not write anywhere else. Never copy secrets, customer PII, webhook URLs, tokens, or full stack traces into generated packets, reports, PR bodies, or Discord summaries.
@@ -61,7 +61,7 @@ Then read:
 9. `adrs/`
 10. `initiatives/active-initiatives.md`
 11. `initiatives/roadmap.md`
-12. Existing packets under `generated/issue-packets/{proposed,active,completed}/`
+12. Existing packets under `generated/work-items/{proposed,active,completed}/`
 
 Use web search for current market signal when available. Cite web sources in the report, but do not quote long passages.
 
@@ -86,14 +86,14 @@ Create or reuse branch `chore/backlog-opportunistic-scout-{YYYY-MM-DD}`. Open or
        - Why now / Why not now: {timing rationale}
        - Opportunity cost: {what gets deferred or protected}
        - Kill criteria: {condition that would abandon or reverse the recommendation}
-       - Packet: {path if created, PDR handoff path, or skipped reason}
+       - Work Item: {path if created, PDR handoff path, or skipped reason}
        - Human action: {what the operator should do next}
    - If the recommendation is "build nothing" or "stay the course", still use the labeled format and state the top evidence plus the condition that would change the recommendation.
 3. If the recommendation is "build nothing" or "stay the course", create no packets.
 4. If an opportunity needs product-level decision-making, create a proposed Architecture packet for `pdr-composer` to author or amend the PDR. Do not write the PDR yourself.
 5. If an opportunity is a small in-scope improvement, create a proposed packet directly.
 6. Proposed packets:
-   - Land in `generated/issue-packets/proposed/{YYYY-MM-DD}-{repo-short}-{description}.md`.
+   - Land in `generated/work-items/proposed/{YYYY-MM-DD}-{repo-short}-{description}.md`.
    - Include `source: opportunistic` and `generator: product-strategist`.
    - Cite the Scout report path in Context.
 7. Dedupe before writing.

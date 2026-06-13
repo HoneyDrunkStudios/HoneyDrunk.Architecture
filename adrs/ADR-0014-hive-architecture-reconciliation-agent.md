@@ -7,19 +7,19 @@
 
 ## Context
 
-The Architecture repo's sync story was designed when the only source of GitHub issues was the scope → file-issues pipeline. The `initiatives-sync` agent runs Monday and Thursday, reads `filed-packets.json`, queries live issue states via `gh`, and reconciles five initiative tracking files (`active-initiatives.md`, `current-focus.md`, `releases.md`, `roadmap.md`, `archived-initiatives.md`). That loop was complete when packets were the only way work entered the system.
+The Architecture repo's sync story was designed when the only source of GitHub issues was the scope → file-issues pipeline. The `initiatives-sync` agent runs Monday and Thursday, reads `filed-work-items.json`, queries live issue states via `gh`, and reconciles five initiative tracking files (`active-initiatives.md`, `current-focus.md`, `releases.md`, `roadmap.md`, `archived-initiatives.md`). That loop was complete when packets were the only way work entered the system.
 
 Two developments have broken that assumption:
 
 1. **The nightly security job (ADR-0009, ADR-0012) now creates issues directly in target repos.** The `hive-field-mirror` workflow (landed via Actions#22) fires on `issues.opened` and wires these issues into The Hive with correct Node, Wave, and Tier fields. The issues are real work items with board presence, but the Architecture repo knows nothing about them — they have no packets, no initiative association, and no entry in any tracking file.
 
-2. **Issue packets have no lifecycle completion step.** When a filed issue is closed on GitHub, `initiatives-sync` checks it off in the initiative tracking files, but the source packet is not reconciled through a defined Architecture-side packet lifecycle. The `generated/issue-packets/completed/` tree already exists and contains completed packets, but there is no agent or automated step that consistently moves newly completed packets out of `active/` and keeps the two trees aligned with live GitHub issue state. Over time, `active/` accumulates closed work alongside open work, and any agent or human reading the directory cannot distinguish live packets from historical ones without cross-referencing GitHub issue state.
+2. **Work items have no lifecycle completion step.** When a filed issue is closed on GitHub, `initiatives-sync` checks it off in the initiative tracking files, but the source packet is not reconciled through a defined Architecture-side packet lifecycle. The `generated/work-items/completed/` tree already exists and contains completed packets, but there is no agent or automated step that consistently moves newly completed packets out of `active/` and keeps the two trees aligned with live GitHub issue state. Over time, `active/` accumulates closed work alongside open work, and any agent or human reading the directory cannot distinguish live packets from historical ones without cross-referencing GitHub issue state.
 
 Together these gaps mean the Architecture repo is drifting from being the "command center" (ADR-0002) toward being a partial view that only tracks initiative-scoped work and never cleans up after itself.
 
 A third, softer pressure: as the Grid grows, more non-initiative issue sources are likely — dependency update PRs that auto-file issues, future observability alerts, the grid-health aggregator's per-repo failure issues (ADR-0012 D6). Each new source widens the gap between "what's on The Hive" and "what Architecture knows about." Closing the gap once, structurally, is cheaper than patching it per-source.
 
-The `initiatives-sync` agent is the natural home for this work — it already owns the "read live issue state, update Architecture files" loop. But its current mandate is too narrow: it only reads issues that appear in `filed-packets.json`, and it only writes to initiative tracking files. Broadening its mandate to cover all Hive items and the packet lifecycle is the subject of this ADR.
+The `initiatives-sync` agent is the natural home for this work — it already owns the "read live issue state, update Architecture files" loop. But its current mandate is too narrow: it only reads issues that appear in `filed-work-items.json`, and it only writes to initiative tracking files. Broadening its mandate to cover all Hive items and the packet lifecycle is the subject of this ADR.
 
 Sector is **Meta**, consistent with ADR-0002 (Architecture as command center), ADR-0007 (agent definitions), and ADR-0008 (work tracking).
 
@@ -29,7 +29,7 @@ Sector is **Meta**, consistent with ADR-0002 (Architecture as command center), A
 
 The current `initiatives-sync` agent (`.claude/agents/initiatives-sync.md`) is replaced by a `hive-sync` agent that retains all of `initiatives-sync`'s responsibilities and adds four new ones:
 
-1. **Initiative reconciliation** — unchanged from today. Read `filed-packets.json`, query issue states, update initiative tracking files.
+1. **Initiative reconciliation** — unchanged from today. Read `filed-work-items.json`, query issue states, update initiative tracking files.
 2. **Packet lifecycle management** — move completed packets from `active/` to `completed/`. See D2.
 3. **Non-initiative issue tracking** — ensure all issues on The Hive that did not originate from packets are tracked in a new Architecture surface. See D3.
 4. **Proposed-ADR acceptance queue** — surface ADRs still in `Status: Proposed` so the scope agent can be run on them. See D6.
@@ -40,14 +40,14 @@ The old `initiatives-sync.md` agent file is deleted, not kept as a redirect. The
 
 ### D2 — The `hive-sync` agent moves completed packets to `completed/`
 
-When the agent discovers that a filed issue is closed (via `gh issue view`), and the issue's packet still exists under `generated/issue-packets/active/`, the agent moves the packet file to `generated/issue-packets/completed/`.
+When the agent discovers that a filed issue is closed (via `gh issue view`), and the issue's packet still exists under `generated/work-items/active/`, the agent moves the packet file to `generated/work-items/completed/`.
 
 Rules:
 
 - **Move, not copy.** The packet leaves `active/` entirely. A reader of `active/` can trust that everything there represents open work.
 - **Preserve the filename.** The file keeps its original name (e.g., `01-vault-bootstrap-extensions.md` → `completed/01-vault-bootstrap-extensions.md`). If a name collision occurs in `completed/` (unlikely, since packets are date-prefixed or initiative-scoped), the agent prefixes the initiative slug: `adr-0005-0006-rollout--01-vault-bootstrap-extensions.md`.
 - **Initiative subdirectories.** When all packets in an initiative subdirectory under `active/` have been moved to `completed/`, the agent also moves the `dispatch-plan.md` to `completed/` and removes the now-empty initiative subdirectory.
-- **`filed-packets.json` is updated.** The path key in `filed-packets.json` is updated to reflect the new location under `completed/`. This keeps the mapping accurate for any agent that reads it. This is a narrow exception to the current convention that `filed-packets.json` is only written by the `file-issues` agent — the `hive-sync` agent may update existing entries' paths but may not add or remove entries.
+- **`filed-work-items.json` is updated.** The path key in `filed-work-items.json` is updated to reflect the new location under `completed/`. This keeps the mapping accurate for any agent that reads it. This is a narrow exception to the current convention that `filed-work-items.json` is only written by the `file-issues` agent — the `hive-sync` agent may update existing entries' paths but may not add or remove entries.
 - **Standalone packets** (under `active/standalone/`) follow the same rule: closed issue → move to `completed/`.
 - **The PR includes the moves.** Packet moves are committed in the same PR as initiative tracking updates, so the entire sync is atomic and reviewable.
 
@@ -57,7 +57,7 @@ A new file, `initiatives/board-items.md`, tracks issues on The Hive that did not
 
 - Issues created by the nightly security job (`security` + `automated` labels)
 - Issues created by the grid-health aggregator (ADR-0012 D6, `[grid-health]` title prefix)
-- Any other issue added to The Hive that has no corresponding entry in `filed-packets.json`
+- Any other issue added to The Hive that has no corresponding entry in `filed-work-items.json`
 
 The file structure:
 
@@ -65,7 +65,7 @@ The file structure:
 # Board Items — Non-Initiative Work
 
 Tracked automatically by the hive-sync agent. Items listed here are on
-The Hive but did not originate from a scoped issue packet.
+The Hive but did not originate from a scoped work item.
 
 Last synced: {YYYY-MM-DD}
 
@@ -84,23 +84,23 @@ Last synced: {YYYY-MM-DD}
 
 Rules:
 
-- **The agent queries The Hive board via GraphQL** (`gh api graphql`) to list all items, then subtracts the set of issues known from `filed-packets.json`. The remainder are non-initiative items.
+- **The agent queries The Hive board via GraphQL** (`gh api graphql`) to list all items, then subtracts the set of issues known from `filed-work-items.json`. The remainder are non-initiative items.
 - **Open items are always listed.** Closed items are listed in "Recently Closed" for 30 days after closure, then removed. This keeps the file from growing unboundedly while preserving short-term audit trail.
 - **The agent does not set or modify Hive fields.** That remains the mirror action's job (for auto-wired issues) or the file-issues agent's job (for packets). The `hive-sync` agent is read-only with respect to The Hive board — it reads state and writes to Architecture files, never the reverse.
 - **No initiative association is assigned.** These items are explicitly non-initiative work. If a non-initiative item is later scoped into an initiative (e.g., a recurring security finding spawns a remediation initiative), the scope agent creates packets, and the item naturally moves from `board-items.md` into the initiative tracking files on the next sync.
 
 ### D4 — The `hive-sync` agent is the single agent authorized to move packets between lifecycle directories
 
-No other agent may move files between `active/` and `completed/`. The `scope` agent writes to `active/`. The `file-issues` agent reads from `active/` and writes to `filed-packets.json`. The `hive-sync` agent is the only agent that moves files out of `active/`. This keeps the packet lifecycle linear and avoids race conditions between agents.
+No other agent may move files between `active/` and `completed/`. The `scope` agent writes to `active/`. The `file-issues` agent reads from `active/` and writes to `filed-work-items.json`. The `hive-sync` agent is the only agent that moves files out of `active/`. This keeps the packet lifecycle linear and avoids race conditions between agents.
 
 The lifecycle is:
 
 ```
 scope writes packet → active/
-file-issues files issue → filed-packets.json updated, packet unchanged
+file-issues files issue → filed-work-items.json updated, packet unchanged
 issue lives on GitHub / The Hive
 issue closes on GitHub
-hive-sync moves packet → completed/, updates filed-packets.json path
+hive-sync moves packet → completed/, updates filed-work-items.json path
 ```
 
 ### D5 — The capability matrix and agent tooling are updated
@@ -110,7 +110,7 @@ The `constitution/agent-capability-matrix.md` is updated:
 - Remove the `initiatives-sync` row.
 - Add a `hive-sync` row with:
   - **Trigger:** Monday/Thursday schedule, manual
-  - **Consumes:** `filed-packets.json`, GitHub issue states (gh CLI), The Hive board state (GraphQL), `grid-health.json`, `nodes.json`, initiative tracking files, `adrs/ADR-*.md` frontmatter
+  - **Consumes:** `filed-work-items.json`, GitHub issue states (gh CLI), The Hive board state (GraphQL), `grid-health.json`, `nodes.json`, initiative tracking files, `adrs/ADR-*.md` frontmatter
   - **Produces:** Updated initiative tracking files, packet moves (active → completed), `board-items.md`, `proposed-adrs.md`, PR
   - **Sync Responsibility:** Reconciles Architecture repo tracking with live GitHub/Hive state; manages packet lifecycle; tracks non-initiative board items; surfaces the Proposed-ADR acceptance queue
 
@@ -158,7 +158,7 @@ The auto-flip rule:
 
 For each `adrs/ADR-*.md` file with `**Status:** Proposed`:
 
-1. Find every packet under `generated/issue-packets/active/**/*.md` and `generated/issue-packets/completed/**/*.md` whose YAML frontmatter `accepts:` field contains the ADR's number (e.g., `accepts: ["ADR-0011"]`). Packets with no `accepts:` field, or whose `accepts:` list is empty, are not implementers — they may have an `adrs:` reference but they do not gate acceptance.
+1. Find every packet under `generated/work-items/active/**/*.md` and `generated/work-items/completed/**/*.md` whose YAML frontmatter `accepts:` field contains the ADR's number (e.g., `accepts: ["ADR-0011"]`). Packets with no `accepts:` field, or whose `accepts:` list is empty, are not implementers — they may have an `adrs:` reference but they do not gate acceptance.
 2. For each such packet, look up its GitHub issue state from `/tmp/issue-states.json`.
 3. Decide:
    - **At least one packet exists AND every implementing issue is `closed`:** flip the ADR's `**Status:** Proposed` line to `**Status:** Accepted` and update the matching row in `adrs/README.md` (Status column).
@@ -269,8 +269,8 @@ _(empty section bodies render as `_No drift detected._`)_
 ### Architectural Consequences
 
 - **The Architecture repo becomes a complete mirror of The Hive's issue state**, not a partial view filtered to initiative work. Any agent or human reading the Architecture repo can answer "what is the Grid working on right now?" without consulting GitHub directly.
-- **`generated/issue-packets/active/` becomes a reliable indicator of open work.** Completed packets no longer linger. Agents that scan `active/` for outstanding work (e.g., a future prioritization agent) can trust the directory contents.
-- **`filed-packets.json` gains a second writer.** Today only `file-issues` writes to it; after this ADR, `hive-sync` also updates path entries when moving packets. The two agents write to non-overlapping concerns (file-issues adds entries, hive-sync updates paths of existing entries), so no conflict is expected, but the shared-write surface should be noted.
+- **`generated/work-items/active/` becomes a reliable indicator of open work.** Completed packets no longer linger. Agents that scan `active/` for outstanding work (e.g., a future prioritization agent) can trust the directory contents.
+- **`filed-work-items.json` gains a second writer.** Today only `file-issues` writes to it; after this ADR, `hive-sync` also updates path entries when moving packets. The two agents write to non-overlapping concerns (file-issues adds entries, hive-sync updates paths of existing entries), so no conflict is expected, but the shared-write surface should be noted.
 - **The initiative tracking files are unchanged in structure.** `hive-sync` continues to update them exactly as `initiatives-sync` did. The new tracking surfaces are `board-items.md` and `proposed-adrs.md`.
 - **The ADR lifecycle gains a visibility step (D6) and an automation step (D7).** Proposed ADRs that have been merged to `main` but not yet accepted are listed in a dedicated file with age (D6). Additionally, ADRs whose implementing packets are all closed are auto-flipped to Accepted by `hive-sync` (D7) — the scope agent is no longer the only thing that flips status, but its scope is preserved for the harder cases (initial draft → Proposed, or any case requiring architectural judgment about whether the implementation actually realized the decision). Auto-acceptance is bounded: it requires implementing packets to exist and all their issues to be closed; otherwise the ADR remains Proposed.
 - **The Architecture repo gains a single-page drift report (D9).** `initiatives/drift-report.md` lists inconsistencies between Accepted ADRs/PDRs and the rest of the repo (invariants, agent matrix, catalogs). The agent surfaces these but does not fix them — that remains the scope/adr-composer agent's or human's responsibility. The "First Surfaced" sticky-date column reveals long-standing drift that is silently being ignored.
@@ -288,7 +288,7 @@ The following invariants should be added to `constitution/invariants.md`. The nu
 
 39. **The Architecture repo tracks all Hive board items.** Every issue on The Hive is represented in either the initiative tracking files (for packet-originated work) or `initiatives/board-items.md` (for non-initiative work). The `hive-sync` agent is responsible for maintaining this correspondence. See ADR-0014 D1, D3.
 
-40. **Completed issue packets are moved to `completed/`.** When a filed issue is closed on GitHub, the `hive-sync` agent moves its source packet from `generated/issue-packets/active/` to `generated/issue-packets/completed/` and updates the path in `filed-packets.json`. No other agent moves packets between lifecycle directories. See ADR-0014 D2, D4.
+40. **Completed work items are moved to `completed/`.** When a filed issue is closed on GitHub, the `hive-sync` agent moves its source packet from `generated/work-items/active/` to `generated/work-items/completed/` and updates the path in `filed-work-items.json`. No other agent moves packets between lifecycle directories. See ADR-0014 D2, D4.
 
 ### Follow-up Work
 
@@ -300,7 +300,7 @@ The following invariants should be added to `constitution/invariants.md`. The nu
 - **Create `initiatives/drift-report.md`** with the initial structure in Phase 6.
 - **Update `constitution/agent-capability-matrix.md`** to reflect the agent rename and expanded responsibilities.
 - **Update `constitution/invariants.md`** with invariants 39–40 (Phases 2-3) and any additional invariants the auto-acceptance logic warrants (Phase 5; the bounded ADR/PDR write authorization may deserve invariant status).
-- **Backfill `completed/` directory** by running the new agent against all currently-closed issues in `filed-packets.json`. One-time operation.
+- **Backfill `completed/` directory** by running the new agent against all currently-closed issues in `filed-work-items.json`. One-time operation.
 - **Add `Initiative` select option** for non-initiative values (e.g., `N/A` or `operational`) on The Hive, if one does not already exist, so the mirror action can tag security/operational issues with a meaningful Initiative value.
 - **Define the meta-agent exclusion list** for D9's "agent files with no matrix row" check. Candidates include `adr-composer`, `pdr-composer`, `scope`, `file-issues`, `review`, etc. that exist in `.claude/agents/` but represent meta-decision-making rather than runtime workflows. Ship the list in Phase 6 alongside the drift detector.
 
@@ -310,9 +310,9 @@ The following invariants should be added to `constitution/invariants.md`. The nu
 
 Rejected. Two agents reading live issue state from the same board on overlapping schedules is a coordination burden for no gain. The sync logic is identical — query issues, compare against Architecture files, update — and splitting it means two PRs per sync cycle, two agent definitions to maintain, and a seam where initiative vs. non-initiative classification can drift. A single agent with a broader mandate is simpler.
 
-### Track non-initiative items in `filed-packets.json` by synthesizing packet entries
+### Track non-initiative items in `filed-work-items.json` by synthesizing packet entries
 
-Rejected. `filed-packets.json` maps packet files to GitHub issues. Non-initiative issues have no packet file. Synthesizing empty or stub packets to make the mapping work would violate the invariant that packets are authored by the scope agent and represent scoped, intentional work. The mapping file's semantics should remain clean: if there's an entry, there's a real packet. Non-initiative items get their own tracking surface (`board-items.md`).
+Rejected. `filed-work-items.json` maps packet files to GitHub issues. Non-initiative issues have no packet file. Synthesizing empty or stub packets to make the mapping work would violate the invariant that packets are authored by the scope agent and represent scoped, intentional work. The mapping file's semantics should remain clean: if there's an entry, there's a real packet. Non-initiative items get their own tracking surface (`board-items.md`).
 
 ### Have each issue source (nightly security, grid-health, etc.) write its own Architecture tracking
 
@@ -344,7 +344,7 @@ Rejected. D7 only flips Proposed → Accepted; it never flips the reverse direct
 
 ### Mirror `active/`'s initiative-subdirectory structure under `completed/`
 
-Considered and rejected for the first cut. A structured archive (`completed/adr-0009-package-scanning-rollout/01-kernel-...md`) is tidier for humans browsing history, but it complicates `filed-packets.json` path updates and the "all packets from this initiative are done" detection (agent has to reason about two parallel subtrees). The flat layout with collision-prefixing is simpler for the agent to implement and reason about. If browsing friction becomes a problem later, a follow-up ADR can re-organize `completed/` without changing the agent's write path — the directory is archival.
+Considered and rejected for the first cut. A structured archive (`completed/adr-0009-package-scanning-rollout/01-kernel-...md`) is tidier for humans browsing history, but it complicates `filed-work-items.json` path updates and the "all packets from this initiative are done" detection (agent has to reason about two parallel subtrees). The flat layout with collision-prefixing is simpler for the agent to implement and reason about. If browsing friction becomes a problem later, a follow-up ADR can re-organize `completed/` without changing the agent's write path — the directory is archival.
 
 ## Phase Plan
 
@@ -363,11 +363,11 @@ Exit criterion: the agent runs on its Monday/Thursday schedule under the new nam
 ### Phase 2 — Packet lifecycle (D2, D4)
 
 - Add the active → completed move logic to `hive-sync.md`.
-- Relax the `initiatives-sync` constraint that forbids writing to `filed-packets.json` — the new agent may update existing entries' `path` keys.
-- One-time backfill run: move every packet whose issue is already closed into `completed/` and update `filed-packets.json` paths. This runs as part of the PR that lands Phase 2, so the first "normal" sync after merge starts from a clean state.
+- Relax the `initiatives-sync` constraint that forbids writing to `filed-work-items.json` — the new agent may update existing entries' `path` keys.
+- One-time backfill run: move every packet whose issue is already closed into `completed/` and update `filed-work-items.json` paths. This runs as part of the PR that lands Phase 2, so the first "normal" sync after merge starts from a clean state.
 - Add invariant 40 to `constitution/invariants.md` in the same PR.
 
-Exit criterion: `generated/issue-packets/active/` contains only packets for open issues.
+Exit criterion: `generated/work-items/active/` contains only packets for open issues.
 
 ### Phase 3 — Non-initiative board tracking (D3)
 
@@ -414,7 +414,7 @@ Exit criterion: every drift category lists either current items with `First Surf
 
 - ADR-0002 — HoneyHub as command center (establishes the Architecture repo's sync mandate)
 - ADR-0007 — Claude agents as source of truth (agent definition conventions)
-- ADR-0008 — Work tracking and execution flow (packet lifecycle, `filed-packets.json` semantics)
+- ADR-0008 — Work tracking and execution flow (packet lifecycle, `filed-work-items.json` semantics)
 - ADR-0009 — Package scanning policy (the nightly security job that creates non-initiative issues)
 - ADR-0011 — Code review and merge flow (PR conventions followed by this agent)
 - ADR-0012 — Grid CI/CD control plane (`hive-field-mirror` action; future grid-health aggregator is D6)

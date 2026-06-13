@@ -81,9 +81,9 @@ The issue lives in the repo whose packages are outdated (the code lives where th
 - **Policy lives once in Actions.** The thresholds (75% patch, 70% floor) and the gate logic are in the reusable workflows; Nodes consume them via `workflow_call` and get the policy for free, per ADR-0012 D1. Tuning a threshold Grid-wide is a one-line default change in Actions, not an eleven-repo edit.
 - This is a **Tier 2** change per `catalogs/flow_tiers.json` ("CI workflow changes" — plan-then-execute, PR-reviewed, no new ADR required for subsequent threshold tuning).
 
-### Required Follow-Up Work (scoped as separate issue packets — not written here)
+### Required Follow-Up Work (scoped as separate work items — not written here)
 
-Accepting this ADR creates the following implementation obligations. Each is a discrete issue packet authored by the scope agent; this ADR does not write the packets.
+Accepting this ADR creates the following implementation obligations. Each is a discrete work item authored by the scope agent; this ADR does not write the packets.
 
 1. **Change the reusable PR validation workflow in `HoneyDrunk.Actions`.** Wire a coverage-gate step into `pr-core.yml`'s tier-1 path (likely by promoting/replacing `job-coverage-analysis.yml` so it computes patch coverage from the PR diff, reads/writes `.github/coverage-baseline.json`, enforces D1–D3 with a *failing* exit code instead of `::warning::`, and skips cleanly when no test project is present), and extend the `pr/generate-summary` composite action to render the coverage-gate verdict and the non-blocking ⚠️ outdated-packages section (D5).
 2. **Change `nightly-deps.yml`** to open/update/close the single grouped per-repo `📦 Outdated Dependencies` tracking issue (D6), reusing the existing `deps/report-dotnet` / `deps/consolidate-reports` composite actions for the package data and the ADR-0012-D6-style find-or-update-by-stable-title pattern for the issue.

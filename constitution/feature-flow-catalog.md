@@ -1,6 +1,6 @@
 # Feature Flow Catalog
 
-Named cross-repo flows that are too important to leave implicit. Each flow shows how a capability travels across multiple Nodes — which contracts cross each boundary and what order repos must be touched. Use this before generating cross-repo issue packets.
+Named cross-repo flows that are too important to leave implicit. Each flow shows how a capability travels across multiple Nodes — which contracts cross each boundary and what order repos must be touched. Use this before generating cross-repo work items.
 
 Supplement this with `catalogs/relationships.json` for the full dependency graph and `catalogs/contracts.json` for the specific interfaces at each boundary.
 
@@ -197,9 +197,9 @@ Rotation event:
     │ projects_v2_item.edited webhook
     ▼
 [HoneyDrunk.Actions] — cloud agent trigger workflow
-    │ Checks out target repo + Architecture repo (for packet context)
+    │ Checks out target repo + Architecture repo (for work-item context)
     ▼
-[Claude Agent SDK] — reads issue packet from Architecture/generated/issue-packets/
+[Claude Agent SDK] — reads work item from Architecture/generated/work-items/active/
     │
     ▼
 [HoneyDrunk.Agents] — agent lifecycle: register → initialize → execute
@@ -235,7 +235,7 @@ Agent opens PR in target repo
 
 ```
 [Architecture repo] — scope agent decomposes the bump
-    │ issue packets per downstream repo
+    │ work items per downstream repo
     ▼
 Wave 1: Upstream Node (e.g. Kernel) — bumps version, publishes to NuGet
     │ git tag → CI → NuGet push

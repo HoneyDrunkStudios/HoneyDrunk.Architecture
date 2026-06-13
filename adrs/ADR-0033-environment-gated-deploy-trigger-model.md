@@ -116,7 +116,7 @@ Deferred, not adopted (D6). Same-binary promotion has appeal (build once, deploy
 
 ## Implementation Notes (2026-06-01) — As-Built: Staged Approval-Gate Promotion
 
-Recorded per ADR-0008 § Implementation-Notes Packets. Full as-built record (every delta + rationale, PRs, follow-ups) lives in this initiative's `implementation-notes.md` — under `generated/issue-packets/active/adr-0033-deploy-trigger-model/` while in flight, and `generated/issue-packets/completed/adr-0033-deploy-trigger-model/` once `hive-sync` archives it (invariant 37). The decision above is preserved as written; implementation refined it materially. Headline deltas (decided ➜ as-built):
+Recorded per ADR-0008 § Implementation-Notes Packets. Full as-built record (every delta + rationale, PRs, follow-ups) lives in this initiative's `implementation-notes.md` — under `generated/work-items/active/adr-0033-deploy-trigger-model/` while in flight, and `generated/work-items/completed/adr-0033-deploy-trigger-model/` once `hive-sync` archives it (invariant 37). The decision above is preserved as written; implementation refined it materially. Headline deltas (decided ➜ as-built):
 
 - **Promotion (D1/D7):** `tag → staging → manual prod gate → prod`, staged in one run. The gate is the `prod` GitHub Environment's required-reviewers rule, reached only after staging (`resolve-prod`/`deploy-prod` both `needs: deploy-staging`). Tags remain the promotion trigger, so version-of-record is preserved — the gate is added *on top*, reconciling (not adopting) the rejected "approval-gate, no tags" alternative.
 - **Shape (D2/D5):** per-environment static deploy jobs (`deploy-{dev,staging,prod}`) with job-level concurrency, instead of a dynamic `resolve`-mapped single environment / top-level concurrency.

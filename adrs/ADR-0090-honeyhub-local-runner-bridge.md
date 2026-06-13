@@ -78,7 +78,7 @@ HoneyHub records:
 | `DispatchRun` | One execution attempt inside a session. |
 | `DispatchMessage` | User/agent/system message, streamed or final. |
 | `DispatchControlEvent` | Stop, pause, resume, redirect, approve, reject, timeout. |
-| `DispatchArtifact` | Branch, diff, PR, issue packet, ADR/PDR draft, report, log bundle. |
+| `DispatchArtifact` | Branch, diff, PR, work item, ADR/PDR draft, report, log bundle. |
 | `UsageSignal` | Exact or estimated usage, cost, context, duration, turn count, model/tool label. |
 | `PolicyHint` | Recommendation, warning, or block reason. |
 
@@ -191,7 +191,7 @@ Accepted output artifacts:
 
 - branch and commit,
 - pull request,
-- generated issue packet,
+- generated work item,
 - generated ADR/PDR draft,
 - report,
 - failure note.

@@ -306,7 +306,7 @@ The human may also invoke the `refine` agent against the PR's packet + diff (ske
 
 Two same-runner passes remain the default because they are cheapest and automatic under the OpenClaw/Codex setup. Separate multi-agent cloud review modes are intentionally out of scope for ADR-0044; the review system should stay subscription-backed, local/runtime-owned, and low-noise unless a future ADR deliberately reopens provider-backed review.
 
-Filed ADR-0044 issue packets are immutable per invariant 24. Any legacy packet text that still references `/ultrareview` is superseded by this ADR text and must not be used to implement or revive a separate multi-agent cloud review mode.
+Filed ADR-0044 work items are immutable per invariant 24. Any legacy packet text that still references `/ultrareview` is superseded by this ADR text and must not be used to implement or revive a separate multi-agent cloud review mode.
 
 ### D9 - Post-merge sampling audit
 

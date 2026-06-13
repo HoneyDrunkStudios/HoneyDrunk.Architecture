@@ -7,7 +7,7 @@
 
 ## If Accepted — Required Follow-Up Work in Architecture Repo
 
-Accepting this ADR creates Kernel, Notify Cloud, and cross-Node obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
+Accepting this ADR creates Kernel, Notify Cloud, and cross-Node obligations that must be completed as follow-up work items (do not accept and leave the catalogs stale):
 
 - [ ] Kernel packet — ship `AddGridRateLimiting()` and `UseGridRateLimiting()` extension methods on `HoneyDrunk.Kernel` that wire the ASP.NET Core `RateLimiter` middleware to read `IGridContext.TenantId` (per [ADR-0026](./ADR-0026-grid-multi-tenant-primitives.md) D2), apply the partitioned limiter from D9, and emit the success-side headers from D7
 - [ ] Kernel packet — extend `ITenantRateLimitPolicy` consumers (already a [ADR-0026](./ADR-0026-grid-multi-tenant-primitives.md) D4 primitive) with the response-shape convention from D6 so every Node that returns 429 returns the same envelope

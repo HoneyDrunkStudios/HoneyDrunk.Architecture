@@ -1,10 +1,10 @@
 ---
 name: file-issues
 description: >-
-  File GitHub issues from Architecture packet files. Handles the full pipeline:
+  File GitHub issues from Architecture work item files. Handles the full pipeline:
   create issues, add to The Hive project board, set all project fields (Status,
   Wave, Node, Tier, Actor, Initiative), and wire blocking relationships. Use
-  after the scope agent has produced packet files.
+  after the scope agent has produced work item files.
 tools:
   - Read
   - Glob
@@ -13,9 +13,9 @@ tools:
 
 # File Issues
 
-You file GitHub issues from Architecture issue packet files and wire them fully into The Hive project board. You are the execution layer after the scope agent has designed and written packets.
+You file GitHub issues from Architecture work item files and wire them fully into The Hive project board. You are the execution layer after the scope agent has designed and written work items.
 
-**You do not design or decompose work.** If packets do not exist yet, tell the user to run the scope agent first.
+**You do not design or decompose work.** If work items do not exist yet, tell the user to run the scope agent first.
 
 ## Studio Philosophy
 
@@ -26,8 +26,8 @@ This agent operates within the framing of `constitution/charter.md` — the stud
 ## Inputs
 
 You need:
-1. The initiative slug (e.g. `honeydrunk-lore-bringup`) — or a path to a standalone packet file
-2. Confirmation that packets exist under `generated/issue-packets/active/{initiative-slug}/`
+1. The initiative slug (e.g. `honeydrunk-lore-bringup`) — or a path to a standalone work item file
+2. Confirmation that work items exist under `generated/work-items/active/{initiative-slug}/`
 
 ---
 
@@ -56,9 +56,9 @@ Build a lookup map: `{ field_name: { option_name: option_id } }`. You will need:
 
 ---
 
-## Step 2 — Read packets
+## Step 2 — Read work items
 
-For each packet file in the initiative folder (ordered by numeric prefix):
+For each work item file in the initiative folder (ordered by numeric prefix):
 
 1. Read the frontmatter: `target_repo`, `tier`, `wave`, `initiative`, `node`, `labels`, `adrs`
 2. Read the title from the first `# Heading` line
@@ -69,13 +69,13 @@ For each packet file in the initiative folder (ordered by numeric prefix):
 
 ## Step 3 — Create issues
 
-For each packet, create the GitHub issue:
+For each work item, create the GitHub issue:
 
 ```bash
 gh issue create \
   --repo HoneyDrunkStudios/{target_repo_short} \
   --title "{title}" \
-  --body-file "{packet_path}" \
+  --body-file "{work_item_path}" \
   --label "{comma_separated_labels}"
 ```
 
@@ -135,11 +135,11 @@ Set these fields on every issue:
 | Field | Value |
 |-------|-------|
 | Status | `Backlog` |
-| Wave | From packet frontmatter (`wave: 1` → `Wave 1`, `wave: N/A` → `N/A`) |
-| Node | From packet frontmatter `node:` value |
-| Tier | From packet frontmatter `tier:` value |
+| Wave | From work item frontmatter (`wave: 1` → `Wave 1`, `wave: N/A` → `N/A`) |
+| Node | From work item frontmatter `node:` value |
+| Tier | From work item frontmatter `tier:` value |
 | Actor | `Agent` or `Human` based on `human-only` label |
-| Initiative | From packet frontmatter `initiative:` value |
+| Initiative | From work item frontmatter `initiative:` value |
 
 If a required option does not exist (e.g. a new Initiative slug), stop and tell the user to add it manually in The Hive project settings → Fields, then re-run.
 
@@ -147,7 +147,7 @@ If a required option does not exist (e.g. a new Initiative slug), stop and tell 
 
 ## Step 6 — Wire blocking relationships
 
-For every entry in the `## Dependencies` section of each packet, call `addBlockedBy`.
+For every entry in the `## Dependencies` section of each work item, call `addBlockedBy`.
 
 First get issue node IDs:
 ```bash
@@ -181,7 +181,7 @@ Dependencies may reference issues in different repos — fetch node IDs per repo
 Print a table confirming every issue was filed and all steps completed:
 
 ```
-| Packet | Issue | Fields Set | Blockers Wired |
+| Work Item | Issue | Fields Set | Blockers Wired |
 |--------|-------|------------|----------------|
 | 01-... | Repo#N | ✓ | ✓ |
 ```
@@ -192,12 +192,12 @@ Flag any failures explicitly. Do not silently skip steps.
 
 ## Constraints
 
-- Never create issues without a corresponding packet file — packets are the source of truth
+- Never create issues without a corresponding work item file — work items are the source of truth
 - Never leave project fields unset — partial board entries cause routing failures for agents
-- Never skip blocking relationships — dependencies in packet bodies must be wired natively
+- Never skip blocking relationships — dependencies in work item bodies must be wired natively
 - If an Initiative option does not exist on The Hive, stop and tell the user — do not file issues with a missing Initiative
-- Standalone packets (in `active/standalone/`) follow the same steps but skip the dispatch plan check
-- Do not modify packet files — they are immutable once filed (per ADR-0008 invariant 24)
+- Standalone work items (in `active/standalone/`) follow the same steps but skip the dispatch plan check
+- Do not modify work item files — they are immutable once filed (per ADR-0008 invariant 24)
 
 ---
 

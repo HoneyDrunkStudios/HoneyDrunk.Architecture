@@ -15,7 +15,7 @@
 
 ## If Accepted — Required Follow-Up Work in Architecture Repo
 
-Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
+Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up work items (do not accept and leave the catalogs stale):
 
 - [ ] Reconcile `catalogs/contracts.json` for `honeydrunk-operator`: rename `ICostController` to `ICostGuard`, add `IDecisionPolicy` and `ISafetyFilter`, and add record entries for `CostEvent`, `AuditEntry`, `ApprovalRequest`, and `ApprovalDecision` (all four records entered with `kind: "type"` to match the grid schema)
 - [ ] Update `catalogs/relationships.json` `consumed_by_planned` for `honeydrunk-operator` to include Agents, Flow, AI, Capabilities, and Evals, each with a `consumes_detail` entry listing the specific contract surfaces that edge exercises
@@ -36,7 +36,7 @@ The existing `catalogs/contracts.json` entry for `honeydrunk-operator` lists fou
 
 Operator's boundary against two adjacent Nodes needs explicit disambiguation before drift creeps in. HoneyDrunk.Auth owns identity and authorization; Operator owns human policy enforcement on top of an already-authenticated, already-authorized action. HoneyDrunk.Communications owns outbound messaging workflows (ADR-0013); Operator raises approval *intent* but does not deliver the message itself. Both boundaries are easy to blur once the Node ships, so this ADR pins them now.
 
-This ADR is the **stand-up decision** for the Operator Node — what it owns, what it does not own, which contracts it exposes, how downstream Nodes couple to it, and how it interacts with Auth and Communications. It is not a scaffolding packet. Filing the repo, adding CI, wiring the InMemory fixture, and producing the first shippable packages all follow as separate issue packets once this ADR is accepted.
+This ADR is the **stand-up decision** for the Operator Node — what it owns, what it does not own, which contracts it exposes, how downstream Nodes couple to it, and how it interacts with Auth and Communications. It is not a scaffolding packet. Filing the repo, adding CI, wiring the InMemory fixture, and producing the first shippable packages all follow as separate work items once this ADR is accepted.
 
 ## Decision
 

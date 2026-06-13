@@ -103,7 +103,7 @@ Pending → Blocked → In Progress → Done
 
 **Ownership:** HoneyHub owns Task planning and sequencing. The target repo owns execution.
 
-**Boundary:** Tasks map 1:1 to GitHub Issues when dispatched. HoneyHub generates the issue packet; the repo's CI and review process govern execution. Task completion is determined by PR merge + passing checks, not by manual status update.
+**Boundary:** Tasks map 1:1 to GitHub Issues when dispatched. HoneyHub generates the work item; the repo's CI and review process govern execution. Task completion is determined by PR merge + passing checks, not by manual status update.
 
 ---
 

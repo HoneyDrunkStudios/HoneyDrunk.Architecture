@@ -19,9 +19,9 @@ The Grid has 25+ repos. Each repo ships its own documentation surface:
 
 None of these has a scheduled keeper. Documentation drift is real and observed:
 
-- `node-audit` (read-only, one-Node-at-a-time, on-demand) routinely surfaces stale READMEs, CHANGELOG gaps, and `AGENTS.md` that no longer matches current practice — but only when an operator invokes it on a specific Node, and the findings sit until a human writes a packet.
+- `node-audit` (read-only, one-Node-at-a-time, on-demand) routinely surfaces stale READMEs, CHANGELOG gaps, and `AGENTS.md` that no longer matches current practice — but only when an operator invokes it on a specific Node, and the findings sit until a human writes a work item.
 - [ADR-0044](./ADR-0044-grid-aware-cloud-code-review-and-ai-authored-pr-discipline.md) D3's twenty-category rubric includes "Documentation" at PR-review time, but a PR reviewer only sees the diff — it cannot detect that a Node has been silently drifting for six months across many PRs that each individually felt fine.
-- [ADR-0014](./ADR-0014-hive-architecture-reconciliation-agent.md) `hive-sync` reconciles the **Architecture repo** against live state (initiatives, packet lifecycle, README index, drift report). Its mandate is explicitly Architecture-repo-only per D4; it does not touch the docs of any other repo.
+- [ADR-0014](./ADR-0014-hive-architecture-reconciliation-agent.md) `hive-sync` reconciles the **Architecture repo** against live state (initiatives, work-item lifecycle, README index, drift report). Its mandate is explicitly Architecture-repo-only per D4; it does not touch the docs of any other repo.
 - [ADR-0043](./ADR-0043-continuous-backlog-generation-strategy.md) names four backlog-source streams (Strategic, Tactical, Opportunistic, Reactive) but defers `node-audit`'s output to the human-driven weekly briefing on a quarterly per-Node rotation. Doc drift surfaces in that rotation but on a 90-day clock, per-Node, not Grid-wide.
 
 The pattern repeating across recent ADRs (0014, 0030, 0043, 0044, 0058) is **"one owner per substrate-shaped concern, surfaced centrally, executed downstream."** Documentation currency is a substrate-shaped concern — Grid-wide, no current owner, cheap to drift, expensive to find later — and it does not have one.
@@ -31,10 +31,10 @@ The further observation that distinguishes documentation from `hive-sync`'s mand
 Three forcing functions converging now:
 
 1. **Notify Cloud GA approaches.** First commercial product means external developers encounter Grid docs. A stale `HoneyDrunk.Notify` README on the path to NotifyCloud's first integrator is exactly the first-impression risk [ADR-0075](./ADR-0075-documentation-tooling.md) D1 cited for tooling — but now applied to *content*, not renderer.
-2. **`accepts:` packet frontmatter is shipping** (ADR-0014 Phase 5). The Grid now has machine-readable links between ADRs/PDRs and the packets that implement them. A documentation reconciler can use that same chain to ask "this ADR was accepted; does every repo it names actually document the resulting behavior?"
+2. **`accepts:` work-item frontmatter is shipping** (ADR-0014 Phase 5). The Grid now has machine-readable links between ADRs/PDRs and the work items that implement them. A documentation reconciler can use that same chain to ask "this ADR was accepted; does every repo it names actually document the resulting behavior?"
 3. **The cascade of ADRs 0026-0082 has produced ~25 contracts named in catalogs** but with no scheduled "did the repo's README catch up?" pass. Doc drift on this scale will not be caught by ad-hoc audits.
 
-This ADR commits a **scheduled, full-sweep, write-authorized central agent (`docs-sync`)** that detects documentation drift Grid-wide and reconciles it directly via per-repo PRs. It composes with — and extends — the existing `proposed/` packet pipeline rather than replacing it.
+This ADR commits a **scheduled, full-sweep, write-authorized central agent (`docs-sync`)** that detects documentation drift Grid-wide and reconciles it directly via per-repo PRs. It composes with — and extends — the existing `proposed/` work item pipeline rather than replacing it.
 
 The ADR is bounded: it covers the **Markdown documentation surface inside each repo** (README, CHANGELOG, AGENTS, CLAUDE, copilot-instructions, `docs/`). It explicitly carves out: in-product OpenAPI rendering (ADR-0075), Docusaurus sites (ADR-0075), the Studios marketing site (handled by `site-sync`), the Architecture repo's own internal docs (handled by `hive-sync`), and XML-doc-comment generation (Invariant 13, enforced by `HoneyDrunk.Standards`, not by this agent).
 
@@ -131,16 +131,16 @@ The categories are ordered so that **the most signal-dense and least-false-posit
 | Agent-instruction drift (CLAUDE.md names a removed agent) | **No** — surfaced in PR body; replacement is editorial | Yes |
 | Missing required artifact (no root README in a repo with `*.csproj`) | **Conditionally yes** — agent generates a skeleton README from `catalogs/nodes.json` Node manifest, marked `<!-- docs-sync generated skeleton; please review -->` | Yes |
 
-The bias is: **mechanical, exact-string drift is auto-fixed in the PR**; **anything requiring editorial judgment is surfaced for human action** either via TODO blocks in the PR body or as a fallback `proposed/` packet in Architecture (see "fallback packet path" below).
+The bias is: **mechanical, exact-string drift is auto-fixed in the PR**; **anything requiring editorial judgment is surfaced for human action** either via TODO blocks in the PR body or as a fallback `proposed/` work item in Architecture (see "fallback work-item path" below).
 
 **PR metadata (pr-core compliance):**
 
 The PR body must satisfy `pr-core.yml` Job 7 (Authorship Check) and Job 8 (PR Metadata Check). The decision:
 
 - **Authorship value: `agent-codex`.** The v1 scheduled job runs through the ADR-0086 runner's `codex` command, so the PR-body authorship token must match that execution surface. Expanding the `pr-core.yml` enum to add `agent-docs-sync` would be a coordinated change across HoneyDrunk.Actions and every consumer pr-core gate, which is disproportionate to the value. If a future host invokes the same agent through Claude Code, the job spec and prompt must be updated together.
-- **Packet vs Out-of-band: `Out-of-band reason:`** pointing at the docs-sync run report path. Example: `Out-of-band reason: Generated by docs-sync run 2026-05-29; full report at HoneyDrunk.Architecture/generated/docs-sync-reports/2026-05-29.md`. Rationale: docs-sync is a **continuous reconciliation initiative**, not a per-finding packet — the same model `hive-sync`'s reconciliation PRs follow today. The report path in the OOB reason is the audit trail. The `out-of-band` label is auto-applied by the pr-core workflow per the existing OOB pattern.
+- **Work item vs Out-of-band: `Out-of-band reason:`** pointing at the docs-sync run report path. Example: `Out-of-band reason: Generated by docs-sync run 2026-05-29; full report at HoneyDrunk.Architecture/generated/docs-sync-reports/2026-05-29.md`. Rationale: docs-sync is a **continuous reconciliation initiative**, not a per-finding work item — the same model `hive-sync`'s reconciliation PRs follow today. The report path in the OOB reason is the audit trail. The `out-of-band` label is auto-applied by the pr-core workflow per the existing OOB pattern.
 
-A future ADR may revisit this and either (a) add `agent-docs-sync` as a first-class enum value, or (b) introduce a `Packet:` link to a per-run governing packet in Architecture. Either is reversible; the v1 cost of using `agent-claude-code` + OOB-reason is one line per PR and is consistent with how `site-sync`-class agents will operate.
+A future ADR may revisit this and either (a) add `agent-docs-sync` as a first-class enum value, or (b) introduce a `Work Item:` link to a per-run governing work item in Architecture. Either is reversible; the v1 cost of using `agent-claude-code` + OOB-reason is one line per PR and is consistent with how `site-sync`-class agents will operate.
 
 **One-PR-per-repo-per-initiative compliance:**
 
@@ -148,11 +148,11 @@ Operator convention: one PR per repo per initiative. `docs-sync` is its own cont
 
 **Composition with `pr-core`:**
 
-The cross-repo PR is subject to the target repo's full `pr-core` gate just like any other PR. If `pr-core` fails (most likely cause: a generated skeleton README trips a linter, or a doc edit breaks a Docusaurus sidebar reference), the failure is the human's signal — the agent does not retry on its own. The next weekly run re-evaluates: if the underlying issue still exists, the agent commits a corrective edit to the same branch (not a new PR). If three consecutive runs fail to land a fix for a given repo, the finding for that repo escalates to a `proposed/` packet in Architecture for human-driven triage (the "fallback packet path"). This bounded retry prevents the agent from getting stuck in a loop while preserving the operator's ability to intervene.
+The cross-repo PR is subject to the target repo's full `pr-core` gate just like any other PR. If `pr-core` fails (most likely cause: a generated skeleton README trips a linter, or a doc edit breaks a Docusaurus sidebar reference), the failure is the human's signal — the agent does not retry on its own. The next weekly run re-evaluates: if the underlying issue still exists, the agent commits a corrective edit to the same branch (not a new PR). If three consecutive runs fail to land a fix for a given repo, the finding for that repo escalates to a `proposed/` work item in Architecture for human-driven triage (the "fallback work-item path"). This bounded retry prevents the agent from getting stuck in a loop while preserving the operator's ability to intervene.
 
-**Fallback packet path** (preserves the existing `proposed/` pipeline):
+**Fallback work-item path** (preserves the existing `proposed/` pipeline):
 
-For findings the agent declines to auto-fix (symbol drift, editorial calls, agent-instruction drift) AND for findings where three consecutive PRs failed, the agent writes a `generated/issue-packets/proposed/{YYYY-MM-DD}-{repo}-docs-{slug}.md` packet in Architecture per the standard format from `copilot/issue-authoring-rules.md`. Frontmatter: `source: reactive`, `generator: docs-sync`. These packets follow the ADR-0043 D3 lifecycle — they are **not** self-promoted to `active/`; a human triages them in the weekly briefing per ADR-0043 D5. So the docs-sync surface composes with the proposed/ pipeline; it does not bypass it for editorial work.
+For findings the agent declines to auto-fix (symbol drift, editorial calls, agent-instruction drift) AND for findings where three consecutive PRs failed, the agent writes a `generated/work-items/proposed/{YYYY-MM-DD}-{repo}-docs-{slug}.md` work item in Architecture per the standard format from `copilot/issue-authoring-rules.md`. Frontmatter: `source: reactive`, `generator: docs-sync`. These work items follow the ADR-0043 D3 lifecycle — they are **not** self-promoted to `active/`; a human triages them in the weekly briefing per ADR-0043 D5. So the docs-sync surface composes with the proposed/ pipeline; it does not bypass it for editorial work.
 
 **PAT scope and secret management:**
 
@@ -161,15 +161,15 @@ Cross-repo PR authority requires a token with `pull_requests: write` and `conten
 - **Recommended: GitHub App installation token** scoped to the `HoneyDrunkStudios` organization, with `Contents: read+write`, `Pull requests: read+write`, `Metadata: read` permissions. App-installation tokens auto-rotate (1-hour lifetime), do not consume PAT inventory, are auditable per-installation in the org audit log, and survive operator rotation. The app is named `docs-sync` and registered as a HoneyDrunk Studios GitHub App; its private key is stored in `kv-hd-docs-sync-prod` per ADR-0005 and rotated per ADR-0006 Tier 2 (since the token is short-lived, the key itself is the long-lived secret subject to standard SLAs).
 - **Rejected: classic PAT on the operator account.** Blast radius is the operator's entire GitHub identity (all orgs, all scopes the PAT was granted). Even a fine-grained PAT scoped to the org has worse audit posture than a GitHub App (PAT actions show up as the operator's user; App actions show up as the App with installation-ID lineage). Per ADR-0006's rotation discipline, the App pattern is the correct one for any persistent automation that opens PRs at scale.
 
-If the App registration is blocked (org admin friction, free-tier App limits), the v1 fallback is a fine-grained PAT on a dedicated `tatteddev-bot` machine user with read/write on `HoneyDrunkStudios` repos only. This is documented as a temporary measure with a follow-up packet to migrate to the App pattern.
+If the App registration is blocked (org admin friction, free-tier App limits), the v1 fallback is a fine-grained PAT on a dedicated `tatteddev-bot` machine user with read/write on `HoneyDrunkStudios` repos only. This is documented as a temporary measure with a follow-up work item to migrate to the App pattern.
 
 **Why this composes with ADR-0043 D3 (no self-promotion):**
 
-ADR-0043 D3 says agents do not self-promote `proposed/` → `active/` packets. That rule is about **the packet lifecycle inside the Architecture repo**: agents file packets in `proposed/`, humans triage them into `active/`. Opening a cross-repo PR is a **different surface entirely** — it is the equivalent of `site-sync` editing the website's JSON files directly or `hive-sync` updating `initiatives/active-initiatives.md` directly. Both of those agents already write directly to their target repo without going through the packet lifecycle, because the work is mechanical reconciliation of shared truth, not "promotion of agent-generated work." `docs-sync`'s mechanical doc fixes are the same shape: reconciliation, not promotion.
+ADR-0043 D3 says agents do not self-promote `proposed/` → `active/` work items. That rule is about **the work-item lifecycle inside the Architecture repo**: agents file work items in `proposed/`, humans triage them into `active/`. Opening a cross-repo PR is a **different surface entirely** — it is the equivalent of `site-sync` editing the website's JSON files directly or `hive-sync` updating `initiatives/active-initiatives.md` directly. Both of those agents already write directly to their target repo without going through the work-item lifecycle, because the work is mechanical reconciliation of shared truth, not "promotion of agent-generated work." `docs-sync`'s mechanical doc fixes are the same shape: reconciliation, not promotion.
 
-The relevant guardrails on cross-repo writes are not ADR-0043 D3 — they are (a) the PR gate (`pr-core` is the human-equivalent review checkpoint; the PR cannot merge until checks pass and a human approves per branch protection), and (b) the bounded auto-fix scope (only mechanical exact-string drift is auto-edited; everything else falls back to a `proposed/` packet, which DOES go through D3). So D3 is preserved exactly where it matters (editorial work) and bypassed only where the work is mechanical (the same exception ADR-0014 carved for `hive-sync` and ADR-0075 implies for `site-sync`).
+The relevant guardrails on cross-repo writes are not ADR-0043 D3 — they are (a) the PR gate (`pr-core` is the human-equivalent review checkpoint; the PR cannot merge until checks pass and a human approves per branch protection), and (b) the bounded auto-fix scope (only mechanical exact-string drift is auto-edited; everything else falls back to a `proposed/` work item, which DOES go through D3). So D3 is preserved exactly where it matters (editorial work) and bypassed only where the work is mechanical (the same exception ADR-0014 carved for `hive-sync` and ADR-0075 implies for `site-sync`).
 
-The candidate Invariant in D9 below offers the option to formalize this distinction as a new numbered invariant ("mechanical cross-repo reconciliation by named central agents is permitted without packet routing; editorial work routes through `proposed/`").
+The candidate Invariant in D9 below offers the option to formalize this distinction as a new numbered invariant ("mechanical cross-repo reconciliation by named central agents is permitted without work-item routing; editorial work routes through `proposed/`").
 
 ### D5 — Interaction with existing agents
 
@@ -178,10 +178,10 @@ The candidate Invariant in D9 below offers the option to formalize this distinct
 | `hive-sync` | Strictly disjoint write surfaces. `hive-sync` writes only to the Architecture repo; `docs-sync` writes to per-repo target repos and to one report file in Architecture. Both read `grid-health.json` and `catalogs/*.json`. The version-drift category (D3 #2) is symmetric to `hive-sync` Step 12: `hive-sync` reconciles `catalogs/compatibility.json`/`modules.json`/`services.json` against `grid-health.json`; `docs-sync` reconciles per-repo README/CHANGELOG prose against the same source. |
 | `site-sync` | Adjacent and complementary. `site-sync` writes to the marketing website; `docs-sync` writes to per-repo docs. Same write-pattern shape ("central agent reconciles shared truth into target repo"); same Authorship/OOB-reason discipline applies to both. They do not interlock. |
 | `node-audit` | Complementary. `node-audit` is deep, one-Node-at-a-time, on-demand, all-phases. `docs-sync` is shallow, all-Nodes, scheduled, docs-only. A `node-audit` Phase 6 finding ("README is stale") that `docs-sync` already surfaced is acceptable — the redundancy makes the doc surface visible from both the per-Node and per-Grid lens. The audit's per-Node deep findings remain the authoritative source for fixes; `docs-sync` is the early-warning radar and mechanical reconciler. |
-| `scope` | Downstream of the fallback packet path. A human triaging a `docs-sync`-generated `proposed/` packet (the editorial-finding fallback) may invoke `scope` if the docs work overlaps with non-doc changes worth bundling. |
+| `scope` | Downstream of the fallback work-item path. A human triaging a `docs-sync`-generated `proposed/` work item (the editorial-finding fallback) may invoke `scope` if the docs work overlaps with non-doc changes worth bundling. |
 | `review` | Per-PR reviewer of every docs-sync PR. ADR-0044 D7 PR-size discipline applies: docs-sync PRs are expected to be well under 400 lines in normal weeks. If a docs-sync PR exceeds 400 lines (e.g., first-run cleanup against a repo that has never been audited), the `Size justification:` block in the PR body cites the catch-up nature explicitly. ADR-0044 D8 multi-perspective review is not triggered by docs PRs (docs paths do not touch high-risk Nodes' executable surface). |
-| `netrunner` | Reader. Weekly briefing per ADR-0043 D5 includes (a) the per-run docs-sync report summary, (b) any docs-sync-generated `proposed/` packets (editorial fallback), and (c) any docs-sync PRs that have been open and unmerged for more than 14 days (the stale-PR surface). |
-| `file-issues` | Unrelated. docs-sync does not file GitHub Issues; its output is cross-repo PRs and (for editorial findings) `proposed/` packets that go through the standard `file-issues` path only if a human promotes them. |
+| `netrunner` | Reader. Weekly briefing per ADR-0043 D5 includes (a) the per-run docs-sync report summary, (b) any docs-sync-generated `proposed/` work items (editorial fallback), and (c) any docs-sync PRs that have been open and unmerged for more than 14 days (the stale-PR surface). |
+| `file-issues` | Unrelated. docs-sync does not file GitHub Issues; its output is cross-repo PRs and (for editorial findings) `proposed/` work items that go through the standard `file-issues` path only if a human promotes them. |
 
 The agent capability matrix at `constitution/agent-capability-matrix.md` is updated in the same PR that lands the agent definition. The Execution Rules section is updated to add `docs-sync` to the named list of agents authorized for cross-repo PR creation (currently: `file-issues` for issues; `hive-sync` for Architecture-repo PRs; adding `docs-sync` for per-target-repo PRs with the scope bounds in D4).
 
@@ -204,10 +204,10 @@ Rules:
 - **Per-run report (`generated/docs-sync-reports/{YYYY-MM-DD}.md`) is append-only by date.** Each run is its own file. History is preserved.
 - **Per-repo cross-repo PR uses a stable branch name `chore/docs-sync-{YYYY-MM-DD}`.** If a PR with that branch already exists and is open at the start of the next run, the agent **reuses the branch** and pushes additional commits rather than opening a parallel PR. If the prior week's PR was merged or closed, the new run opens a fresh PR with the new date in the branch name.
 - **Auto-fix idempotency.** Every auto-fix the agent applies must be idempotent — running the same fix twice produces no diff. Version-drift fixes, name rewrites, and dead-link rewrites all satisfy this trivially; skeleton-README generation is gated on the file not existing, so it cannot re-fire on a repo whose README the human has since created.
-- **Editorial-finding packet dedup.** Before writing a new `proposed/` packet for a Node (the fallback path), the agent checks for an existing un-triaged packet with `generator: docs-sync` covering the same Node and the same finding category. If found, the existing packet is left alone (Invariant 24 protects packets from agent edits post-creation) and a one-line note is added to the run report: "Skipped — existing `proposed/` packet `{path}` still pending triage."
+- **Editorial-finding work item dedup.** Before writing a new `proposed/` work item for a Node (the fallback path), the agent checks for an existing un-triaged work item with `generator: docs-sync` covering the same Node and the same finding category. If found, the existing work item is left alone (Invariant 24 protects work items from agent edits post-creation) and a one-line note is added to the run report: "Skipped — existing `proposed/` work item `{path}` still pending triage."
 - **Sticky findings carry a "first surfaced" date** in the run report, computed the same way `hive-sync` does for `drift-report.md`. Findings older than 60 days are flagged in a `Stale Findings` section so the operator sees what's been ignored.
-- **`block`-severity findings have no dedup grace period.** A `block` finding (e.g., a missing required README) generates a packet AND a fresh PR commit every run until the underlying issue is fixed, even if a `proposed/` packet exists. This is deliberate: missing required docs are an Invariant 12 violation and the per-week reminder is the floor.
-- **PR-failure backoff.** If three consecutive weekly runs against the same repo open or update a PR that fails `pr-core` and is not merged or closed by the human within the week, the agent stops auto-pushing to that repo's PR and converts all that repo's findings to `proposed/` packets for human triage. The operator is alerted in the run report. This prevents zombie-PR loops.
+- **`block`-severity findings have no dedup grace period.** A `block` finding (e.g., a missing required README) generates a work item AND a fresh PR commit every run until the underlying issue is fixed, even if a `proposed/` work item exists. This is deliberate: missing required docs are an Invariant 12 violation and the per-week reminder is the floor.
+- **PR-failure backoff.** If three consecutive weekly runs against the same repo open or update a PR that fails `pr-core` and is not merged or closed by the human within the week, the agent stops auto-pushing to that repo's PR and converts all that repo's findings to `proposed/` work items for human triage. The operator is alerted in the run report. This prevents zombie-PR loops.
 
 ### D8 — Phased rollout
 
@@ -232,10 +232,10 @@ Each phase is independently shippable and the agent does not gain new authority 
 
 **Phase 3 — Broaden auto-fix to catalog references and dead links.**
 - Auto-fix scope expands to category 4 (catalog-reference drift: rename-aware link rewrites) and dead intra-repo Markdown links where the target's new location is determinable from `catalogs/nodes.json`.
-- Categories 3 (symbol drift), 5 (dependency-graph drift), and 6 (agent-instruction drift) remain report-only + fallback `proposed/` packet path.
+- Categories 3 (symbol drift), 5 (dependency-graph drift), and 6 (agent-instruction drift) remain report-only + fallback `proposed/` work-item path.
 
 **Phase 4 — Add dependency-graph and agent-instruction drift detection.**
-- Categories 5 and 6 begin emitting findings (still report-only + fallback packets).
+- Categories 5 and 6 begin emitting findings (still report-only + fallback work items).
 - Higher false-positive risk because prose phrasing is variable; the report is the validation surface before any auto-fix authority is considered.
 
 **Phase 5 — Skeleton README generation for missing-required-artifact `block` findings.**
@@ -247,11 +247,11 @@ Each phase is independently shippable and the agent does not gain new authority 
 - Decide D9 invariant candidates.
 - Decide whether to add `agent-docs-sync` as a first-class `pr-core.yml` Authorship enum value (revisits the D4 metadata decision in light of observed PR volume and operator preference).
 
-Each phase is its own packet. The same `accepts: ["ADR-0085"]` chain applies; on full acceptance, `hive-sync` per ADR-0014 D7 will auto-flip this ADR to Accepted.
+Each phase is its own work item. The same `accepts: ["ADR-0085"]` chain applies; on full acceptance, `hive-sync` per ADR-0014 D7 will auto-flip this ADR to Accepted.
 
 ### D9 — Possible new invariants
 
-Three invariants are candidates, none committed in this ADR. The Proposed status is deliberate: the operator should decide whether each constraint is worth the rigidity before it becomes Grid law. The decision lives in the Phase 6 acceptance packet.
+Three invariants are candidates, none committed in this ADR. The Proposed status is deliberate: the operator should decide whether each constraint is worth the rigidity before it becomes Grid law. The decision lives in the Phase 6 acceptance work item.
 
 **Candidate A: "Every Node has a non-empty root `README.md` and `CHANGELOG.md`, validated weekly."**
 Already implied by Invariant 12; this would name `docs-sync` as the weekly validator. If accepted, the prose of Invariant 12 is amended to name `docs-sync`. No new numbered invariant.
@@ -259,8 +259,8 @@ Already implied by Invariant 12; this would name `docs-sync` as the weekly valid
 **Candidate B: "`docs-sync`'s cross-repo write authority is bounded to: (a) one PR per repo per weekly run, (b) auto-edits limited to the file categories in D2, (c) auto-fix categories limited to the per-phase D8 scope active at the time."**
 Locks in the architectural decision against drift. Worth adding as a numbered invariant only if the operator wants the rigidity. Symmetric to ADR-0014 D4's `hive-sync` constraint.
 
-**Candidate C: "Mechanical cross-repo reconciliation by named central agents (`hive-sync`, `site-sync`, `docs-sync`) is permitted without packet routing; editorial cross-repo work routes through `generated/issue-packets/proposed/`."**
-Formalizes the distinction made in D4 between mechanical and editorial work. Makes ADR-0043 D3's no-self-promotion rule explicitly scoped to packet promotion, not all cross-repo writes. Most rigorous of the three; also the most useful for future agent decisions where the same pattern recurs (any "central reconciler" agent the Grid grows will benefit from this distinction being explicit).
+**Candidate C: "Mechanical cross-repo reconciliation by named central agents (`hive-sync`, `site-sync`, `docs-sync`) is permitted without work-item routing; editorial cross-repo work routes through `generated/work-items/proposed/`."**
+Formalizes the distinction made in D4 between mechanical and editorial work. Makes ADR-0043 D3's no-self-promotion rule explicitly scoped to work-item promotion, not all cross-repo writes. Most rigorous of the three; also the most useful for future agent decisions where the same pattern recurs (any "central reconciler" agent the Grid grows will benefit from this distinction being explicit).
 
 ## Consequences
 
@@ -280,7 +280,7 @@ The closest existing pattern is `site-sync`'s direct edits to the marketing webs
 
 ### Operational Consequences
 
-- **The weekly briefing surface grows.** Per ADR-0043 D5, new `proposed/` packets and (now) docs-sync PR summaries are listed in the weekly briefing. Expected steady-state: 0-3 editorial-fallback packets per week, 2-8 cross-repo PRs per week Grid-wide. Below the noise threshold of a solo + agents shop; well within the 30-minute weekly triage budget.
+- **The weekly briefing surface grows.** Per ADR-0043 D5, new `proposed/` work items and (now) docs-sync PR summaries are listed in the weekly briefing. Expected steady-state: 0-3 editorial-fallback work items per week, 2-8 cross-repo PRs per week Grid-wide. Below the noise threshold of a solo + agents shop; well within the 30-minute weekly triage budget.
 - **A new recurring PR-review workload.** The operator now reviews docs-sync PRs as a weekly task. Each PR is typically small (version-string rewrites, link updates) and review-by-glance is sufficient. The PR-size cap from ADR-0044 D7 applies; first-run cleanups may exceed 400 lines and require explicit size justification (which the agent provides automatically in the PR body).
 - **`generated/docs-sync-reports/` accumulates.** One file per week, ~25 sections each. After a year: ~50 files. Comparable in size to the existing `generated/incidents/`, `generated/audits/`, `generated/scout-reports/` directories. No pruning policy required at v1; revisit after 6 months.
 - **The `block`-severity dedup-grace exception means a missing-README finding repeats every Friday until fixed.** Intentional. The operator can silence it only by fixing the underlying violation.
@@ -306,13 +306,13 @@ If candidates A, B, and C are accepted in Phase 6:
 
 ### Follow-up Work
 
-- Author `.claude/agents/docs-sync.md` (Phase 1 packet).
-- Update `constitution/agent-capability-matrix.md` and `Execution Rules` for the cross-repo PR authority grant (Phase 1 packet, same PR).
+- Author `.claude/agents/docs-sync.md` (Phase 1 work item).
+- Update `constitution/agent-capability-matrix.md` and `Execution Rules` for the cross-repo PR authority grant (Phase 1 work item, same PR).
 - Create `generated/docs-sync-reports/` with seed README.
-- Register the `docs-sync` GitHub App, store its private key in `kv-hd-docs-sync-prod`, document the rotation runbook (Phase 1 packet).
-- Phase 2-5 packets per D8.
-- Phase 6 acceptance packet covering cadence finalization, invariant decisions (D9), and whether to add `agent-docs-sync` to the `pr-core.yml` Authorship enum.
-- After 90 days of operation: retrospective check against the assumed steady-state (2-8 PRs per week, 0-3 fallback packets per week) and noise/value calibration. Revisit Phase 4 thresholds if they prove over-sensitive.
+- Register the `docs-sync` GitHub App, store its private key in `kv-hd-docs-sync-prod`, document the rotation runbook (Phase 1 work item).
+- Phase 2-5 work items per D8.
+- Phase 6 acceptance work item covering cadence finalization, invariant decisions (D9), and whether to add `agent-docs-sync` to the `pr-core.yml` Authorship enum.
+- After 90 days of operation: retrospective check against the assumed steady-state (2-8 PRs per week, 0-3 fallback work items per week) and noise/value calibration. Revisit Phase 4 thresholds if they prove over-sensitive.
 - Future ADR for code-example correctness (compilation/sample-validation against fenced code blocks) — explicitly deferred per D2 scope carve-out.
 
 ## Alternatives Considered
@@ -327,9 +327,9 @@ Rejected. `node-audit` is deep, on-demand, one-Node-at-a-time — its value is t
 
 ### Report-only mode for v1 (no cross-repo PR authority)
 
-Rejected. The earlier draft of this ADR proposed exactly this — surface findings as `proposed/` packets, never touch target repos. Two problems with that model: (a) the editorial-vs-mechanical distinction is real, and routing every mechanical version-string fix through a human-triaged packet is friction without value; (b) the operator preference is for direct PRs (as `site-sync` already does for the website). The right factoring is: mechanical fixes get a PR, editorial fixes get a packet. D4 reflects this.
+Rejected. The earlier draft of this ADR proposed exactly this — surface findings as `proposed/` work items, never touch target repos. Two problems with that model: (a) the editorial-vs-mechanical distinction is real, and routing every mechanical version-string fix through a human-triaged work item is friction without value; (b) the operator preference is for direct PRs (as `site-sync` already does for the website). The right factoring is: mechanical fixes get a PR, editorial fixes get a work item. D4 reflects this.
 
-The reasoning that previously rejected cross-repo writes — PAT blast radius, pr-core gate compliance, ADR-0043 D3 — has been addressed: PAT replaced by GitHub App (smaller blast radius, auditable), pr-core compliance handled via `agent-claude-code` + OOB-reason, ADR-0043 D3 explicitly scoped to packet promotion rather than all cross-repo writes (Candidate C invariant formalizes this).
+The reasoning that previously rejected cross-repo writes — PAT blast radius, pr-core gate compliance, ADR-0043 D3 — has been addressed: PAT replaced by GitHub App (smaller blast radius, auditable), pr-core compliance handled via `agent-claude-code` + OOB-reason, ADR-0043 D3 explicitly scoped to work-item promotion rather than all cross-repo writes (Candidate C invariant formalizes this).
 
 ### Use a third-party docs-as-code linter (Vale, markdownlint, etc.) instead of a Grid-aware agent
 
@@ -365,9 +365,9 @@ The three questions outstanding in the prior draft (separate agent vs. fold-in, 
 
 Remaining items, each Phase-6-or-earlier and none blocking acceptance of this ADR:
 
-1. **GitHub App registration logistics.** The recommended PAT-replacement path (D4) assumes the operator can register a `docs-sync` GitHub App in the `HoneyDrunkStudios` org. If org-level constraints make App registration impractical, the fine-grained PAT fallback is documented as the v1 path. Decision deferrable to the Phase 1 packet.
+1. **GitHub App registration logistics.** The recommended PAT-replacement path (D4) assumes the operator can register a `docs-sync` GitHub App in the `HoneyDrunkStudios` org. If org-level constraints make App registration impractical, the fine-grained PAT fallback is documented as the v1 path. Decision deferrable to the Phase 1 work item.
 2. **Authorship enum decision** (`agent-docs-sync` vs. continuing `agent-claude-code`). Deferred to Phase 6 per the Alternatives Considered entry above. Either choice is reversible.
-3. **D9 invariant adoption.** Three candidates (A, B, C). Decided in Phase 6 acceptance packet, not this ADR.
+3. **D9 invariant adoption.** Three candidates (A, B, C). Decided in Phase 6 acceptance work item, not this ADR.
 
 The ADR is ready for acceptance review subject to the above three items being acknowledged as deferrable, not blocking.
 
@@ -378,9 +378,9 @@ The ADR is ready for acceptance review subject to the above three items being ac
 - [ADR-0005](./ADR-0005-secret-management.md) — Key Vault naming + storage convention for `kv-hd-docs-sync-prod`
 - [ADR-0006](./ADR-0006-secret-rotation-and-lifecycle.md) — rotation lifecycle for the docs-sync App private key
 - [ADR-0007](./ADR-0007-claude-agents-as-source-of-truth.md) — `.claude/agents/` source-of-truth convention
-- [ADR-0008](./ADR-0008-work-tracking-and-execution-flow.md) — packet → issue → board → PR lifecycle (preserved for editorial-fallback path)
+- [ADR-0008](./ADR-0008-work-tracking-and-execution-flow.md) — work item → issue → board → PR lifecycle (preserved for editorial-fallback path)
 - [ADR-0014](./ADR-0014-hive-architecture-reconciliation-agent.md) — `hive-sync` precedent; D4 bounded-surface pattern; ADR auto-acceptance mechanism
-- [ADR-0043](./ADR-0043-continuous-backlog-generation-strategy.md) — `proposed/` → `active/` lifecycle (the no-self-promotion rule scoped to packet promotion); weekly briefing surface; execution-surface deferral pattern
+- [ADR-0043](./ADR-0043-continuous-backlog-generation-strategy.md) — `proposed/` → `active/` lifecycle (the no-self-promotion rule scoped to work-item promotion); weekly briefing surface; execution-surface deferral pattern
 - [ADR-0044](./ADR-0044-grid-aware-cloud-code-review-and-ai-authored-pr-discipline.md) — D6 Authorship enum (`agent-claude-code` used for docs-sync PRs); D7 PR-size discipline; D8 multi-perspective review boundary
 - [ADR-0046](./ADR-0046-specialist-review-agents.md) — specialist-agent layering pattern
 - [ADR-0075](./ADR-0075-documentation-tooling.md) — Scalar / Docusaurus tooling; `docs-sync` is content-side, not tooling-side
@@ -389,4 +389,4 @@ The ADR is ready for acceptance review subject to the above three items being ac
 - `.claude/agents/hive-sync.md` — closest agent pattern for the report-PR surface
 - `.claude/agents/site-sync.md` — direct cross-repo write precedent for D4
 - `.claude/agents/node-audit.md` — complementary read-only agent; Phase 6 README accuracy overlaps
-- `constitution/agent-capability-matrix.md` — to be updated in Phase 1 packet (add `docs-sync` row, expand `Execution Rules` cross-repo PR list)
+- `constitution/agent-capability-matrix.md` — to be updated in Phase 1 work item (add `docs-sync` row, expand `Execution Rules` cross-repo PR list)

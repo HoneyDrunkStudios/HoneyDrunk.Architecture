@@ -7,7 +7,7 @@
 
 ## If Accepted — Required Follow-Up Work in Architecture Repo
 
-Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
+Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up work items (do not accept and leave the catalogs stale):
 
 - [ ] Add `AddSystemTimeProvider()` and `AddFakeTimeProvider()` DI registration extension methods to `HoneyDrunk.Kernel` (production wires `TimeProvider.System`; test fixtures wire `Microsoft.Extensions.TimeProvider.Testing.FakeTimeProvider`)
 - [ ] Update [`repos/HoneyDrunk.Kernel/boundaries.md`](../repos/HoneyDrunk.Kernel/boundaries.md) to record the date/time policy ownership — Kernel is the home for the DI registration helpers, but no Kernel-owned interface wraps `TimeProvider` (it is a BCL type)

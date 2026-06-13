@@ -5,7 +5,7 @@
 
 ## Goal
 
-Provision a dedicated GitHub App that mints scoped installation tokens for the file-packets reusable workflow. Replaces the developer's PAT (`HIVE_FIELD_MIRROR_TOKEN`) so the workflow's GraphQL quota is independent of interactive `gh` activity.
+Provision a dedicated GitHub App that mints scoped installation tokens for the file-work-items reusable workflow. Replaces the developer's PAT (`HIVE_FIELD_MIRROR_TOKEN`) so the workflow's GraphQL quota is independent of interactive `gh` activity.
 
 ## Portal Breadcrumb
 
@@ -18,7 +18,7 @@ Provision a dedicated GitHub App that mints scoped installation tokens for the f
 1. Open the org settings, then **Developer Settings → GitHub Apps → New GitHub App**.
 2. Fill in:
    - **GitHub App name:** `HoneyDrunk Hive`
-   - **Description:** brief one-liner naming the App's purpose (the file-packets workflow uses this App to file issues, mirror The Hive board, and commit the manifest).
+   - **Description:** brief one-liner naming the App's purpose (the file-work-items workflow uses this App to file issues, mirror The Hive board, and commit the manifest).
    - **Homepage URL:** `https://github.com/HoneyDrunkStudios`
    - **Callback URL:** leave empty.
    - **Setup URL:** leave empty.
@@ -26,7 +26,7 @@ Provision a dedicated GitHub App that mints scoped installation tokens for the f
 4. **Repository permissions** — select these three; everything else stays *No access*:
    - `Issues`: **Read and write** (file issues + post `Blocked by` comments)
    - `Metadata`: **Read-only** (mandatory; auto-selected)
-   - `Contents`: **Read and write** (commit `filed-packets.json` back to Architecture)
+   - `Contents`: **Read and write** (commit `filed-work-items.json` back to Architecture)
 5. **Organization permissions:**
    - `Projects`: **Read and write** (mirror The Hive custom fields)
 6. **Where can this GitHub App be installed:** **Only on this account** (`HoneyDrunkStudios`).
@@ -46,7 +46,7 @@ The `.pem` on disk is the only copy GitHub ever shows. After you store the conte
 2. Repository access: choose **Only select repositories** and tick every repo that hosts a packet `target_repo` — at the time of writing: HoneyDrunk.Architecture, HoneyDrunk.Actions, HoneyDrunk.Auth, HoneyDrunk.Data, HoneyDrunk.Kernel, HoneyDrunk.Notify, HoneyDrunk.Pulse, HoneyDrunk.Standards, HoneyDrunk.Transport, HoneyDrunk.Vault, HoneyDrunk.Vault.Rotation, HoneyDrunk.Web.Rest, HoneyDrunkStudios, HoneyDrunk.AI, HoneyDrunk.Lore.
 3. Click **Install**.
 
-This matches the file-packets hardening rollout plan and keeps the App on the least-privilege repo set as well as the least-privilege permission set. Adding a new repo that hosts packet `target_repo` values means coming back here to update the installation selection.
+This matches the file-work-items hardening rollout plan and keeps the App on the least-privilege repo set as well as the least-privilege permission set. Adding a new repo that hosts packet `target_repo` values means coming back here to update the installation selection.
 
 ### 4. Provision org secrets
 
@@ -64,13 +64,13 @@ Two secrets, both with the same access policy:
 - **Value:** the full `.pem` contents from step 2, BEGIN/END markers included.
 - **Repository access:** **Selected repositories** → same two repos as above.
 
-The App is installed broadly so it can act on any repo's issues. The *secrets* only need to reach the two callers that mint App tokens — Architecture's `file-packets.yml` caller and Actions' reusable workflow. Tighter secret scope here is free defense-in-depth.
+The App is installed broadly so it can act on any repo's issues. The *secrets* only need to reach the two callers that mint App tokens — Architecture's `file-work-items.yml` caller and Actions' reusable workflow. Tighter secret scope here is free defense-in-depth.
 
 ### 5. Verify
 
-Trigger the file-packets workflow manually:
+Trigger the file-work-items workflow manually:
 
-**HoneyDrunk.Architecture → Actions → File Issue Packets → Run workflow** (branch `main`).
+**HoneyDrunk.Architecture → Actions → File Work Items → Run workflow** (branch `main`).
 
 In the run log, the **Detect auth mode** step should print:
 
@@ -106,12 +106,12 @@ A short overlap window (both keys valid simultaneously) is fine. Don't delete th
 - [ ] Organization permissions show exactly: `Projects: R/W`.
 - [ ] App is installed on the org.
 - [ ] `HIVE_APP_ID` and `HIVE_APP_PRIVATE_KEY` exist as **org-level Actions secrets**, scoped to Architecture + Actions only.
-- [ ] A `workflow_dispatch` run of `HoneyDrunk.Architecture/.github/workflows/file-packets.yml` logs `Auth path: GitHub App` and finishes green.
+- [ ] A `workflow_dispatch` run of `HoneyDrunk.Architecture/.github/workflows/file-work-items.yml` logs `Auth path: GitHub App` and finishes green.
 - [ ] Local `.pem` file from step 2 has been deleted.
 
 ## Cross references
 
 - [ADR-0008: Packet Lifecycle](../../adrs/ADR-0008-work-tracking-and-execution-flow.md)
 - [ADR-0012: Actions as CI/CD Control Plane](../../adrs/ADR-0012-grid-cicd-control-plane.md)
-- [`HoneyDrunk.Actions/scripts/file-packets.sh`](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/blob/main/scripts/file-packets.sh) — consumer of the minted token via `GH_TOKEN` and `HIVE_FIELD_MIRROR_TOKEN` env vars.
-- [`HoneyDrunk.Actions/.github/workflows/file-packets.yml`](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/blob/main/.github/workflows/file-packets.yml) — the reusable workflow that mints the App token.
+- [`HoneyDrunk.Actions/scripts/file-work-items.sh`](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/blob/main/scripts/file-work-items.sh) — consumer of the minted token via `GH_TOKEN` and `HIVE_FIELD_MIRROR_TOKEN` env vars.
+- [`HoneyDrunk.Actions/.github/workflows/file-work-items.yml`](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/blob/main/.github/workflows/file-work-items.yml) — the reusable workflow that mints the App token.

@@ -27,7 +27,7 @@ revalidation_cadence: on any change to the audit rotation or node-audit definiti
 | **inputs** | The week's Node: `repos/{node}/*`, governing ADRs, catalogs, repo code on disk |
 | **synthesizer** | `node-audit` (opinionated whole-Node findings) → `scope` for any finding the human elects to act on, via `prompts/backlog-tactical-audit.md` |
 | **gate** | Human triage — the human picks which findings become `active/`; the audit report is committed regardless |
-| **feedback_sink** | `generated/audits/{node}-{YYYY-MM-DD}.md` (always) + `generated/issue-packets/proposed/` packets for actionable findings (`source: tactical`) |
+| **feedback_sink** | `generated/audits/{node}-{YYYY-MM-DD}.md` (always) + `generated/work-items/proposed/` packets for actionable findings (`source: tactical`) |
 | **stop** | **Done:** audit report written + proposed packets for actionable findings. **Stuck:** Node has no actionable findings → report-only run. **Over-budget:** runner timeout. |
 
 ## Governance envelope

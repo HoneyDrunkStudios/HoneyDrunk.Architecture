@@ -149,10 +149,10 @@ Call out anything that threatens the roadmap:
 
 The ADR-0086 `backlog-weekly-briefing` job invokes this mode weekly. Read:
 
-- `generated/issue-packets/proposed/`
-- `generated/issue-packets/active/`
-- `generated/issue-packets/completed/`
-- `generated/issue-packets/filed-packets.json`
+- `generated/work-items/proposed/`
+- `generated/work-items/active/`
+- `generated/work-items/completed/`
+- `generated/work-items/filed-work-items.json`
 - `generated/audits/`
 - `generated/scout-reports/`
 - `generated/briefings/urgent.md`

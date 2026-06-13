@@ -7,7 +7,7 @@
 
 ## If Accepted — Required Follow-Up Work in Architecture Repo
 
-Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up issue packets (do not accept and leave the catalogs stale):
+Accepting this ADR creates catalog and cross-repo obligations that must be completed as follow-up work items (do not accept and leave the catalogs stale):
 
 - [ ] Create `HoneyDrunk.Notify.Cloud` GitHub repo as **private** (human-only step — first private repo in the Grid; see D2 for justification)
 - [ ] Choose and apply the open-source license decided in D11 to `HoneyDrunk.Notify`, `HoneyDrunk.Notify.Client`, and `HoneyDrunk.Communications` repos (LICENSE file commit + repo description update)
@@ -32,7 +32,7 @@ This Node does not exist on disk and is not yet cataloged. PDR-0002's Architectu
 2. **The OSS license question for the engine is no longer deferrable.** PDR-0002 §M lists FSL or BSL as the candidates and defers final choice to "the standup ADR for `HoneyDrunk.Notify.Cloud`" — i.e., this ADR. The license affects three repos (`HoneyDrunk.Notify`, `HoneyDrunk.Notify.Client`, `HoneyDrunk.Communications`), all open. Picking now means the first commercial customer reads a stable license; deferring means relicensing later, which is hostile to early contributors.
 3. **The Node depends on Grid-wide multi-tenant primitives that do not exist yet.** PDR-0002 §F and the Architecture Implications section make `TenantId`, per-tenant rate-limit policy, per-tenant Vault scoping, and tenant-scoped billing events Grid-wide concerns — designed in Kernel and shared infrastructure, not Notify-specific. A parallel ADR (Grid Multi-Tenant Primitives) is being drafted at the same time as this one and is a hard prerequisite. This ADR depends on that ADR being Accepted before Notify Cloud's scaffold packet runs; it does not redefine those primitives.
 
-This ADR is the **stand-up decision** for the Notify Cloud Node — what it owns, what it does not own, which contracts it exposes, how downstream Nodes (and external customers) couple to it, and what license posture the surrounding open-source repos take. It is not a scaffolding packet. Filing the repo, adding CI, wiring the InMemory fixtures, and producing the first shippable packages all follow as separate issue packets once this ADR is accepted.
+This ADR is the **stand-up decision** for the Notify Cloud Node — what it owns, what it does not own, which contracts it exposes, how downstream Nodes (and external customers) couple to it, and what license posture the surrounding open-source repos take. It is not a scaffolding packet. Filing the repo, adding CI, wiring the InMemory fixtures, and producing the first shippable packages all follow as separate work items once this ADR is accepted.
 
 ## Decision
 

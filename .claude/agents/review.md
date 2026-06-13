@@ -23,7 +23,7 @@ Load this context for the target repo. This list is the **authoritative context-
 
 1. `constitution/charter.md` — the studio's tiebreaker philosophy doc: workshop framing, commercial-as-experiment, decades-long horizon. **When this doc and other docs disagree, this doc wins.**
 2. `constitution/invariants.md` — Grid-wide rules (walk every numbered invariant against the diff)
-3. The **governing ADRs** referenced in the packet frontmatter (`adrs:` field)
+3. The **governing ADRs** referenced in the work-item frontmatter (`adrs:` field)
 4. `catalogs/nodes.json` — current Node versions and metadata
 5. `catalogs/relationships.json` — who consumes this repo; downstream cascade
 6. `catalogs/contracts.json` — contract surface; what this repo promises to expose
@@ -32,10 +32,10 @@ Load this context for the target repo. This list is the **authoritative context-
 9. `repos/{node-name}/boundaries.md` — what it must NOT do
 10. `repos/{node-name}/invariants.md` — repo-specific rules (if exists)
 11. `copilot/pr-review-rules.md` — checklist and severity levels
-12. The **issue packet** referenced from the PR body (see "Resolve the Packet" below)
+12. The **work item** referenced from the PR body (see "Resolve the Work Item" below)
 13. The **PR diff**
 
-When running under the OpenClaw/Codex Grid Review Runner, the context above is read from the `HoneyDrunk.Architecture` checkout prepared by the runner. Treat that checkout as the canonical Architecture context source for invariants, catalogs, repo boundary files, `copilot/pr-review-rules.md`, and packets.
+When running under the OpenClaw/Codex Grid Review Runner, the context above is read from the `HoneyDrunk.Architecture` checkout prepared by the runner. Treat that checkout as the canonical Architecture context source for invariants, catalogs, repo boundary files, `copilot/pr-review-rules.md`, and work items.
 
 ## Review Process
 
@@ -43,13 +43,13 @@ When running under the OpenClaw/Codex Grid Review Runner, the context above is r
 
 Prioritize findings in this order: correctness bugs, broken runtime behavior, security or tenant/data leaks, data loss or persistence defects, deployment/CI failures, public contract breaks, unsafe concurrency/state transitions, missing tests for changed behavior, HoneyDrunk boundary/invariant violations, then maintainability and style. Do not spend review budget on style unless it violates HoneyDrunk.Standards or hides a real defect. A finding is only actionable if it names the failing behavior, affected file/line or governing rule, and the change needed to make the PR safe.
 
-### 0. Resolve the Packet
+### 0. Resolve the Work Item
 
-Per ADR-0011 D3 and D9, the issue packet is the canonical statement of scope for a work item and is the **primary scope anchor** for the review.
+Per ADR-0011 D3 and D9, the work item is the canonical statement of PR scope and is the **primary scope anchor** for the review.
 
-1. Read the PR body. Look for a link to an issue packet in `HoneyDrunk.Architecture/generated/issue-packets/active/`.
-2. If the link is present: read the packet file. It defines what the PR was *supposed* to do — acceptance criteria, constraints, referenced invariants, governing ADRs, key files. Use this as the primary scope anchor throughout the review. Scope creep, scope shortfall, and undocumented side effects are findings against the packet.
-3. If the link is absent: the PR is **out-of-band** per ADR-0011 D9. Verify the PR carries the `out-of-band` label (flag as a finding if missing per invariant 32). Continue the review against the Grid context only (invariants, boundaries, relationships, contracts, diff). Skip the packet-scope questions in section 1 below, and note in the Summary that scope was not verified because no packet was linked.
+1. Read the PR body. Look for a link to a work item in `HoneyDrunk.Architecture/generated/work-items/active/`.
+2. If the link is present: read the work item file. It defines what the PR was *supposed* to do — acceptance criteria, constraints, referenced invariants, governing ADRs, key files. Use this as the primary scope anchor throughout the review. Scope creep, scope shortfall, and undocumented side effects are findings against the work item.
+3. If the link is absent: the PR is **out-of-band** per ADR-0011 D9. Verify the PR carries the `out-of-band` label (flag as a finding if missing per invariant 32). Continue the review against the Grid context only (invariants, boundaries, relationships, contracts, diff). Skip the work item-scope questions in section 1 below, and note in the Summary that scope was not verified because no work item was linked.
 
 ### 1. Identify the Repo and Scope
 
@@ -57,7 +57,7 @@ Determine which Node this PR targets. Read the changed files to understand what'
 - Is it Abstractions (contracts) or runtime (implementation)?
 - Is it a new feature, bug fix, refactor, or breaking change?
 - Which packages are affected?
-- **Does the PR honor the packet?** Compare the diff against the packet's acceptance criteria. Flag scope creep (work beyond what the packet asked for), scope shortfall (criteria not met), and undocumented side effects.
+- **Does the PR honor the work item?** Compare the diff against the work item's acceptance criteria. Flag scope creep (work beyond what the work item asked for), scope shortfall (criteria not met), and undocumented side effects.
 
 ### 2. Boundary Compliance
 
@@ -118,17 +118,17 @@ Severity: **Request Changes** if downstream impact not documented.
 Apply this checklist to every PR that adds or changes code, test projects, CI test workflows, or public contracts. ADR-0047 makes these the concrete standards behind ADR-0044 D3 category 11.
 
 **Coverage quality:**
-- New behavior has tests for the happy path, failure paths, edge cases, and relevant concurrency/idempotency behavior. Do not accept tests that only prove the happy path when the packet changes validation, retry, security, persistence, messaging, or boundary behavior.
+- New behavior has tests for the happy path, failure paths, edge cases, and relevant concurrency/idempotency behavior. Do not accept tests that only prove the happy path when the work-item changes validation, retry, security, persistence, messaging, or boundary behavior.
 - Coverage thresholds are tiered by DR criticality: Tier 0 requires **85% line / 80% branch**, Tier 1 requires **75% line / 70% branch**, and Tier 2 requires **60% line / 55% branch**. Treat threshold misses according to the rollout state: advisory during the documented grace period, otherwise a required fix.
 
 **Required test tiers and project naming:**
 - Every Node has a `*.Tests.Unit` project.
 - Every deployable Node has a `*.Tests.Integration` project for Tier 2a integration tests.
-- Every HTTP-fronted Node has a `*.Tests.E2E` project, or the absence is explicitly tracked in a packet during rollout.
+- Every HTTP-fronted Node has a `*.Tests.E2E` project, or the absence is explicitly tracked in a work item during rollout.
 - Tier 2a projects are named `HoneyDrunk.<Node>.Tests.Integration`.
 - Tier 2b container-backed projects are named `HoneyDrunk.<Node>.Tests.Integration.Containers`.
 - E2E projects are named `HoneyDrunk.<Node>.Tests.E2E`.
-- Flag a PR that adds test projects outside these names unless the packet explicitly authorizes an exception.
+- Flag a PR that adds test projects outside these names unless the work item explicitly authorizes an exception.
 
 **Verification depth:**
 - Unit tests cover isolated logic with in-memory fakes.
@@ -178,12 +178,12 @@ Per ADR-0011 D6, cost discipline is a named review agent responsibility. The Gri
 - **Hot-path logging without sampling.** New `Information`-level (or below) log statements inside request handlers, message consumers, job loops, or anything that fires on every request. Logging at `Debug`/`Trace` is usually fine; logging at `Information` on the hot path without a sampling rate compounds quickly.
 - **LLM calls without a cost cap.** New invocations of `IModelRouter` or any LLM SDK without a budget, cost cap, or routing policy that bounds spend. Agent invocations in loops without a circuit breaker.
 - **Unguarded CI jobs.** New jobs in `.github/workflows/` without an `if:` guard, a `paths:` filter, or a `schedule:` constraint. Jobs that fire on every push to every branch are expensive and usually unintended.
-- **Azure resources without SKU justification.** New `*.bicep`, `*.tf`, or portal-deploy artifacts that introduce an Azure resource without SKU justification in the packet. Resources committed to a public repo cannot be reverted silently and propagate into deployments.
+- **Azure resources without SKU justification.** New `*.bicep`, `*.tf`, or portal-deploy artifacts that introduce an Azure resource without SKU justification in the work item. Resources committed to a public repo cannot be reverted silently and propagate into deployments.
 - **Outbound HTTP in request hot paths.** New synchronous HTTP calls inside request handlers without a timeout, retry cap, or caching strategy.
 - **Unbounded catalog loops.** Loops over `catalogs/*.json` or `repos/*` that would grow unbounded as the Grid expands past its current size. What works at 11 repos breaks at 50.
 
 Cost findings follow the normal severity taxonomy:
-- **Block** — a new Azure resource without SKU justification in a public repo (unreviewable after merge); any cost regression the packet did not authorize.
+- **Block** — a new Azure resource without SKU justification in a public repo (unreviewable after merge); any cost regression the work item did not authorize.
 - **Request Changes** — hot-path logging without sampling; unguarded CI jobs; LLM calls without cost caps.
 - **Suggest** — outbound HTTP without caching; catalog loops that work today but won't scale.
 
@@ -229,13 +229,13 @@ Use `copilot/pr-review-rules.md` as the severity taxonomy reference. Findings us
 
 ### 1. Correctness and functional integrity
 
-- **Core correctness.** Does the code work? Does it satisfy the requirement (packet adherence)? Are edge cases handled? Are null/empty/error states covered? Are calculations accurate (precision, rounding)? Are timezone, culture, and locale issues considered? Are async flows correct? Are retries safe?
+- **Core correctness.** Does the code work? Does it satisfy the requirement (work-item adherence)? Are edge cases handled? Are null/empty/error states covered? Are calculations accurate (precision, rounding)? Are timezone, culture, and locale issues considered? Are async flows correct? Are retries safe?
 - **State correctness.** Does state mutate safely? Are transitions valid? Is eventual consistency handled where it applies? Are transactions atomic where required? Is partial failure handled?
 - **Behavioral consistency.** Does behavior match existing platform expectations? Does the change break existing workflows? Are API contracts preserved? Are side effects predictable?
 
-**Execution detail.** Inspect the packet acceptance criteria, changed behavior, edge cases, async/error paths, calculations, state transitions, and existing behavior contracts. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
+**Execution detail.** Inspect the work item acceptance criteria, changed behavior, edge cases, async/error paths, calculations, state transitions, and existing behavior contracts. Findings must cite the concrete file/line, work-item criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
 
-**Severity mapping.** Block for wrong behavior that violates an invariant, corrupts state, or cannot satisfy the packet. Request Changes for unhandled realistic edge/failure states or packet shortfall. Suggest for minor clarity or low-risk defensive checks.
+**Severity mapping.** Block for wrong behavior that violates an invariant, corrupts state, or cannot satisfy the work item. Request Changes for unhandled realistic edge/failure states or work item shortfall. Suggest for minor clarity or low-risk defensive checks.
 
 ### 2. Architectural integrity
 
@@ -244,7 +244,7 @@ Use `copilot/pr-review-rules.md` as the severity taxonomy reference. Findings us
 - **Dependency hygiene.** Are dependencies necessary and justified? Is the dependency too heavy for the use case? Is dependency direction correct (per `catalogs/relationships.json`)? Are there circular references? Is the package graph still clean? Are we introducing transitive bloat? Is the abstraction level appropriate (consuming `*.Abstractions` per ADR-0035, never reaching into backings)? Is an internal SDK/package being bypassed? Is the dependency trustworthy, maintained, and license-compatible? Is there hidden vendor lock-in?
 - **Architectural drift.** Does this move the system away from established patterns? Is this introducing a "special case architecture"? Is temporary code pretending to be permanent?
 
-**Execution detail.** Inspect changed files against repo boundaries, Node ownership, domain ownership, dependency direction, contract surfaces, accidental coupling, extension-point/plugin fit, and whether the design creates a special-case architecture. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
+**Execution detail.** Inspect changed files against repo boundaries, Node ownership, domain ownership, dependency direction, contract surfaces, accidental coupling, extension-point/plugin fit, and whether the design creates a special-case architecture. Findings must cite the concrete file/line, work-item criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
 
 **Severity mapping.** Block for boundary violations, illegal dependency direction, or runtime leakage into abstractions. Request Changes for undocumented drift or avoidable hidden coupling. Suggest for architectural cleanup that is not required for safety.
 
@@ -253,9 +253,9 @@ Use `copilot/pr-review-rules.md` as the severity taxonomy reference. Findings us
 - **Complexity management.** Is the solution simpler than the problem? Can complexity be reduced? Are there too many abstractions? Is there unnecessary indirection? Is control flow understandable?
 - **Readability.** Is intent obvious? Are names meaningful? Is the code self-documenting? Is cognitive load reasonable?
 - **Evolvability.** Can this be extended safely? Will future modifications cause regressions? Will this become painful in six months? Is the design composable and future-proof enough for the known roadmap? Is this rigid or flexible at the right places? Are hidden assumptions or temporal/order dependencies being introduced? Does this increase cognitive load unnecessarily?
-- **Technical debt.** Is debt being introduced intentionally or accidentally? Is debt documented (TODO/FIXME, follow-up packet, ADR amendment)? Is the debt acceptable for the business value?
+- **Technical debt.** Is debt being introduced intentionally or accidentally? Is debt documented (TODO/FIXME, follow-up work item, ADR amendment)? Is the debt acceptable for the business value?
 
-**Execution detail.** Inspect complexity, naming, readability, composability, future modification risk, and whether introduced debt is intentional and tracked. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
+**Execution detail.** Inspect complexity, naming, readability, composability, future modification risk, and whether introduced debt is intentional and tracked. Findings must cite the concrete file/line, work-item criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
 
 **Severity mapping.** Request Changes for needless complexity that obscures correctness or untracked debt that will block follow-up work. Suggest for naming/readability improvements and simpler local refactors.
 
@@ -265,7 +265,7 @@ Use `copilot/pr-review-rules.md` as the severity taxonomy reference. Findings us
 - **Shared contracts.** Are shared SDKs and contracts respected (per `catalogs/contracts.json`)? Is naming aligned across the ecosystem? Are standards consistent?
 - **Platform consistency.** Does this feel like HoneyDrunk code? Does it follow established patterns? Would another engineer immediately recognize the conventions?
 
-**Execution detail.** Inspect existing shared helpers, SDKs, contracts, standards, and conventions before accepting newly invented local behavior. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
+**Execution detail.** Inspect existing shared helpers, SDKs, contracts, standards, and conventions before accepting newly invented local behavior. Findings must cite the concrete file/line, work-item criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
 
 **Severity mapping.** Request Changes for avoidable duplicate implementations, divergent naming, or bypassed shared contracts. Suggest for consolidation opportunities that are safe to defer.
 
@@ -278,7 +278,7 @@ Use `copilot/pr-review-rules.md` as the severity taxonomy reference. Findings us
 - **DIP.** Are high-level policies isolated from implementation details?
 - **Additional.** DRY (no copy-paste), KISS (simplest solution that works), YAGNI (no speculative features), composition over inheritance where the trade-off favors it, explicit over implicit, convention over configuration.
 
-**Execution detail.** Inspect class/module responsibilities, interface shape, substitutability, dependency inversion, copy-paste, speculative features, and implicit behavior. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
+**Execution detail.** Inspect class/module responsibilities, interface shape, substitutability, dependency inversion, copy-paste, speculative features, and implicit behavior. Findings must cite the concrete file/line, work-item criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
 
 **Severity mapping.** Request Changes for broad interfaces, mixed responsibilities, copy-paste policy logic, or speculative abstractions that create maintenance risk. Suggest for small SOLID/KISS improvements.
 
@@ -289,7 +289,7 @@ Use `copilot/pr-review-rules.md` as the severity taxonomy reference. Findings us
 - **Scalability.** Will this work under 10× load? Is concurrency safe? Is backpressure handled? Is batching possible where it matters? Are retry storms, lock contention, or horizontal scaling blockers possible?
 - **Resource efficiency.** Memory pressure, connection exhaustion, cache abuse, thread starvation, queue flooding.
 
-**Execution detail.** Inspect hot paths, allocations, async blocking/misuse, database access, N+1 risks, lock contention, excessive serialization, chatty APIs, retry storms, cache invalidation, concurrency, resource usage, queue pressure, horizontal scaling blockers, and realistic growth behavior. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
+**Execution detail.** Inspect hot paths, allocations, async blocking/misuse, database access, N+1 risks, lock contention, excessive serialization, chatty APIs, retry storms, cache invalidation, concurrency, resource usage, queue pressure, horizontal scaling blockers, and realistic growth behavior. Findings must cite the concrete file/line, work-item criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
 
 **Severity mapping.** Block for performance regressions that make the feature unusable or unsafe at expected scale. Request Changes for N+1 queries, blocking async, missing pagination, unbounded work, or resource exhaustion risk. Suggest for optimizations that are not currently load-bearing.
 
@@ -300,7 +300,7 @@ Use `copilot/pr-review-rules.md` as the severity taxonomy reference. Findings us
 - **Defensive programming.** Are assumptions validated at trust boundaries? Are invariants protected? Are dangerous operations guarded?
 - **Chaos resistance.** Does this fail gracefully? Are cascading failures possible? Are blast radii bounded?
 
-**Execution detail.** Inspect dependency failures, retry/idempotency behavior, cancellation, timeouts, circuit breakers, partial failure, dead-letter behavior, recovery/replay safety, rollback consistency, transaction boundaries, validation, and blast-radius boundaries. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
+**Execution detail.** Inspect dependency failures, retry/idempotency behavior, cancellation, timeouts, circuit breakers, partial failure, dead-letter behavior, recovery/replay safety, rollback consistency, transaction boundaries, validation, and blast-radius boundaries. Findings must cite the concrete file/line, work-item criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
 
 **Severity mapping.** Block for unsafe retries, non-idempotent replay, cascading-failure risks, or unguarded dangerous operations. Request Changes for missing timeouts/recovery paths. Suggest for resilience hardening that can follow.
 
@@ -311,7 +311,7 @@ Use `copilot/pr-review-rules.md` as the severity taxonomy reference. Findings us
 - **Tracing.** Is distributed tracing propagated and correlated (per ADR-0010 and ADR-0040)? Are spans meaningful? Are cross-Node flows observable?
 - **Diagnostics.** Can support and debugging teams diagnose issues quickly? Is failure provenance clear? Are error messages useful to humans? Are failures observable without reproducing locally? Is sensitive data kept out of telemetry?
 
-**Execution detail.** Inspect logs, metrics, tracing, diagnostic context, error messages, and whether a future operator can reconstruct what happened. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
+**Execution detail.** Inspect logs, metrics, tracing, diagnostic context, error messages, and whether a future operator can reconstruct what happened. Findings must cite the concrete file/line, work-item criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
 
 **Severity mapping.** Request Changes for missing observability on new operational paths, noisy hot-path logging, or errors without actionable context. Suggest for additional metrics/spans that improve supportability.
 
@@ -323,7 +323,7 @@ Use `copilot/pr-review-rules.md` as the severity taxonomy reference. Findings us
 - **Data protection.** PII handled appropriately (per ADR-0040 D9)? Encryption at rest and in transit where required? Audit trails complete (per ADR-0030)?
 - **Dependency security.** Vulnerable packages flagged (per ADR-0009)? Unsafe transitive dependencies caught? Supply chain risk bounded?
 
-**Execution detail.** Inspect trust boundaries, authz/authn, tenant isolation, secret/config usage, PII handling, dependency risk, and audit completeness. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
+**Execution detail.** Inspect trust boundaries, authz/authn, tenant isolation, secret/config usage, PII handling, dependency risk, and audit completeness. Findings must cite the concrete file/line, work-item criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
 
 **Severity mapping.** Block for secret leakage, auth bypass, tenant-data leak, injection risk, or missing required audit/security control. Request Changes for incomplete validation or unclear data-protection handling. Suggest for defense-in-depth.
 
@@ -334,7 +334,7 @@ Use `copilot/pr-review-rules.md` as the severity taxonomy reference. Findings us
 - **Documentation.** Does this need an ADR or amendment? Runbooks needed (per ADR-0036)? Config docs updated? Are examples/sample configs, manifests/schema updates, dashboards, or operational notes needed?
 - **Compliance.** PCI, GDPR, SOC2 implications? Retention rules (per ADR-0036 D7)? Audit requirements (per ADR-0030)?
 
-**Execution detail.** Inspect deployment safety, rollback, environment config, feature flags, ownership docs, runbooks, retention/compliance, and support posture. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
+**Execution detail.** Inspect deployment safety, rollback, environment config, feature flags, ownership docs, runbooks, retention/compliance, and support posture. Findings must cite the concrete file/line, work-item criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
 
 **Severity mapping.** Request Changes for missing operational documentation/config where the PR introduces an operator-facing behavior or deploy risk. Suggest for runbook/docs improvements when the change remains safe.
 
@@ -345,7 +345,7 @@ Use `copilot/pr-review-rules.md` as the severity taxonomy reference. Findings us
 - **Verification depth.** Unit tests in the right project? Integration tests for cross-Node seams (per ADR-0011 Gap 1)? Contract tests for `*.Abstractions` surfaces? End-to-end tests where they earn their keep (per ADR-0011 Gap 3)?
 - **Anti-patterns.** No testing implementation details. No excessive mocking that mocks the system under test. No non-deterministic tests (no real time, real randomness, real network in unit tests).
 
-**Execution detail.** Inspect test presence, meaningful coverage, test architecture, contract/integration/E2E needs, determinism, naming, and framework/package regressions. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
+**Execution detail.** Inspect test presence, meaningful coverage, test architecture, contract/integration/E2E needs, determinism, naming, and framework/package regressions. Findings must cite the concrete file/line, work-item criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
 
 **Severity mapping.** Request Changes for missing tests on changed behavior, missing contract tests for new abstractions/backings, brittle or non-deterministic tests, Moq/FluentAssertions reintroduction, async blocking, or `Thread.Sleep`. Suggest for test style improvements.
 
@@ -355,7 +355,7 @@ Use `copilot/pr-review-rules.md` as the severity taxonomy reference. Findings us
 - **Versioning.** Breaking changes labeled and gated per ADR-0035? Contract drift avoided? Serialization changes documented? Deprecation path documented? Backward compatibility honored at the published version? Client impact analyzed?
 - **Consumer safety.** Are defaults safe? Are contracts explicit (no silent assumptions)?
 
-**Execution detail.** Inspect public API shape, naming, response semantics, defaults, versioning, deprecation path, and consumer compatibility. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
+**Execution detail.** Inspect public API shape, naming, response semantics, defaults, versioning, deprecation path, and consumer compatibility. Findings must cite the concrete file/line, work-item criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
 
 **Severity mapping.** Block for breaking public contract changes without versioning/approval. Request Changes for unsafe defaults, missing XML docs, ambiguous contracts, or missing deprecation notes. Suggest for ergonomics improvements.
 
@@ -365,7 +365,7 @@ Use `copilot/pr-review-rules.md` as the severity taxonomy reference. Findings us
 - **Migration safety.** Backfill strategy clear? Rollback strategy clear? DB compatibility maintained? Zero-downtime where the table is hot?
 - **Multi-tenant integrity.** Isolation guarantees (per ADR-0026)? Cross-tenant leakage prevented in queries, caches, and any in-memory state?
 
-**Execution detail.** Inspect persistence writes, precision/rounding, referential integrity, migrations, backfills, rollback, idempotent writes, and tenant predicates. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
+**Execution detail.** Inspect persistence writes, precision/rounding, referential integrity, migrations, backfills, rollback, idempotent writes, and tenant predicates. Findings must cite the concrete file/line, work-item criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
 
 **Severity mapping.** Block for data corruption, cross-tenant leakage, unsafe migration, or non-idempotent repeatable writes. Request Changes for missing migration/backfill/rollback details. Suggest for data-shape cleanup.
 
@@ -375,7 +375,7 @@ Use `copilot/pr-review-rules.md` as the severity taxonomy reference. Findings us
 - **Event architecture.** Event versioning planned? Contract evolution path clear? Outbox pattern where it belongs?
 - **Consistency models.** Strong vs eventual consistency awareness - is the chosen model right for the use case and communicated to consumers?
 
-**Execution detail.** Inspect message handling, duplicate delivery, ordering assumptions, poison/dead-letter behavior, event versioning, outbox needs, and consistency model clarity. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
+**Execution detail.** Inspect message handling, duplicate delivery, ordering assumptions, poison/dead-letter behavior, event versioning, outbox needs, and consistency model clarity. Findings must cite the concrete file/line, work-item criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
 
 **Severity mapping.** Block for unsafe duplicate handling or hidden ordering assumptions that break correctness. Request Changes for missing poison-message/versioning/consistency handling. Suggest for clearer event documentation.
 
@@ -385,7 +385,7 @@ Use `copilot/pr-review-rules.md` as the severity taxonomy reference. Findings us
 - **Release safety.** Safe rollout path (per ADR-0033)? Canary support where it earns its keep? Environment parity between dev/staging/prod? Feature flags/backfills/migration sequencing considered? Rollback safety explicit?
 - **Automation.** Is manual work avoidable? Is operational toil reduced rather than added? Are environment/config/infra changes captured rather than tribal?
 
-**Execution detail.** Inspect workflow triggers, path guards, deterministic builds, artifact traceability, environment parity, rollout/canary posture, and avoidable manual toil. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
+**Execution detail.** Inspect workflow triggers, path guards, deterministic builds, artifact traceability, environment parity, rollout/canary posture, and avoidable manual toil. Findings must cite the concrete file/line, work-item criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
 
 **Severity mapping.** Block for delivery changes that bypass required gates or make releases unsafe. Request Changes for unguarded expensive workflows, missing traceability, or nondeterministic outputs. Suggest for automation polish.
 
@@ -395,7 +395,7 @@ Use `copilot/pr-review-rules.md` as the severity taxonomy reference. Findings us
 - **Discoverability.** Can developers find the right extension points? Are conventions self-evident?
 - **Tooling integration.** IntelliSense, XML docs, examples? Analyzer support where mistakes are catchable?
 
-**Execution detail.** Inspect consumer ergonomics, discoverability, extension points, XML docs/examples, analyzer/tooling support, and onboarding clarity. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
+**Execution detail.** Inspect consumer ergonomics, discoverability, extension points, XML docs/examples, analyzer/tooling support, and onboarding clarity. Findings must cite the concrete file/line, work-item criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
 
 **Severity mapping.** Request Changes for confusing APIs or missing docs on new public surfaces. Suggest for examples, analyzer hints, or DX polish.
 
@@ -405,7 +405,7 @@ Use `copilot/pr-review-rules.md` as the severity taxonomy reference. Findings us
 - **Cost awareness.** Infra cost impact (per ADR-0011 D6's cost discipline)? Operational burden added? Vendor lock-in introduced?
 - **Strategic alignment.** Does this align with Grid direction (constitution and roadmap)? Does it strengthen platform leverage or fragment it?
 
-**Execution detail.** Inspect whether the change solves the packet/product need, cost/ops burden, vendor lock-in, charter alignment, and Grid leverage vs fragmentation. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
+**Execution detail.** Inspect whether the change solves the work item/product need, cost/ops burden, vendor lock-in, charter alignment, and Grid leverage vs fragmentation. Findings must cite the concrete file/line, work-item criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
 
 **Severity mapping.** Request Changes for overbuilt or misaligned solutions that miss the stated need or add unjustified cost/operational burden. Suggest for product/cost framing improvements.
 
@@ -418,7 +418,7 @@ This category is load-bearing as the Grid leans further into agent-authored code
 - **Human override.** Can operators intervene (per ADR-0018 `IApprovalGate`)? Is the agent's behavior auditable (per ADR-0030)?
 - **Agent observability.** Decision tracing - can we reconstruct why the agent did what it did? Tool usage tracing? Token and cost tracking (per ADR-0011 D6 and ADR-0041 cost profile)?
 
-**Execution detail.** Inspect prompt/tool trust boundaries, output validation, permission scope, memory/context isolation, human override, auditability, and token/cost tracking. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
+**Execution detail.** Inspect prompt/tool trust boundaries, output validation, permission scope, memory/context isolation, human override, auditability, and token/cost tracking. Findings must cite the concrete file/line, work-item criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
 
 **Severity mapping.** Block for prompt-injection/tool-scope risks, context leakage, or agent actions without required approval/audit. Request Changes for missing validation or observability around agent behavior. Suggest for extra trace/cost detail.
 
@@ -430,17 +430,17 @@ This is the category most organizations never formalize, and the one that determ
 - **Pattern erosion.** Are teams (including AI agents) bypassing standards? Is this "one-off syndrome" - a single justified exception that will be cited as precedent for ten unjustified ones?
 - **Ecosystem sustainability.** Will this still make sense in 3 years? Does this increase architectural gravity (load-bearing dependencies) in a way that constrains future moves?
 
-**Execution detail.** Inspect naming drift, one-off exceptions, pattern erosion, long-term legibility, load-bearing dependencies, and whether this sets bad precedent. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
+**Execution detail.** Inspect naming drift, one-off exceptions, pattern erosion, long-term legibility, load-bearing dependencies, and whether this sets bad precedent. Findings must cite the concrete file/line, work-item criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
 
-**Severity mapping.** Request Changes for changes that create an untracked exception or fragment a Grid pattern. Suggest for consolidation notes or follow-up packets when entropy risk is low.
+**Severity mapping.** Request Changes for changes that create an untracked exception or fragment a Grid pattern. Suggest for consolidation notes or follow-up work items when entropy risk is low.
 
 ### 20. Human factors
 
 - **Team comprehension.** Would another engineer (or another agent on a different prompt) understand this quickly?
 - **Bus factor.** Is knowledge being concentrated where only one person (or one agent run) holds it? Is the change reversible by someone who didn't make it?
-- **Communication quality.** Is intent documented (PR body, packet adherence, ADR if scope warrants)? Are trade-offs explained, not just decisions stated?
+- **Communication quality.** Is intent documented (PR body, work-item adherence, ADR if scope warrants)? Are trade-offs explained, not just decisions stated?
 
-**Execution detail.** Inspect PR/packet communication, reversibility, bus factor, whether intent/trade-offs are recorded, and whether another human/agent can safely maintain it. Findings must cite the concrete file/line, packet criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
+**Execution detail.** Inspect PR/work item communication, reversibility, bus factor, whether intent/trade-offs are recorded, and whether another human/agent can safely maintain it. Findings must cite the concrete file/line, work-item criterion, invariant, ADR, boundary rule, or convention that makes the issue actionable.
 
 **Severity mapping.** Request Changes for unclear intent on non-trivial changes, irreversible decisions without explanation, or missing handoff context. Suggest for clearer PR notes/comments.
 
@@ -467,10 +467,10 @@ Requires ADR: {Yes | No}
 {"None." or concrete requested changes. Each non-None finding must name the category, file/line or governing rule when applicable, and what needs to change.}
 
 🧱 Architectural Alignment
-{Boundary, ADR, invariant, packet, and design-alignment assessment.}
+{Boundary, ADR, invariant, work item, and design-alignment assessment.}
 
 🧭 Domain Integrity
-{Node ownership, repo boundary, packet scope, and cross-Node responsibility assessment.}
+{Node ownership, repo boundary, work-item scope, and cross-Node responsibility assessment.}
 
 📦 Dependency Review
 {Dependencies introduced/removed/changed, package graph effects, vendor/SDK posture, or "None introduced."}
@@ -503,7 +503,7 @@ Requires ADR: {Yes | No}
 {Reusable patterns/components/prompts/jobs surfaced, or why none.}
 
 📚 Knowledge Capture
-{Docs, ADRs, walkthroughs, catalogs, changelog, packet trace, and whether the change preserves institutional knowledge.}
+{Docs, ADRs, walkthroughs, catalogs, changelog, work-item trace, and whether the change preserves institutional knowledge.}
 
 💡 Suggestions
 {"None." or non-blocking suggestions.}
@@ -516,8 +516,8 @@ Requires ADR: {Yes | No}
 
 ✅ Reviewed Scope / Evidence Checked
 
-Packet / PR scope: {packet path or out-of-band label status; acceptance criteria checked}
-Governing ADRs: ADR-0011 and ADR-0044 always, plus packet-referenced ADR ids or "no additional ADRs referenced"
+Work item / PR scope: {work-item path or out-of-band label status; acceptance criteria checked}
+Governing ADRs: ADR-0011 and ADR-0044 always, plus work item-referenced ADR ids or "no additional ADRs referenced"
 Grid invariants: all numbered invariants in `constitution/invariants.md` checked against the diff; implicated invariants: {ids or "none implicated"}
 Contracts / downstream: {catalog files checked; downstream Nodes affected or "none detected"}
 Security / secrets: {secret, auth, tenant, permission, and data-classification checks performed}

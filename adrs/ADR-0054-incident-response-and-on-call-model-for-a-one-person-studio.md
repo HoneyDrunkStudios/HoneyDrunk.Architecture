@@ -227,7 +227,7 @@ What was done to restore service.
 - `mtta_minutes`, `mtmitigate_minutes`, `mttr_minutes` are computed from the timestamps and recorded for trend visibility.
 - The timeline is **append-only during the incident** (operator types into it as events happen) and frozen at close.
 - "Unknown — investigating" is a **valid root cause at incident close** if true; the post-mortem is where it gets refined.
-- Follow-ups link to issue packets (per ADR-0008) or ADR amendments; an incident that produces no follow-ups is itself a signal worth noting.
+- Follow-ups link to work items (per ADR-0008) or ADR amendments; an incident that produces no follow-ups is itself a signal worth noting.
 
 ### D8 — Post-mortem cadence
 
@@ -247,7 +247,7 @@ post_mortem_id: PM-2026-0042
 authored_at: 2026-05-26T10:30:00Z
 participants: [operator]
 related_adrs: [ADR-0027, ADR-0036, ADR-0045]
-follow_up_packets: [generated/issue-packets/2026-05-26-notify-cloud-rollback-automation.md]
+follow_up_work_items: [generated/work-items/active/standalone/2026-05-26-notify-cloud-rollback-automation.md]
 ---
 
 # PM-2026-0042: Notify Cloud tenant gateway down (2026-05-22)
@@ -271,7 +271,7 @@ Things that didn't. The first-hit fingerprint didn't dedup correctly and re-page
 Things that worked by accident, not by design. Catching these is the whole point of the blameless review.
 
 ## Action items
-Concrete follow-ups, each linked to an issue packet or ADR amendment. Owner, deadline, status.
+Concrete follow-ups, each linked to a work item or ADR amendment. Owner, deadline, status.
 
 ## Glossary / Links
 Relevant ADRs, dashboards, related incidents.
@@ -280,7 +280,7 @@ Relevant ADRs, dashboards, related incidents.
 **Blameless principle:** the post-mortem describes systems, processes, and tools — never individual fault. In a one-person studio, the operator IS the only individual; blameless language is doubly important because self-blame is the failure mode. The point is to fix the system, not the human.
 
 **Post-mortems feed back into the Grid:**
-- Action items become issue packets (ADR-0008) or ADR amendments.
+- Action items become work items (ADR-0008) or ADR amendments.
 - Patterns across multiple post-mortems trigger ADR-level changes (e.g., three post-mortems naming the same boundary failure → ADR amendment to the boundary contract).
 - Quarterly retrospective reads the last 90 days of post-mortems and produces a meta-report.
 
@@ -369,7 +369,7 @@ The templates are **versioned in Communications** so they update without an ADR 
 - Scenario is chosen and documented 1 week in advance.
 - Exercise runs through the full lifecycle (D6): page fires → ack → investigate → mitigate → resolve → post-mortem.
 - Post-game-day post-mortem identifies process gaps, runbook gaps, and tooling gaps.
-- Findings either get fixed within 30 days or filed as ADR amendments / issue packets.
+- Findings either get fixed within 30 days or filed as ADR amendments / work items.
 
 **First game day target: 30 days after this ADR accepts.**
 

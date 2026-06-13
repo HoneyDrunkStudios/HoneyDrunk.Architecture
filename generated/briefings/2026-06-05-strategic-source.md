@@ -7,7 +7,7 @@
 - Dedupe skips: 0
 
 ## Decisions Scoped
-- **PDR-0001**: HoneyHub Platform - Observation and AI Routing Layers -> [2026-06-05-architecture-reconcile-pdr-0001-implementation-coverage.md](../issue-packets/proposed/2026-06-05-architecture-reconcile-pdr-0001-implementation-coverage.md)
+- **PDR-0001**: HoneyHub Platform - Observation and AI Routing Layers -> [2026-06-05-architecture-reconcile-pdr-0001-implementation-coverage.md](../work-items/proposed/2026-06-05-architecture-reconcile-pdr-0001-implementation-coverage.md)
 
 ## Recommendation Breakdown
 - **2026-06-05-architecture-reconcile-pdr-0001-implementation-coverage.md**

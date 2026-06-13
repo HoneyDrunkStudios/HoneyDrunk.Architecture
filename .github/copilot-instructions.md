@@ -31,7 +31,7 @@ You received a task from Claude Code via a GitHub Issue or handoff prompt. Follo
 The developer is working directly in this repo. Help them with:
 - Editing catalogs, ADRs, PDRs, routing rules, or repo context files
 - Understanding the Grid topology (read `catalogs/` and `repos/`)
-- Drafting ADRs, PDRs, or issue packets
+- Drafting ADRs, PDRs, or work items
 
 ## Context Files (Read Before Acting)
 
@@ -55,7 +55,7 @@ Custom agents are defined in `.github/agents/`. Each agent has a specific purpos
 
 | Agent | Purpose |
 |-------|---------|
-| `scope` | Decompose work into issue packets |
+| `scope` | Decompose work into work items |
 | `refine` | Challenge scoped work for gaps |
 | `review` | Review PRs against boundaries and invariants |
 | `adr-composer` | Facilitate architecture decisions |
@@ -69,7 +69,7 @@ ADR-0044 D3 makes the review rubric an upstream authoring standard for Copilot-a
 
 Apply the brief ADR-0044 D3 authoring checklist before producing a diff:
 
-- **1. Correctness and functional integrity** — the change satisfies the packet/intent and handles edge cases.
+- **1. Correctness and functional integrity** — the change satisfies the work item/intent and handles edge cases.
 - **3. Maintainability** — the implementation is readable and locally understandable.
 - **5. SOLID and design principles** — responsibilities stay cohesive; no speculative abstraction.
 - **4. Reuse and ecosystem cohesion** — reuse existing Grid patterns; avoid duplicate helpers/policy.
@@ -123,6 +123,8 @@ Squash-merge PR titles must also be a valid Conventional Commit — the title be
 - Markdown with structured frontmatter, JSON catalogs
 - No application code in this repo
 - Commits follow Conventional Commits — see **Commit Format** above
-- Issue packet naming: `{YYYY-MM-DD}-{repo}-{description}.md`
+- Work item naming:
+  - Standalone or proposed work items: `{YYYY-MM-DD}-{repo}-{description}.md`
+  - Initiative-scoped active work items: `{NN}-{repo}-{description}.md` under `generated/work-items/active/{initiative}/`
 - ADR format follows `adrs/ADR-0001-node-vs-service.md`
 - PDR format follows `pdrs/PDR-0001-honeyhub-platform-observation-and-ai-routing.md`

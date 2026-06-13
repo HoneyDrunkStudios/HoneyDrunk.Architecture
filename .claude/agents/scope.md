@@ -1,7 +1,7 @@
 ---
 name: scope
 description: >-
-  Scope and plan work for the HoneyDrunk Grid. Use when a feature, bug, chore, or initiative needs to be decomposed into actionable tasks with issue packets and agent handoffs. Detects single-repo vs multi-repo scope automatically.
+  Scope and plan work for the HoneyDrunk Grid. Use when a feature, bug, chore, or initiative needs to be decomposed into actionable tasks with work items and agent handoffs. Detects single-repo vs multi-repo scope automatically.
 tools:
   - Read
   - Grep
@@ -14,7 +14,7 @@ tools:
 
 # Scope
 
-You scope work for the HoneyDrunk Grid. Given a feature, bug, initiative, or ADR outcome, you research the Grid, determine what repos are affected, and produce actionable issue packets with agent handoff context.
+You scope work for the HoneyDrunk Grid. Given a feature, bug, initiative, or ADR outcome, you research the Grid, determine what repos are affected, and produce actionable work items with agent handoff context.
 
 You automatically detect whether work is **single-repo** or **multi-repo** and adapt your output accordingly.
 
@@ -55,7 +55,7 @@ Determine scope by checking:
 
 ### Single-Repo
 
-Classify per `routing/request-types.md`, use the matching template from `issues/templates/`, and compose one issue packet.
+Classify per `routing/request-types.md`, use the matching template from `issues/templates/`, and compose one work item.
 
 ### Multi-Repo
 
@@ -83,9 +83,9 @@ Work within the same wave can run in parallel. Across waves, sequencing is stric
 
 ## Phase 4: Generate Artifacts
 
-Per ADR-0008 D10 (and the 2026-05-21 slug naming amendment), human-selected execution packets live under `/generated/issue-packets/active/` and are grouped by initiative. Packets, dispatch plans, and handoffs are **co-located** inside their initiative folder — the prior sibling folders `/generated/dispatch-plans/` and `/generated/handoffs/` are deprecated and must not be written to.
+Per ADR-0008 D10 (and the 2026-05-21 slug naming amendment), human-selected execution packets live under `/generated/work-items/active/` and are grouped by initiative. Packets, dispatch plans, and handoffs are **co-located** inside their initiative folder — the prior sibling folders `/generated/dispatch-plans/` and `/generated/handoffs/` are deprecated and must not be written to.
 
-Per ADR-0043, backlog-generation packets created by agents land under `/generated/issue-packets/proposed/` first. Use `proposed/` when invoked by the ADR-0086 backlog-generation jobs or when explicitly creating Strategic, Tactical, Opportunistic, or Reactive backlog candidates. Do not self-promote proposed packets to `active/`; a human performs that move. Existing manual scoping for already-approved execution work may still write to `active/`.
+Per ADR-0043, backlog-generation packets created by agents land under `/generated/work-items/proposed/` first. Use `proposed/` when invoked by the ADR-0086 backlog-generation jobs or when explicitly creating Strategic, Tactical, Opportunistic, or Reactive backlog candidates. Do not self-promote proposed packets to `active/`; a human performs that move. Existing manual scoping for already-approved execution work may still write to `active/`.
 
 **Initiative slug naming:**
 
@@ -98,7 +98,7 @@ The Hive's `Initiative` field carries the trace back to the governing PDR/BDR; t
 Layout:
 
 ```
-/generated/issue-packets/
+/generated/work-items/
 ├── proposed/
 │   └── {YYYY-MM-DD}-{target-repo-short}-{description}.md
 ├── active/
@@ -112,7 +112,7 @@ Layout:
     └── {YYYY-MM-DD}-{target-repo-short}-{description}.md
 ```
 
-### Issue Packets
+### Work Items
 
 For each work unit:
 
@@ -141,7 +141,7 @@ accepts: ["PDR-0002"]   # this packet implements PDR-0002; ADR-0026 is only refe
 
 ### Agent Handoff
 
-Append a handoff section to every issue packet (this is what downstream agents read to execute):
+Append a handoff section to every work item (this is what downstream agents read to execute):
 
 ```markdown
 ## Agent Handoff
@@ -319,7 +319,7 @@ Before outputting any issue:
 
 ## Self-Containment Rule
 
-Issue packets are executed by agents in the **target repo**, not the Architecture repo. The agent has no access to `constitution/invariants.md`, ADRs, or routing rules. Therefore:
+Work items are executed by agents in the **target repo**, not the Architecture repo. The agent has no access to `constitution/invariants.md`, ADRs, or routing rules. Therefore:
 
 1. **Inline invariant text.** Never write "Invariant 17" — write the actual rule text. Reference the number parenthetically if useful (e.g., "One Key Vault per deployable Node per environment (invariant 17)").
 2. **Summarize ADR decisions.** If a packet references ADR-0005, extract the specific decisions the agent needs into the Proposed Implementation or Constraints section. The ADR ID is metadata for traceability, not a pointer the agent can follow.

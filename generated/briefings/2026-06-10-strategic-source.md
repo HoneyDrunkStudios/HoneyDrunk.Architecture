@@ -7,7 +7,7 @@
 - Dedupe skips: 0
 
 ## Decisions Scoped
-- **ADR-0089**: Program Tier for Multi-ADR Product Efforts -> [2026-06-10-architecture-reconcile-adr-0089-program-tier-coverage.md](../issue-packets/proposed/2026-06-10-architecture-reconcile-adr-0089-program-tier-coverage.md)
+- **ADR-0089**: Program Tier for Multi-ADR Product Efforts -> [2026-06-10-architecture-reconcile-adr-0089-program-tier-coverage.md](../work-items/proposed/2026-06-10-architecture-reconcile-adr-0089-program-tier-coverage.md)
 
 ## Recommendation Breakdown
 - **2026-06-10-architecture-reconcile-adr-0089-program-tier-coverage.md**

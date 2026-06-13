@@ -48,10 +48,10 @@ Then read:
 1. `adrs/ADR-0043-continuous-backlog-generation-strategy.md`
 2. `.claude/agents/netrunner.md`
 3. `copilot/issue-authoring-rules.md`
-4. `generated/issue-packets/proposed/`
-5. `generated/issue-packets/active/`
-6. `generated/issue-packets/completed/`
-7. `generated/issue-packets/filed-packets.json`
+4. `generated/work-items/proposed/`
+5. `generated/work-items/active/`
+6. `generated/work-items/completed/`
+7. `generated/work-items/filed-work-items.json`
 8. `generated/audits/`
 9. `generated/scout-reports/`
 10. `generated/briefings/urgent.md`

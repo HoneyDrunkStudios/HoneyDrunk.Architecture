@@ -1,6 +1,6 @@
 # Issue Authoring Rules
 
-Rules for agents when generating GitHub Issues or issue packets.
+Rules for agents when generating GitHub Issues or work items.
 
 ## Structure
 
@@ -14,46 +14,47 @@ Every issue must include:
 6. **Labels** — At minimum: type (`feature`, `bug`, `chore`), tier (`tier-1`, `tier-2`, `tier-3`), sector.
 7. **Dependencies** — Other issues or PRs that must complete first.
 
-## Packet Lifecycle and Frontmatter
+## Work Item Lifecycle and Frontmatter
 
-Issue packets authored after ADR-0043 acceptance use the three-state lifecycle:
+Work items authored after ADR-0043 acceptance use the three-state lifecycle:
 
-- `generated/issue-packets/proposed/` — agent-generated or draft packets awaiting human triage. Not filed.
-- `generated/issue-packets/active/` — human-promoted packets ready for `file-issues` and GitHub issue creation.
-- `generated/issue-packets/completed/` — closed packets moved by `hive-sync`.
+- `generated/work-items/proposed/` — agent-generated or draft work items awaiting human triage. Not filed.
+- `generated/work-items/active/` — human-promoted work items ready for `file-issues` and GitHub issue creation.
+- `generated/work-items/completed/` — closed work items moved by `hive-sync`.
 
-Agents write new backlog-generation packets to `proposed/` only. A human moves a packet to `active/` when it is selected for execution. `hive-sync` is the only agent that moves packets from `active/` to `completed/`.
+Agents write new backlog-generation work items to `proposed/` only. A human moves a work item to `active/` when it is selected for execution. `hive-sync` is the only agent that moves work items from `active/` to `completed/`.
 
-Every new packet must carry:
+Every new work item must carry:
 
 - `source:` one of `strategic`, `tactical`, `opportunistic`, `reactive`, or `human`.
-- `generator:` the agent or person that produced the packet, for example `scope`, `node-audit`, `product-strategist`, `hive-sync`, `netrunner`, `codex`, or `human`.
-- `priority:` only when useful for triage. Use `urgent` for high+ CVE, production incident, or canary-failure-past-grace reactive packets.
+- `generator:` the agent or person that produced the work item, for example `scope`, `node-audit`, `product-strategist`, `hive-sync`, `netrunner`, `codex`, or `human`.
+- `priority:` only when useful for triage. Use `urgent` for high+ CVE, production incident, or canary-failure-past-grace reactive work items.
 
 ## Blocking Relationships
 
-The `dependencies:` array in packet frontmatter is the **canonical, machine-readable** source of blocking relationships. The body's `## Dependencies` section is human narrative explaining *why* — it is not parsed by the filing pipeline.
+The `dependencies:` array in work-item frontmatter is the **canonical, machine-readable** source of blocking relationships. The body's `## Dependencies` section is human narrative explaining *why* — it is not parsed by the filing pipeline.
 
 ### `dependencies:` schema
 
 Each entry must use one of two qualified reference forms:
 
-- **`"packet:NN"`** — another packet in the **same initiative folder**, identified by its two-digit ordinal prefix (or `NN` + suffix letter, e.g. `"packet:07a"`). Resolved at filing time once the referenced packet has a manifest entry.
-  - Example: `dependencies: ["packet:01", "packet:04"]`
+- **`"work-item:NN"`** — another work item in the **same initiative folder**, identified by its two-digit ordinal prefix (or `NN` + suffix letter, e.g. `"work-item:07a"`). Resolved at filing time once the referenced work item has a manifest entry.
+  - Example: `dependencies: ["work-item:01", "work-item:04"]`
 - **`"{Repo}#N"` or `"{owner}/{repo}#N"`** — already-filed issue in another repo. Bare `Repo` short-names expand to `HoneyDrunkStudios/HoneyDrunk.{Repo}` (so `"Architecture#9"` → `HoneyDrunkStudios/HoneyDrunk.Architecture#9`).
-  - Example: `dependencies: ["packet:01", "Architecture#9"]`
+  - Example: `dependencies: ["work-item:01", "Architecture#9"]`
 
 Forbidden — these were ambiguous and silently broke the wiring step:
 
 - Bare integers: `dependencies: [1, 2]`
-- Narrative strings: `dependencies: ["Issue #1 (scaffold)"]` or `dependencies: ["Architecture#NN — ADR text (packet 01)"]`
+- Narrative strings: `dependencies: ["Issue #1 (scaffold)"]` or `dependencies: ["Architecture#NN — ADR text (work item 01)"]`
 - Filename slugs: `dependencies: ["01-foo-bar"]`
 
-The filing pipeline (`HoneyDrunk.Actions/scripts/file-packets.sh`) consumes this field, resolves each entry to an issue node ID, then calls `addBlockedBy` so the relationship surfaces natively in the GitHub UI and on The Hive board. Any unresolvable entry produces a `::warning::` in the workflow log; the build does not fail, so check the summary on every run.
+The filing pipeline (`HoneyDrunk.Actions/scripts/file-work-items.sh`) consumes this field, resolves each entry to an issue node ID, then calls `addBlockedBy` so the relationship surfaces natively in the GitHub UI and on The Hive board. Treat any unresolved dependency warning in the workflow log or job summary as blocking: stop the filing run, correct the dependency reference, and re-run before treating the work item as filed.
 
-## Naming Convention for Issue Packets
+## Naming Convention for Work Items
 
-`{YYYY-MM-DD}-{repo-short-name}-{kebab-case-description}.md`
+- Standalone or proposed work items: `{YYYY-MM-DD}-{repo-short-name}-{kebab-case-description}.md`
+- Initiative-scoped active work items: `{NN}-{repo-short-name}-{kebab-case-description}.md` under `generated/work-items/active/{initiative}/`
 
 Examples:
 - `2026-03-22-kernel-add-websocket-context-mapper.md`
@@ -62,7 +63,7 @@ Examples:
 
 ## Quality Checks
 
-Before finalizing an issue packet:
+Before finalizing a work item:
 
 - [ ] Title is action-oriented and under 80 characters
 - [ ] Acceptance criteria are specific (not "works correctly")
@@ -72,13 +73,13 @@ Before finalizing an issue packet:
 - [ ] Blocking relationships wired via `addBlockedBy` for every dependency listed
 - [ ] Labels include type, tier, and sector
 - [ ] Frontmatter includes all board fields: `wave`, `initiative`, `node`, `adrs`, `tier`
-- [ ] Frontmatter includes `source` and `generator`; agent-generated packets land in `proposed/` until a human promotes them
-- [ ] Acceptance criteria include a repo-level CHANGELOG.md update for any shipped change, using a new version entry when this packet is the bumping packet and appending to the existing solution entry otherwise
+- [ ] Frontmatter includes `source` and `generator`; agent-generated work items land in `proposed/` until a human promotes them
+- [ ] Acceptance criteria include a repo-level CHANGELOG.md update for any shipped change, using a new version entry when this work item is the bumping work item and appending to the existing solution entry otherwise
 - [ ] Acceptance criteria include per-package CHANGELOG.md update only for packages with actual changes (no noise entries for alignment bumps)
 - [ ] Acceptance criteria include README.md update if public API surface or installation changes
 - [ ] New projects/packages include both CHANGELOG.md and README.md creation in acceptance criteria
 - [ ] Implementation constraints include invariant text (or a direct quoted excerpt) where the exact wording affects behavior; avoid number-only references in constraint sections
-- [ ] ADR decisions relevant to implementation are summarized in the packet body with file links so an executor can verify full context quickly
+- [ ] ADR decisions relevant to implementation are summarized in the work item body with file links so an executor can verify full context quickly
 
 ## Anti-Patterns
 
@@ -88,4 +89,4 @@ Before finalizing an issue packet:
 - **Scope creep:** One issue should do one thing. Split if needed.
 - **Opaque references:** Writing only "Invariant 17" or "see ADR-0005" in implementation constraints without including the relevant text/excerpt.
 
-Execution note: ADR-0008 D8 checks out both the target repo and `HoneyDrunk.Architecture` during cloud execution. Packets should still be self-sufficient for implementation-critical constraints so execution does not depend on extra document discovery.
+Execution note: ADR-0008 D8 checks out both the target repo and `HoneyDrunk.Architecture` during cloud execution. Work items should still be self-sufficient for implementation-critical constraints so execution does not depend on extra document discovery.
