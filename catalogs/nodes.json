@@ -529,6 +529,51 @@
     "cooldown_days": 14
   },
   {
+    "id": "honeydrunk-novoutbox",
+    "type": "node",
+    "name": "HoneyDrunk.NovOutbox",
+    "public_name": "NovOutbox",
+    "visibility": "private",
+    "short": "Hosted notification outbox for customer applications",
+    "description": "Private commercial product wrapper above Communications and Notify. Owns the customer API, customer console, tenant/project model, API keys, rate-limit enforcement, billing events, and hosted-product operations for NovOutbox.",
+    "sector": "Ops",
+    "signal": "Seed",
+    "cluster": "commercial",
+    "energy": 0,
+    "priority": 32,
+    "flow": 0,
+    "tags": ["novoutbox", "commercial", "notifications", "multi-tenant", "billing", "api-keys", "customer-console"],
+    "links": {
+      "repo": "https://github.com/HoneyDrunkStudios/HoneyDrunk.NovOutbox"
+    },
+    "long_description": {
+      "overview": "NovOutbox is the first HoneyDrunk commercial hosted product: a private multi-tenant API and customer console that let developers add reliable outbound notifications to their applications without owning the delivery, tenant policy, billing, or operations surface themselves.",
+      "why_it_exists": "Notify and Communications are reusable Grid capabilities, but customers need a product boundary: signup, projects, API keys, limits, usage visibility, billing, logs, and a stable external API.",
+      "primary_audience": "Indie .NET developers and small SaaS teams that need a simple hosted notification outbox with clear tenant controls and operational visibility.",
+      "value_props": [
+        "Customer projects and API keys for hosted notification intake",
+        "Tenant tier and rate-limit enforcement before work enters the Grid communication path",
+        "Customer console for projects, keys, usage, logs, and billing state",
+        "Billing event emission that can be connected to Stripe without leaking payment concerns into Notify or Communications",
+        "Reuses Communications for message decisions and Notify for delivery mechanics"
+      ],
+      "monetization_signal": "Primary first commercial validation path for HoneyDrunk.OS.",
+      "roadmap_focus": "Bootstrap the private repo, prove API-key tenant resolution, enforce tenant tier limits, emit billable usage events, and run the first beta customer path end to end.",
+      "grid_relationship": "Consumes Kernel tenancy/rate-limit/billing primitives, Auth API-key validation, Vault secret boundaries, Web.Rest response conventions, Communications orchestration, Notify delivery abstractions, and Pulse/OpenTelemetry signals.",
+      "integration_depth": "deep",
+      "demo_path": "Customer signs up -> creates a project -> issues an API key -> sends a notification event -> NovOutbox authenticates and rate-limits -> Communications decides -> Notify delivers -> usage and logs appear in the console.",
+      "signal_quote": "One outbox for every customer message.",
+      "stability_tier": "seed",
+      "impact_vector": "commercial validation"
+    },
+    "foundational": false,
+    "strategy_base": 24,
+    "tier": "none",
+    "time_pressure": 4,
+    "done": false,
+    "cooldown_days": 14
+  },
+  {
     "id": "honeydrunk-actions",
     "type": "node",
     "name": "HoneyDrunk.Actions",

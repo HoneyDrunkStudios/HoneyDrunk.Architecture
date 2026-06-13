@@ -20,7 +20,7 @@ This is the **single most important framing in the entire ecosystem**. When any 
 
 It is not a startup. It is not VC-shaped. It is not optimizing for MRR, ARR, exit, or any external definition of "traction."
 
-That doesn't mean revenue is forbidden. It means **revenue is one of many experiments the Grid lets us run**, not the purpose the Grid was built to serve. Notify Cloud is a real commercial trial. Future Nodes may be too. But the studio doesn't live or die by what any of them earns.
+That doesn't mean revenue is forbidden. It means **revenue is one of many experiments the Grid lets us run**, not the purpose the Grid was built to serve. NovOutbox is a real commercial trial. Future Nodes may be too. But the studio doesn't live or die by what any of them earns.
 
 It also is not a hobby project. The discipline is real — enterprise-grade architecture, contracts, ADRs, invariants, telemetry, audit, threat modeling. Not because customers demand it, but because building things this way is the craft. The discipline is intrinsic to the goal.
 
@@ -64,7 +64,7 @@ The right framing: *"is this still serving its purpose — use, learning, craft,
 
 ## Commercial trials
 
-Some projects will be commercial experiments. **Notify Cloud is the current one**, with more likely to follow as the substrate matures.
+Some projects will be commercial experiments. **NovOutbox is the current one**, with more likely to follow as the substrate matures.
 
 Commercial trials follow a different cadence than personal-use projects, but they're still trials. The questions to ask:
 
