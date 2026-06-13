@@ -128,7 +128,7 @@
         { "name": "ITraceSink", "kind": "interface", "description": "Receive trace spans from the OTLP collector. Implement to add a new telemetry backend." },
         { "name": "ILogSink", "kind": "interface", "description": "Receive structured log entries." },
         { "name": "IMetricsSink", "kind": "interface", "description": "Receive metric data points." },
-        { "name": "TelemetryTagKeys.HoneyDrunk.TenantId", "kind": "type", "description": "Standard `tenant_id` telemetry tag key. Low-cardinality only; bounded by Notify Cloud cardinality criteria." }
+        { "name": "TelemetryTagKeys.HoneyDrunk.TenantId", "kind": "type", "description": "Standard `tenant_id` telemetry tag key. Low-cardinality only; bounded by NovOutbox cardinality criteria." }
       ]
     },
     {
@@ -172,6 +172,19 @@
         { "name": "RecipientPreferences", "kind": "type", "description": "Tenant-scoped preference snapshot for a recipient." },
         { "name": "CadenceVerdict", "kind": "type", "description": "Cadence policy result: outcome, optional defer time, and audit-friendly reason." },
         { "name": "CadenceOutcome", "kind": "type", "description": "Cadence verdict outcome enum: Allow, Suppress, or Defer." }
+      ]
+    },
+    {
+      "node": "honeydrunk-novoutbox",
+      "node_name": "HoneyDrunk.NovOutbox",
+      "package": "HoneyDrunk.NovOutbox.Abstractions",
+      "status": "seed",
+      "interfaces": [
+        { "name": "INovOutboxGateway", "kind": "interface", "description": "Customer-facing hosted notification intake boundary. Resolves tenant/project/API-key context, applies product policy, and delegates approved message intents to Communications." },
+        { "name": "INovOutboxApiKeyStore", "kind": "interface", "description": "Project-scoped API-key issuance, lookup, rotation, and revocation boundary for the NovOutbox product surface." },
+        { "name": "NovOutboxTenantTier", "kind": "type", "description": "Commercial tenant tier shape used to drive quotas, rate-limit policy, feature availability, and billing behavior." },
+        { "name": "NovOutboxApiKeyIssuance", "kind": "type", "description": "Result of issuing a project API key, including the persisted key id, one-time secret, tenant/project identity, and expiration or rotation metadata." },
+        { "name": "NovOutboxSubmitResult", "kind": "type", "description": "Customer-visible result of accepting, rejecting, suppressing, or scheduling a notification request." }
       ]
     },
     {

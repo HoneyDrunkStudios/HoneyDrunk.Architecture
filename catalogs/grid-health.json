@@ -187,6 +187,26 @@
       ]
     },
     {
+      "id": "honeydrunk-novoutbox",
+      "name": "HoneyDrunk.NovOutbox",
+      "sector": "Ops",
+      "signal": "Seed",
+      "version": "0.0.0",
+      "canary_status": "none",
+      "last_release": null,
+      "active_blockers": [
+        "ADR-0027 remains Proposed",
+        "Bootstrap scaffold not yet merged",
+        "Private-repo automation smoke test pending"
+      ],
+      "notes": "Private NovOutbox product repo for the hosted notification API and customer console. Public marketing/docs live in a separate public repo.",
+      "tracked_workflows": [
+        "pr.yml",
+        "pr-review.yml",
+        "nightly-security.yml"
+      ]
+    },
+    {
       "id": "honeydrunk-pulse",
       "name": "HoneyDrunk.Pulse",
       "sector": "Ops",

@@ -29,6 +29,7 @@ From commit to production with confidence — pipelines, deployment orchestratio
 | **Pulse** | Seed | Multi-backend telemetry pipeline, OTel integration, OTLP collector |
 | **Observe** | Seed | Inbound external-project observation — connectors, event normalization, observation state |
 | **Notify** | Live | Channel-agnostic notification dispatch (email, SMS) |
+| **NovOutbox** | Seed | Private commercial hosted notification product — customer API, customer console, tenants, API keys, billing, and rate limits |
 | **Actions** | Live | Reusable GitHub Actions workflows for the Grid |
 | **Infrastructure** | Seed | Bicep IaC content — per-concern modules, shared platform layer, per-Node leaf templates |
 

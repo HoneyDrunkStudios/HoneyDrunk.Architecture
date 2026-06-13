@@ -224,6 +224,46 @@
     "description": "Communication orchestration runtime — welcome flow, preference/cadence checks, decision logging, and Notify delegation"
   },
   {
+    "id": "novoutbox-abstractions",
+    "nodeId": "honeydrunk-novoutbox",
+    "name": "HoneyDrunk.NovOutbox.Abstractions",
+    "type": "abstractions",
+    "version": "0.0.0",
+    "description": "NovOutbox customer-facing product contracts for hosted notification intake, project keys, tenant tiers, and usage outcomes"
+  },
+  {
+    "id": "novoutbox-runtime",
+    "nodeId": "honeydrunk-novoutbox",
+    "name": "HoneyDrunk.NovOutbox",
+    "type": "runtime",
+    "version": "0.0.0",
+    "description": "Hosted notification product runtime that resolves tenants, validates API keys, enforces tenant limits, emits billing events, and delegates messaging to Communications"
+  },
+  {
+    "id": "novoutbox-web",
+    "nodeId": "honeydrunk-novoutbox",
+    "name": "HoneyDrunk.NovOutbox.Web",
+    "type": "web",
+    "version": "0.0.0",
+    "description": "Customer-facing API and console for signup, projects, API keys, logs, usage, and billing state"
+  },
+  {
+    "id": "novoutbox-billing-stripe",
+    "nodeId": "honeydrunk-novoutbox",
+    "name": "HoneyDrunk.NovOutbox.Billing.Stripe",
+    "type": "provider",
+    "version": "0.0.0",
+    "description": "Stripe billing adapter for translating NovOutbox usage and tenant state into product billing events"
+  },
+  {
+    "id": "novoutbox-apphost",
+    "nodeId": "honeydrunk-novoutbox",
+    "name": "HoneyDrunk.NovOutbox.AppHost",
+    "type": "local-dev",
+    "version": "0.0.0",
+    "description": "Aspire AppHost used for local development only; production deployment remains Azure Container Apps via curated infrastructure"
+  },
+  {
     "id": "observe-abstractions",
     "nodeId": "honeydrunk-observe",
     "name": "HoneyDrunk.Observe.Abstractions",
