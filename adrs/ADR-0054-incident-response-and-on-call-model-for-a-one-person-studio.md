@@ -247,7 +247,7 @@ post_mortem_id: PM-2026-0042
 authored_at: 2026-05-26T10:30:00Z
 participants: [operator]
 related_adrs: [ADR-0027, ADR-0036, ADR-0045]
-follow_up_packets: [generated/work-items/2026-05-26-notify-cloud-rollback-automation.md]
+follow_up_work_items: [generated/work-items/active/standalone/2026-05-26-notify-cloud-rollback-automation.md]
 ---
 
 # PM-2026-0042: Notify Cloud tenant gateway down (2026-05-22)
@@ -271,7 +271,7 @@ Things that didn't. The first-hit fingerprint didn't dedup correctly and re-page
 Things that worked by accident, not by design. Catching these is the whole point of the blameless review.
 
 ## Action items
-Concrete follow-ups, each linked to an work item or ADR amendment. Owner, deadline, status.
+Concrete follow-ups, each linked to a work item or ADR amendment. Owner, deadline, status.
 
 ## Glossary / Links
 Relevant ADRs, dashboards, related incidents.

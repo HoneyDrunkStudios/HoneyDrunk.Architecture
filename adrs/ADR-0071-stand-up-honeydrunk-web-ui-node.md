@@ -17,15 +17,15 @@ Accepting this ADR creates catalog and cross-repo obligations that must be compl
 - [ ] Add Web.UI to `catalogs/grid-health.json` reflecting the stood-up package surface (tokens + CSS at minimum on day one)
 - [ ] Update [`constitution/sectors.md`](../constitution/sectors.md) Creator-sector text — Web.UI is the anchor, the "No real Nodes yet" line is replaced
 - [ ] Create `repos/HoneyDrunk.Web.UI/` context folder (`overview.md`, `boundaries.md`, `invariants.md`, `active-work.md`, `integration-points.md`) — matching the template used by [`repos/HoneyDrunk.Audit/`](../repos/HoneyDrunk.Audit/) and [`repos/HoneyDrunk.Studios/`](../repos/HoneyDrunk.Studios/)
-- [ ] File the HoneyDrunk.Web.UI scaffold packet (monorepo or polyrepo decision per D6; tokens-first publishing pipeline; CI per [ADR-0012](./ADR-0012-grid-cicd-control-plane.md); semantic-versioning cadence per [ADR-0035](./ADR-0035-abstractions-versioning-and-deprecation-policy.md))
+- [ ] File the HoneyDrunk.Web.UI scaffold work item (monorepo or polyrepo decision per D6; tokens-first publishing pipeline; CI per [ADR-0012](./ADR-0012-grid-cicd-control-plane.md); semantic-versioning cadence per [ADR-0035](./ADR-0035-abstractions-versioning-and-deprecation-policy.md))
 - [ ] Confirm the paired [ADR-0070](./ADR-0070-frontend-platform-stack.md) is Accepted (Web.UI's stack constraints derive from there)
-- [ ] Scope agent flips Status → Accepted after the first packet declaring this ADR in `accepts:` merges and the tokens package publishes its 0.x release
+- [ ] Scope agent flips Status → Accepted after the first work item declaring this ADR in `accepts:` merges and the tokens package publishes its 0.x release
 
 ## Context
 
 The paired [ADR-0070](./ADR-0070-frontend-platform-stack.md) commits the Grid to three frontend stacks: React for consumer web, Blazor for simple admin, and React Native + Expo for mobile. With three stacks, the obvious next question is: **where does the design system live?**
 
-Today: nowhere. Each consumer surface re-derives its visual language. Studios uses one set of design tokens (Tailwind config, custom CSS variables); Notify Cloud's admin will derive its own when the packet lands; every queued consumer PDR (Hearth, Lately, Currents, Curiosities) implies its own UI; even prototype work re-invents the buttons, the form layouts, the color choices.
+Today: nowhere. Each consumer surface re-derives its visual language. Studios uses one set of design tokens (Tailwind config, custom CSS variables); Notify Cloud's admin will derive its own when the work item lands; every queued consumer PDR (Hearth, Lately, Currents, Curiosities) implies its own UI; even prototype work re-invents the buttons, the form layouts, the color choices.
 
 The cost compounds with every new consumer surface:
 
@@ -48,7 +48,7 @@ The charter's framing is direct ([`constitution/charter.md`](../constitution/cha
 
 A design-system Node is foundation work whose ROI compounds with every consumer surface. The investment now pays off in every PDR that scaffolds afterward.
 
-This ADR is the **stand-up decision** for the Web.UI Node — what it owns, what it does not own, the per-stack split, the relationship to Studios (Web.UI is consumed by Studios, not folded into it), and what scaffolds in the first packet. It is not a scaffolding packet. Per the project convention, the **boundary is named now so the next consumer surface has somewhere to consume tokens from**; the **Node itself doesn't get built** until that first consumer surface pulls on it.
+This ADR is the **stand-up decision** for the Web.UI Node — what it owns, what it does not own, the per-stack split, the relationship to Studios (Web.UI is consumed by Studios, not folded into it), and what scaffolds in the first work item. It is not a scaffolding work item. Per the project convention, the **boundary is named now so the next consumer surface has somewhere to consume tokens from**; the **Node itself doesn't get built** until that first consumer surface pulls on it.
 
 ## Decision
 
@@ -95,7 +95,7 @@ The relationship is inverted: **Studios consumes Web.UI**, the same way Hearth, 
 
 This separation is explicitly per-operator: "Studios is one product, not a baseline" is the framing this ADR records.
 
-The migration shape: Studios continues using its current informal tokens until Web.UI's first release is ready. At that release, a Studios follow-up packet migrates Studios to consume the Web.UI tokens package. The migration is bounded (Studios is one product; the cutover is one PR) and the tokens align (Studios' existing tokens are formalized into the first Web.UI release, so the migration is mechanical).
+The migration shape: Studios continues using its current informal tokens until Web.UI's first release is ready. At that release, a Studios follow-up work item migrates Studios to consume the Web.UI tokens package. The migration is bounded (Studios is one product; the cutover is one PR) and the tokens align (Studios' existing tokens are formalized into the first Web.UI release, so the migration is mechanical).
 
 ### D4. Per-stack component strategy — tokens cross-stack, components per-stack
 
@@ -120,7 +120,7 @@ The committed split:
 The Web.UI Node does **not** ship a complete design system on day one. The phasing:
 
 - **Phase 0 (this ADR).** Boundary, sector placement, per-stack strategy committed. No code.
-- **Phase 1 (scaffold packet, when accepted).** Repo created; tokens + primitive CSS shipped as `@honeydrunk/web-ui-tokens` and `@honeydrunk/web-ui-css`. No components yet. Studios' existing tokens migrate in as Phase 1's first input. The Studios website becomes the first consumer immediately.
+- **Phase 1 (scaffold work item, when accepted).** Repo created; tokens + primitive CSS shipped as `@honeydrunk/web-ui-tokens` and `@honeydrunk/web-ui-css`. No components yet. Studios' existing tokens migrate in as Phase 1's first input. The Studios website becomes the first consumer immediately.
 - **Phase 2 (first non-Studios consumer).** React component pack ships in `@honeydrunk/web-ui-react`. Initial component set is small and pragmatic: Button, Input, Label, Card, Modal, Toast, Alert, Spinner, Skeleton — the primitives every consumer PDR will need on day one. Notify Cloud admin (Blazor) consumes tokens + CSS without needing React components.
 - **Phase 3 (first Blazor consumer surface that needs components).** A Blazor component or two ships in `HoneyDrunk.Web.UI.Blazor` (NuGet) as the first surface demands them. The default posture remains: most Blazor surfaces need tokens + CSS only.
 - **Phase 4 (first mobile PDR).** React Native components ship in `@honeydrunk/web-ui-native`. Mobile-specific patterns (TabBar, BottomSheet, etc.) join the component contract; web-specific patterns (Tooltip on hover) do not have RN equivalents and are documented as web-only.
@@ -143,7 +143,7 @@ The packages Web.UI ships:
 
 The npm packages live under the `@honeydrunk` scope (per the standard org convention). The NuGet package follows the existing `HoneyDrunk.*` naming.
 
-**Monorepo vs. polyrepo:** The scaffold packet decides this. The strong default is a **monorepo** in `HoneyDrunk.Web.UI` (tools like pnpm workspaces, Turbo, or Nx handle the multi-package shape natively); a polyrepo split is permitted only if cross-stack coupling becomes a problem. The monorepo posture lets tokens, CSS, and components share linting, versioning, and CI.
+**Monorepo vs. polyrepo:** The scaffold work item decides this. The strong default is a **monorepo** in `HoneyDrunk.Web.UI` (tools like pnpm workspaces, Turbo, or Nx handle the multi-package shape natively); a polyrepo split is permitted only if cross-stack coupling becomes a problem. The monorepo posture lets tokens, CSS, and components share linting, versioning, and CI.
 
 ### D7. Versioning
 
@@ -185,10 +185,10 @@ The charter ([`constitution/charter.md`](../constitution/charter.md) §"What thi
 
 **The argument that this is appropriately-timed:**
 
-- Three consumer PDRs (Hearth, Lately, Curiosities) are queued and will all need design substrate from their first scaffolding packet. Without Web.UI, each pays the design tax independently.
+- Three consumer PDRs (Hearth, Lately, Curiosities) are queued and will all need design substrate from their first scaffolding work item. Without Web.UI, each pays the design tax independently.
 - Notify Cloud admin needs visual identity from day one. With Web.UI, it inherits the Grid's design language; without, it invents one.
 - The paired [ADR-0070](./ADR-0070-frontend-platform-stack.md) commits the three-stack split; Web.UI is the obvious cross-stack reconciliation point.
-- The Node is **not built** until the first consumer pulls on it. This ADR commits the boundary, the per-stack strategy, and the package layout; the scaffold packet is a follow-up. The investment now is hours.
+- The Node is **not built** until the first consumer pulls on it. This ADR commits the boundary, the per-stack strategy, and the package layout; the scaffold work item is a follow-up. The investment now is hours.
 - Per the charter's licensed permissions ("Spend on the foundation. Time invested in ADRs … is the work."), naming a cross-PDR substrate that four queued PDRs will all need is precisely the substrate work the charter licenses.
 
 **The argument that this is premature** — and the honest counterweight:
@@ -196,7 +196,7 @@ The charter ([`constitution/charter.md`](../constitution/charter.md) §"What thi
 - No consumer app has shipped. The design substrate could be derived from the first one's actual needs.
 - The Studios website already has informal tokens; the formalization could wait until a second consumer surface forces the issue.
 
-**The resolution:** the **boundary** is named now because four queued consumer PDRs all need the same answer; the **vendor-equivalent choices** (which icon set, which Blazor component library if any) are deferred to the scaffold packet or to per-surface demand. This is the same posture every Node-standup ADR took (boundary now, first implementation per actual consumer).
+**The resolution:** the **boundary** is named now because four queued consumer PDRs all need the same answer; the **vendor-equivalent choices** (which icon set, which Blazor component library if any) are deferred to the scaffold work item or to per-surface demand. This is the same posture every Node-standup ADR took (boundary now, first implementation per actual consumer).
 
 **Charter verdict:** appropriately-timed, not procrastination.
 
@@ -207,7 +207,7 @@ The charter ([`constitution/charter.md`](../constitution/charter.md) §"What thi
 - **[ADR-0035](./ADR-0035-abstractions-versioning-and-deprecation-policy.md)** — Web.UI's packages follow semver per ADR-0035's discipline applied to JS/CSS.
 - **[ADR-0039](./ADR-0039-grid-open-source-license-policy.md)** — Web.UI is public per the Grid default; license is MIT or equivalent (the per-Node default in ADR-0039 for non-commercial-trial Nodes).
 - **[Invariant 1](../constitution/invariants.md)** — Web.UI does not violate Kernel.Abstractions's zero-dependency rule because Web.UI does not depend on Kernel.
-- **[PDR-0003](../pdrs/PDR-0003-lately-currents-based-connection-app.md), [PDR-0005](../pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md), [PDR-0006](../pdrs/PDR-0006-currents-social-suggestions-and-quests.md), [PDR-0008](../pdrs/PDR-0008-curiosities-discovery-first-city-app.md)** — all four consumer PDRs consume Web.UI from their first scaffolding packet.
+- **[PDR-0003](../pdrs/PDR-0003-lately-currents-based-connection-app.md), [PDR-0005](../pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md), [PDR-0006](../pdrs/PDR-0006-currents-social-suggestions-and-quests.md), [PDR-0008](../pdrs/PDR-0008-curiosities-discovery-first-city-app.md)** — all four consumer PDRs consume Web.UI from their first scaffolding work item.
 - **[`generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md`](../generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md)** — Web.UI candidate context (cluster 7.8) is operationalized here.
 
 ## Consequences
@@ -215,9 +215,9 @@ The charter ([`constitution/charter.md`](../constitution/charter.md) §"What thi
 ### Affected Nodes
 
 - **HoneyDrunk.Web.UI** (new) — stood up by this ADR. First packages publish at Phase 1.
-- **HoneyDrunk.Studios** — becomes the first consumer of Web.UI tokens at Phase 1 (migration packet). No code change at stand-up.
+- **HoneyDrunk.Studios** — becomes the first consumer of Web.UI tokens at Phase 1 (migration work item). No code change at stand-up.
 - **HoneyDrunk.Notify.Cloud** — consumes Web.UI tokens + CSS at Phase 2 for the Blazor admin surface.
-- **Consumer-app PDRs** ([PDR-0003](../pdrs/PDR-0003-lately-currents-based-connection-app.md), [PDR-0005](../pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md), [PDR-0006](../pdrs/PDR-0006-currents-social-suggestions-and-quests.md), [PDR-0008](../pdrs/PDR-0008-curiosities-discovery-first-city-app.md)) — each consumes Web.UI from its first scaffolding packet.
+- **Consumer-app PDRs** ([PDR-0003](../pdrs/PDR-0003-lately-currents-based-connection-app.md), [PDR-0005](../pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md), [PDR-0006](../pdrs/PDR-0006-currents-social-suggestions-and-quests.md), [PDR-0008](../pdrs/PDR-0008-curiosities-discovery-first-city-app.md)) — each consumes Web.UI from its first scaffolding work item.
 - **Creator sector** ([`constitution/sectors.md`](../constitution/sectors.md)) — anchored by Web.UI. The "No real Nodes yet" line is replaced; Creator becomes a live sector.
 - **HoneyDrunk.Kernel / Kernel.Abstractions** — no change. Web.UI does not consume Kernel; the dependency direction stays one-way for runtime contracts.
 
@@ -240,12 +240,12 @@ This ADR proposes (not commits — invariant numbers and final wording assigned 
 
 ### Follow-up Work
 
-- Stand up the `HoneyDrunk.Web.UI` repo and scaffold the Node (Phase 1; first packet declaring this ADR in `accepts:`).
+- Stand up the `HoneyDrunk.Web.UI` repo and scaffold the Node (Phase 1; first work item declaring this ADR in `accepts:`).
 - Publish `@honeydrunk/web-ui-tokens` and `@honeydrunk/web-ui-css` at 0.1.x with Studios' existing tokens formalized.
-- Migrate Studios to consume the Web.UI packages (Studios-side follow-up packet, sequenced after Phase 1 publishes).
+- Migrate Studios to consume the Web.UI packages (Studios-side follow-up work item, sequenced after Phase 1 publishes).
 - Ship the first React component pack `@honeydrunk/web-ui-react` (Phase 2; sequenced with first non-Studios consumer demand).
-- Notify Cloud admin packet ([ADR-0027](./ADR-0027-stand-up-honeydrunk-notify-cloud-node.md) follow-up) lands in Blazor consuming Web.UI tokens + CSS.
-- Each consumer-app PDR's scaffold packet consumes Web.UI from day one.
+- Notify Cloud admin work item ([ADR-0027](./ADR-0027-stand-up-honeydrunk-notify-cloud-node.md) follow-up) lands in Blazor consuming Web.UI tokens + CSS.
+- Each consumer-app PDR's scaffold work item consumes Web.UI from day one.
 - Anchor the Creator sector in [`constitution/sectors.md`](../constitution/sectors.md).
 - Update `constitution/invariants.md` with the three proposed invariants once accepted.
 
@@ -287,7 +287,7 @@ Rejected. The Grid's products are HoneyDrunk products; visual cohesion across th
 
 Considered. The argument: design needs are easier to abstract from real consumer code than from speculative needs.
 
-Rejected. Two-PDR-deferred means the first two consumer surfaces each pay the per-surface design tax in full, plus the cost of retroactive extraction once the patterns are visible. The marginal cost of naming the boundary and shipping tokens + CSS now (Phase 1 is one packet) is much smaller than the cost of two consumer PDRs each authoring their own tokens and then merging them later. The naming-the-boundary cost is one ADR (this one).
+Rejected. Two-PDR-deferred means the first two consumer surfaces each pay the per-surface design tax in full, plus the cost of retroactive extraction once the patterns are visible. The marginal cost of naming the boundary and shipping tokens + CSS now (Phase 1 is one work item) is much smaller than the cost of two consumer PDRs each authoring their own tokens and then merging them later. The naming-the-boundary cost is one ADR (this one).
 
 ### Stand up Web.UI in Core sector instead of Creator
 

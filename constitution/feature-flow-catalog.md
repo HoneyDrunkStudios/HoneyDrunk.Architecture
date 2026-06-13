@@ -197,9 +197,9 @@ Rotation event:
     │ projects_v2_item.edited webhook
     ▼
 [HoneyDrunk.Actions] — cloud agent trigger workflow
-    │ Checks out target repo + Architecture repo (for packet context)
+    │ Checks out target repo + Architecture repo (for work-item context)
     ▼
-[Claude Agent SDK] — reads work item from Architecture/generated/work-items/
+[Claude Agent SDK] — reads work item from Architecture/generated/work-items/active/
     │
     ▼
 [HoneyDrunk.Agents] — agent lifecycle: register → initialize → execute
