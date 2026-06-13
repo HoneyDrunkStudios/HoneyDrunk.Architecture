@@ -1,6 +1,6 @@
 @{
     JobId = "lore-signal-review"
-    Description = "Review Lore outputs and Architecture focus for sparse signals without mutating strategy artifacts."
+    Description = "Review Lore outputs against HoneyDrunk focus and surface sparse usefulness signals without mutating strategy artifacts."
     Enabled = $true
     TriggerKind = "schedule"
     Schedule = @{
@@ -27,19 +27,19 @@
     WriteMode = "none"
     OutputContract = @{
         LatestOutput = "output/signal-review-YYYY-MM-DD.md"
-        Summary = "Writes a sparse signal-review report only; no strategy or GitHub mutations."
+        Summary = "Writes a sparse HoneyDrunk-usefulness report only; no strategy or GitHub mutations."
     }
     Notifications = @{
         Discord = @{
             Enabled = $true
-            Channel = "agent-activity"
-            SecretName = "Discord--AgentActivity--RunnerWebhookUrl"
+            Channel = "hive-activity"
+            SecretName = "Discord--HiveActivity--RunnerWebhookUrl"
         }
     }
     RequiredSecrets = @(
-        "Discord--AgentActivity--RunnerWebhookUrl"
+        "Discord--HiveActivity--RunnerWebhookUrl"
     )
     AllowedTools = @("read", "write", "codex")
     RetainArtifactsDays = 60
-    PortabilityNotes = "Can run manually or on schedule. It is intentionally report-only."
+    PortabilityNotes = "Runs weekly after the Friday Lore ingest window, can also run manually, and is intentionally report-only."
 }
