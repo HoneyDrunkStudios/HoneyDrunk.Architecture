@@ -25,16 +25,16 @@ The 2026-06-08 hive-sync drift report includes a Category 16 ADR-0043 backlog-so
 - Item: `ADR-0089 has no implementation packet coverage`
 - Detail: the accepted decision has no proposed, active, or completed packet referencing it through `adrs:`
 
-ADR-0089 accepted a new Program tier for multi-ADR product efforts. It places Program trackers at `initiatives/programs/{slug}.md`, requires qualifying PDR threads to use those trackers when they spawn more than one ADR, and names HoneyHub and Notify Cloud as the first qualifying backfills. The 2026-06-13 prioritization pass amends the operating posture: Curiosities may now carry a lightweight lane tracker before it qualifies as a full multi-ADR Program, because all active priorities are constrained to HoneyHub, Notify Cloud, or Curiosities.
+ADR-0089 accepted a new Program tier for multi-ADR product efforts. It places Program trackers at `initiatives/programs/{slug}.md`, requires qualifying PDR threads to use those trackers when they spawn more than one ADR, and names HoneyHub and NovOutbox as the first qualifying backfills. The 2026-06-13 prioritization pass amends the operating posture: Curiosities may now carry a lightweight lane tracker before it qualifies as a full multi-ADR Program, because all active priorities are constrained to HoneyHub, NovOutbox, or Curiosities.
 
-Some implementation already exists: `initiatives/programs/honeyhub.md` and `initiatives/programs/notify-cloud.md` are present, and `initiatives/roadmap.md` / `initiatives/active-initiatives.md` already link HoneyHub and Notify Cloud program context. The missing work is a scoped Architecture reconciliation pass, not target-repo implementation work.
+Some implementation already exists: `initiatives/programs/honeyhub.md` and `initiatives/programs/notify-cloud.md` are present, and `initiatives/roadmap.md` / `initiatives/active-initiatives.md` already link HoneyHub and NovOutbox program context. The `notify-cloud.md` filename is retained for link stability even though NovOutbox supersedes the old customer-facing name. The missing work is a scoped Architecture reconciliation pass, not target-repo implementation work.
 
 This packet is scoped to HoneyDrunk.Architecture because ADR-0089 only changes Architecture-owned work-tracking surfaces: ADR/PDR traceability, initiatives, roadmap/focus references, generated packets, and agent-readable conventions. It does not modify Node catalogs, runtime code, or any target repo outside Architecture.
 
 ## Scope
 
 - Read ADR-0089, PDR-0002, PDR-0008, PDR-0011, `initiatives/programs/honeyhub.md`, `initiatives/programs/notify-cloud.md`, `initiatives/programs/curiosities.md`, `initiatives/roadmap.md`, `initiatives/current-focus.md`, `initiatives/active-initiatives.md`, and `initiatives/drift-report.md`.
-- Verify whether HoneyHub and Notify Cloud program trackers satisfy ADR-0089 D3/D6 schema expectations:
+- Verify whether HoneyHub and NovOutbox program trackers satisfy ADR-0089 D3/D6 schema expectations:
   - governing PDR
   - status
   - roadmap/current-focus pointer
@@ -49,7 +49,7 @@ This packet is scoped to HoneyDrunk.Architecture because ADR-0089 only changes A
 
 ## Acceptance Criteria
 
-- [ ] ADR-0089 implementation coverage is explicitly reconciled against the existing HoneyHub and Notify Cloud program trackers.
+- [ ] ADR-0089 implementation coverage is explicitly reconciled against the existing HoneyHub and NovOutbox program trackers.
 - [ ] Any missing Program-tier convention documentation is added in an Architecture-owned surface, or the absence of a separate convention document is explicitly justified in the reconciliation output.
 - [ ] `initiatives/programs/honeyhub.md` and `initiatives/programs/notify-cloud.md` are verified against ADR-0089's required schema and adjusted if they are missing required sections.
 - [ ] Curiosities is explicitly recorded as a lightweight lane tracker that becomes a full ADR-0089 Program only if PDR-0008 spawns more than one ADR.
@@ -86,7 +86,7 @@ None.
 - ADRs/PDRs: ADR-0089, PDR-0002, PDR-0008, PDR-0011.
 
 **Acceptance Criteria:**
-- [ ] Existing HoneyHub and Notify Cloud program trackers are checked against ADR-0089.
+- [ ] Existing HoneyHub and NovOutbox program trackers are checked against ADR-0089.
 - [ ] Missing convention or traceability surfaces are updated if needed.
 - [ ] Curiosities remains a lane tracker unless it now has more than one implementing ADR.
 - [ ] No code or target-repo implementation work is invented.
@@ -99,7 +99,7 @@ None.
 - ADR-0043 packet metadata rule: every agent-generated packet carries `source` and `generator` frontmatter. For this source, use `source: strategic` and `generator: scope`.
 - Decision traceability rule: `adrs:` catalogs decisions referenced or touched by a packet; `accepts:` is only for Proposed ADRs/PDRs whose acceptance is gated by packet closure. ADR-0089 is already Accepted, so use `adrs:` only.
 - ADR-0089 boundary summary: Programs live under `initiatives/programs/{slug}.md`; they group child ADR initiatives and decision/phase dependencies, but they do not replace initiatives, packet lifecycle, active-initiative schema, or Hive issue blocking relationships.
-- ADR-0089 implementation scope: HoneyHub and Notify Cloud qualify for full Program trackers; Curiosities may carry a lightweight lane tracker after the 2026-06-13 prioritization pass and becomes a full Program only when it spawns more than one ADR; no invariant, catalog edit, or Node-graph cascade is required at v1.
+- ADR-0089 implementation scope: HoneyHub and NovOutbox qualify for full Program trackers; Curiosities may carry a lightweight lane tracker after the 2026-06-13 prioritization pass and becomes a full Program only when it spawns more than one ADR; no invariant, catalog edit, or Node-graph cascade is required at v1.
 - Grid invariant 8: Secret values never appear in logs, traces, exceptions, or telemetry. Extend that discipline to generated packets, reports, PR bodies, and comments.
 
 **Key Files:**

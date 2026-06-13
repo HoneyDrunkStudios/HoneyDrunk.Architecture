@@ -9,10 +9,10 @@ For the near-term ranked priority list, see [current-focus.md](current-focus.md)
 The 2026 roadmap now has three active product lanes:
 
 1. **HoneyHub** - lead product thread and distribution wedge.
-2. **Notify Cloud** - first commercial trial.
+2. **NovOutbox** - first commercial trial; supersedes the earlier Notify Cloud / HoneyDrunk Notify customer-facing name.
 3. **Curiosities** - discovery-first city-app bet.
 
-Foundation work remains real work, but it is no longer roadmapped as its own priority lane. A substrate item belongs on this roadmap only when it directly unblocks HoneyHub, Notify Cloud, or Curiosities.
+Foundation work remains real work, but it is no longer roadmapped as its own priority lane. A substrate item belongs on this roadmap only when it directly unblocks HoneyHub, NovOutbox, or Curiosities.
 
 ## Q1 2026 (Jan-Mar)
 
@@ -34,18 +34,18 @@ Foundation work remains real work, but it is no longer roadmapped as its own pri
 
 - [x] **HoneyHub v1 Agent Cockpit shipped** - local agent cockpit wedge under PDR-0011; ADR-0090/0091/0092 are the governing decisions.
 - [ ] **Distribution 90 Wave 2 checkpoint** - launch-readiness checkpoint, BYOK waitlist page, and concrete demand probe. *(current focus #1-#3)*
-- [ ] **Decision-record reconciliation** - close ADR-0091/0092 and HoneyHub registration bookkeeping where stale state still misleads agents. *(current focus #13)*
+- [ ] **Decision-record reconciliation** - close ADR-0091/0092 and HoneyHub registration bookkeeping where stale state still misleads agents. *(support/watch)*
 
-**Notify Cloud**
+**NovOutbox**
 
 - [x] **Notify + Pulse dev deploy substrate** - Container Apps rollout closed enough to underwrite the Cloud lane.
-- [x] **ADR-0077 Bicep IaC consolidation** - done and tested per operator; kept only as Notify Cloud bring-up support, not an independent roadmap lane.
-- [ ] **Notify Cloud go/slip decision** - commit to the 2026-09-15 path or record the slip with a dated PDR-0002 amendment. *(current focus #6)*
+- [x] **ADR-0077 Bicep IaC consolidation** - done and tested per operator; kept only as NovOutbox bring-up support, not an independent roadmap lane.
+- [ ] **NovOutbox go/slip decision** - commit to the 2026-09-15 path or record the slip with a dated PDR-0002 amendment. *(current focus #6)*
 - [ ] **ADR-0027 Cloud Node precursor** - file the missing scaffold packet so the Node standup can execute. *(current focus #7)*
 
 **Curiosities**
 
-- [ ] **Curiosities lane activation** - create the lane tracker and make Phase 0 visible as a first-class priority, while keeping PDR-0008's build-risk posture intact. *(current focus #10-#12)*
+- [ ] **Curiosities lane activation** - create the lane tracker and make Phase 0 visible as a first-class priority, while keeping PDR-0008's build-risk posture intact. *(current focus #10)*
 
 **Shipped or archive-only support**
 
@@ -71,17 +71,17 @@ Foundation work remains real work, but it is no longer roadmapped as its own pri
 - [ ] **Evals publish as HoneyHub loop gate** - ship only the slice needed to let HoneyHub gate loop runs. *(current focus #5)*
 - [ ] **HoneyHub read layer + generic Node shell** - PDR-0009 Phase 2 layer behind the shipped cockpit: catalog/frontmatter read layer, per-Node management pages, ADR/PDR/initiative/packet list views, no dispatch actions yet.
 
-**Notify Cloud**
+**NovOutbox**
 
-- [ ] **Notify Cloud kickoff slice** - accept or amend the ADR-0027 Node path, scope tenant isolation, and start the Cloud wrapper. *(current focus #8)*
-- [ ] **Notify Cloud first-beta dependency cut** - narrow identity, API, billing, client package, sender identity, rate-limit, and packaging work to exactly what first beta needs. *(current focus #9)*
-- [ ] **Notify Cloud first external customer / beta** - REST API, `HoneyDrunk.Notify.Client` preview/GA path, tenant signup, API key issuance, and the first paying or free-tier external developer.
+- [ ] **NovOutbox kickoff slice** - accept or amend the ADR-0027 Node path, scope tenant isolation, and start the commercial wrapper. *(current focus #8)*
+- [ ] **NovOutbox first-beta dependency cut** - narrow identity, API, billing, client package, sender identity, rate-limit, and packaging work to exactly what first beta needs. *(current focus #9)*
+- [ ] **NovOutbox first external customer / beta** - REST API, `HoneyDrunk.Notify.Client` preview/GA path, tenant signup, API key issuance, and the first paying or free-tier external developer.
 
 **Curiosities**
 
 - [ ] **Curiosities Phase 0 content spike** - pick one launch district and produce about 25 reviewed POIs from open data plus AI-assisted enrichment. *(current focus #10)*
-- [ ] **Curiosities safety/licensing guardrail** - publish the allowed/disallowed POI and source-licensing review rules before content is treated as product. *(current focus #11)*
-- [ ] **Curiosities lightweight unlock-loop prototype** - map, question marks, GPS/manual unlock, place card, and collection book over the Phase 0 POI set. *(current focus #12)*
+- [ ] **Curiosities safety/licensing guardrail** - publish the allowed/disallowed POI and source-licensing review rules before content is treated as product. *(watch below current focus)*
+- [ ] **Curiosities lightweight unlock-loop prototype** - map, question marks, GPS/manual unlock, place card, and collection book over the Phase 0 POI set. *(watch below current focus)*
 
 ## Q4 2026 (Oct-Dec)
 
@@ -90,10 +90,10 @@ Foundation work remains real work, but it is no longer roadmapped as its own pri
 - [ ] **HoneyHub dispatch actions via PRs** - "New ADR," "New PDR," "Scope," "Refine," "Netrunner," and "Site-sync" actions opening draft PRs through the local-runner bridge.
 - [ ] **HoneyHub individual desktop tier** - desktop layout, personal usage analytics, and per-repo/per-task reporting if the v0.1 release and BYOK probe justify it.
 
-**Notify Cloud**
+**NovOutbox**
 
-- [ ] **Notify Cloud pricing tiers + decision point** - Stripe metered billing live; apply PDR-0002's commercial-trial decision matrix: keep active, drop to maintenance, or sunset gracefully.
-- [ ] **Notify Cloud production hardening** - tenant safety, deliverability feedback, incident posture, and cost controls only as required by live beta/paid usage.
+- [ ] **NovOutbox pricing tiers + decision point** - Stripe metered billing live; apply PDR-0002's commercial-trial decision matrix: keep active, drop to maintenance, or sunset gracefully.
+- [ ] **NovOutbox production hardening** - tenant safety, deliverability feedback, incident posture, and cost controls only as required by live beta/paid usage.
 
 **Curiosities**
 
@@ -106,9 +106,9 @@ Foundation work remains real work, but it is no longer roadmapped as its own pri
 
 - [ ] **HoneyHub Phase 4-5** - operational tabs, product surfaces on the same shell, and external-platform exploration only after internal-use signal warrants it.
 
-**Notify Cloud**
+**NovOutbox**
 
-- [ ] **Grid v0.5/0.6 evolution from Notify Cloud learnings** - contract and substrate changes driven by real tenants, not abstract platform desire.
+- [ ] **Grid v0.5/0.6 evolution from NovOutbox learnings** - contract and substrate changes driven by real tenants, not abstract platform desire.
 
 **Curiosities**
 
@@ -120,7 +120,7 @@ Foundation work remains real work, but it is no longer roadmapped as its own pri
 
 ## Future / Watch
 
-Items here are tracked but not on the quarterly schedule. Promote only when HoneyHub, Notify Cloud, or Curiosities pulls them in.
+Items here are tracked but not on the quarterly schedule. Promote only when HoneyHub, NovOutbox, or Curiosities pulls them in.
 
 **HoneyHub-gated support**
 
@@ -128,10 +128,10 @@ Items here are tracked but not on the quarterly schedule. Promote only when Hone
 - ADR-0010 Observe -> HoneyHub event routing - gated on HoneyHub read layer landing.
 - Specialist review agents - gated on HoneyHub loop/review needs.
 
-**Notify Cloud-gated support**
+**NovOutbox-gated support**
 
 - Identity, Files, Billing, API versioning, rate limiting, sender identity, currency handling, package distribution, disaster recovery, incident response - only the first-beta slice promotes.
-- Auth multi-tenant identity federation - forcing function is Notify Cloud tenant model in production.
+- Auth multi-tenant identity federation - forcing function is the NovOutbox tenant model in production.
 
 **Curiosities-gated support**
 
