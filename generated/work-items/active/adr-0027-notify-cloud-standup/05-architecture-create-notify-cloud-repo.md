@@ -13,8 +13,6 @@ node: honeydrunk-architecture
 actor: human
 ---
 
-> **STATUS - superseded by NovOutbox (2026-06-13):** Retained for historical traceability only. Do not create `HoneyDrunk.Notify.Cloud` from this packet. The private product repo is `HoneyDrunk.NovOutbox`; PR #627 records the Architecture registration and supersedes this human-only repo-creation chore.
-
 # Chore: Create `HoneyDrunk.Notify.Cloud` GitHub repo as PRIVATE (human-only) — first private repo in the Grid
 
 ## Summary

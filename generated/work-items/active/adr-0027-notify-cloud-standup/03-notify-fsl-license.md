@@ -12,8 +12,6 @@ initiative: adr-0027-notify-cloud-standup
 node: honeydrunk-notify
 ---
 
-> **STATUS - superseded by NovOutbox (2026-06-13):** Retained for historical traceability only. Do not execute this packet until the open-engine licensing work is revalidated against the NovOutbox supersession in PR #627.
-
 # Chore: Apply Functional Source License (FSL) to HoneyDrunk.Notify
 
 ## Summary

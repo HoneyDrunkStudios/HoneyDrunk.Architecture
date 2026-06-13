@@ -12,8 +12,6 @@ initiative: adr-0027-notify-cloud-standup
 node: honeydrunk-notify-cloud
 ---
 
-> **STATUS - superseded by NovOutbox (2026-06-13):** Retained for historical traceability only. Do not execute this `HoneyDrunk.Notify.Cloud` packet without first refiling it against the NovOutbox name, package layout, and five-contract surface recorded by PR #627.
-
 # Chore: Add ADR-0027's six new invariants to the Grid constitution
 
 ## Summary

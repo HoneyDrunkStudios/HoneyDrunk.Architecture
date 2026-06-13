@@ -1,7 +1,5 @@
 # Dispatch Plan — ADR-0027 HoneyDrunk.Notify.Cloud Standup
 
-> **STATUS - superseded by NovOutbox (2026-06-13):** This active packet set is retained for historical traceability only. Do not execute additional `HoneyDrunk.Notify.Cloud` work from this folder. PR #627 folds the NovOutbox catalog/context reconciliation into the Architecture registration and intentionally supersedes this packet set's older hive-sync deferral and `HoneyDrunk.Notify.Cloud` scaffold instructions. Refile any remaining useful work against `HoneyDrunk.NovOutbox` with the five-contract surface (`INovOutboxGateway`, `INovOutboxApiKeyStore`, `NovOutboxTenantTier`, `NovOutboxApiKeyIssuance`, `NovOutboxSubmitResult`) and five-package layout including `HoneyDrunk.NovOutbox.AppHost`.
-
 **Initiative:** `adr-0027-notify-cloud-standup`
 **Sector:** Ops
 **Governing ADR:** [ADR-0027 — Stand Up the HoneyDrunk.Notify.Cloud Node](../../../../adrs/ADR-0027-stand-up-honeydrunk-notify-cloud-node.md) (Proposed 2026-05-02; flips to Accepted only after every packet in this initiative is closed, as a separate post-merge housekeeping step the scope agent runs. None of the packets in this initiative flip ADR-0027's status.)
