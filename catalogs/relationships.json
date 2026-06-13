@@ -182,6 +182,7 @@
       "consumed_by_planned": [],
       "blocked_by": [
         "ADR-0027 remains Proposed",
+        "Bootstrap scaffold not yet merged",
         "Private-repo automation smoke test pending"
       ],
       "exposes": {

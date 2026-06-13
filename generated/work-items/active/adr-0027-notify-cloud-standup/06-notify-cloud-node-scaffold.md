@@ -12,6 +12,8 @@ initiative: adr-0027-notify-cloud-standup
 node: honeydrunk-notify-cloud
 ---
 
+> **STATUS - superseded by NovOutbox (2026-06-13):** Retained for historical traceability only. Do not execute this `HoneyDrunk.Notify.Cloud` scaffold. Refile the scaffold against `HoneyDrunk.NovOutbox` with the five-contract surface (`INovOutboxGateway`, `INovOutboxApiKeyStore`, `NovOutboxTenantTier`, `NovOutboxApiKeyIssuance`, `NovOutboxSubmitResult`), the five-package layout including `HoneyDrunk.NovOutbox.AppHost`, no `src/` folder convention, and the Aspire-based AppHost decision from the NovOutbox bootstrap discussion.
+
 # Feature: Stand up the HoneyDrunk.Notify.Cloud repo — solution, four packages, contracts, CI, Container Apps wiring
 
 ## Summary

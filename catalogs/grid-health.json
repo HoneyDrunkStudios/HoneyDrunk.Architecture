@@ -547,15 +547,15 @@
     }
   ],
   "summary": {
-    "total_nodes": 28,
-    "live": 13,
+    "total_nodes": 29,
+    "live": 14,
     "seed": 15,
-    "canary_passing": 13,
-    "canary_none": 15,
+    "canary_passing": 14,
+    "canary_none": 13,
     "canary_failing": 0,
     "blocked_nodes": [
       "honeydrunk-vault-rotation",
-      "honeydrunk-audit",
+      "honeydrunk-novoutbox",
       "honeydrunk-pulse",
       "honeydrunk-observe",
       "honeydrunk-actions",

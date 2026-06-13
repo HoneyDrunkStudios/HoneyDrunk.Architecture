@@ -12,6 +12,8 @@ initiative: adr-0027-notify-cloud-standup
 node: honeydrunk-notify-cloud
 ---
 
+> **STATUS - superseded by NovOutbox (2026-06-13):** Retained for historical traceability only. Do not execute this `HoneyDrunk.Notify.Cloud` packet. PR #627 folds NovOutbox catalog/context reconciliation into the Architecture registration and supersedes this packet's older hive-sync deferral and four-contract `Notify Cloud` naming.
+
 # Chore: Register HoneyDrunk.Notify.Cloud's standup decisions in Architecture context folder
 
 ## Summary
