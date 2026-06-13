@@ -80,12 +80,13 @@ function Invoke-GitHubApi {
         [string]$Method = "GET",
         [string]$Uri,
         [string]$Token,
-        [object]$Body = $null
+        [object]$Body = $null,
+        [string]$Accept = "application/vnd.github+json"
     )
 
     $headers = @{
         Authorization = "Bearer $Token"
-        Accept = "application/vnd.github+json"
+        Accept = $Accept
         "X-GitHub-Api-Version" = "2022-11-28"
     }
 

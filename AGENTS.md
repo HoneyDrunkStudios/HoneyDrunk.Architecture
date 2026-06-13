@@ -26,7 +26,14 @@ When you receive a task:
 4. Read `constitution/invariants.md` for Grid-wide rules that must never be violated
 5. If the issue references ADRs, read them from `adrs/` for governing decisions
 6. **Implement within the target repo**, not in this repo
-7. Open a PR with your implementation
+7. Before committing, run a code-review pass over the final staged diff
+8. Open a PR with your implementation
+
+## Pre-Commit Review Discipline
+
+Codex must review its own final diff before creating a commit. Use the Grid review rubric in `.claude/agents/review.md` and `copilot/pr-review-rules.md`, with correctness bugs, runtime behavior, data integrity, security, concurrency, deployment/CI failures, and missing tests checked before architecture polish. Fix any `Block` or `Request Changes` findings before committing, then commit the reviewed diff.
+
+If the human explicitly says to skip code review for this change, do not run the pre-commit review. Record the bypass in the PR body or notes and apply the visible PR label `skip-grid-review` (or the legacy `skip-review`) so the ADR-0086 runner does not spend agent time on that PR. Do not infer a bypass from file type; documentation and governance changes are review-worthy unless the human explicitly opts out.
 
 ## What You Do
 

@@ -253,7 +253,7 @@ Each phase is a discrete go/no-go; missing Phase A's bar pauses Phase B, and mis
 
 [ADR-0044](./ADR-0044-grid-aware-cloud-code-review-and-ai-authored-pr-discipline.md)'s two added invariants are **preserved** under this transport, with the "requests" mechanism redefined:
 
-- **Every non-draft PR on an `enabled` repo requests an automatic Grid Review Runner pass** — "requests" now means "lands in the GitHub-native queue, processed by the local worker." Skip is via `skip-review` or `enabled: false`, both explicit and visible. Worker unavailability is surfaced as advisory/pending (queue depth signal per D7), not hidden.
+- **Every non-draft PR on an `enabled` repo requests an automatic Grid Review Runner pass** — "requests" now means "lands in the GitHub-native queue, processed by the local worker." Skip is via an explicit bypass label (`skip-review` or `skip-grid-review` by default) or `enabled: false`, both explicit and visible. Bypass is a human/operator choice, not a docs-only or file-type shortcut. Worker unavailability is surfaced as advisory/pending (queue depth signal per D7), not hidden.
 - **Agent-authored PRs touching a high-risk Node receive two independent LLM-review perspectives before merge** — preserved with the local-worker substrate per D8 of this ADR; the PR-facing output is one synthesized verdict with source attribution.
 
 [ADR-0079](./ADR-0079-multi-perspective-pr-review-stack.md)'s proposed invariants are preserved:
