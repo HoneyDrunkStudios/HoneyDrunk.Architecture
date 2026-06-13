@@ -18,7 +18,7 @@ Accepting this ADR creates catalog and cross-repo obligations that must be compl
 - [ ] Add `honeydrunk-novoutbox` Node entry to `catalogs/nodes.json` with a `visibility: private` field (catalog schema gains a new field — absence means public)
 - [ ] Add `honeydrunk-novoutbox` entries to `catalogs/relationships.json`, `catalogs/grid-health.json`, `catalogs/contracts.json`, and `catalogs/modules.json`
 - [ ] Update sector map (`constitution/sectors.md`) Ops-sector entry to include NovOutbox as the commercial wrapper above Notify and Communications
-- [ ] Wire the contract-shape canary into Actions for the four frozen NovOutbox wrapper contracts (`INovOutboxGateway`, `INovOutboxApiKeyStore`, `NovOutboxTenantTier`, `NovOutboxApiKeyIssuance`); the Kernel multi-tenant primitives are guarded by Kernel's canary per ADR-0026
+- [ ] Wire the contract-shape canary into Actions for the five frozen NovOutbox wrapper contracts (`INovOutboxGateway`, `INovOutboxApiKeyStore`, `NovOutboxTenantTier`, `NovOutboxApiKeyIssuance`, `NovOutboxSubmitResult`); the Kernel multi-tenant primitives are guarded by Kernel's canary per ADR-0026
 - [ ] Reference ADR-0026 (Grid Multi-Tenant Primitives) as a hard prerequisite — NovOutbox is its first real (non-noop) consumer of `ITenantRateLimitPolicy` and `IBillingEventEmitter`; this stand-up does not flip Accepted until ADR-0026 is Accepted
 - [ ] Scope agent assigns final invariant numbers when flipping Status → Accepted
 
@@ -64,7 +64,7 @@ The customer-facing SDK (`HoneyDrunk.Notify.Client`) **stays in the open `HoneyD
 
 The NovOutbox Node ships the following package families, mirroring the package-family pattern used by ADR-0019 (Communications) and ADR-0017 (Capabilities):
 
-- `HoneyDrunk.NovOutbox.Abstractions` — all NovOutbox-specific interfaces and records (`INovOutboxGateway`, `INovOutboxApiKeyStore`, `NovOutboxTenantTier`, `NovOutboxApiKeyIssuance`). Zero runtime dependencies beyond `HoneyDrunk.Kernel.Abstractions`, `HoneyDrunk.Notify.Abstractions`, and `HoneyDrunk.Communications.Abstractions`. **Does not** declare `TenantId`, `BillingEvent`, `IBillingEventEmitter`, `ITenantRateLimitPolicy`, or `TenantRateLimitDecision` — those primitives live in `HoneyDrunk.Kernel.Abstractions.Tenancy` per ADR-0026.
+- `HoneyDrunk.NovOutbox.Abstractions` — all NovOutbox-specific interfaces and records (`INovOutboxGateway`, `INovOutboxApiKeyStore`, `NovOutboxTenantTier`, `NovOutboxApiKeyIssuance`, `NovOutboxSubmitResult`). Zero runtime dependencies beyond `HoneyDrunk.Kernel.Abstractions`, `HoneyDrunk.Notify.Abstractions`, and `HoneyDrunk.Communications.Abstractions`. **Does not** declare `TenantId`, `BillingEvent`, `IBillingEventEmitter`, `ITenantRateLimitPolicy`, or `TenantRateLimitDecision` — those primitives live in `HoneyDrunk.Kernel.Abstractions.Tenancy` per ADR-0026.
 - `HoneyDrunk.NovOutbox` — runtime composition: default `INovOutboxGateway` implementation, API key validation middleware, the NovOutbox-specific `ITenantRateLimitPolicy` implementation (replacing Kernel's `NoopTenantRateLimitPolicy`), billing-event emission, and DI wiring.
 - `HoneyDrunk.NovOutbox.Billing.Stripe` — Stripe-specific billing adapter implementing `IBillingEventEmitter` (the Kernel.Abstractions interface) for the Stripe metered-billing bridge. Provider-slot pattern; alternative billing providers (Paddle, LemonSqueezy) can be added as additional `Billing.*` packages later without touching the core.
 - `HoneyDrunk.NovOutbox.Web` — customer API and console (signup, billing, API key issuance, basic delivery logs). The web stack is Blazor Web App / Blazor Server aligned with the .NET-native stack.
@@ -74,7 +74,7 @@ No `Testing` package is shipped at stand-up. The runtime composition uses `Honey
 
 ### D4. Exposed contracts
 
-Four surfaces form the NovOutbox Node's public boundary inside the Grid: **two interfaces and two supporting records**. These are the surfaces that the NovOutbox runtime is *internally* composed against; external customers do not compile against them — they consume the REST API and the SDK.
+Five surfaces form the NovOutbox Node's public boundary inside the Grid: **two interfaces and three supporting records**. These are the surfaces that the NovOutbox runtime is *internally* composed against; external customers do not compile against them — they consume the REST API and the SDK.
 
 | Contract | Kind | Purpose |
 |---|---|---|
@@ -82,6 +82,7 @@ Four surfaces form the NovOutbox Node's public boundary inside the Grid: **two i
 | `INovOutboxApiKeyStore` | interface | Issuance and validation of per-tenant API keys. Issued keys are returned in plaintext exactly once at issuance time; stored only as salted hashes. Validation is a hash-compare lookup; raw keys are never stored, never logged, never traced. |
 | `NovOutboxTenantTier` | record | NovOutbox-specific tenant-tier descriptor — tier name (`Free`, `Starter`, `Pro`), events-per-month ceiling, channels enabled, BYO-provider-key allowance. Value type, no `I` prefix per the grid-wide naming rule. Consumed by the NovOutbox `ITenantRateLimitPolicy` implementation to derive tenant-specific limits from tier. |
 | `NovOutboxApiKeyIssuance` | record | Returned exactly once at API key issuance — carries the plaintext key (only at this moment), the key's id, the tenant it binds to, and the issued-at timestamp. Never persisted in this shape; the runtime persists only the salted hash and the metadata. |
+| `NovOutboxSubmitResult` | record | Customer-visible submission outcome returned by the gateway/API boundary after accepting, rejecting, suppressing, or scheduling a notification request. Carries status, message id when available, and reviewable rejection reason without exposing provider internals. |
 
 **Primitives consumed from Kernel (per ADR-0026), not redefined here:**
 
@@ -139,14 +140,15 @@ API keys, raw secrets, message payloads, and recipient PII are **never** emitted
 
 ### D8. Contract-shape canary
 
-A contract-shape canary is added to the NovOutbox Node's CI: it fails the build if any of the following four frozen contracts change shape (method signatures, parameter shapes, record members) without a corresponding version bump:
+A contract-shape canary is added to the NovOutbox Node's CI: it fails the build if any of the following five frozen contracts change shape (method signatures, parameter shapes, record members) without a corresponding version bump:
 
 - `INovOutboxGateway`
 - `INovOutboxApiKeyStore`
 - `NovOutboxTenantTier`
-- `ApiKeyIssuance`
+- `NovOutboxApiKeyIssuance`
+- `NovOutboxSubmitResult`
 
-These four are the hot path for every NovOutbox composition (the runtime, the Stripe billing adapter, the customer console, and any future billing-provider package). Accidental shape drift on any of them breaks the wrapper's internal composition simultaneously. The canary makes this a compile-time failure at NovOutbox's own CI, not a discovery at runtime in production. This matches ADR-0016 D8, ADR-0017 D8, and ADR-0019 D8.
+These five are the hot path for every NovOutbox composition (the runtime, the Stripe billing adapter, the customer console, and any future billing-provider package). Accidental shape drift on any of them breaks the wrapper's internal composition simultaneously. The canary makes this a compile-time failure at NovOutbox's own CI, not a discovery at runtime in production. This matches ADR-0016 D8, ADR-0017 D8, and ADR-0019 D8.
 
 The Kernel-owned primitives consumed by NovOutbox (`TenantId`, `ITenantRateLimitPolicy`, `TenantRateLimitDecision`, `IBillingEventEmitter`, `BillingEvent`) are guarded by **Kernel's** contract-shape canary per ADR-0026, not by this Node's canary. Drift on a Kernel primitive surfaces as a Kernel CI failure first; NovOutbox's CI catches it as a downstream consumer-side break.
 
@@ -261,12 +263,12 @@ Numbering is tentative — scope agent finalizes at acceptance.
 - **NovOutbox composes Communications, not Notify, for the hot delivery path.** The dependency graph is `NovOutbox → Communications → Notify`. Direct `NovOutbox → Notify` calls are restricted to diagnostic and smoke-test paths only. See D5.
 - **The `HoneyDrunk.Notify.Client` SDK lives in the open `HoneyDrunk.Notify` repo, not in `HoneyDrunk.NovOutbox`.** Customer SDKs covering both self-host and hosted-service consumers ship from the open engine repo regardless of the wrapper's visibility. See D6.
 - **API keys are stored only as salted hashes; raw key material is returned to the caller exactly once at issuance time and is never logged, traced, or persisted.** Extension of Invariant 8 to API key material. See D4 and D12.
-- **The NovOutbox Node CI must include a contract-shape canary for `INovOutboxGateway`, `INovOutboxApiKeyStore`, `NovOutboxTenantTier`, and `NovOutboxApiKeyIssuance`.** Shape drift on any of the four is a build failure. The Kernel multi-tenant primitives consumed by NovOutbox are guarded by Kernel's canary per ADR-0026. See D8.
+- **The NovOutbox Node CI must include a contract-shape canary for `INovOutboxGateway`, `INovOutboxApiKeyStore`, `NovOutboxTenantTier`, `NovOutboxApiKeyIssuance`, and `NovOutboxSubmitResult`.** Shape drift on any of the five is a build failure. The Kernel multi-tenant primitives consumed by NovOutbox are guarded by Kernel's canary per ADR-0026. See D8.
 - **The open-source repos paired with NovOutbox (`HoneyDrunk.Notify`, `HoneyDrunk.Communications`) ship under the Functional Source License with two-year auto-conversion to Apache 2.0.** See D11.
 
 ### Catalog obligations
 
-`catalogs/nodes.json` does not currently carry an entry for `honeydrunk-novoutbox`. Adding one introduces the catalog's first `visibility: "private"` Node, which adds a new schema field — absence means public. `catalogs/relationships.json` gains the dependency edges in D5; `catalogs/grid-health.json` gains the per-Node row; `catalogs/contracts.json` gains the four contracts (plus `IBillingEventEmitter`); `catalogs/modules.json` gains the package entries. `constitution/sectors.md` gains a NovOutbox row in the Ops-sector table.
+`catalogs/nodes.json` does not currently carry an entry for `honeydrunk-novoutbox`. Adding one introduces the catalog's first `visibility: "private"` Node, which adds a new schema field — absence means public. `catalogs/relationships.json` gains the dependency edges in D5; `catalogs/grid-health.json` gains the per-Node row; `catalogs/contracts.json` gains the five NovOutbox contracts; `catalogs/modules.json` gains the package entries. `constitution/sectors.md` gains a NovOutbox row in the Ops-sector table.
 
 These reconciliations are tracked in the follow-up work checklist at the top of this ADR.
 
@@ -311,4 +313,4 @@ Rejected. PDR-0002 §D names the Pro-tier wedge as Communications's preference /
 
 ### Skip the contract-shape canary at stand-up
 
-Rejected. The four frozen contracts are the hot path for NovOutbox's internal composition (runtime + Stripe billing + web app + future billing providers). ADR-0016 D8, ADR-0017 D8, and ADR-0019 D8 established contract-shape canaries as a stand-up-time gating requirement; the same reasoning applies here. Skipping it means the first breaking change on `INovOutboxGateway` or `INovOutboxApiKeyStore` is discovered in a production failure, not at NovOutbox's CI.
+Rejected. The five frozen contracts are the hot path for NovOutbox's internal composition (runtime + Stripe billing + web app + future billing providers). ADR-0016 D8, ADR-0017 D8, and ADR-0019 D8 established contract-shape canaries as a stand-up-time gating requirement; the same reasoning applies here. Skipping it means the first breaking change on `INovOutboxGateway` or `INovOutboxApiKeyStore` is discovered in a production failure, not at NovOutbox's CI.

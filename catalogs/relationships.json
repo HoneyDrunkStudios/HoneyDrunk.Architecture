@@ -29,7 +29,7 @@
     {
       "id": "honeydrunk-vault",
       "consumes": ["honeydrunk-kernel"],
-      "consumed_by": ["honeydrunk-auth"],
+      "consumed_by": ["honeydrunk-auth", "honeydrunk-novoutbox"],
       "consumed_by_planned": ["honeydrunk-ai", "honeydrunk-vault-rotation", "honeydrunk-observe"],
       "blocked_by": [],
       "exposes": {
@@ -58,7 +58,7 @@
     {
       "id": "honeydrunk-auth",
       "consumes": ["honeydrunk-kernel", "honeydrunk-vault"],
-      "consumed_by": ["honeydrunk-web-rest"],
+      "consumed_by": ["honeydrunk-web-rest", "honeydrunk-novoutbox"],
       "consumed_by_planned": ["honeydrunk-capabilities", "honeydrunk-operator", "honeydrunk-audit"],
       "blocked_by": [],
       "exposes": {
@@ -73,7 +73,7 @@
     {
       "id": "honeydrunk-web-rest",
       "consumes": ["honeydrunk-kernel", "honeydrunk-transport", "honeydrunk-auth"],
-      "consumed_by": [],
+      "consumed_by": ["honeydrunk-novoutbox"],
       "consumed_by_planned": [],
       "blocked_by": [],
       "exposes": {
@@ -185,8 +185,8 @@
         "Private-repo automation smoke test pending"
       ],
       "exposes": {
-        "contracts": ["INovOutboxGateway", "INovOutboxApiKeyStore", "NovOutboxTenantTier", "NovOutboxApiKeyIssuance"],
-        "packages": ["HoneyDrunk.NovOutbox.Abstractions", "HoneyDrunk.NovOutbox", "HoneyDrunk.NovOutbox.Billing.Stripe", "HoneyDrunk.NovOutbox.Web"]
+        "contracts": ["INovOutboxGateway", "INovOutboxApiKeyStore", "NovOutboxTenantTier", "NovOutboxApiKeyIssuance", "NovOutboxSubmitResult"],
+        "packages": ["HoneyDrunk.NovOutbox.Abstractions", "HoneyDrunk.NovOutbox", "HoneyDrunk.NovOutbox.Billing.Stripe", "HoneyDrunk.NovOutbox.Web", "HoneyDrunk.NovOutbox.AppHost"]
       },
       "consumes_detail": {
         "honeydrunk-kernel": ["TenantId", "ITenantRateLimitPolicy", "TenantRateLimitDecision", "IBillingEventEmitter", "BillingEvent", "IGridContextAccessor", "IOperationContextAccessor", "ITelemetryActivityFactory", "HoneyDrunk.Kernel.Abstractions"],
