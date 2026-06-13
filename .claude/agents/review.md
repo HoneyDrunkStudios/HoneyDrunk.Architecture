@@ -43,6 +43,19 @@ When running under the OpenClaw/Codex Grid Review Runner, the context above is r
 
 Prioritize findings in this order: correctness bugs, broken runtime behavior, security or tenant/data leaks, data loss or persistence defects, deployment/CI failures, public contract breaks, unsafe concurrency/state transitions, missing tests for changed behavior, HoneyDrunk boundary/invariant violations, then maintainability and style. Do not spend review budget on style unless it violates HoneyDrunk.Standards or hides a real defect. A finding is only actionable if it names the failing behavior, affected file/line or governing rule, and the change needed to make the PR safe.
 
+### Bug-Hunting Floor
+
+Before spending review budget on invariant polish, out-of-band labeling, wording, or style, perform a concrete defect pass over the diff. Assume Copilot/CodeRabbit are not present. Search for bugs a generic code reviewer would catch and name them even when no Grid invariant is implicated:
+
+- Null/empty/default cases, unchecked dictionary/index lookups, missing cancellation, unawaited tasks, sync-over-async, swallowed exceptions, and incorrect fallback/default behavior.
+- Off-by-one, pagination, sorting/filtering, culture/time-zone/date math, rounding/precision, serialization/deserialization, URL/path/encoding, and case-sensitivity defects.
+- Broken control flow across early returns, partial failure, retry loops, stale state, cache invalidation, race conditions, duplicate processing, idempotency gaps, and non-atomic state transitions.
+- Security and trust-boundary bugs: missing authorization checks, tenant predicate omissions, injection paths, unsafe shell/SQL/string composition, secret/PII disclosure, and prompt-injection/tool-scope leaks.
+- CI/deployment bugs: workflow trigger gaps, missing caller permissions, unpinned or wrong tool versions, path filters that skip meaningful changes, and scripts that only work on one shell/OS when the workflow says otherwise.
+- Test gaps that would have caught the changed behavior, especially regression tests for bug fixes and failure-path/concurrency tests for code that mutates durable state.
+
+Treat this as a floor, not a separate section in the output. If a PR is architecturally tidy but functionally broken, the verdict is `Block` or `Request Changes` based on the normal severity guide.
+
 ### 0. Resolve the Work Item
 
 Per ADR-0011 D3 and D9, the work item is the canonical statement of PR scope and is the **primary scope anchor** for the review.

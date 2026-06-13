@@ -609,10 +609,7 @@ function New-ReviewDiffSection {
         }
 
         $detail = if ($diffError) { " ($diffError)" } else { "" }
-        return @"
-PR DIFF: UNAVAILABLE$detail
-The runner could not fetch the PR diff, and you have no host credentials or network access to fetch it yourself. Review only the trusted base-branch context available locally, and state clearly in your verdict that the PR diff could not be inspected.
-"@
+        throw "review-diff-unavailable$detail"
     }
 
     $diffTruncated = $false
@@ -667,7 +664,14 @@ function Invoke-ReviewAgentPasses {
     # read-only plan mode, so they cannot fetch a private diff themselves. Providing the
     # diff inline is also tighter security posture: the agents need no network or token,
     # and the runner controls exactly what hostile-input content they see.
-    $diffSection = New-ReviewDiffSection -Context $Context -Token $Token -Logger $Logger
+    try {
+        $diffSection = New-ReviewDiffSection -Context $Context -Token $Token -Logger $Logger
+    }
+    catch {
+        return New-ReviewRunnerGuardrailVerdict -Context $Context `
+            -Summary "The runner could not fetch the PR diff for inline review. The automated review cannot be treated as complete because neither agent is allowed to fetch the diff independently." `
+            -Finding "Failing closed before agent invocation: $($_.Exception.Message). Restore diff retrieval or requeue after GitHub API access is healthy."
+    }
 
     $prompt = @"
 You are running the HoneyDrunk Grid review agent.

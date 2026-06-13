@@ -88,10 +88,12 @@ If a future `api-ci` fallback is explicitly enabled, this field must be set to a
 The caller workflow must skip without failure when:
 
 - the PR is a draft;
-- the PR has the `skip-review` label;
+- the PR has a configured explicit bypass label (`skip-review` or `skip-grid-review` by default);
 - `.honeydrunk-review.yaml` is missing;
 - `enabled` is not `true`;
 - the same PR head SHA has already reached a terminal reviewed/skipped state.
+
+Bypass is a human/operator decision, not a content-type shortcut. Documentation, governance, and packet changes still request Grid review unless the PR deliberately carries a bypass label.
 
 The review remains advisory. Local-worker unavailable behavior must produce pending/replay evidence, not fail branch protection.
 
