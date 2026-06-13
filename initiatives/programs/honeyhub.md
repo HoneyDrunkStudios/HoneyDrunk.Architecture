@@ -2,9 +2,9 @@
 
 **Governing PDR:** [PDR-0011: HoneyHub v1 — Agent Cockpit and Usage Governance](../../pdrs/PDR-0011-honeyhub-v1-agent-cockpit-and-usage-governance.md) — Accepted (amended 2026-06-06)
 **Status:** Active
-**Roadmap thread:** [HoneyHub](../roadmap.md) (Q2 2026, lead product thread) · **Current-focus row:** #9 (reconcile sweep; v1 shipped)
+**Roadmap thread:** [HoneyHub](../roadmap.md) (lead product thread) · **Current-focus rows:** #1-#5, #13
 **Kill criteria / gates:** PDR-0011 §Kill criteria (v1 feasibility) + Amendment §3 `[Firm]` BYOK-only-cloud boundary + Amendment §5 BYOK validation probe
-**Last updated:** 2026-06-09 (HoneyHub v1 shipped; ADR-0090/0091/0092 all Accepted; residual = reconcile bookkeeping)
+**Last updated:** 2026-06-13
 
 Context: HoneyHub v1 = the **free, local Agent Cockpit** (mobile PWA + desktop, one shared web UI; drives Codex / Claude Code / Copilot via their official CLIs under the user's own local auth). The internal Grid read-layer ([PDR-0009](../../pdrs/PDR-0009-honeyhub-as-internal-daily-driver-workspace.md)) is a later layer; the external-platform thesis ([PDR-0001](../../pdrs/PDR-0001-honeyhub-platform-observation-and-ai-routing.md)) is the long-horizon frame. Per [ADR-0089](../../adrs/ADR-0089-program-tier-for-multi-adr-product-efforts.md), this file is the live cross-ADR tracker.
 
@@ -46,8 +46,8 @@ None yet — no child ADR is Accepted, so no initiative exists. Each ADR spawns 
 
 ## Status Rollup
 
-**HoneyHub v1 has shipped.** The free, local Agent Cockpit is live, and all three governing decisions are now Accepted: the **local-runner-bridge ADR ([ADR-0090](../../adrs/ADR-0090-honeyhub-local-runner-bridge.md))** (spike-validated 2026-06-06 against all three backends via their official CLIs under the user's own local auth — the `[Firm]` ToS-clean path), the **app-stack + repo/Node-home ADR ([ADR-0091](../../adrs/ADR-0091-honeyhub-app-stack-and-repo-node-home.md))** (new `HoneyDrunk.HoneyHub` Node via ADR-0082; one shared React PWA; Tauri-class shell bundling the bridge; `[Provisional]` Rust bridge + Tailscale relay + Cloudflare Pages static host; no hosted backend at v1), and the **session/usage-telemetry + routing ADR ([ADR-0092](../../adrs/ADR-0092-honeyhub-session-usage-telemetry-and-routing.md))** (local-first session/usage persistence; the exact/derived/estimated `UsageSignal` fidelity model; the routing engine — HoneyHub is the first real consumer of ADR-0010's cost-first `IRoutingPolicy`, with "optimize your own subscriptions" pinned `[Firm]` clear of cap-dodging). ADR-0091 and ADR-0092 flipped to Accepted on 2026-06-09 — v1 shipping realized both, so promotion was bookkeeping. `HoneyDrunk.HoneyHub` and `HoneyDrunk.Infrastructure` are already registered in `catalogs/nodes.json`; the only residual is exit-review/verification bookkeeping, folded into the current-focus reconcile sweep (#9).
+**HoneyHub v1 has shipped.** The free, local Agent Cockpit is live, and ADR-0090/0091/0092 are Accepted. The active lane work is now public release, BYOK waitlist validation, and Loop Console scoping; stale registration and decision-record cleanup belongs to the lane-clarity reconcile row, not to open HoneyHub build work.
 
 The entire **v2 cluster** (BYOK cloud, Dev-surface, team-governance, learned-coaching) stays `gated` behind v1 shipping plus the Amendment §5 BYOK waitlist probe and the §3 `[Firm]` subscription-auth boundary — none is drafted or built now. The next HoneyHub-program phase is the **P6 Loop Console ([ADR-0093](../../adrs/ADR-0093-loop-engineering-closed-loop-agent-orchestration.md))**, which composes the ADR-0090 session model and ADR-0092 `UsageSignal`/routing contracts; its v1 prerequisite is now met, but it is not yet drafted or scheduled (sequenced behind Tier-B/eval-gated loops per ADR-0093).
 
-**Next action:** close out the exit-review/verification bookkeeping in the current-focus reconcile sweep (#9) — `HoneyDrunk.HoneyHub` is already registered in `catalogs/nodes.json`; the P6 Loop Console (ADR-0093) is the next HoneyHub-program phase — its v1 prerequisite is met, but it is not yet drafted/scheduled (sequenced behind Tier-B loops).
+**Next action:** execute the Distribution 90 HoneyHub launch checkpoint, then ship the v0.1.0 public release package and BYOK waitlist probe. The P6 Loop Console is the next HoneyHub-program phase to scope; its v1 prerequisite is met, but it should stay product-led rather than expanding generic loop substrate.
