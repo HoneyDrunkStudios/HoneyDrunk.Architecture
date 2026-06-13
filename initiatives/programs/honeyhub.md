@@ -2,7 +2,7 @@
 
 **Governing PDR:** [PDR-0011: HoneyHub v1 — Agent Cockpit and Usage Governance](../../pdrs/PDR-0011-honeyhub-v1-agent-cockpit-and-usage-governance.md) — Accepted (amended 2026-06-06)
 **Status:** Active
-**Roadmap thread:** [HoneyHub](../roadmap.md) (lead product thread) · **Current-focus rows:** #1-#5, #13
+**Roadmap thread:** [HoneyHub](../roadmap.md) (lead product thread) · **Current-focus rows:** #1-#5
 **Kill criteria / gates:** PDR-0011 §Kill criteria (v1 feasibility) + Amendment §3 `[Firm]` BYOK-only-cloud boundary + Amendment §5 BYOK validation probe
 **Last updated:** 2026-06-13
 

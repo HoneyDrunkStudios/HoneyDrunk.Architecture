@@ -2,7 +2,7 @@
 
 **Governing PDR:** [PDR-0008: Curiosities - Discovery-First City App](../../pdrs/PDR-0008-curiosities-discovery-first-city-app.md) - Proposed
 **Status:** Forming
-**Roadmap thread:** [Curiosities](../roadmap.md) (Q2-Q4 2026, discovery-first city-app lane) · **Current-focus rows:** #10-#12
+**Roadmap thread:** [Curiosities](../roadmap.md) (Q2-Q4 2026, discovery-first city-app lane) · **Current-focus row:** #10
 **Kill criteria / gates:** PDR-0008 Kill Criteria 1-4, especially Phase 0 content cost/quality viability
 **Last updated:** 2026-06-13
 

@@ -4,15 +4,15 @@ Tracked initiatives currently in progress or planned. Completed and cancelled in
 
 ## Active Initiative Ranking
 
-As of 2026-06-13, active work is ranked through three product lanes only: **HoneyHub**, **Notify Cloud**, and **Curiosities**. Initiative details below remain for traceability, but agents should not promote or start work from an older substrate initiative unless it directly unblocks one of these lanes.
+As of 2026-06-13, active work is ranked through three product lanes only: **HoneyHub**, **NovOutbox**, and **Curiosities**. NovOutbox supersedes the earlier Notify Cloud / HoneyDrunk Notify customer-facing names. Initiative details below remain for traceability, but agents should not promote or start work from an older substrate initiative unless it directly unblocks one of these lanes.
 
 | Rank | Lane | Initiative / tracker | Current role | Priority disposition |
 |------|------|----------------------|--------------|----------------------|
-| 1 | HoneyHub | Distribution 90 | Public launch, BYOK waitlist probe, demo/release loop, and go/slip pressure on Notify Cloud | Active lead initiative |
+| 1 | HoneyHub | Distribution 90 | Public launch, BYOK waitlist probe, demo/release loop, and go/slip pressure on NovOutbox | Active lead initiative |
 | 2 | HoneyHub | HoneyHub v1 - Agent Cockpit Standup + Phase 2 | Shipped cockpit; release/reconciliation/admin residue plus Phase 3+ outline | Active until v0.1 launch and stale-state cleanup are done |
 | 3 | HoneyHub | HoneyHub program tracker | Holds the public-release, BYOK, and Loop Console sequence | Active lane tracker |
-| 4 | Notify Cloud | Notify Cloud program tracker | Holds go/slip, ADR-0027 standup, first-beta dependency narrowing | Active lane tracker |
-| 5 | Notify Cloud | ADR-0027 Notify Cloud standup | Cloud Node precursor and kickoff path | Active once missing scaffold packet is filed |
+| 4 | NovOutbox | NovOutbox program tracker | Holds go/slip, ADR-0027 standup, first-beta dependency narrowing | Active lane tracker |
+| 5 | NovOutbox | ADR-0027 NovOutbox standup | Commercial-wrapper Node precursor and kickoff path | Active once missing scaffold packet is filed |
 | 6 | Curiosities | Curiosities program tracker | Phase 0 content spike, safety/licensing, and unlock-loop prototype | Active forming lane |
 | 7 | HoneyHub | ADR-0023 Evals standup | HoneyHub Loop Console gate only; not a generic AI-sector priority | Lane-supporting |
 | 8 | HoneyHub | ADR-0093 Loop Engineering Tier A | Exit-review plus future Loop Console context | Lane-supporting / reconcile |
@@ -21,7 +21,7 @@ As of 2026-06-13, active work is ranked through three product lanes only: **Hone
 Everything else in this file is **watch, archive, or lane-supporting**:
 
 - Work like ADR-0047, ADR-0042, ADR-0046, ADR-0032, and review/testing/idempotency initiatives may resume only when HoneyHub's Loop Console or agent-cockpit workflows need the slice.
-- Work like ADR-0037, ADR-0038, ADR-0057, ADR-0067, ADR-0069, ADR-0073, and package distribution may resume only when Notify Cloud first beta needs the slice.
+- Work like ADR-0037, ADR-0038, ADR-0057, ADR-0067, ADR-0069, ADR-0073, and package distribution may resume only when NovOutbox first beta needs the slice.
 - Work like Identity, Files, Web.UI, frontend-stack reconciliation, prompt/persona registry, and content policy may resume only when Curiosities Phase 0/1 needs the slice.
 - Completed historical rollouts should be archived or reconciled, not treated as active product priority.
 
@@ -29,11 +29,11 @@ Everything else in this file is **watch, archive, or lane-supporting**:
 
 ### Distribution 90 — Outward Shipping Push (2026-06-09 → 2026-09-07)
 **Status:** In Progress — 0/13 packet issues closed; all filed issues remain open
-**Scope:** tatteddev/tatteddev-blog (analytics, newsletter, launch post, submissions) + HoneyDrunkStudios/HoneyDrunkStudios website (analytics, BYOK waitlist page) + HoneyDrunk.HoneyHub (launch checkpoint, v0.1.0 release, demo) + Architecture (metrics log, weekly loop, Notify go/slip decision, implementation notes)
+**Scope:** tatteddev/tatteddev-blog (analytics, newsletter, launch post, submissions) + HoneyDrunkStudios/HoneyDrunkStudios website (analytics, BYOK waitlist page) + HoneyDrunk.HoneyHub (launch checkpoint, v0.1.0 release, demo) + Architecture (metrics log, weekly loop, NovOutbox go/slip decision, implementation notes)
 **Initiative:** `distribution-90`
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
-**Decision anchors:** [PDR-0011 amended §5](../pdrs/PDR-0011-honeyhub-v1-agent-cockpit-and-usage-governance.md) (BYOK cloud-execution waitlist probe), [PDR-0002](../pdrs/PDR-0002-notify-as-a-service-first-commercial-product.md) (Notify Cloud 2026-09-15 launch target), and the charter's career-artifact motivation. **No new ADR** — no architectural boundary changes; this initiative only executes already-decided probes and dates.
-**Description:** A 90-day operator-priority push to take external distribution from zero to measured. The 2026-06-09 org-wide strategy review found the engineering/governance side excellent while distribution is at zero (1 star org-wide, 0 forks, 0 external issue authors, no analytics, no newsletter, no waitlists live, no release announcements ever). Workstreams: instrumentation (Cloudflare Web Analytics on both domains, a NuGet/stars/traffic metrics log), passive surfaces (newsletter + the PDR-0011 §5 BYOK waitlist page with a concrete price), the HoneyHub v0.1.0 public launch (checkpoint → first-ever tag → 2-minute demo → launch post → Show HN + subreddit submissions), a weekly distribution loop (one syndicated back-catalog post + 15-minute metrics review + every-release announcements — run as ~12 checklist reps in `metrics-log.md`, deliberately not as packets), and the explicit Notify Cloud go/slip decision by 2026-06-23 so the 2026-09-15 date cannot fail by sequencing default.
+**Decision anchors:** [PDR-0011 amended §5](../pdrs/PDR-0011-honeyhub-v1-agent-cockpit-and-usage-governance.md) (BYOK cloud-execution waitlist probe), [PDR-0002](../pdrs/PDR-0002-notify-as-a-service-first-commercial-product.md) (NovOutbox 2026-09-15 launch target), and the charter's career-artifact motivation. **No new ADR** — no architectural boundary changes; this initiative only executes already-decided probes and dates.
+**Description:** A 90-day operator-priority push to take external distribution from zero to measured. The 2026-06-09 org-wide strategy review found the engineering/governance side excellent while distribution is at zero (1 star org-wide, 0 forks, 0 external issue authors, no analytics, no newsletter, no waitlists live, no release announcements ever). Workstreams: instrumentation (Cloudflare Web Analytics on both domains, a NuGet/stars/traffic metrics log), passive surfaces (newsletter + the PDR-0011 §5 BYOK waitlist page with a concrete price), the HoneyHub v0.1.0 public launch (checkpoint -> first-ever tag -> 2-minute demo -> launch post -> Show HN + subreddit submissions), a weekly distribution loop (one syndicated back-catalog post + 15-minute metrics review + every-release announcements — run as ~12 checklist reps in `metrics-log.md`, deliberately not as packets), and the explicit NovOutbox go/slip decision by 2026-06-23 so the 2026-09-15 date cannot fail by sequencing default.
 
 **Guardrails (initiative-scoped, NOT invariants):**
 - No new process/governance ADRs during the 90 days unless they block shipping. This initiative must not become a governance project.
@@ -47,7 +47,7 @@ Everything else in this file is **watch, archive, or lane-supporting**:
 - [ ] **Wave 1 — packet 04:** Newsletter signup (Buttondown) in the blog layout.
 - [ ] **Wave 2 — packet 05:** HoneyHub BYOK cloud-execution waitlist page — concrete price + reserve button (PDR-0011 §5 probe; pre-set 30-day threshold recorded here before go-live: ___).
 - [ ] **Wave 2 — packet 06:** HoneyHub launch-blocking checkpoint (routing #33, agent-discovery rework, Sonar #35).
-- [ ] **Wave 2 — packet 07:** Notify Cloud go/slip decision by 2026-06-23 (Actor=Human; commit → scaffolding scoping + landing page, or slip → dated PDR-0002 amendment).
+- [ ] **Wave 2 — packet 07:** NovOutbox go/slip decision by 2026-06-23 (Actor=Human; commit -> scaffolding scoping + landing page, or slip -> dated PDR-0002 amendment).
 - [ ] **Wave 2 — packet 12:** Weekly distribution loop + back-catalog syndication queue established in the metrics log.
 - [ ] **Wave 3 — packet 08:** HoneyHub v0.1.0 — CHANGELOG freeze, version alignment, stranger-grade README; operator pushes the first-ever tag.
 - [ ] **Wave 3 — packet 09:** 2-minute demo — real Claude Code session driven from a phone over Tailscale (Actor=Human).
@@ -58,7 +58,7 @@ Everything else in this file is **watch, archive, or lane-supporting**:
 **Day-90 success criteria (reps and decisions, not growth targets — per the charter, no kill clock):**
 - HoneyHub v0.1.0+ publicly launched with demo, and the BYOK waitlist live and measured against its pre-set threshold.
 - ≥12 reps of the weekly distribution loop completed.
-- Notify Cloud decision recorded by 2026-06-23 and acted on (committed with scaffolding underway, or slipped with a dated PDR-0002 amendment).
+- NovOutbox decision recorded by 2026-06-23 and acted on (committed with scaffolding underway, or slipped with a dated PDR-0002 amendment).
 - `initiatives/metrics-log.md` carries the baseline plus 12 weekly entries.
 
 > **Sync (2026-06-10):** Live GitHub issue state shows 0/13 Distribution 90 packet issues closed; all 13 packets are filed on The Hive and remain open.
@@ -118,7 +118,7 @@ Everything else in this file is **watch, archive, or lane-supporting**:
 **Initiative:** `honeyhub-v1`
 **Program:** [HoneyHub](programs/honeyhub.md)
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
-**Description:** Stand up `HoneyDrunk.HoneyHub` as the Agent Cockpit Node per ADR-0091: a `studios-typescript-native` workspace with one shared React PWA, a Tauri-class desktop shell, and a Rust local runner bridge. Phase 2 then implements the bridge core, pairing and allowlists, the first backend adapter (`claude.local`), local-first DispatchSession storage, state-only notifications, and the minimal run screen. PDR-0009's internal read layer remains a later HoneyHub layer; v1 is the free local cockpit per PDR-0011. **As of 2026-06-09 (per operator): HoneyHub v1 has shipped.** The implementing **local-runner-bridge ADR is now ADR-0090, Accepted** (the old "promote the bridge ADR from draft" deliverable is complete), and `honeydrunk-honeyhub` is registered in `catalogs/nodes.json`. The **only residual is reconciliation bookkeeping, not open build work**: the standup ADRs **ADR-0091 (app stack / repo-Node home)** and **ADR-0092 (session, usage telemetry, routing)** are conceptually accepted and only un-flipped, so flipping them to match the shipped cockpit is absorbed by the lane-clarity reconcile sweep. *(Cross-ref: current-focus #1-#4 and #13.)*
+**Description:** Stand up `HoneyDrunk.HoneyHub` as the Agent Cockpit Node per ADR-0091: a `studios-typescript-native` workspace with one shared React PWA, a Tauri-class desktop shell, and a Rust local runner bridge. Phase 2 then implements the bridge core, pairing and allowlists, the first backend adapter (`claude.local`), local-first DispatchSession storage, state-only notifications, and the minimal run screen. PDR-0009's internal read layer remains a later HoneyHub layer; v1 is the free local cockpit per PDR-0011. **As of 2026-06-09 (per operator): HoneyHub v1 has shipped.** The implementing **local-runner-bridge ADR is now ADR-0090, Accepted** (the old "promote the bridge ADR from draft" deliverable is complete), and `honeydrunk-honeyhub` is registered in `catalogs/nodes.json`. The **only residual is reconciliation bookkeeping, not open build work**: the standup ADRs **ADR-0091 (app stack / repo-Node home)** and **ADR-0092 (session, usage telemetry, routing)** are conceptually accepted and only un-flipped, so flipping them to match the shipped cockpit is absorbed by the lane-clarity reconcile sweep. *(Cross-ref: current-focus #1-#4; lane-clarity reconcile support/watch.)*
 
 **Tracking (honeyhub-v1 packets):**
 - [ ] **Wave 1 — Architecture packet 01:** Register `honeydrunk-honeyhub` in catalogs, sector map, grid-health, roadmap, active initiatives, and `repos/HoneyDrunk.HoneyHub/`.
@@ -138,7 +138,7 @@ Everything else in this file is **watch, archive, or lane-supporting**:
 **Scope:** Architecture (acceptance, invariants 90/91/92, new-Node registration, Actions-pipeline catalog edit, scaffold pattern, import playbook) + Actions (deploy + lint reusable workflows) + **HoneyDrunk.Infrastructure** (NEW — all Bicep content: `modules/` + `platform/` + `nodes/`)
 **Initiative:** `adr-0077-iac-bicep`
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
-**Description:** ADR-0077 commits Bicep as the canonical IaC tool for Grid Azure resources and consolidates Bicep content into `HoneyDrunk.Infrastructure`. Per the operator, the Bicep work is done and tested; remaining work is exit-review/bookkeeping. It supports the Notify Cloud lane but is not an independent current priority.
+**Description:** ADR-0077 commits Bicep as the canonical IaC tool for Grid Azure resources and consolidates Bicep content into `HoneyDrunk.Infrastructure`. Per the operator, the Bicep work is done and tested; remaining work is exit-review/bookkeeping. It supports the NovOutbox lane but is not an independent current priority.
 
 **Tracking (post-amendment packets 07 + 10–18; superseded originals 00–06/08/09):**
 - [x] **Wave 1 — Arch #575** (packet 18): Accept ADR-0077 (amended), claim invariant block 90–92, add IaC invariants, register the initiative. **Do NOT amend invariant 35.** *(This entry is the registration that packet calls for.)*
@@ -163,7 +163,7 @@ Everything else in this file is **watch, archive, or lane-supporting**:
 **Scope:** Architecture governance, generated packet lifecycle, agent prompts, ADR-0086 runner jobs, Discord visibility
 **Initiative:** `adr-0043-continuous-backlog-generation`
 **Board:** [The Hive — org Project #4](https://github.com/orgs/HoneyDrunkStudios/projects/4)
-**Description:** Close the upstream work-sourcing gap by running Strategic, Tactical, Opportunistic, and Reactive backlog generation through the ADR-0086 Grid Agent Runner. Agent-generated work lands in `generated/work-items/proposed/`; humans promote selected packets to `active/`; weekly netrunner briefings provide the triage surface; Discord provides runner visibility and urgent reactive attention. The four backlog-generation sources are now also formalized as LDRs (`loop-0002`–`loop-0005`) under ADR-0093 loop engineering. Under the 2026-06-13 rerank, this work is Watch unless it feeds HoneyHub, Notify Cloud, or Curiosities directly.
+**Description:** Close the upstream work-sourcing gap by running Strategic, Tactical, Opportunistic, and Reactive backlog generation through the ADR-0086 Grid Agent Runner. Agent-generated work lands in `generated/work-items/proposed/`; humans promote selected packets to `active/`; weekly netrunner briefings provide the triage surface; Discord provides runner visibility and urgent reactive attention. The four backlog-generation sources are now also formalized as LDRs (`loop-0002`–`loop-0005`) under ADR-0093 loop engineering. Under the 2026-06-13 rerank, this work is Watch unless it feeds HoneyHub, NovOutbox, or Curiosities directly.
 
 **Tracking (Automation substrate):**
 - [x] Accept ADR-0043 and bind D7 to the ADR-0086 runner instead of deferring execution.

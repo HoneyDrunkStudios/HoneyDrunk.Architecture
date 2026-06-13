@@ -1,10 +1,12 @@
-# PDR-0002: HoneyDrunk Notify — First Commercial Product on the Grid
+# PDR-0002: NovOutbox — First Commercial Product on the Grid
 
 **Status:** Proposed
 **Date:** 2026-05-02
 **Deciders:** HoneyDrunk Studios
 **Sector:** Ops (primary) · Meta (positioning)
-**Reframes:** [PDR-0001](PDR-0001-honeyhub-platform-observation-and-ai-routing.md) — the "platform positioning shift" in PDR-0001 §C is downgraded from a committed direction to an aspirational one. HoneyHub is **not** the first commercial product. Notify Cloud is.
+**Reframes:** [PDR-0001](PDR-0001-honeyhub-platform-observation-and-ai-routing.md) — the "platform positioning shift" in PDR-0001 §C is downgraded from a committed direction to an aspirational one. HoneyHub is **not** the first commercial product. NovOutbox is.
+
+> **Naming update (2026-06-13):** **NovOutbox** supersedes the earlier customer-facing names **HoneyDrunk Notify** and **Notify Cloud**. Historical references are retained where they explain the original decision path. Technical references to `HoneyDrunk.Notify.Cloud` remain proposed internal Node/repo placeholders until a separate ADR or amendment decides whether the technical surface also renames.
 
 ---
 
@@ -16,20 +18,20 @@ Today's strategist review (2026-05-02) ranked four candidates as the first comme
 
 | Candidate | Commercial wedge | Dogfood value | Time-to-first-customer |
 |---|---|---|---|
-| **Notify Cloud — hosted Notify + Communications** | Strongest. Indie .NET devs gluing SES + Twilio, paying Courier/Knock/Loops $50–$200/mo. | Heaviest. Forces Notify to GA, pushes Container Apps deployment, exercises Vault, Auth, Web.Rest, Pulse end-to-end. | Shortest. Notify's delivery engine already exists. |
+| **NovOutbox — hosted Notify + Communications** | Strongest. Indie .NET devs gluing SES + Twilio, paying Courier/Knock/Loops $50–$200/mo. | Heaviest. Forces Notify to GA, pushes Container Apps deployment, exercises Vault, Auth, Web.Rest, Pulse end-to-end. | Shortest. Notify's delivery engine already exists. |
 | HoneyPlay narrative game | Weak. Indie game market is brutal; no recurring revenue shape. | High — pushes AI sector hard. | Long. Game design + content + AI orchestration. |
 | Creative tool on HoneyDrunk.AI | Middle. Crowded category. | High — pushes AI Node and Knowledge. | Long. Requires AI Node to reach runtime, not Seed. |
 | Anime self-improvement app | Weakest (saturated category, weak wedge, low Grid dogfood). | Low. | Long. |
 
-**Verdict:** Notify Cloud first. The user said "spin it up, I'd like to see what that looks like" — this PDR is the formal write-up.
+**Verdict:** NovOutbox first. The user said "spin it up, I'd like to see what that looks like" — this PDR is the formal write-up.
 
-This PDR also resolves an implicit tension with PDR-0001. PDR-0001 set HoneyHub up as the external-facing platform and committed the Grid to two new domains (Observation, AI Routing) under that framing. Today's strategist call reframed HoneyHub as **internal-only** with kill criteria by 2026-09-30. PDR-0001's Observation and AI Routing decisions stand on their own merits and remain Accepted; PDR-0001 §C "platform positioning shift" — HoneyHub becoming an external product — is treated as **aspirational, not committed**, and is superseded by this PDR's framing of Notify Cloud as the commercial wedge.
+This PDR also resolves an implicit tension with PDR-0001. PDR-0001 set HoneyHub up as the external-facing platform and committed the Grid to two new domains (Observation, AI Routing) under that framing. Today's strategist call reframed HoneyHub as **internal-only** with kill criteria by 2026-09-30. PDR-0001's Observation and AI Routing decisions stand on their own merits and remain Accepted; PDR-0001 §C "platform positioning shift" — HoneyHub becoming an external product — is treated as **aspirational, not committed**, and is superseded by this PDR's framing of NovOutbox as the commercial wedge.
 
 ---
 
 ## What It Does
 
-In plain language: **HoneyDrunk Notify is a hosted API that sends notifications to your users across multiple channels — email, SMS, and (later) push and in-app — with smart routing decisions baked in.**
+In plain language: **NovOutbox is a hosted API that sends transactional notifications from .NET apps across multiple channels — email, SMS, and (later) push and in-app — with smart routing decisions baked in.**
 
 You hit one endpoint: *"tell user X about event Y."* The service decides:
 
@@ -50,7 +52,7 @@ How it sits next to the field:
 - **Twilio** — SMS-only.
 - **Courier / Knock / Loops** — multichannel, but JS-first, expensive ($50–$250/mo entry), opinionated toward big-team workflows.
 - **Novu** — multichannel OSS, Node.js-native.
-- **HoneyDrunk Notify** — multichannel, **.NET-native**, cheap entry, opinionated routing out of the box, decision-log transparency, OSS engine.
+- **NovOutbox** — multichannel, **.NET-native**, cheap entry, opinionated routing out of the box, decision-log transparency, OSS engine.
 
 ---
 
@@ -66,7 +68,7 @@ Notify is Live (v0.1.0), ships email (Resend, SMTP) and SMS (Twilio), and has a 
 
 ### 3. Indie .NET devs glue notification stacks themselves
 
-The market gap Notify Cloud targets:
+The market gap NovOutbox targets:
 
 - Indie .NET devs running side projects who currently glue **SendGrid + Twilio + a `MailKit` wrapper** by hand, typically inside a `BackgroundService` they wrote three times across three projects.
 - Small teams (2–5 devs) running a SaaS product who outgrow transactional-email-only providers and need SMS or in-app channels but don't want to stand up Courier/Knock infrastructure or pay enterprise rates.
@@ -74,21 +76,21 @@ The market gap Notify Cloud targets:
 
 For these buyers, today's options are: (a) hand-rolled glue, brittle and rebuilt per-project; (b) Courier or Knock, which are powerful but expensive ($50/mo entry, $200+ at moderate volume) and **not .NET-shaped** (they are JS-first and treat .NET as a translated SDK afterthought); (c) Loops, which is email-only; (d) raw SES + raw Twilio, which is cheap but is the same hand-rolled glue.
 
-Notify Cloud is for option (a) buyers who would pay $10–$30/mo to stop hand-rolling, and option (b) buyers who would pay less for a .NET-native multichannel layer. It is **not** for enterprise buyers — that is a future tier, not a v1 wedge.
+NovOutbox is for option (a) buyers who would pay $10–$30/mo to stop hand-rolling, and option (b) buyers who would pay less for a .NET-native multichannel layer. It is **not** for enterprise buyers — that is a future tier, not a v1 wedge.
 
 ### 4. The Grid needs production telemetry, and dogfood is the cheapest source
 
-The Grid's Pulse, Vault, Auth, and Web.Rest Nodes have no production traffic. Notify Cloud forces them into a real production-pressure environment without requiring HoneyHub or any AI-sector Node to ship first. Notify Cloud is the **shortest path** to forcing the Grid into production-grade behavior across its Core and Ops sectors.
+The Grid's Pulse, Vault, Auth, and Web.Rest Nodes have no production traffic. NovOutbox forces them into a real production-pressure environment without requiring HoneyHub or any AI-sector Node to ship first. NovOutbox is the **shortest path** to forcing the Grid into production-grade behavior across its Core and Ops sectors.
 
 ---
 
 ## Decision
 
-### A. Notify Cloud is the first commercial product on the Grid
+### A. NovOutbox is the first commercial product on the Grid
 
-**HoneyDrunk Notify** (architecturally: "Notify Cloud") is a hosted, multi-tenant version of the Notify + Communications stack offered to external developers as a **multichannel, .NET-friendly, cheap-entry alternative to Courier/Knock**. It ships as a managed service with REST and SDK surfaces, billed monthly, with a free tier intended for evaluation.
+**NovOutbox** (architecturally: the proposed `HoneyDrunk.Notify.Cloud` wrapper Node until the technical name is revisited) is a hosted, multi-tenant version of the Notify + Communications stack offered to external developers as a **multichannel, .NET-friendly, cheap-entry alternative to Courier/Knock**. It ships as a managed service with REST and SDK surfaces, billed monthly, with a free tier intended for evaluation.
 
-Notify Cloud is not "hosted Notify with a price tag." It is a packaged product:
+NovOutbox is not "hosted Notify with a price tag." It is a packaged product:
 
 - A REST API and a `HoneyDrunk.Notify.Client` NuGet package (the latter is the wedge — installable in 30 seconds, idiomatic to .NET teams, signs requests with an API key).
 - Multi-tenant tenant isolation enforced at the gateway, queue, and Vault layers.
@@ -122,7 +124,7 @@ The pricing structure mirrors Loops (clean entry tier) and undercuts Courier (wh
 
 | Tier | Price (USD/mo) | Included events/mo | Channels | Tenants | Notes |
 |---|---|---|---|---|---|
-| **Free** | $0 | 500 | Email only | 1 project, 1 API key | Evaluation tier. Watermark in email footer ("Sent via Notify Cloud — try it at notify.honeydrunkstudios.com"). The watermark is the marketing wedge for the free tier and is the reason it is free. |
+| **Free** | $0 | 500 | Email only | 1 project, 1 API key | Evaluation tier. Watermark in email footer ("Sent via NovOutbox"). The watermark is the marketing wedge for the free tier and is the reason it is free. |
 | **Starter** | $19/mo | 10,000 | Email + SMS | 3 projects, 5 API keys | The entry buyer. Removes the watermark. SMS metered separately at provider cost + 20%. |
 | **Pro** | $49/mo | 50,000 | Email + SMS + (push, when available) | 10 projects, unlimited API keys | The agency / small-SaaS tier. Decision logs from Communications (audit trail of why each message was sent or suppressed) become available here, not in Starter. |
 
@@ -139,11 +141,11 @@ The pricing structure mirrors Loops (clean entry tier) and undercuts Courier (wh
 - Loops: starts $49/mo, 1K contacts (email-only, contact-based not event-based).
 - SendGrid Essentials: $15/mo, 50K sends (email-only, no SMS, no orchestration).
 
-Notify Cloud at $19/mo for 10K events with email + SMS is competitive on price and category-leading on .NET shape.
+NovOutbox at $19/mo for 10K events with email + SMS is competitive on price and category-leading on .NET shape.
 
 ### D. Wedge
 
-Notify Cloud does not win on "we send better email." That is a losing fight against SendGrid, Resend, and Postmark, all of which are years deep on deliverability infrastructure. The wedge is:
+NovOutbox does not win on "we send better email." That is a losing fight against SendGrid, Resend, and Postmark, all of which are years deep on deliverability infrastructure. The wedge is:
 
 1. **Multichannel out of the box.** Email + SMS in one SDK call, one bill, one dashboard. Most email-only competitors (Loops, Postmark Essentials) fail this immediately. SES/Twilio glue users pay this cost daily.
 2. **.NET-native SDK and API shape.** The `HoneyDrunk.Notify.Client` package is idiomatic .NET — `IServiceCollection` extension method, `IHttpClientFactory`-driven, async cancellation tokens, structured error types. Courier and Knock have .NET SDKs that read like translated TypeScript.
@@ -165,8 +167,8 @@ Actions#20 unblock
   → Notify deploys to Container Apps internal (ADR-0015)
     → ADR-0019 lands (Communications scaffold + Notify refactor)
       → Notify hits 1.0 (multi-tenant-ready: tenant ID on every request, per-tenant Vault, per-tenant rate limits)
-        → Notify Cloud surface + billing + marketing site
-          → Notify Cloud public launch
+        → NovOutbox surface + billing + marketing site
+          → NovOutbox public launch
 ```
 
 The expected calendar shape (rough):
@@ -177,8 +179,8 @@ The expected calendar shape (rough):
 | Notify on Container Apps internal | +2 weeks after Actions#20 | scope-agent driven |
 | ADR-0019 Accepted (Communications scaffold + Notify refactor done) | +4 weeks | scope-agent driven |
 | Notify 1.0 with multi-tenant primitives | +2 months | dedicated initiative |
-| Notify Cloud soft launch (waitlist, no payment) | +3 months | new initiative |
-| Notify Cloud public launch (Stripe, Free + Starter + Pro live) | +4 months | new initiative |
+| NovOutbox soft launch (waitlist, no payment) | +3 months | new initiative |
+| NovOutbox public launch (Stripe, Free + Starter + Pro live) | +4 months | new initiative |
 
 **Public launch target: 2026-09-15.** This is the date the 90-day decision-point evaluation window (§K) starts.
 
@@ -219,44 +221,44 @@ The cuts above are aggressive on purpose. The fastest way to ship v1 at quality 
 
 ### H. Domain and brand positioning
 
-HoneyDrunk Notify launches as a **product surface inside the HoneyDrunk Studios brand**, not as a separate brand. The marketing site lives at `notify.honeydrunkstudios.com` (proposed — see Open Questions for the alternative). The customer-facing name is **"HoneyDrunk Notify"**; "Notify Cloud" is the internal architectural shorthand for the multi-tenant wrapper repo and packages.
+NovOutbox launches as a **product surface associated with HoneyDrunk Studios**, but not named after the studio. The marketing site/domain is re-opened by the 2026-06-13 naming update; `notify.honeydrunkstudios.com` is now historical/default infrastructure shorthand, not the committed product URL.
 
-**Brand model: studio → product.** HoneyDrunk Studios is the parent brand. HoneyDrunk Notify is the first commercial product. Future products (a HoneyPlay game, a creative tool, etc.) are additional product brands under the studio. There are **no separate sub-brands per Node**.
+**Brand model: studio -> product.** HoneyDrunk Studios is the parent/studio brand. NovOutbox is the first commercial product brand. Future products do not need to repeat the HoneyDrunk name.
 
-**Internal Grid Nodes are invisible to customers.** Auth, Vault, Communications, Pulse — the customer never sees these names. They see "your Notify API key," "your Notify dashboard," "your delivery logs." The Grid is the studio's architecture; it is not customer-facing language. Marketing copy talks about features and outcomes, not Nodes or Sectors.
+**Internal Grid Nodes are invisible to customers.** Auth, Vault, Communications, Pulse, and the proposed `HoneyDrunk.Notify.Cloud` Node are not customer-facing names. Customers see "your NovOutbox API key," "your NovOutbox dashboard," and "your delivery logs." The Grid is the studio's architecture; it is not customer-facing language. Marketing copy talks about features and outcomes, not Nodes or Sectors.
 
-**Commercialization of other Nodes is deferred.** Vault-as-a-Service, Auth-as-a-Service, and Communications-as-a-Service are **not** committed by this PDR. The multi-tenant primitives the Grid builds for Notify Cloud are designed Grid-wide (see Recommended Follow-Up Artifacts — "Grid multi-tenant primitives ADR"), so future commercial productization of any other Node is cheap if it ever makes sense. But the *commercial decision* is deferred until Notify Cloud has shipped and found traction. Avoiding premature platform sprawl is the lesson from PDR-0001's HoneyHub-as-platform reframing.
+**Commercialization of other Nodes is deferred.** Vault-as-a-Service, Auth-as-a-Service, and Communications-as-a-Service are **not** committed by this PDR. The multi-tenant primitives the Grid builds for NovOutbox are designed Grid-wide (see Recommended Follow-Up Artifacts — "Grid multi-tenant primitives ADR"), so future commercial productization of any other Node is cheap if it ever makes sense. But the *commercial decision* is deferred until NovOutbox has shipped and found traction. Avoiding premature platform sprawl is the lesson from PDR-0001's HoneyHub-as-platform reframing.
 
-This is consistent with the manifesto's build-in-public stance: HoneyDrunk Studios is a build-in-public studio, and its first commercial product is named after, and lives under, the studio brand. Spinning up a separate brand for v1 would dilute the studio narrative without producing any commercial benefit.
+This is consistent with the manifesto's build-in-public stance: HoneyDrunk Studios is a build-in-public studio, and NovOutbox can still be visibly built by the studio without carrying the HoneyDrunk name in the product.
 
-If Notify Cloud scales past the decision-point bar in §K, a separate brand decision can be revisited as a follow-up PDR. v1 commits to the studio-branded surface.
+If NovOutbox scales past the decision-point bar in §K, the separate-domain and brand-system decision can be revisited as a follow-up PDR. v1 commits to the NovOutbox product name.
 
 ### I. Multi-tenant boundary impact on internal Grid use
 
 A non-trivial concern. The strategist's bar — codified as the §K hard rule (architectural invariant) — is: if multi-tenanting forces architectural changes that compromise internal Grid use, revert the multi-tenant wrapper. This decision commits to a stance:
 
-**Multi-tenant Notify is a superset of internal Notify.** Internal callers are tenant `internal`, with no rate limits, no billing, and using the Grid's shared Resend / Twilio keys via the Grid's existing Vault. Notify Cloud is additive — new gateways, new policies, new key stores — running on the same Notify deployment. This is the same architectural pattern Stripe uses for its own internal sends ("we use our own product"), the same pattern AWS uses for its internal SES, and the same pattern Twilio uses for its internal Twilio.
+**Multi-tenant Notify is a superset of internal Notify.** Internal callers are tenant `internal`, with no rate limits, no billing, and using the Grid's shared Resend / Twilio keys via the Grid's existing Vault. NovOutbox is additive — new gateways, new policies, new key stores — running on the same Notify deployment. This is the same architectural pattern Stripe uses for its own internal sends ("we use our own product"), the same pattern AWS uses for its internal SES, and the same pattern Twilio uses for its internal Twilio.
 
 The architectural risk is real and is called out in §M (Risks): if tenant isolation enforcement bleeds into the core Notify dispatch path in a way that internal callers cannot avoid, that triggers the hard rule in §K (architectural invariant). The mitigation is that all tenant-aware concerns (API key auth, rate limit, billing emission, per-tenant Vault scoping) live in **gateway-layer middleware**, not in the core dispatch path. The dispatch path receives an already-resolved request with tenant context attached; it does not know how that tenant context was obtained.
 
 This is the same separation Notify already enforces between intake (post-ADR-0019: `Notify/Intake/`) and routing (`Notify/Routing/`). Notify Cloud extends intake. It does not change routing.
 
-### J. Why Notify Cloud specifically (and not the other candidates)
+### J. Why NovOutbox specifically (and not the other candidates)
 
 Short rationale. Long version is in the strategist conversation arc that produced this PDR.
 
-- **Notify Cloud vs. HoneyPlay narrative game.** HoneyPlay is the best dogfood of the AI sector but has a weak commercial wedge — indie game economics are brutal, and the AI sector is at "Seed" signal across nine Nodes. HoneyPlay would force the AI sector to ship 9 Nodes before there is a customer, which is the same time-to-revenue problem PDR-0001 had with HoneyHub.
-- **Notify Cloud vs. creative tool on HoneyDrunk.AI.** Middle-ranked on both axes. Crowded category (every AI startup is shipping a creative tool), and depends on AI Node reaching runtime, which is months of work. Notify Cloud depends on Notify reaching 1.0, which is weeks.
-- **Notify Cloud vs. anime self-improvement app.** Saturated category, weak wedge, low Grid dogfood. Dropped in the strategist call.
-- **Notify Cloud vs. HoneyHub-as-external (PDR-0001).** HoneyHub remains valuable as an internal control plane, but its external-facing form (per PDR-0001 §C) is a 12+ month build before there is a customer-shaped surface. Notify Cloud ships first; HoneyHub-external becomes either a v2 product or is dropped per the kill criteria the user has set against it for 2026-09-30.
+- **NovOutbox vs. HoneyPlay narrative game.** HoneyPlay is the best dogfood of the AI sector but has a weak commercial wedge — indie game economics are brutal, and the AI sector is at "Seed" signal across nine Nodes. HoneyPlay would force the AI sector to ship 9 Nodes before there is a customer, which is the same time-to-revenue problem PDR-0001 had with HoneyHub.
+- **NovOutbox vs. creative tool on HoneyDrunk.AI.** Middle-ranked on both axes. Crowded category (every AI startup is shipping a creative tool), and depends on AI Node reaching runtime, which is months of work. NovOutbox depends on Notify reaching 1.0, which is weeks.
+- **NovOutbox vs. anime self-improvement app.** Saturated category, weak wedge, low Grid dogfood. Dropped in the strategist call.
+- **NovOutbox vs. HoneyHub-as-external (PDR-0001).** HoneyHub remains valuable as an internal control plane, but its external-facing form (per PDR-0001 §C) is a 12+ month build before there is a customer-shaped surface. NovOutbox ships first; HoneyHub-external becomes either a v2 product or is dropped per the kill criteria the user has set against it for 2026-09-30.
 
-Notify Cloud wins because it has the **shortest time-to-customer of any commercial candidate, the highest dogfood value, and a buyer profile that is concretely identifiable today** — not "indie devs in general," but specifically indie .NET devs gluing SES + Twilio. That is the wedge.
+NovOutbox wins because it has the **shortest time-to-customer of any commercial candidate, the highest dogfood value, and a buyer profile that is concretely identifiable today** — not "indie devs in general," but specifically indie .NET devs gluing SES + Twilio. That is the wedge.
 
 ### K. Decision point at 90 days
 
 Per `constitution/charter.md`, this is a **decision point**, not a kill clock. At 90 days post-launch the operator evaluates the trial against the signals below and chooses one of three outcomes: **(a) extend / pivot**, **(b) drop to maintenance mode**, or **(c) sunset gracefully**. All three are valid.
 
-**Internal Grid consumers count as tenants.** Lately, Hearth, Curiosities, Wayside, and the Studios site itself — when any of them adopts Notify Cloud as its notification engine, that is a real tenant exercising the multi-tenant primitives. External paying customers are the commercial signal; internal Grid consumers are the dogfood signal. Both are valid outcomes of the trial.
+**Internal Grid consumers count as tenants.** Lately, Hearth, Curiosities, Wayside, and the Studios site itself — when any of them adopts NovOutbox as its notification engine, that is a real tenant exercising the multi-tenant primitives. External paying customers are the commercial signal; internal Grid consumers are the dogfood signal. Both are valid outcomes of the trial.
 
 #### Commercial signal at day 90
 
@@ -298,7 +300,7 @@ The Notify engine is open source. The commercial wrapper (multi-tenant gateway, 
 
 **What is open (default-public per studio repo policy):**
 - `HoneyDrunk.Notify` — the engine. Provider integrations, routing logic, queue worker, intake pipeline, decision-making.
-- `HoneyDrunk.Notify.Client` — the SDK. Idiomatic .NET, used by both self-hosters and HoneyDrunk Notify customers. Ships to NuGet under the same license as the engine.
+- `HoneyDrunk.Notify.Client` — the SDK. Idiomatic .NET, used by both self-hosters and NovOutbox customers. Ships to NuGet under the same license as the engine.
 - `HoneyDrunk.Communications` — the orchestration layer. Preferences, cadence, decision logs.
 - All Notify and Communications-related ADRs and PDRs.
 
@@ -320,7 +322,7 @@ The Notify engine is open source. The commercial wrapper (multi-tenant gateway, 
 
 **License — open question, FSL or BSL.** The Notify engine is licensed under a **source-available license** (Functional Source License or Business Source License — final choice deferred to the standup ADR for `HoneyDrunk.Notify.Cloud`). These licenses allow read, modify, redistribute, and self-host, but block "host this as a competing commercial service." MIT/Apache would expose the engine to hyperscaler rehosting, which is the failure mode this license posture prevents. Sentry uses FSL; HashiCorp and MariaDB use BSL — the model is well-established.
 
-**Customer-facing framing.** The marketing site at `notify.honeydrunkstudios.com` says: *"Notify is open source. HoneyDrunk Notify is the hosted version we run."* Self-hosting is supported (with documentation), and the value of the hosted service is **reliability + multi-tenant management + billing + support** — not closed-source secrets. Buyers who self-host are not lost revenue; they are amplifiers and future customers.
+**Customer-facing framing.** The marketing site says: *"Notify is the open engine. NovOutbox is the hosted service we run."* Self-hosting is supported (with documentation), and the value of the hosted service is **reliability + multi-tenant management + billing + support** — not closed-source secrets. Buyers who self-host are not lost revenue; they are amplifiers and future customers.
 
 ---
 
@@ -432,11 +434,11 @@ The Notify engine is open source. The commercial wrapper (multi-tenant gateway, 
 
 | Trade-off | Favored Position | Rationale |
 |---|---|---|
-| Build Notify Cloud now vs. wait for HoneyHub-as-platform | **Build Notify Cloud** | Time-to-customer wins. HoneyHub-external is 12 months out; Notify Cloud is 4. Revenue and production telemetry now beat a bigger product later. |
+| Build NovOutbox now vs. wait for HoneyHub-as-platform | **Build NovOutbox** | Time-to-customer wins. HoneyHub-external is 12 months out; NovOutbox is nearer. Revenue and production telemetry now beat a bigger product later. |
 | Multi-tenant complexity in Notify vs. simplicity of internal-only | **Accept the complexity, contained at gateway layer** | The dispatch path is preserved for internal use. All tenant concerns live in middleware. The risk is real (§K hard rule — architectural invariant) but contained. |
 | Aggressive scope cuts (no push, no in-app, no SOC2) vs. broader v1 surface | **Aggressive cuts** | The buyer profile (indie .NET dev) does not need push or SOC2. Shipping fewer features faster matches the buyer's expectations and the solo-dev's capacity. |
 | Free tier as funnel vs. free tier as marketing impression | **Marketing impression** | The watermark on free-tier emails is the value the free tier produces. Conversion-funnel framing is wrong — most free users will never convert, and that's fine if the watermark is doing its job. |
-| Studio brand vs. separate Notify Cloud brand | **Studio brand** | Build-in-public is the studio's stance. Separate brand dilutes that without commercial benefit at v1 scale. |
+| Studio brand vs. separate product brand | **NovOutbox product brand under the studio** | Build-in-public is the studio's stance, but the product no longer needs HoneyDrunk in the name. |
 | $19 entry tier vs. higher entry tier | **$19** | Below Loops' $49 and Courier's $50. The buyer's willingness-to-pay is in the $10–$30 range. $19 is the sweet spot — high enough to be taken seriously, low enough to be a no-review purchase. |
 | Single-region vs. multi-region | **Single-region (East US)** | Multi-region adds infrastructure cost and DR complexity that a v1 customer base does not need. Buyer profile is global indie devs who tolerate East-US latency. |
 | Communications in v1 vs. Notify-only in v1 | **Communications in v1** | The orchestration surface is the wedge for the Pro tier. Without it, the Pro tier is hollow. Worth the dependency on ADR-0019. |
@@ -448,13 +450,13 @@ The Notify engine is open source. The commercial wrapper (multi-tenant gateway, 
 
 ### New surface area
 
-**New repo: `HoneyDrunk.Notify.Cloud`** (proposed name — open question on final naming).
+**New repo: `HoneyDrunk.Notify.Cloud`** (proposed internal name; customer-facing product name is NovOutbox, and the technical repo/package name can be revisited before creation).
 
 This is a new Node in the **Ops** sector. It is the multi-tenant gateway, billing bridge, and tenant-management surface that wraps Notify + Communications for external sale. It is a separate Node, not a feature inside Notify, because:
 
 - It introduces external-facing concerns (Stripe webhooks, API key management, marketing-facing REST API) that should not live on Notify's public boundary.
-- It has a different release cadence — Notify Cloud will iterate on pricing, tenant management, and billing logic at a higher tempo than Notify's delivery engine.
-- Notify's invariants (channel-agnostic delivery, queue-backed dispatch) should not be polluted by Notify Cloud-specific concerns.
+- It has a different release cadence — NovOutbox will iterate on pricing, tenant management, and billing logic at a higher tempo than Notify's delivery engine.
+- Notify's invariants (channel-agnostic delivery, queue-backed dispatch) should not be polluted by commercial-wrapper-specific concerns.
 
 **Package families (parallels ADR-0016 / 0017 / 0019 stand-up shape):**
 
@@ -681,17 +683,17 @@ Either outcome generates more learning than continuing to ship internal-only Nod
 
 | Question | Resolved | Decision |
 |---|---|---|
-| Free tier shape — 500 events/mo + watermark | 2026-05-02 | 500 events/mo + watermark in email footer ("Sent via HoneyDrunk Notify — try it at notify.honeydrunkstudios.com"). Specific watermark wording validated against beta tenants in Phase 4. |
+| Free tier shape — 500 events/mo + watermark | 2026-05-02; amended 2026-06-13 | 500 events/mo + watermark in email footer ("Sent via NovOutbox"). Specific watermark wording validated against beta tenants in Phase 4. |
 | Billing infrastructure — Stripe | 2026-05-02 | Stripe metered billing. Re-evaluate if international VAT compliance (which Paddle and LemonSqueezy handle as merchant-of-record but Stripe does not by default) becomes a friction at scale. |
-| Product name and architectural shorthand | 2026-05-02 | Customer-facing brand: **HoneyDrunk Notify**. Internal architectural shorthand: **Notify Cloud**. The "NaaS" abbreviation is dropped — it collides with Network-as-a-Service in cloud parlance. |
-| Final repo name for the commercial wrapper | 2026-05-02 | `HoneyDrunk.Notify.Cloud`. The SDK shared between self-hosters and hosted-service customers stays at `HoneyDrunk.Notify.Client`. |
+| Product name and architectural shorthand | 2026-05-02; superseded 2026-06-13 | Customer-facing brand is now **NovOutbox**. Earlier **HoneyDrunk Notify** and **Notify Cloud** wording is superseded except where retained as history. |
+| Final repo name for the commercial wrapper | 2026-05-02; revisit before creation | `HoneyDrunk.Notify.Cloud` remains the proposed internal placeholder because no repo exists yet. The SDK shared between self-hosters and hosted-service customers stays at `HoneyDrunk.Notify.Client`. |
 | Open-source license for the engine | 2026-05-02 (per [ADR-0027](../adrs/ADR-0027-stand-up-honeydrunk-notify-cloud-node.md) D11) | **FSL (Functional Source License)** for `HoneyDrunk.Notify`, `HoneyDrunk.Notify.Client`, and `HoneyDrunk.Communications`. Two-year auto-conversion to Apache 2.0. Reversible to BSL if FSL produces a concrete friction during v1 launch. |
 
 ## Open Questions
 
 | Question | Owner | Notes |
 |---|---|---|
-| Domain — `notify.honeydrunkstudios.com` vs. a separate brand domain (`honeydrunk-notify.com`, `gridnotify.com`, etc.) | Product | Default proposed: `notify.honeydrunkstudios.com` per §H. Separate brand revisited only if Notify Cloud clears the 90-day bar and grows past the studio's current shape. |
+| Domain for NovOutbox | Product | Re-opened by the 2026-06-13 naming update. Pick a NovOutbox-specific domain or studio subdomain before marketing copy or waitlist work ships. |
 | Support model — email vs. Discord vs. GitHub Discussions for community | Product | Default proposed: email + public Discord. GitHub Discussions if Discord proves too noisy. |
 | Tenant provisioning — fully manual at v1, semi-automated at v1.5, or fully automated at launch | Operations | Default proposed: manual at soft launch (10–20 beta tenants), semi-automated at public launch (signup form auto-provisions tenant ID, API key issuance is automated, Stripe subscription is automated). |
 | Abuse detection threshold — what triggers an automatic tenant pause | Operations / Communications | Default proposed: bounce rate > 10%, spam complaint rate > 0.5%, or 5× normal volume in a 1-hour window. Specific thresholds tuned during soft launch. |

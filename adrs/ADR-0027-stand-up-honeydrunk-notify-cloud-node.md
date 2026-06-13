@@ -1,9 +1,11 @@
-# ADR-0027: Stand Up the HoneyDrunk.Notify.Cloud Node — Multi-Tenant Commercial Wrapper Above Notify
+# ADR-0027: Stand Up the NovOutbox Wrapper Node Above Notify
 
 **Status:** Proposed
 **Date:** 2026-05-02
 **Deciders:** HoneyDrunk Studios
 **Sector:** Ops
+
+> **Naming update (2026-06-13):** **NovOutbox** supersedes the earlier customer-facing names **HoneyDrunk Notify** and **Notify Cloud**. This ADR still contains proposed technical placeholders such as `HoneyDrunk.Notify.Cloud` because the repo and packages do not exist yet; their final technical names should be confirmed before the scaffold packet runs.
 
 ## If Accepted — Required Follow-Up Work in Architecture Repo
 
@@ -15,14 +17,14 @@ Accepting this ADR creates catalog and cross-repo obligations that must be compl
 - [ ] Create `repos/HoneyDrunk.Notify.Cloud/` context folder in the Architecture repo (`overview.md`, `boundaries.md`, `invariants.md`, `active-work.md`, `integration-points.md`) — matching the template used by `repos/HoneyDrunk.Communications/`
 - [ ] Add `honeydrunk-notify-cloud` Node entry to `catalogs/nodes.json` with a `visibility: private` field (catalog schema gains a new field — first use; document in the catalog README)
 - [ ] Add `honeydrunk-notify-cloud` entries to `catalogs/relationships.json`, `catalogs/grid-health.json`, `catalogs/contracts.json`, and `catalogs/modules.json`
-- [ ] Update sector map (`constitution/sectors.md`) Ops-sector entry to include Notify Cloud as the commercial wrapper above Notify and Communications
-- [ ] Wire the contract-shape canary into Actions for the four frozen Notify Cloud contracts (`INotifyCloudGateway`, `INotifyCloudApiKeyStore`, `NotifyCloudTenantTier`, `ApiKeyIssuance`); the Kernel multi-tenant primitives are guarded by Kernel's canary per ADR-0026
-- [ ] Reference ADR-0026 (Grid Multi-Tenant Primitives) as a hard prerequisite — Notify Cloud is its first real (non-noop) consumer of `ITenantRateLimitPolicy` and `IBillingEventEmitter`; this stand-up does not flip Accepted until ADR-0026 is Accepted
+- [ ] Update sector map (`constitution/sectors.md`) Ops-sector entry to include NovOutbox as the commercial wrapper above Notify and Communications
+- [ ] Wire the contract-shape canary into Actions for the four frozen NovOutbox wrapper contracts (`INotifyCloudGateway`, `INotifyCloudApiKeyStore`, `NotifyCloudTenantTier`, `ApiKeyIssuance`); the Kernel multi-tenant primitives are guarded by Kernel's canary per ADR-0026
+- [ ] Reference ADR-0026 (Grid Multi-Tenant Primitives) as a hard prerequisite — NovOutbox is its first real (non-noop) consumer of `ITenantRateLimitPolicy` and `IBillingEventEmitter`; this stand-up does not flip Accepted until ADR-0026 is Accepted
 - [ ] Scope agent assigns final invariant numbers when flipping Status → Accepted
 
 ## Context
 
-PDR-0002 commits HoneyDrunk Notify as the Grid's first commercial product. The PDR specifies a multi-tenant commercial wrapper around the live Notify engine, sold to indie .NET developers as a hosted notification service at `notify.honeydrunkstudios.com`. The wrapper Node is named `HoneyDrunk.Notify.Cloud` (per PDR-0002's resolved-questions table).
+PDR-0002 commits NovOutbox as the Grid's first commercial product. The PDR specifies a multi-tenant commercial wrapper around the live Notify engine, sold to indie .NET developers as a hosted notification service. The wrapper Node is still proposed as `HoneyDrunk.Notify.Cloud` only as an internal placeholder; that technical name should be confirmed before repo creation.
 
 This Node does not exist on disk and is not yet cataloged. PDR-0002's Architecture Implications section sketches the package families and dependency surface but defers the formal stand-up — package families, downstream coupling rule, contract-shape canary, OSS license choice, repo visibility, scaffold scope — to this ADR. That deferral is consistent with the standup-ADR convention (set 2026-04-19 per memory): every empty cataloged Node gets its own stand-up ADR before scaffolding lands.
 
@@ -32,17 +34,17 @@ This Node does not exist on disk and is not yet cataloged. PDR-0002's Architectu
 2. **The OSS license question for the engine is no longer deferrable.** PDR-0002 §M lists FSL or BSL as the candidates and defers final choice to "the standup ADR for `HoneyDrunk.Notify.Cloud`" — i.e., this ADR. The license affects three repos (`HoneyDrunk.Notify`, `HoneyDrunk.Notify.Client`, `HoneyDrunk.Communications`), all open. Picking now means the first commercial customer reads a stable license; deferring means relicensing later, which is hostile to early contributors.
 3. **The Node depends on Grid-wide multi-tenant primitives that do not exist yet.** PDR-0002 §F and the Architecture Implications section make `TenantId`, per-tenant rate-limit policy, per-tenant Vault scoping, and tenant-scoped billing events Grid-wide concerns — designed in Kernel and shared infrastructure, not Notify-specific. A parallel ADR (Grid Multi-Tenant Primitives) is being drafted at the same time as this one and is a hard prerequisite. This ADR depends on that ADR being Accepted before Notify Cloud's scaffold packet runs; it does not redefine those primitives.
 
-This ADR is the **stand-up decision** for the Notify Cloud Node — what it owns, what it does not own, which contracts it exposes, how downstream Nodes (and external customers) couple to it, and what license posture the surrounding open-source repos take. It is not a scaffolding packet. Filing the repo, adding CI, wiring the InMemory fixtures, and producing the first shippable packages all follow as separate work items once this ADR is accepted.
+This ADR is the **stand-up decision** for the NovOutbox wrapper Node — what it owns, what it does not own, which contracts it exposes, how downstream Nodes (and external customers) couple to it, and what license posture the surrounding open-source repos take. It is not a scaffolding packet. Filing the repo, adding CI, wiring the InMemory fixtures, and producing the first shippable packages all follow as separate work items once this ADR is accepted.
 
 ## Decision
 
-### D1. HoneyDrunk.Notify.Cloud is the Ops sector's multi-tenant commercial wrapper above Notify
+### D1. NovOutbox is the Ops sector's multi-tenant commercial wrapper above Notify
 
-`HoneyDrunk.Notify.Cloud` is the single Node in the Ops sector that owns **multi-tenant commercial-product primitives** for the Notify engine — the API gateway, API key issuance and validation, per-tenant rate-limit enforcement, tenant-scoped billing event emission, and the tenant management website that together turn the open-source Notify engine into a hosted service customers can sign up for and pay for.
+NovOutbox is the product name for the single Ops-sector wrapper that owns **multi-tenant commercial-product primitives** for the Notify engine — the API gateway, API key issuance and validation, per-tenant rate-limit enforcement, tenant-scoped billing event emission, and the tenant management website that together turn the open-source Notify engine into a hosted service customers can sign up for and pay for. The proposed internal Node/repo placeholder is `HoneyDrunk.Notify.Cloud` until the technical name is confirmed.
 
-It is a commercial wrapper, not a delivery engine. It does not call provider SDKs, render templates, manage queues, retry sends, or decide which user receives which message. Those mechanics stay in Notify and Communications. Notify Cloud sits above both: it accepts external API requests, authenticates them by API key, applies per-tenant rate limits and quota checks, attaches the resolved `TenantId` to the request, delegates orchestration to `ICommunicationOrchestrator`, and emits a `BillingEvent` on each successful delivery for Stripe to consume.
+It is a commercial wrapper, not a delivery engine. It does not call provider SDKs, render templates, manage queues, retry sends, or decide which user receives which message. Those mechanics stay in Notify and Communications. NovOutbox sits above both: it accepts external API requests, authenticates them by API key, applies per-tenant rate limits and quota checks, attaches the resolved `TenantId` to the request, delegates orchestration to `ICommunicationOrchestrator`, and emits a `BillingEvent` on each successful delivery for Stripe to consume.
 
-The Grid's internal callers continue to use Notify (and Communications) directly. Notify Cloud does not interpose on the internal path. The internal callers acquire their `TenantId` (defaulting to `internal`) through the Grid's existing `IGridContext` and never traverse a Notify Cloud surface.
+The Grid's internal callers continue to use Notify (and Communications) directly. NovOutbox does not interpose on the internal path. The internal callers acquire their `TenantId` (defaulting to `internal`) through the Grid's existing `IGridContext` and never traverse a NovOutbox surface.
 
 ### D2. Repo visibility — private, with explicit justification
 
