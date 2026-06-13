@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   file:
-    uses: HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/file-work-items.yml@2382728ee994e6f36280ea2dd3e7d3d7d884cd4f
+    uses: HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/file-work-items.yml@main
     secrets:
       app-id: ${{ secrets.HIVE_APP_ID }}
       app-private-key: ${{ secrets.HIVE_APP_PRIVATE_KEY }}
