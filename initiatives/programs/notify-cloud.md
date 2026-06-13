@@ -2,9 +2,9 @@
 
 **Governing PDR:** [PDR-0002: HoneyDrunk Notify — First Commercial Product on the Grid](../../pdrs/PDR-0002-notify-as-a-service-first-commercial-product.md) — Proposed
 **Status:** Forming
-**Roadmap thread:** [Notify Cloud](../roadmap.md) (Q2–Q3 2026, the Grid's first commercial trial) · **Current-focus row:** #6 (kickoff slice)
+**Roadmap thread:** [Notify Cloud](../roadmap.md) (Q2-Q4 2026, the Grid's first commercial trial) · **Current-focus rows:** #6-#9
 **Kill criteria / gates:** PDR-0002 §K 90-day decision-point (extend / maintenance / sunset) + the §K hard rule (revert the multi-tenant wrapper if it compromises internal Grid use)
-**Last updated:** 2026-06-06
+**Last updated:** 2026-06-13
 
 Context: Notify Cloud is the multi-tenant SaaS over `HoneyDrunk.Notify` (customer brand **HoneyDrunk Notify**). It is **re-sequenced behind [ADR-0077](../../adrs/ADR-0077-infrastructure-as-code-bicep.md)** (its prod cloud bring-up rides ADR-0077's reproducible Bicep provisioning) and **hard-gated on ADR-0019** (Communications scaffold + Notify refactor — without it the Pro tier is hollow). This tracker is a **backfill scaffold** per [ADR-0089](../../adrs/ADR-0089-program-tier-for-multi-adr-product-efforts.md), reflecting PDR-0002 at authoring; it is fleshed out as the program activates.
 
@@ -42,4 +42,4 @@ Phase spine from PDR-0002 §Rollout (dates on `roadmap.md`).
 
 ## Status Rollup
 
-Notify Cloud is in **P1 (dependency unblock)**. The Notify dev deploy (ADR-0015) shipped; the commercial PDR-0002 remains **Proposed**, and the program is **re-sequenced behind ADR-0077** (prod provisioning) and **hard-gated on ADR-0019** (the Pro-tier wedge). The dependency chain to public launch is long — ADR-0019 → multi-tenant primitives → ADR-0027 Cloud Node standup → Stripe/SDK → launch (~2026-09-15) — and any single link slipping moves the launch. This tracker is a backfill scaffold (authored 2026-06-06 from PDR-0002); statuses are maintained as the program activates. **Next action:** accept ADR-0019 (the hard prerequisite) and complete the ADR-0015 staging deploy.
+Notify Cloud is in **P1 (dependency unblock)**. The Notify dev deploy (ADR-0015) shipped, ADR-0077's IaC work is treated as done enough for this lane, and the commercial PDR-0002 remains **Proposed**. The immediate priority is no longer generic cloud substrate; it is the lane decision and first-beta path: record the go/slip decision by 2026-06-23, file the missing ADR-0027 scaffold packet, accept or amend the Cloud Node path, and narrow tenant/billing/API work to the first beta tenant. **Next action:** record the go/slip decision, then file `06-notify-cloud-node-scaffold.md` so the Node standup can execute.
