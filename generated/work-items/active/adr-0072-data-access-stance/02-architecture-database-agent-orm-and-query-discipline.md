@@ -71,7 +71,7 @@ The depth review confirms that the data-layer change uses EF Core (the default p
 
 **Sub-checks:**
 
-- **EF Core is the default.** If the data-layer change uses `Microsoft.EntityFrameworkCore.*` packages (SqlServer or Npgsql), the default is satisfied — no further check.
+- **EF Core is the default.** If the data-layer change uses `Microsoft.EntityFrameworkCore.SqlServer` for SQL Server/Azure SQL, the default is satisfied. Npgsql/PostgreSQL usage requires a provider-specific schema-deployment ADR amendment or follow-up decision.
 - **Marten / RepoDb / raw ADO.NET / EF 6 deviation.** If the change uses any of these, look for an explicit ADR amendment justifying the deviation. Without an amendment, this is a **Block** finding. ADR-0072 D1's negative form: "Dapper is not the default; Marten is not adopted; raw ADO.NET is not the default; Entity Framework 6 / Classic is forbidden for new work; RepoDb / Pomelo / freshly-released micro-ORMs are not adopted as defaults."
 - **Dapper introduction — evidence burden.** If the change introduces Dapper (`using Dapper;` or `IDbConnection.Query<T>` / `QueryAsync<T>` calls), verify all four evidence items are present in the PR body or linked artifacts:
   - **(a) The EF-generated query.** Either pasted in the PR body (preferred) or described with enough specificity that the reviewer can verify the query shape against EF's `ToQueryString()` output. The expected EF query is the one the PR replaces.
@@ -148,7 +148,7 @@ None.
 
 ## Referenced ADR Decisions
 
-**ADR-0072 D1 — EF Core as the default ORM.** Every Node touching a relational store uses EF Core. EF Core current LTS, `Microsoft.EntityFrameworkCore.SqlServer` / `Microsoft.EntityFrameworkCore.Npgsql`. Marten / RepoDb / raw ADO.NET / EF 6 / Pomelo are not defaults; deviations require an explicit ADR amendment.
+**ADR-0072 D1 — EF Core as the default ORM.** Every Node touching a relational store uses EF Core. EF Core current LTS with `Microsoft.EntityFrameworkCore.SqlServer` for SQL Server/Azure SQL. Npgsql/PostgreSQL, Marten, RepoDb, raw ADO.NET, EF 6, and Pomelo are not v1 defaults; deviations require an explicit ADR amendment or provider-specific follow-up decision.
 
 **ADR-0072 D2 — Dapper as the scoped exception with mandatory evidence.** Every Dapper introduction's PR carries (a) the EF-generated query, (b) the hand-written Dapper replacement, (c) benchmark numbers, (d) the workload context. Dapper is scoped to read paths; writes go through EF's DbContext. Per-Node, per-query. `FromSqlRaw` inside EF is the first option; Dapper is the second.
 

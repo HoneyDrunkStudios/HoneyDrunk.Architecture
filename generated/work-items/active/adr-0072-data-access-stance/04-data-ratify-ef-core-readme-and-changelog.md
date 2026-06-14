@@ -66,7 +66,7 @@ Read the current repo-level README to understand its structure. Add a new sectio
 
 Per [ADR-0072 (Data Access Stance)](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/blob/main/adrs/ADR-0072-data-access-stance-ef-core-default-dapper-hot-path.md), `HoneyDrunk.Data` ratifies **Entity Framework Core** as the implementation behind the `IRepository<T>` and `IUnitOfWork` contracts in `HoneyDrunk.Data.Abstractions`. The implementation lives in `HoneyDrunk.Data.EntityFramework`.
 
-**EF Core current LTS** tracks the .NET LTS cadence. Provider packages: `HoneyDrunk.Data.SqlServer` for SQL Server backings; a future `HoneyDrunk.Data.Npgsql` will exist if/when a consuming Node chooses Postgres. Both ride EF Core.
+**EF Core current LTS** tracks the .NET LTS cadence. Provider packages: `HoneyDrunk.Data.SqlServer` for SQL Server/Azure SQL backings. A future `HoneyDrunk.Data.Npgsql` requires a provider-specific schema-deployment ADR amendment or follow-up decision before adoption.
 
 **Dapper is the scoped exception** for hot-path read queries where EF generates poor SQL or where allocation matters. Per-Node, per-query. Mandatory evidence in the PR (EF query, Dapper query, benchmarks, workload context). Writes go through EF Core's DbContext — Dapper-write paths are not permitted.
 
@@ -106,9 +106,9 @@ This package is the **default EF Core implementation** behind `IRepository<T>` a
 
 **Provider packages** (the EF Core providers) ride this implementation:
 - `HoneyDrunk.Data.SqlServer` — SQL Server backings via `Microsoft.EntityFrameworkCore.SqlServer`.
-- (future) `HoneyDrunk.Data.Npgsql` — Postgres backings via `Microsoft.EntityFrameworkCore.Npgsql`, when first needed.
+- (future) `HoneyDrunk.Data.Npgsql` — PostgreSQL backings via `Microsoft.EntityFrameworkCore.Npgsql`, only after a provider-specific schema-deployment ADR amendment or follow-up decision.
 
-**SQL project/DACPAC deployment** is the schema deployment standard per [ADR-0048 (Schema Evolution)](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/blob/main/adrs/ADR-0048-data-schema-evolution-and-migration-policy.md). Per-Node migrations live in the consuming Node's `HoneyDrunk.<Node>.Database/` folder; the canonical database deploy workflow is the `database-deploy-dacpac.yml` workflow in `HoneyDrunk.Actions`.
+**SQL project/DACPAC deployment** is the schema deployment standard per [ADR-0048 (Schema Evolution)](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/blob/main/adrs/ADR-0048-data-schema-evolution-and-migration-policy.md). The physical schema source lives in the consuming Node's `HoneyDrunk.<Node>.Database/` folder; the canonical database deploy workflow is the `database-deploy-dacpac.yml` workflow in `HoneyDrunk.Actions`.
 ```
 
 ### 4. Update `HoneyDrunk.Data/CHANGELOG.md`
@@ -163,7 +163,7 @@ None.
 
 ## Referenced ADR Decisions
 
-**ADR-0072 D1 — EF Core as the default ORM.** Every Node touching a relational store uses EF Core. `HoneyDrunk.Data.EntityFramework` is the ratified default implementation behind `IRepository<T>` / `IUnitOfWork`. Provider packages (`HoneyDrunk.Data.SqlServer` and future `HoneyDrunk.Data.Npgsql`) ride EF Core.
+**ADR-0072 D1 — EF Core as the default ORM.** Every Node touching a relational store uses EF Core. `HoneyDrunk.Data.EntityFramework` is the ratified default implementation behind `IRepository<T>` / `IUnitOfWork`. `HoneyDrunk.Data.SqlServer` is the v1 provider package; future `HoneyDrunk.Data.Npgsql` requires a provider-specific schema-deployment decision.
 
 **ADR-0072 D2 — Dapper as the scoped exception.** Per-Node, per-query. Read paths only. Mandatory evidence in the PR.
 

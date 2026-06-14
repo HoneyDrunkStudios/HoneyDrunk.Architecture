@@ -53,7 +53,7 @@ The section template:
 
 **ORM:** {EF Core (default per ADR-0072 D1) | Document-store SDK (per ADR-0072 D8) | N/A — library only}
 
-**Provider package(s):** {`Microsoft.EntityFrameworkCore.SqlServer` | `Microsoft.EntityFrameworkCore.Npgsql` | `Microsoft.Azure.Cosmos` | `StackExchange.Redis` | N/A}
+**Provider package(s):** {`Microsoft.EntityFrameworkCore.SqlServer` | `Microsoft.Azure.Cosmos` | `StackExchange.Redis` | N/A}. PostgreSQL/Npgsql requires a provider-specific schema-deployment follow-up decision before use.
 
 **Dapper hot-path reads:** {None | List of adopted Dapper queries with PR references and the workload reason}
 
@@ -75,7 +75,7 @@ Per-Node specific notes worth recording:
 - **HoneyDrunk.Kernel** — ORM (for the relational core): "EF Core (default per ADR-0072 D1)." For the document-store sub-pieces (`HoneyDrunk.Kernel.Idempotency.*` etc.): "Document-store SDK per ADR-0072 D8." Dapper: "None."
 - **HoneyDrunk.Vault**, **HoneyDrunk.Auth**, **HoneyDrunk.Transport**, **HoneyDrunk.Web.Rest**, **HoneyDrunk.Architecture**, **HoneyDrunk.Standards**, **HoneyDrunk.Studios**, **HoneyDrunk.Actions**, **HoneyDrunk.AI**, **HoneyDrunk.Capabilities**, **HoneyDrunk.Agents**, **HoneyDrunk.Communications**, **HoneyDrunk.Lore** — "N/A — library only" (Vault stores in Key Vault, not a relational store).
 
-For Nodes that don't exist yet but are cataloged as Seed (Identity per ADR-0060, Files per ADR-0061, Memory per ADR-0022, Knowledge per ADR-0021, Billing per ADR-0037, Notify Cloud per ADR-0027): record the **committed** stance based on the relevant standup ADR. Identity / Files / Memory / Knowledge / Billing all commit to relational stores; their stance is "EF Core (default per ADR-0072 D1). Per-standup-ADR engine choice (Azure SQL vs Postgres) per ADR-0072 D8."
+For Nodes that don't exist yet but are cataloged as Seed (Identity per ADR-0060, Files per ADR-0061, Memory per ADR-0022, Knowledge per ADR-0021, Billing per ADR-0037, Notify Cloud per ADR-0027): record the **committed** stance based on the relevant standup ADR. Identity / Files / Memory / Knowledge / Billing all commit to relational stores; their stance is "EF Core (default per ADR-0072 D1). SQL Server/Azure SQL is the v1 relational deployment target per ADR-0048; PostgreSQL needs a provider-specific follow-up decision."
 
 ### 4. Do not edit `catalogs/grid-health.json`
 

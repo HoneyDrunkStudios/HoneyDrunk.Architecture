@@ -37,7 +37,7 @@ Every Node in the Grid that reads from or writes to a relational database uses *
 
 - **EF Core current LTS** (tracked to the .NET LTS cadence per the Grid's general framework discipline; LTS releases are the even-numbered .NET majors, e.g., .NET 8 / EF Core 8, .NET 10 / EF Core 10, etc.).
 - **`Microsoft.EntityFrameworkCore.SqlServer`** for SQL Server backings (Azure SQL is the Grid's default per the existing Azure-first posture).
-- **`Microsoft.EntityFrameworkCore.Npgsql`** for PostgreSQL backings when a Node specifically chooses Postgres (the Identity Node, Files Node, and consumer-app PDRs are likely candidates).
+- **PostgreSQL is not a v1 production schema-deployment target under ADR-0048.** If a future Node chooses PostgreSQL, that Node needs an explicit ADR amendment or follow-up decision that defines the provider-specific schema deployment standard. EF Core remains compatible with Npgsql at runtime, but Npgsql is not adopted as a production deployment path here.
 - **SQL projects/DACPACs** as the canonical production schema deployment path per [ADR-0048](./ADR-0048-data-schema-evolution-and-migration-policy.md). EF Core maps to that schema at runtime.
 
 **Why EF Core as the default:**
@@ -127,7 +127,7 @@ The escape valve is not exercised today; it is documented to be transparent abou
 
 The following are explicitly **not** decided by this ADR:
 
-- **Specific database engine (SQL Server vs. PostgreSQL vs. Cosmos DB vs. other).** Per-Node decision. Most Nodes default to Azure SQL; Identity and Files might choose Postgres; Audit's high-write append-only might consider Cosmos. The engine choice is per-Node; the data-access library is EF Core in every case (with the Dapper exception per D2).
+- **Specific database engine outside SQL Server/Azure SQL.** SQL Server/Azure SQL is the v1 relational deployment target per ADR-0048. A future PostgreSQL or other relational backing requires a provider-specific ADR amendment or follow-up decision that defines schema deployment, testing, and operations. Cosmos and other document stores follow their own SDK/schema-on-read posture.
 - **NoSQL data-access stance.** The Audit Node may use Cosmos DB per [ADR-0031](./ADR-0031-stand-up-honeydrunk-audit-node.md); the Cache Node may use Redis per [ADR-0058](./ADR-0058-grid-wide-caching-strategy.md). NoSQL backings have their own SDKs (Azure.Storage.Blobs, Microsoft.Azure.Cosmos, StackExchange.Redis); EF Core's Cosmos provider is permitted but not required. This ADR's scope is relational data.
 - **Read-replica routing.** When a Node needs read replicas for scale, the routing mechanism (EF Core interceptor, application-level routing, connection-string switching) is a per-Node decision.
 - **Connection pooling and DbContext lifetime tuning.** Standard ASP.NET Core defaults apply; per-Node tuning is permitted but not committed here.
@@ -144,7 +144,7 @@ The following are explicitly **not** decided by this ADR:
 - **[ADR-0030](./ADR-0030-grid-wide-audit-substrate.md) / [ADR-0031](./ADR-0031-stand-up-honeydrunk-audit-node.md) (Audit)** — primary write path is EF Core (the append-only-by-interface discipline is preserved at the contract layer; the underlying writes are EF Core inserts). The audit-query surface may use Dapper for hot-path read queries (forensic queries with complex temporal filters) per D2.
 - **[ADR-0027](./ADR-0027-stand-up-honeydrunk-notify-cloud-node.md) (Notify Cloud)** — tenant-data partitions use per-tenant DbContext composition per [ADR-0050](./ADR-0050-tenant-lifecycle-provisioning-suspension-offboarding-and-data-export.md). Send-history queries are a candidate for Dapper hot-path optimization once the workload data exists.
 - **[ADR-0019](./ADR-0019-stand-up-honeydrunk-communications-node.md) (Communications)** — preference store and decision-log are EF Core models.
-- **Consumer-app PDRs** ([PDR-0003](../pdrs/PDR-0003-lately-currents-based-connection-app.md), [PDR-0005](../pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md), [PDR-0006](../pdrs/PDR-0006-currents-social-suggestions-and-quests.md), [PDR-0008](../pdrs/PDR-0008-curiosities-discovery-first-city-app.md)) — each consumes EF Core for relational data. Per-PDR engine choice (SQL Server vs. Postgres) per D8.
+- **Consumer-app PDRs** ([PDR-0003](../pdrs/PDR-0003-lately-currents-based-connection-app.md), [PDR-0005](../pdrs/PDR-0005-hearth-personal-growth-as-a-living-town.md), [PDR-0006](../pdrs/PDR-0006-currents-social-suggestions-and-quests.md), [PDR-0008](../pdrs/PDR-0008-curiosities-discovery-first-city-app.md)) — each consumes EF Core for relational data when it uses a relational backing. SQL Server/Azure SQL is the v1 production schema deployment path; any PostgreSQL choice needs the D8 follow-up decision.
 
 ### Invariants
 
@@ -205,7 +205,7 @@ Rejected. EF 6 is in maintenance mode and tied to .NET Framework. The Grid is on
 
 Considered in the context of "would Pomelo + MySQL be a credible default." Pomelo is a community EF Core provider, not an ORM in itself.
 
-Not adopted because the underlying choice — MySQL vs. SQL Server vs. Postgres — is per-Node per D8, and Pomelo is the provider you reach for if a Node specifically chooses MySQL. The Grid has no current Node that would choose MySQL over Postgres or SQL Server; if one ever does, Pomelo is the relevant provider, used as an EF Core backing. This is consistent with D1.
+Not adopted because MySQL is not a v1 Grid relational deployment target. SQL Server/Azure SQL is the committed v1 path per ADR-0048, and any future MySQL or PostgreSQL adoption requires a provider-specific ADR amendment or follow-up decision. If one ever does choose MySQL, Pomelo is the relevant EF Core provider, but that is outside this ADR's v1 commitment.
 
 ### RepoDb or other micro-ORM alternatives to Dapper
 
