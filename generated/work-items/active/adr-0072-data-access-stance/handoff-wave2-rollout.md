@@ -18,7 +18,7 @@
 Five packets. Three are independently actionable (01, 03a, 04) once packet 00 merges. Two carry **hard textual cross-initiative gates** on `adr-0048-schema-evolution`:
 
 - Packet **02** waits on `adr-0048-schema-evolution` packet 02 (`database.md` agent file).
-- Packet **03b** waits on `adr-0048-schema-evolution` packet 01 (`## Schema Deployment Coordination` section + `schema_evolution` catalog field).
+- Packet **03b** waits on `adr-0048-schema-evolution` packet 01 (`## Migration Coordination` section + `schema_evolution` catalog field).
 
 The filing pipeline's `work-item:NN` form only resolves intra-initiative; cross-initiative gates are enforced by the executor at PR-open time (issue stays open with a wait comment until the sibling artifact exists on `main`).
 
@@ -42,7 +42,7 @@ Extends `.claude/agents/database.md` with two new rubric categories (categories 
 
 **Hard sibling sequencing**: this packet is gated on `adr-0048-schema-evolution` packet 02 having merged. Executor confirms `.claude/agents/database.md` exists on `main` before opening the PR. No holding-document fallback.
 
-The agent's invocation surface is extended to include Dapper introductions and EF query pattern modifications, so the specialist is invoked on data-layer PRs even when no `HoneyDrunk.<Node>.Database/` or `Backfill/` file is touched.
+The agent's invocation surface is extended to include Dapper introductions and EF query pattern modifications, so the specialist is invoked on data-layer PRs even when no `Migrations/` or `Backfill/` file is touched.
 
 ### Packet 03a — `repos/HoneyDrunk.Data/overview.md` ORM Commitment (Architecture)
 
@@ -50,9 +50,9 @@ Single-file governance task: add an "ORM Commitment" section to `repos/HoneyDrun
 
 ### Packet 03b — Per-Node `integration-points.md` Data-Access Stance sweep (Architecture)
 
-Extend every existing `repos/HoneyDrunk.<Node>/integration-points.md` with a `## Data-Access Stance` section placed as a sibling to `## Schema Deployment Coordination`. Default content per Node based on `schema_evolution` value in `catalogs/grid-health.json`.
+Extend every existing `repos/HoneyDrunk.<Node>/integration-points.md` with a `## Data-Access Stance` section placed as a sibling to `## Migration Coordination`. Default content per Node based on `schema_evolution` value in `catalogs/grid-health.json`.
 
-**Hard sibling sequencing**: gated on `adr-0048-schema-evolution` packet 01 having merged (that packet introduces `## Schema Deployment Coordination` and the `schema_evolution` catalog field). Executor confirms both artifacts exist on `main` before opening the PR.
+**Hard sibling sequencing**: gated on `adr-0048-schema-evolution` packet 01 having merged (that packet introduces `## Migration Coordination` and the `schema_evolution` catalog field). Executor confirms both artifacts exist on `main` before opening the PR.
 
 **No catalog edit.** `catalogs/grid-health.json` is not modified. The `schema_evolution` field implies the ORM choice per ADR-0072 D1 — no separate `data_access` field is needed.
 
@@ -60,7 +60,7 @@ Extend every existing `repos/HoneyDrunk.<Node>/integration-points.md` with a `##
 
 Updates the `HoneyDrunk.Data` repo's own documentation:
 
-- **`HoneyDrunk.Data/README.md`** — new ORM Commitment section citing ADR-0072 with the full content (EF Core default, Dapper scoped exception, SQL project/DACPAC deployment, per-Node DbContext, query discipline, testing discipline, migration-path-away mechanism).
+- **`HoneyDrunk.Data/README.md`** — new ORM Commitment section citing ADR-0072 with the full content (EF Core default, Dapper scoped exception, EF Migrations, per-Node DbContext, query discipline, testing discipline, migration-path-away mechanism).
 - **`HoneyDrunk.Data.Abstractions/README.md`** — new ORM Stance paragraph citing ADR-0072 D1/D7.
 - **`HoneyDrunk.Data.EntityFramework/README.md`** — new ADR-0072 Ratification paragraph naming this package as the default implementation per D1.
 - **`HoneyDrunk.Data/CHANGELOG.md`** — conditional ratification entry. Default Option (a) — defer the CHANGELOG line to the next release that requires a version bump for non-docs reasons. Option (b) — bump patch with new dated section. Operator's choice; record in PR body.
@@ -87,7 +87,7 @@ ADR-0072 and ADR-0048 are tightly coupled by topic. The two initiatives ship cou
 
 - **`database` specialist agent file** — authored by `adr-0048-schema-evolution` packet 02. ADR-0072's packet 02 extends its rubric. **Hard textual gate**: packet 02 here waits for the sibling to merge.
 - **`review.md` D3 category 13** — `adr-0048-schema-evolution` packet 03 adds a delegation stanza; ADR-0072's packet 01 adds the EF / Dapper discipline checks. Different sub-sections; additive; no gate.
-- **`integration-points.md` per-Node** — `adr-0048-schema-evolution` packet 01 adds `## Schema Deployment Coordination`; ADR-0072's packet 03b adds Data-Access Stance as a sibling section. **Hard textual gate**: packet 03b here waits for the sibling to merge.
+- **`integration-points.md` per-Node** — `adr-0048-schema-evolution` packet 01 adds `## Migration Coordination`; ADR-0072's packet 03b adds Data-Access Stance as a sibling section. **Hard textual gate**: packet 03b here waits for the sibling to merge.
 - **`catalogs/grid-health.json` `schema_evolution` field** — added by `adr-0048-schema-evolution` packet 01. ADR-0072's stance overlaps semantically; no separate field added. Packet 03b reads the field to determine per-Node defaults — another reason for the sibling gate.
 
 Standalone ADR-0072 packets (00, 01, 03a, 04) can land in any order relative to ADR-0048. The two gated packets (02, 03b) require the sibling artifacts to exist on `main` first; the filing pipeline cannot wire cross-initiative `work-item:NN` references, so the executor enforces the gate at PR-open time.

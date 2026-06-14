@@ -1,5 +1,5 @@
 ---
-title: Reconcile filed ADR-0048 schema-deployment packets with DACPAC policy
+title: Reconcile historical ADR-0048 schema-deployment artifacts with DACPAC policy
 target_repo: HoneyDrunkStudios/HoneyDrunk.Architecture
 wave: 1
 initiative: standalone
@@ -12,7 +12,7 @@ source: reactive
 generator: codex
 ---
 
-# Reconcile filed ADR-0048 schema-deployment packets with DACPAC policy
+# Reconcile historical ADR-0048 schema-deployment artifacts with DACPAC policy
 
 ## Summary
 
@@ -21,14 +21,15 @@ production schema-deployment standard. Several ADR-0048 rollout packets were
 filed before that correction and still describe EF migration scripts, rollback
 attributes, or migration-runner work.
 
-Do not rewrite those filed packet bodies in place. Reconcile them through issue
-comments, project-state updates, or replacement packets so filed packet history
-remains auditable.
+Do not rewrite those filed packet bodies or read-once handoff artifacts in place.
+Reconcile them through issue comments, project-state updates, dispatch-plan notes,
+or replacement packets so historical work tracking remains auditable.
 
 ## Context
 
-Grid Review on PR #631 flagged that already-filed work items must remain
-immutable after filing. The affected filed packet paths include:
+Grid Review on PR #631 flagged that already-filed work items and historical
+handoff artifacts must remain immutable after filing/emission. The affected
+filed packet paths include:
 
 - `generated/work-items/active/adr-0048-schema-evolution/05-actions-migrate-yml-reusable-workflow.md`
   mapped to HoneyDrunk.Actions issue #124.
@@ -39,9 +40,9 @@ immutable after filing. The affected filed packet paths include:
 - Other ADR-0048 and ADR-0072 filed packets that mention EF migration mechanics
   remain historical filed scope unless their owning issue is explicitly updated.
 
-The current ADR text, dispatch plan, and handoff notes carry the corrected
-policy. This packet exists to reconcile the already-filed issue state without
-mutating the original filed packet text.
+The current ADR text and living dispatch plan carry the corrected policy. This
+packet exists to reconcile already-filed issue state and historical handoffs
+without mutating their original text.
 
 ## Scope
 
@@ -59,13 +60,14 @@ mutating the original filed packet text.
     HoneyDrunk.Actions only.
   - PR-body `RollbackStrategy` metadata instead of a shared C# rollback
     attribute.
-- Do not edit filed packet bodies solely to change their historical scope.
+- Do not edit filed packet bodies or read-once handoff artifacts solely to
+  change their historical scope.
 
 ## Acceptance Criteria
 
 - Filed packet files mapped in `generated/work-items/filed-work-items.json`
-  are unchanged except for future lifecycle moves performed by the standard Hive
-  workflow.
+  and historical `handoff-*.md` files are unchanged except for future lifecycle
+  moves performed by the standard Hive workflow.
 - Superseded ADR-0048 issue state is auditable from GitHub comments or project
   fields, not from rewritten packet text.
 - Any replacement implementation packet uses SQL project/DACPAC terminology and
