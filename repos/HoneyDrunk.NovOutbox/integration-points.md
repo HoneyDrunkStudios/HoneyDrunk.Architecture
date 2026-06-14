@@ -8,6 +8,8 @@
 - `HoneyDrunk.Web.Rest`: response envelopes, correlation IDs, and exception mapping.
 - `HoneyDrunk.Communications.Abstractions`: message intent orchestration and send/suppress/schedule decisions.
 - `HoneyDrunk.Notify.Abstractions`: delivery smoke tests and diagnostics where direct delivery validation is necessary.
+- `HoneyDrunk.Data.EntityFramework`, `HoneyDrunk.Data.Outbox`, and `HoneyDrunk.Data.Outbox.Dispatcher`: durable NovOutbox persistence, outbox writes, and committed-row dispatch.
+- `HoneyDrunk.Transport`, `HoneyDrunk.Transport.AzureServiceBus`, and `HoneyDrunk.Transport.InMemory`: production Azure Service Bus dispatch and Development/test in-memory dispatch for committed outbox work.
 - `HoneyDrunk.Actions`: reusable CI, security, package, review, and deployment workflows.
 - `HoneyDrunk.Infrastructure`: Azure Container Apps deployment templates once the product has a deployable shape.
 

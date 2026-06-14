@@ -15,7 +15,7 @@
     {
       "id": "honeydrunk-transport",
       "consumes": ["honeydrunk-kernel"],
-      "consumed_by": ["honeydrunk-web-rest", "honeydrunk-data"],
+      "consumed_by": ["honeydrunk-web-rest", "honeydrunk-data", "honeydrunk-novoutbox"],
       "consumed_by_planned": ["honeydrunk-flow"],
       "blocked_by": [],
       "exposes": {
@@ -89,7 +89,7 @@
     {
       "id": "honeydrunk-data",
       "consumes": ["honeydrunk-kernel", "honeydrunk-transport"],
-      "consumed_by": [],
+      "consumed_by": ["honeydrunk-novoutbox"],
       "consumed_by_planned": ["honeydrunk-memory", "honeydrunk-knowledge", "honeydrunk-flow", "honeydrunk-operator", "honeydrunk-audit"],
       "blocked_by": [],
       "exposes": {
@@ -177,7 +177,7 @@
     },
     {
       "id": "honeydrunk-novoutbox",
-      "consumes": ["honeydrunk-kernel", "honeydrunk-auth", "honeydrunk-vault", "honeydrunk-web-rest", "honeydrunk-communications", "honeydrunk-notify"],
+      "consumes": ["honeydrunk-kernel", "honeydrunk-auth", "honeydrunk-vault", "honeydrunk-web-rest", "honeydrunk-communications", "honeydrunk-notify", "honeydrunk-data", "honeydrunk-transport"],
       "consumed_by": [],
       "consumed_by_planned": [],
       "blocked_by": [
@@ -195,7 +195,9 @@
         "honeydrunk-vault": ["tenant-scoped secret resolution", "HoneyDrunk.Vault"],
         "honeydrunk-web-rest": ["response envelopes", "correlation IDs", "exception mapping", "HoneyDrunk.Web.Rest"],
         "honeydrunk-communications": ["ICommunicationOrchestrator", "HoneyDrunk.Communications.Abstractions"],
-        "honeydrunk-notify": ["INotificationSender for diagnostics and smoke paths", "HoneyDrunk.Notify.Abstractions"]
+        "honeydrunk-notify": ["INotificationSender for diagnostics and smoke paths", "HoneyDrunk.Notify.Abstractions"],
+        "honeydrunk-data": ["HoneyDrunk.Data.EntityFramework", "HoneyDrunk.Data.Outbox", "HoneyDrunk.Data.Outbox.Dispatcher", "IOutboxWriter", "IOutboxReader"],
+        "honeydrunk-transport": ["ITransportPublisher", "HoneyDrunk.Transport", "HoneyDrunk.Transport.AzureServiceBus", "HoneyDrunk.Transport.InMemory"]
       }
     },
     {
