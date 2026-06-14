@@ -36,16 +36,16 @@ Rationale recorded in Alternatives Considered. The short version: Stripe is the 
 
 ### D2 — Billing-events flow: emitter → buffer → Stripe Meters
 
-`IBillingEventEmitter` (Kernel.Abstractions, ADR-0026) is the source of all metered consumption events. The default implementation writes to an **append-only buffer Node** (a `HoneyDrunk.Billing` Node, scoped as a follow-up standup ADR). The buffer drains to **Stripe Meter Events** on a near-real-time cadence (≤60 seconds) via the Stripe `/v1/billing/meter_events` API.
+`IBillingEventEmitter` (Kernel.Abstractions, ADR-0026) is the source of all metered consumption events. The default provider implementation lives behind **HoneyDrunk.Payments**. The first implementation, `HoneyDrunk.Payments.Stripe`, drains eligible usage to **Stripe Meter Events** on a near-real-time cadence (≤60 seconds) via the Stripe `/v1/billing/meter_events` API; durable buffering remains a Payments implementation detail when required by the product slice.
 
 Properties of the pipe:
 
 - **Idempotent end-to-end.** Per ADR-0042 (Idempotency Contract), each `BillingEvent` carries an `IdempotencyKey`; the buffer dedupes on it; the Stripe push uses the same key as Stripe's `Idempotency-Key` header.
 - **At-least-once into Stripe, exactly-once into the invoice.** Stripe Meters deduplicates by event ID; double-pushes are safe.
 - **Buffered.** Stripe's API and the meter-events ingestion endpoint can be unavailable; the buffer absorbs outages without dropping events. Buffer durability tier is Tier 0 per ADR-0036.
-- **Audit-emitting.** Every meter-event push is also an Audit emit per ADR-0030 (Auth was named the first emitter; Billing is the second).
+- **Audit-emitting.** Every meter-event push is also an Audit emit per ADR-0030 where the composed product host provides an audit sink.
 
-`HoneyDrunk.Billing` is the new Node that owns this pipe. Its standup follows the AI-sector standup pattern (Abstractions-first, contract-shape canary, frozen interfaces). Standup ADR is a follow-up.
+`HoneyDrunk.Payments` is the new Node that owns this provider boundary. It stands up Abstractions-first with provider packages behind those contracts.
 
 ### D3 — Subscription model
 
@@ -55,7 +55,7 @@ Properties of the pipe:
 
 ### D4 — Webhooks: single handler per environment
 
-A single **Stripe webhook endpoint per environment** (dev/staging/prod) lives in `HoneyDrunk.Billing.Webhooks` (a Function App in the Notify shape per ADR-0015). The handler validates the Stripe signature, persists the raw event in the buffer (D2), and emits a domain event (`SubscriptionStarted`, `InvoicePaymentFailed`, `CustomerCardExpiring`, etc.) onto the Service Bus default topic per ADR-0028.
+A single **Stripe webhook endpoint per environment** (dev/staging/prod) lives behind the Payments provider boundary. The handler validates the Stripe signature through `HoneyDrunk.Payments.Stripe`, persists the raw event where the host requires durability, and emits a domain event (`SubscriptionStarted`, `InvoicePaymentFailed`, `CustomerCardExpiring`, etc.) onto the Service Bus default topic per ADR-0028.
 
 Domain consumers (Notify Cloud's tenant gateway, the relevant consumer app's account service) subscribe to the topic. **No Node subscribes to Stripe directly.** This preserves the ADR-0028 broker-default rule and keeps Stripe out of every consumer's dependency surface.
 
@@ -63,7 +63,7 @@ Domain consumers (Notify Cloud's tenant gateway, the relevant consumer app's acc
 
 - For **B2B**, the canonical Notify Cloud tenant record holds `stripe_customer_id` and `stripe_subscription_id`. TenantId is generated in the Grid; the Stripe customer is created on first checkout. `TenantId` and Stripe customer are 1:1.
 - For **B2C**, the consumer app's user record (homed in whichever consumer Node owns identity) holds `stripe_customer_id`. The user is the principal; there is no tenant.
-- **Auth (ADR-0030 emitter)** does not hold Stripe identifiers. The boundary is: Auth owns principal identity, Billing owns the Stripe mapping, and the binding is via `PrincipalId` keys.
+- **Auth (ADR-0030 emitter)** does not hold Stripe identifiers. The boundary is: Auth owns principal identity, product nodes own product subscription binding state, and Payments owns provider transport plus normalized provider snapshots.
 
 ### D6 — Tax: Stripe Tax with nexus tracking; no manual rates
 
@@ -86,15 +86,15 @@ Apple App Store and Google Play Store mandate IAP for digital subscriptions sold
 
 The IAP integration is a follow-up ADR tied to the mobile-platform ADR (currently in backlog). This ADR commits the principle; the mechanism is downstream.
 
-### D9 — `HoneyDrunk.Billing` Node placement
+### D9 — `HoneyDrunk.Payments` Node placement
 
 Sector: **Ops**, adjacent to Notify/Communications/Pulse. The Node holds:
 
-- `HoneyDrunk.Billing.Abstractions` — `IBillingMeterPipe`, `IBillingCustomerStore`, `IStripeEventHandler`, `BillingMeterEvent`, `BillingCustomerBinding`. The Kernel-level `IBillingEventEmitter` is the **upstream** interface; this Node's interfaces are the **downstream** (Stripe-facing) surface.
-- `HoneyDrunk.Billing.Stripe` — Stripe-specific implementation.
-- `HoneyDrunk.Billing.Webhooks` — Function App per ADR-0015.
+- `HoneyDrunk.Payments.Abstractions` — provider-neutral checkout, subscription lifecycle, webhook normalization, and invoice reconciliation contracts. The Kernel-level `IBillingEventEmitter` remains the upstream usage-emission interface.
+- `HoneyDrunk.Payments.Stripe` — Stripe-specific implementation.
+- Future `HoneyDrunk.Payments.Webhooks` or product-hosted webhook endpoints — runtime endpoints that compose provider validators and publish normalized events.
 
-`HoneyDrunk.Billing.Cloud` (private per ADR-0027 D2) carries the multi-tenant gateway concerns specific to Notify Cloud's billing surfaces. Optional; may be folded into Notify.Cloud if the boundary doesn't justify a separate Node.
+Product nodes such as NovOutbox carry multi-tenant gateway concerns, tier policy, and subscription-state persistence specific to their product surface.
 
 ### D10 — Test mode and synthetic tenants
 
@@ -104,34 +104,34 @@ Stripe test mode is wired through `dev` and `staging` per environment-scoped Str
 
 ### Affected Nodes
 
-- **HoneyDrunk.Billing** (new) — full standup, Abstractions-first, parallel to AI-sector standup pattern.
+- **HoneyDrunk.Payments** (new) — provider-neutral payment contracts and provider implementations.
 - **HoneyDrunk.Kernel.Abstractions** — no change; `IBillingEventEmitter` shape is intact.
-- **HoneyDrunk.Auth** — no Stripe coupling; the principal/customer mapping lives in Billing.
-- **HoneyDrunk.Notify.Cloud** — depends on Billing for subscription state, meter ingestion, and webhook-driven tier changes.
+- **HoneyDrunk.Auth** — no Stripe coupling; the principal/customer mapping lives in product state and Payments snapshots.
+- **HoneyDrunk.NovOutbox** — depends on Payments for provider contracts and the first Stripe implementation while retaining product subscription state.
 - **HoneyDrunk.Vault** — holds Stripe API keys (per environment) and webhook signing secrets.
-- **HoneyDrunk.Audit** — Billing becomes its second emitter (after Auth, ADR-0031).
-- **Consumer-app Nodes** (designed, not yet scaffolded — PDR-0003, etc.) — depend on Billing for web subscriptions; depend on the future mobile-IAP ADR for in-app subscriptions.
-- **catalogs/relationships.json** — gains edges: Billing→Vault, Billing→Audit, NotifyCloud→Billing, future consumer apps→Billing.
+- **HoneyDrunk.Audit** — product hosts may emit audit events for payment-provider lifecycle changes.
+- **Consumer-app Nodes** (designed, not yet scaffolded — PDR-0003, etc.) — depend on Payments for web subscriptions; depend on the future mobile-IAP ADR for in-app subscriptions.
+- **catalogs/relationships.json** — gains edges: Payments -> Kernel and NovOutbox -> Payments, with future consumer apps -> Payments.
 
 ### Invariants
 
 Adds three:
 
 - **Invariant: card data never enters the Grid.** All card capture is Stripe-hosted; the Grid stores only Stripe identifiers and payment-method IDs. Maintains PCI SAQ A scope.
-- **Invariant: no Node subscribes to Stripe webhooks directly.** Webhooks land in Billing.Webhooks; domain events flow on the Service Bus default topic per ADR-0028.
+- **Invariant: no product Node depends on Stripe SDK webhook semantics directly.** Stripe webhook validation lives behind `HoneyDrunk.Payments.Stripe`; normalized domain events flow on the Service Bus default topic per ADR-0028 where cross-node fan-out is required.
 - **Invariant: Stripe test-mode keys never reach production.** CI gate on Vault key-environment binding.
 
 ### Operational Consequences
 
 - Stripe fees (~2.9% + $0.30 per US card transaction at standard pricing, Stripe Tax 0.5% additive) are a permanent gross-margin reduction. Acceptable cost of doing business; not relitigated.
 - Stripe Tax registration in additional states triggers as nexus thresholds cross. The Studio operator is responsible for completing the registration; Stripe Tax flags it but doesn't file it.
-- Annual Stripe API version pinning: the Billing Node pins a Stripe API version explicitly (not "latest"); upgrades are a small, deliberate ADR amendment.
+- Annual Stripe API version pinning: the Payments Stripe provider pins a Stripe API version explicitly (not "latest"); upgrades are a small, deliberate ADR amendment.
 - Subscription lifecycle events (`canceled`, `paused`, `unpaid`) gate Notify Cloud tenant access. The webhook handler and the Notify Cloud gateway must agree on the entitlement view; eventual consistency on the order of seconds is acceptable, but the Audit log captures both sides.
 - The buffer in D2 introduces a billing-relevant durable store; it lives in Tier 0 per ADR-0036.
 
 ### Follow-up Work
 
-- Author the `HoneyDrunk.Billing` standup ADR (Abstractions-first, frozen contracts).
+- Stand up `HoneyDrunk.Payments` with provider-neutral abstractions and Stripe implementation.
 - Author the mobile-IAP ADR (D8); blocked on the mobile-platform ADR.
 - Author the accounting-software BDR (D6, downstream of tax remittance reporting).
 - Provision Stripe accounts (live + test) under the Studio entity; bind to Studio bank account per BDR-0001.

@@ -6,6 +6,8 @@
 **Sector:** Ops
 
 > **Naming update (2026-06-13):** **NovOutbox** supersedes the earlier customer-facing names **HoneyDrunk Notify** and **Notify Cloud**. The private technical repo and package family are now confirmed as `HoneyDrunk.NovOutbox`. `HoneyDrunk.Notify.Cloud` remains historical planning language only.
+>
+> **Payments update (2026-06-14):** reusable Stripe/payment-provider integration moved to the shared `HoneyDrunk.Payments` repo. NovOutbox composes `HoneyDrunk.Payments.Abstractions` and `HoneyDrunk.Payments.Stripe`; it does not own `HoneyDrunk.NovOutbox.Billing.Stripe`.
 
 ## If Accepted — Required Follow-Up Work in Architecture Repo
 
@@ -13,7 +15,7 @@ Accepting this ADR creates catalog and cross-repo obligations that must be compl
 
 - [ ] Create `HoneyDrunk.NovOutbox` GitHub repo as **private** (human-only step — first private repo in the Grid; see D2 for justification)
 - [ ] Choose and apply the open-source license decided in D11 to `HoneyDrunk.Notify`, `HoneyDrunk.Notify.Client`, and `HoneyDrunk.Communications` repos (LICENSE file commit + repo description update)
-- [ ] Scaffold packet — solution structure with `HoneyDrunk.NovOutbox.Abstractions`, `HoneyDrunk.NovOutbox`, `HoneyDrunk.NovOutbox.Billing.Stripe`, `HoneyDrunk.NovOutbox.Web`, `HoneyDrunk.NovOutbox.AppHost`; HoneyDrunk.Standards wiring; CI pipeline via HoneyDrunk.Actions shared workflows; in-memory fixtures for the API key store and rate-limit policy
+- [ ] Scaffold packet — solution structure with `HoneyDrunk.NovOutbox.Abstractions`, `HoneyDrunk.NovOutbox`, `HoneyDrunk.NovOutbox.Web`, `HoneyDrunk.NovOutbox.AppHost`, and composition references to `HoneyDrunk.Payments.Abstractions` / `HoneyDrunk.Payments.Stripe`; HoneyDrunk.Standards wiring; CI pipeline via HoneyDrunk.Actions shared workflows; in-memory fixtures for the API key store and rate-limit policy
 - [ ] Create `repos/HoneyDrunk.NovOutbox/` context folder in the Architecture repo (`overview.md`, `boundaries.md`, `invariants.md`, `active-work.md`, `integration-points.md`)
 - [ ] Add `honeydrunk-novoutbox` Node entry to `catalogs/nodes.json` with a `visibility: private` field (catalog schema gains a new field — absence means public)
 - [ ] Add `honeydrunk-novoutbox` entries to `catalogs/relationships.json`, `catalogs/grid-health.json`, `catalogs/contracts.json`, and `catalogs/modules.json`
@@ -66,7 +68,7 @@ The NovOutbox Node ships the following package families, mirroring the package-f
 
 - `HoneyDrunk.NovOutbox.Abstractions` — all NovOutbox-specific interfaces and records (`INovOutboxGateway`, `INovOutboxApiKeyStore`, `NovOutboxTenantTier`, `NovOutboxApiKeyIssuance`, `NovOutboxSubmitResult`). Zero runtime dependencies beyond `HoneyDrunk.Kernel.Abstractions`, `HoneyDrunk.Notify.Abstractions`, and `HoneyDrunk.Communications.Abstractions`. **Does not** declare `TenantId`, `BillingEvent`, `IBillingEventEmitter`, `ITenantRateLimitPolicy`, or `TenantRateLimitDecision` — those primitives live in `HoneyDrunk.Kernel.Abstractions.Tenancy` per ADR-0026.
 - `HoneyDrunk.NovOutbox` — runtime composition: default `INovOutboxGateway` implementation, API key validation middleware, the NovOutbox-specific `ITenantRateLimitPolicy` implementation (replacing Kernel's `NoopTenantRateLimitPolicy`), billing-event emission, and DI wiring.
-- `HoneyDrunk.NovOutbox.Billing.Stripe` — Stripe-specific billing adapter implementing `IBillingEventEmitter` (the Kernel.Abstractions interface) for the Stripe metered-billing bridge. Provider-slot pattern; alternative billing providers (Paddle, LemonSqueezy) can be added as additional `Billing.*` packages later without touching the core.
+- `HoneyDrunk.Payments.Abstractions` / `HoneyDrunk.Payments.Stripe` — shared provider-neutral payment contracts and the first Stripe.NET provider implementation. NovOutbox composes these packages at host time instead of shipping a product-specific Stripe adapter.
 - `HoneyDrunk.NovOutbox.Web` — customer API and console (signup, billing, API key issuance, basic delivery logs). The web stack is Blazor Web App / Blazor Server aligned with the .NET-native stack.
 - `HoneyDrunk.NovOutbox.AppHost` — Aspire local-development host only. Production deployment remains Azure Container Apps via curated infrastructure and Actions workflows.
 
@@ -88,7 +90,7 @@ Five surfaces form the NovOutbox Node's public boundary inside the Grid: **two i
 
 - `TenantId` (and `TenantId.Internal` sentinel)
 - `ITenantRateLimitPolicy` and `TenantRateLimitDecision` — NovOutbox ships a tier-driven implementation that replaces the `NoopTenantRateLimitPolicy` registration at host time
-- `IBillingEventEmitter` and `BillingEvent` — NovOutbox ships the Stripe implementation in `HoneyDrunk.NovOutbox.Billing.Stripe`
+- `IBillingEventEmitter` and `BillingEvent` — NovOutbox emits usage through Kernel primitives and composes the Stripe implementation from `HoneyDrunk.Payments.Stripe`
 
 This is the single most important boundary call in this stand-up: the multi-tenant primitives are Grid-wide, not NovOutbox-specific. NovOutbox is the first *real* (non-noop) implementation of `ITenantRateLimitPolicy` and the first *real* implementation of `IBillingEventEmitter` in the Grid, but it does not own those contracts.
 
@@ -162,7 +164,7 @@ Internally, the wrapper itself composes against:
 - `HoneyDrunk.Communications.Abstractions` for orchestration delegation.
 - `HoneyDrunk.Notify.Abstractions` for diagnostic / smoke-test paths only.
 - `HoneyDrunk.Kernel.Abstractions` for tenant context, lifecycle, telemetry.
-- Provider packages composed at host time (`HoneyDrunk.NovOutbox.Billing.Stripe`, etc.).
+- Provider packages composed at host time (`HoneyDrunk.Payments.Stripe`, future Payments providers, etc.).
 
 Production composition is a **host-time concern** in the NovOutbox Container App: which billing provider is active, which API key store backend is wired (default: a hashed table in `HoneyDrunk.Data` per the Grid Multi-Tenant Primitives ADR), which rate-limit policy backend is in force.
 
@@ -213,7 +215,7 @@ The detailed API key authentication pattern — middleware shape, hashing scheme
 
 Per the standup-ADR convention, the scaffolding work is a follow-up packet, not part of this ADR's text. But the first PR must produce a known, audited shape so the scaffold is reviewable. The first PR contains:
 
-- **Solution layout:** `HoneyDrunk.NovOutbox.slnx` with five root-level projects (`HoneyDrunk.NovOutbox.Abstractions`, `HoneyDrunk.NovOutbox`, `HoneyDrunk.NovOutbox.Billing.Stripe`, `HoneyDrunk.NovOutbox.Web`, `HoneyDrunk.NovOutbox.AppHost`) and matching focused `.Tests` projects where useful per the testing-invariant pattern.
+- **Solution layout:** `HoneyDrunk.NovOutbox.slnx` with root-level projects (`HoneyDrunk.NovOutbox.Abstractions`, `HoneyDrunk.NovOutbox`, `HoneyDrunk.NovOutbox.Web`, `HoneyDrunk.NovOutbox.AppHost`) and matching focused `.Tests` projects where useful per the testing-invariant pattern. Stripe/payment-provider integration is composed from `HoneyDrunk.Payments`.
 - **HoneyDrunk.Standards wiring** on every project (analyzers, EditorConfig, `PrivateAssets: all`).
 - **CI pipeline** consuming HoneyDrunk.Actions shared workflows — build, test, security scan, contract-shape canary (D8), provider-contract canary, package scan.
 - **`README.md` per package** describing purpose, installation, public API surface (Invariant 12).
@@ -235,7 +237,7 @@ This ADR is "Done" when all of the following are true:
 - [ ] `HoneyDrunk.NovOutbox` private repo created with the structure described in D13.
 - [ ] `HoneyDrunk.NovOutbox.Abstractions 0.1.0` is published (private feed, not public NuGet) with the contracts in D4.
 - [ ] `HoneyDrunk.NovOutbox 0.1.0` runtime ships with default in-memory composition.
-- [ ] `HoneyDrunk.NovOutbox.Billing.Stripe 0.1.0` ships as a stub adapter (interface implemented, runtime wiring deferred to its own ADR).
+- [ ] `HoneyDrunk.Payments.Stripe 0.1.0` is available for NovOutbox host composition, with provider-neutral contracts in `HoneyDrunk.Payments.Abstractions`.
 - [ ] `HoneyDrunk.NovOutbox.Web 0.1.0` ships as a placeholder web app (health endpoint + signup form scaffold; full surface deferred).
 - [ ] NovOutbox's CI includes the D8 contract-shape canary and it is green.
 - [ ] FSL LICENSE files committed to `HoneyDrunk.Notify`, `HoneyDrunk.Notify.Client`'s NuGet metadata, and `HoneyDrunk.Communications`.

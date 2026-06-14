@@ -193,16 +193,30 @@
       ]
     },
     {
-      "node": "honeydrunk-novoutbox",
-      "node_name": "HoneyDrunk.NovOutbox",
-      "package": "HoneyDrunk.NovOutbox.Billing.Stripe",
+      "node": "honeydrunk-payments",
+      "node_name": "HoneyDrunk.Payments",
+      "package": "HoneyDrunk.Payments.Abstractions",
       "status": "seed",
       "interfaces": [
-        { "name": "IStripeMeteredBillingClient", "kind": "interface", "description": "Stripe meter-event transport boundary for accepted NovOutbox usage events." },
+        { "name": "IPaymentSubscriptionLifecycleClient", "kind": "interface", "description": "Provider-neutral checkout, subscription read, and subscription cancellation boundary for product nodes." },
+        { "name": "IPaymentWebhookEventValidator", "kind": "interface", "description": "Provider-neutral signed webhook validation and normalized event snapshot boundary." },
+        { "name": "IPaymentInvoiceReconciliationClient", "kind": "interface", "description": "Provider-neutral invoice reconciliation boundary for reading invoice payment and product metadata state." },
+        { "name": "PaymentCheckoutSessionRequest", "kind": "type", "description": "Provider-neutral hosted checkout session request carrying tenant, project, tier, provider price, redirect URLs, and non-PII metadata." },
+        { "name": "PaymentSubscriptionSnapshot", "kind": "type", "description": "Provider-neutral subscription snapshot with provider identifiers, product metadata, status, cancellation state, and raw metadata." },
+        { "name": "PaymentProviderNames", "kind": "type", "description": "Well-known payment provider names used when mapping provider-specific implementations into shared contracts." }
+      ]
+    },
+    {
+      "node": "honeydrunk-payments",
+      "node_name": "HoneyDrunk.Payments",
+      "package": "HoneyDrunk.Payments.Stripe",
+      "status": "seed",
+      "interfaces": [
+        { "name": "IStripeMeteredBillingClient", "kind": "interface", "description": "Stripe meter-event transport boundary for accepted usage events." },
         { "name": "IStripeSubscriptionLifecycleClient", "kind": "interface", "description": "Stripe Checkout subscription lifecycle boundary for creating subscription sessions, reading subscriptions, and canceling subscriptions." },
         { "name": "IStripeWebhookEventValidator", "kind": "interface", "description": "Signed Stripe webhook validation and normalized event snapshot boundary." },
-        { "name": "IStripeInvoiceReconciliationClient", "kind": "interface", "description": "Stripe invoice reconciliation boundary for reading invoice payment and NovOutbox metadata state." },
-        { "name": "StripeBillingClient", "kind": "type", "description": "Stripe.NET-backed implementation for meter events, Checkout subscriptions, webhook normalization, and invoice reconciliation." }
+        { "name": "IStripeInvoiceReconciliationClient", "kind": "interface", "description": "Stripe invoice reconciliation boundary for reading invoice payment and product metadata state." },
+        { "name": "StripeBillingClient", "kind": "type", "description": "Stripe.NET-backed implementation for meter events, Checkout subscriptions, webhook normalization, invoice reconciliation, and provider-neutral Payments contracts." }
       ]
     },
     {

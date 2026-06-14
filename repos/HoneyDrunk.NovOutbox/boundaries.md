@@ -7,7 +7,7 @@
 - Tenant/project model specific to the commercial product.
 - API-key issuance, rotation, revocation, and tenant resolution.
 - Tenant tier enforcement, quotas, and product rate limits.
-- Billing event emission and product billing adapter integration.
+- Billing event emission and product payment-provider integration.
 - Product-level audit/log views surfaced to customers.
 - Private repo automation smoke tests, branch protection, and package visibility validation.
 
@@ -20,6 +20,7 @@
 - General secret-store primitives; those belong to Vault.
 - General response-envelope and exception conventions; those belong to Web.Rest.
 - General telemetry substrate; that belongs to Pulse and Kernel telemetry primitives.
+- Payment-provider SDKs and provider-neutral payment contracts; those belong to Payments.
 
 ## Naming
 

@@ -18,7 +18,7 @@ Phase spine from PDR-0002 §Rollout (dates on `roadmap.md`).
 |-------|------|--------------------|-------|
 | P1 — Dependency unblock | Notify on Container Apps (staging) + Resend + queue backend; ADR-0019 both halves Accepted | ADR-0015 deploy; ADR-0019 | In progress |
 | P2 — Notify multi-tenant primitives | Gateway-layer middleware: tenant auth, per-tenant rate limits, billing emission, per-tenant Vault scoping (dispatch path unchanged) | Grid multi-tenant primitives ADR | Not started |
-| P3 — NovOutbox scaffold | `HoneyDrunk.NovOutbox` private repo standup + packages (`.Abstractions`/runtime/`.Billing.Stripe`/`.Web`) plus local-dev AppHost; Stripe metered billing (test); SDK remains in public `HoneyDrunk.Notify` | ADR-0027 Node standup; Stripe billing/SDK | Not started |
+| P3 — NovOutbox scaffold | `HoneyDrunk.NovOutbox` private repo standup + packages (`.Abstractions`/runtime/`.Web`) plus local-dev AppHost; compose `HoneyDrunk.Payments.Abstractions`/`.Stripe` for Stripe metered billing (test); SDK remains in public `HoneyDrunk.Notify` | ADR-0027 Node standup; Payments/Stripe billing SDK | Not started |
 | P4 — Soft launch | 10–20 beta tenants; manual provisioning; Stripe test mode | — (ops) | Not started |
 | P5 — Public launch (~2026-09-15) | Stripe live; Free + Starter + Pro tiers; signup flow | — (ops) | Not started |
 | P6 — Decision-point review (~2026-12-15) | Apply §K matrix: extend / maintenance / sunset | — (decision) | Not started |
@@ -31,7 +31,7 @@ Phase spine from PDR-0002 §Rollout (dates on `roadmap.md`).
 | **ADR-0019** Communications scaffold + Notify refactor (intake/routing split) | needed (Proposed; **hard prerequisite**) | — | multi-tenant primitives; Pro-tier wedge | P1 |
 | **Grid multi-tenant primitives ADR** (gateway middleware: tenant context, rate limits, billing, per-tenant Vault) | needed | ADR-0019 *accepted* (decision→decision) | ADR-0027 scaffold | P2 |
 | **ADR-0027** Stand up the NovOutbox wrapper Node (`HoneyDrunk.NovOutbox` private repo + packages) | needed (Proposed) | multi-tenant primitives *shipped* | Stripe billing; SDK; Web | P3 |
-| **Stripe billing + SDK** (`.Billing.Stripe`, `.Client`) | needed | ADR-0027 | soft launch | P3 |
+| **Payments/Stripe billing + SDK** (`HoneyDrunk.Payments.Stripe`, `.Client`) | needed | ADR-0027 | soft launch | P3 |
 
 **Status legend:** `needed → drafting → accepted → implemented`, or `gated`.
 

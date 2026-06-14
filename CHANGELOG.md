@@ -11,7 +11,7 @@ slug: architecture-changelog
 
 > **State note:** This unreleased section records multiple staged 2026-06-01/2026-06-02 updates; verify live secret/tunnel state before cutting a release note.
 
-- Reconciled the NovOutbox v1 catalog surface: expanded `HoneyDrunk.NovOutbox.Abstractions` contracts with console query, delivery handoff, usage emission, API-key summary, and project snapshot entries; added `HoneyDrunk.NovOutbox.Billing.Stripe` contract entries for metered billing, subscription lifecycle, webhook validation, invoice reconciliation, and the Stripe.NET-backed client; mirrored the relationship graph and repo integration notes.
+- Registered `HoneyDrunk.Payments` as the shared payment-provider boundary: added node/catalog entries, provider-neutral payment contracts, `HoneyDrunk.Payments.Stripe` as the Stripe.NET provider package, NovOutbox consumption edges, and repo context docs. This replaces the earlier NovOutbox-owned `HoneyDrunk.NovOutbox.Billing.Stripe` package shape.
 
 - Pointed the ADR-0086 `lore-signal-review` runner job at the `hive-activity` Discord channel (`Discord--HiveActivity--RunnerWebhookUrl`) to match the other runner jobs, and tidied its description/portability wording. **Operator:** confirm `Discord--HiveActivity--RunnerWebhookUrl` exists in the runner Key Vault before merge, or the job's notifications will break.
 

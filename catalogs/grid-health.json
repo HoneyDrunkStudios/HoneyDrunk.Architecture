@@ -207,6 +207,28 @@
       ]
     },
     {
+      "id": "honeydrunk-payments",
+      "name": "HoneyDrunk.Payments",
+      "sector": "Ops",
+      "signal": "Seed",
+      "version": "0.1.0",
+      "canary_status": "none",
+      "last_release": null,
+      "active_blockers": [
+        "Initial repo standup not yet merged",
+        "Package publishing and provider secret onboarding pending"
+      ],
+      "notes": "Shared payment-provider boundary. Abstractions and Stripe provider are in initial standup; product nodes should consume Payments abstractions instead of product-owned provider packages.",
+      "tracked_workflows": [
+        "pr.yml",
+        "pr-review.yml",
+        "nightly-security.yml",
+        "publish.yml",
+        "weekly-deps.yml",
+        "hive-field-mirror.yml"
+      ]
+    },
+    {
       "id": "honeydrunk-pulse",
       "name": "HoneyDrunk.Pulse",
       "sector": "Ops",
@@ -547,15 +569,16 @@
     }
   ],
   "summary": {
-    "total_nodes": 29,
+    "total_nodes": 30,
     "live": 14,
-    "seed": 15,
+    "seed": 16,
     "canary_passing": 14,
-    "canary_none": 13,
+    "canary_none": 14,
     "canary_failing": 0,
     "blocked_nodes": [
       "honeydrunk-vault-rotation",
       "honeydrunk-novoutbox",
+      "honeydrunk-payments",
       "honeydrunk-pulse",
       "honeydrunk-observe",
       "honeydrunk-actions",
