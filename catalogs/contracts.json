@@ -182,9 +182,27 @@
       "interfaces": [
         { "name": "INovOutboxGateway", "kind": "interface", "description": "Customer-facing hosted notification intake boundary. Resolves tenant/project/API-key context, applies product policy, and delegates approved message intents to Communications." },
         { "name": "INovOutboxApiKeyStore", "kind": "interface", "description": "Project-scoped API-key issuance, lookup, rotation, and revocation boundary for the NovOutbox product surface." },
+        { "name": "INovOutboxConsoleQueryStore", "kind": "interface", "description": "Customer-console read model boundary for resolving the authenticated project snapshot behind a validated project API key." },
+        { "name": "INovOutboxDeliveryHandoff", "kind": "interface", "description": "Accepted-submission handoff boundary that stages delivery work for downstream Communications dispatch." },
+        { "name": "INovOutboxUsageEmitter", "kind": "interface", "description": "Accepted-usage emission boundary for billing or analytics events after NovOutbox accepts a customer submission." },
         { "name": "NovOutboxTenantTier", "kind": "type", "description": "Commercial tenant tier shape used to drive quotas, rate-limit policy, feature availability, and billing behavior." },
         { "name": "NovOutboxApiKeyIssuance", "kind": "type", "description": "Result of issuing a project API key, including the persisted key id, one-time secret, tenant/project identity, and expiration or rotation metadata." },
+        { "name": "NovOutboxApiKeySummary", "kind": "type", "description": "Non-secret API-key summary for customer-console listing, current-key highlighting, and revocation workflows." },
+        { "name": "NovOutboxProjectSnapshot", "kind": "type", "description": "Customer-console project read model containing tenant/project identity, tier/quota usage, and non-secret API-key summaries." },
         { "name": "NovOutboxSubmitResult", "kind": "type", "description": "Customer-visible result of accepting, rejecting, suppressing, or scheduling a notification request." }
+      ]
+    },
+    {
+      "node": "honeydrunk-novoutbox",
+      "node_name": "HoneyDrunk.NovOutbox",
+      "package": "HoneyDrunk.NovOutbox.Billing.Stripe",
+      "status": "seed",
+      "interfaces": [
+        { "name": "IStripeMeteredBillingClient", "kind": "interface", "description": "Stripe meter-event transport boundary for accepted NovOutbox usage events." },
+        { "name": "IStripeSubscriptionLifecycleClient", "kind": "interface", "description": "Stripe Checkout subscription lifecycle boundary for creating subscription sessions, reading subscriptions, and canceling subscriptions." },
+        { "name": "IStripeWebhookEventValidator", "kind": "interface", "description": "Signed Stripe webhook validation and normalized event snapshot boundary." },
+        { "name": "IStripeInvoiceReconciliationClient", "kind": "interface", "description": "Stripe invoice reconciliation boundary for reading invoice payment and NovOutbox metadata state." },
+        { "name": "StripeBillingClient", "kind": "type", "description": "Stripe.NET-backed implementation for meter events, Checkout subscriptions, webhook normalization, and invoice reconciliation." }
       ]
     },
     {
