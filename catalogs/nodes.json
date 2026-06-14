@@ -559,7 +559,7 @@
       ],
       "monetization_signal": "Primary first commercial validation path for HoneyDrunk.OS.",
       "roadmap_focus": "Bootstrap the private repo, prove API-key tenant resolution, enforce tenant tier limits, emit billable usage events, and run the first beta customer path end to end.",
-      "grid_relationship": "Consumes Kernel tenancy/rate-limit/billing primitives, Auth API-key validation, Vault secret boundaries, Web.Rest response conventions, Communications orchestration, Notify delivery abstractions, Data EF/outbox persistence and dispatch, Transport Azure Service Bus/InMemory publishing, and Pulse/OpenTelemetry signals.",
+      "grid_relationship": "Consumes Kernel tenancy/rate-limit/billing primitives, Auth API-key validation, Vault secret boundaries, Web.Rest response conventions, Communications orchestration, Notify delivery abstractions, Data EF Core/outbox persistence and dispatch, Transport Azure Service Bus/InMemory publishing, and Pulse/OpenTelemetry signals.",
       "integration_depth": "deep",
       "demo_path": "Customer signs up -> creates a project -> issues an API key -> sends a notification event -> NovOutbox authenticates and rate-limits -> Communications decides -> Notify delivers -> usage and logs appear in the console.",
       "signal_quote": "One outbox for every customer message.",

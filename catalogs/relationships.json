@@ -196,7 +196,7 @@
         "honeydrunk-web-rest": ["response envelopes", "correlation IDs", "exception mapping", "HoneyDrunk.Web.Rest"],
         "honeydrunk-communications": ["ICommunicationOrchestrator", "HoneyDrunk.Communications.Abstractions"],
         "honeydrunk-notify": ["INotificationSender for diagnostics and smoke paths", "HoneyDrunk.Notify.Abstractions"],
-        "honeydrunk-data": ["HoneyDrunk.Data.EntityFramework", "HoneyDrunk.Data.Outbox", "HoneyDrunk.Data.Outbox.Dispatcher", "IOutboxWriter", "IOutboxReader"],
+        "honeydrunk-data": ["HoneyDrunk.Data.EntityFramework", "HoneyDrunk.Data.Outbox", "HoneyDrunk.Data.Outbox.Dispatcher", "IOutboxStore", "IOutboxDispatcher"],
         "honeydrunk-transport": ["ITransportPublisher", "HoneyDrunk.Transport", "HoneyDrunk.Transport.AzureServiceBus", "HoneyDrunk.Transport.InMemory"]
       }
     },
