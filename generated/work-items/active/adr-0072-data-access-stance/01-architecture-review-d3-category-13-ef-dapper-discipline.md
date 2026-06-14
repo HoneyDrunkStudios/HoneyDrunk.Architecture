@@ -43,9 +43,9 @@ This packet appends:
 - **Generalist (this packet)** — "Is this a data-layer change? Does it look like it follows the conventions? If not, flag for depth review."
 - **Specialist (packet 02)** — "Is this Dapper introduction backed by evidence? Is the EF query genuinely worse? Are the benchmark numbers credible?"
 
-**Coupling with sibling initiative `adr-0048-schema-evolution`.** ADR-0048's packet 03 also edits `review.md` D3 category 13 — to delegate depth review of schema-touching PRs to the `database` specialist. The two packets edit the same category but different sections of it:
+**Coupling with sibling initiative `adr-0048-schema-evolution`.** ADR-0048's packet 03 also edits `review.md` D3 category 13 — to delegate depth review of migration-touching PRs to the `database` specialist. The two packets edit the same category but different sections of it:
 
-- ADR-0048's packet 03 adds a delegation stanza at the end of category 13 ("for schema-touching PRs, delegate to `database`").
+- ADR-0048's packet 03 adds a delegation stanza at the end of category 13 ("for migration-touching PRs, delegate to `database`").
 - This packet adds query-discipline checks alongside the existing data-correctness / migration-safety / multi-tenant-integrity bullets, and adds a Dapper-introduction surface check.
 
 The two edits are additive and order-tolerant. If ADR-0048's packet 03 lands first, this packet's additions land alongside the existing delegation stanza. If this packet lands first, ADR-0048's packet 03 adds its delegation stanza below the query-discipline section. Neither replaces the other's content.
@@ -72,7 +72,7 @@ This is a docs/agent-configuration packet. No code, no .NET project.
 3. **Add a new sub-section under category 13** titled **"Dapper-evidence burden (per ADR-0072 D2)"**, with the following surface checks. Match the file's existing format:
 
    - **Dapper introductions are flagged for specialist review.** A new `using Dapper;` directive or a new `IDbConnection.Query<T>` / `QueryAsync<T>` call invokes Dapper. The surface check detects this and notes: "Dapper introduction detected — depth review by the `database` specialist agent is required per ADR-0072 D2."
-   - **Dapper-write paths are rejected at the surface.** Dapper writes (`Execute`, `ExecuteAsync`) are scoped out by ADR-0072 D2: writes go through EF Core's DbContext. The surface check rejects Dapper-write introductions as a **Block** finding with the recommendation: "Use EF Core's DbContext for writes; if a write genuinely requires raw SQL, use `SQL project pre/post-deployment scripts` (for schema changes) or `DbContext.Database.ExecuteSqlInterpolated(...)` (for runtime data-layer SQL that still wants EF's connection / transaction management)."
+   - **Dapper-write paths are rejected at the surface.** Dapper writes (`Execute`, `ExecuteAsync`) are scoped out by ADR-0072 D2: writes go through EF Core's DbContext. The surface check rejects Dapper-write introductions as a **Block** finding with the recommendation: "Use EF Core's DbContext for writes; if a write genuinely requires raw SQL, use `MigrationBuilder.Sql(...)` (for schema changes) or `DbContext.Database.ExecuteSqlInterpolated(...)` (for runtime data-layer SQL that still wants EF's connection / transaction management)."
    - **The evidence-burden checklist is named.** The surface check reminds the operator: "Dapper introductions require (a) the EF-generated query (paste it in the PR body or describe it), (b) the hand-written Dapper replacement, (c) benchmark numbers (BenchmarkDotNet or profiler evidence), and (d) the workload context (expected query frequency, expected row volume, the consuming caller). The `database` specialist agent verifies all four. Missing evidence is a **Block** finding at the specialist's depth review; the generalist's surface check just flags the introduction."
 
 4. **Add a brief connection-strings-from-Vault check** alongside the existing multi-tenant integrity sub-section, since both relate to the per-Node data-layer composition pattern (D4):
@@ -132,7 +132,7 @@ None.
 
 **ADR-0046 D1 — Specialists complement, do not replace, the `review` agent.** Specialist findings do not gate merge any more than the generalist's. The Dapper-evidence depth review under the `database` specialist (packet 02) is advisory; the merge gate stays with the human.
 
-**ADR-0048 D13 — `database` specialist agent.** Owns the depth review for schema-touching PRs (the seven-category checklist from D13). Sibling initiative `adr-0048-schema-evolution` packet 02 authors the agent file; this initiative's packet 02 extends the rubric with ADR-0072's ORM-choice and query-discipline categories.
+**ADR-0048 D13 — `database` specialist agent.** Owns the depth review for migration-touching PRs (the seven-category checklist from D13). Sibling initiative `adr-0048-schema-evolution` packet 02 authors the agent file; this initiative's packet 02 extends the rubric with ADR-0072's ORM-choice and query-discipline categories.
 
 **Invariants 2 and 11 (referenced) — Same-layer dependency rule and one-repo-per-Node.** Cross-Node DbContext references force a runtime dependency between Nodes at the same layer (violating invariant 2) and imply two Nodes co-owning a deployable surface (violating invariant 11). The surface check rejects them as **Block**.
 

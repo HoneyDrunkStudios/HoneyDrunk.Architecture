@@ -25,7 +25,7 @@ The `HoneyDrunk.Data` repo carries multiple packages:
 - **`HoneyDrunk.Data`** — provider-neutral orchestration.
 - **`HoneyDrunk.Data.EntityFramework`** — EF Core repository + unit-of-work implementation. The committed default per ADR-0072 D1.
 - **`HoneyDrunk.Data.SqlServer`** — SQL Server specialization (an EF Core provider package).
-- **`HoneyDrunk.Data.Migrations`** — schema deployment standard support.
+- **`HoneyDrunk.Data.Migrations`** — migration tool support.
 - **`HoneyDrunk.Data.Outbox`** / **`HoneyDrunk.Data.Outbox.Dispatcher`** — outbox pattern.
 
 The repo's current README (at `HoneyDrunk.Data/README.md`) and per-package READMEs do not yet cite ADR-0072 by ID. This packet adds the citations so the EF Core commitment is discoverable from the repo's documentation surface.
@@ -66,11 +66,11 @@ Read the current repo-level README to understand its structure. Add a new sectio
 
 Per [ADR-0072 (Data Access Stance)](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/blob/main/adrs/ADR-0072-data-access-stance-ef-core-default-dapper-hot-path.md), `HoneyDrunk.Data` ratifies **Entity Framework Core** as the implementation behind the `IRepository<T>` and `IUnitOfWork` contracts in `HoneyDrunk.Data.Abstractions`. The implementation lives in `HoneyDrunk.Data.EntityFramework`.
 
-**EF Core current LTS** tracks the .NET LTS cadence. Provider packages: `HoneyDrunk.Data.SqlServer` for SQL Server/Azure SQL backings. A future `HoneyDrunk.Data.Npgsql` requires a provider-specific schema-deployment ADR amendment or follow-up decision before adoption.
+**EF Core current LTS** tracks the .NET LTS cadence. Provider packages: `HoneyDrunk.Data.SqlServer` for SQL Server backings; a future `HoneyDrunk.Data.Npgsql` will exist if/when a consuming Node chooses Postgres. Both ride EF Core.
 
 **Dapper is the scoped exception** for hot-path read queries where EF generates poor SQL or where allocation matters. Per-Node, per-query. Mandatory evidence in the PR (EF query, Dapper query, benchmarks, workload context). Writes go through EF Core's DbContext — Dapper-write paths are not permitted.
 
-**Schema deployment standard is SQL project/DACPAC deployment** per [ADR-0048 (Schema Evolution)](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/blob/main/adrs/ADR-0048-data-schema-evolution-and-migration-policy.md). The per-Node `HoneyDrunk.<Node>.Database/` folder hosts schema-changing SQL project files; the canonical database deploy workflow is the `database-deploy-dacpac.yml` workflow in `HoneyDrunk.Actions`.
+**Migration tool is EF Migrations** per [ADR-0048 (Schema Evolution)](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/blob/main/adrs/ADR-0048-data-schema-evolution-and-migration-policy.md). The per-Node `Migrations/` folder hosts migration classes; the canonical migration runner is the `migrate.yml` workflow in `HoneyDrunk.Actions`.
 
 **Per-Node DbContext.** Each consuming Node owns its own `DbContext`. Sharing across Nodes is forbidden. Connection strings come from Vault via `ISecretStore` per [ADR-0005 (Configuration and Secrets)](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/blob/main/adrs/ADR-0005-configuration-and-secrets-strategy.md).
 
@@ -106,9 +106,9 @@ This package is the **default EF Core implementation** behind `IRepository<T>` a
 
 **Provider packages** (the EF Core providers) ride this implementation:
 - `HoneyDrunk.Data.SqlServer` — SQL Server backings via `Microsoft.EntityFrameworkCore.SqlServer`.
-- (future) `HoneyDrunk.Data.Npgsql` — PostgreSQL backings via `Microsoft.EntityFrameworkCore.Npgsql`, only after a provider-specific schema-deployment ADR amendment or follow-up decision.
+- (future) `HoneyDrunk.Data.Npgsql` — Postgres backings via `Microsoft.EntityFrameworkCore.Npgsql`, when first needed.
 
-**SQL project/DACPAC deployment** is the schema deployment standard per [ADR-0048 (Schema Evolution)](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/blob/main/adrs/ADR-0048-data-schema-evolution-and-migration-policy.md). The physical schema source lives in the consuming Node's `HoneyDrunk.<Node>.Database/` folder; the canonical database deploy workflow is the `database-deploy-dacpac.yml` workflow in `HoneyDrunk.Actions`.
+**EF Migrations** is the migration tool per [ADR-0048 (Schema Evolution)](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/blob/main/adrs/ADR-0048-data-schema-evolution-and-migration-policy.md). Per-Node migrations live in the consuming Node's `Migrations/` folder; the canonical migration runner is the `migrate.yml` workflow in `HoneyDrunk.Actions`.
 ```
 
 ### 4. Update `HoneyDrunk.Data/CHANGELOG.md`
@@ -146,7 +146,7 @@ None. This packet touches only Markdown documentation files; no .NET project fil
 - [x] No `contracts.json` interface change.
 
 ## Acceptance Criteria
-- [ ] `HoneyDrunk.Data/README.md` carries an "ORM Commitment" (or equivalent) section citing ADR-0072 with the full content named in Proposed Implementation Step 1 — EF Core default, Dapper scoped exception, SQL project/DACPAC deployment, per-Node DbContext, query discipline, testing discipline, migration-path-away mechanism
+- [ ] `HoneyDrunk.Data/README.md` carries an "ORM Commitment" (or equivalent) section citing ADR-0072 with the full content named in Proposed Implementation Step 1 — EF Core default, Dapper scoped exception, EF Migrations, per-Node DbContext, query discipline, testing discipline, migration-path-away mechanism
 - [ ] `HoneyDrunk.Data.Abstractions/README.md` carries an "ORM Stance" paragraph citing ADR-0072 D1/D7
 - [ ] `HoneyDrunk.Data.EntityFramework/README.md` carries an "ADR-0072 Ratification" paragraph naming this package as the default implementation per ADR-0072 D1
 - [ ] The CHANGELOG entry decision is recorded in the PR body (Option (a) = defer to next release; Option (b) = bump patch with new dated section); default is Option (a)
@@ -163,7 +163,7 @@ None.
 
 ## Referenced ADR Decisions
 
-**ADR-0072 D1 — EF Core as the default ORM.** Every Node touching a relational store uses EF Core. `HoneyDrunk.Data.EntityFramework` is the ratified default implementation behind `IRepository<T>` / `IUnitOfWork`. `HoneyDrunk.Data.SqlServer` is the v1 provider package; future `HoneyDrunk.Data.Npgsql` requires a provider-specific schema-deployment decision.
+**ADR-0072 D1 — EF Core as the default ORM.** Every Node touching a relational store uses EF Core. `HoneyDrunk.Data.EntityFramework` is the ratified default implementation behind `IRepository<T>` / `IUnitOfWork`. Provider packages (`HoneyDrunk.Data.SqlServer` and future `HoneyDrunk.Data.Npgsql`) ride EF Core.
 
 **ADR-0072 D2 — Dapper as the scoped exception.** Per-Node, per-query. Read paths only. Mandatory evidence in the PR.
 
@@ -173,9 +173,9 @@ None.
 
 **ADR-0072 D6 — Testing discipline.** In-memory provider for unit; Testcontainers for integration.
 
-**ADR-0072 D7 — Migration path away from EF Core is bounded.** Consumers depend on `IRepository<T>` / `IUnitOfWork` — swapping the EF Core implementation to a different ORM is a per-Node mechanical move with stable contract surface. SQL projects keep the production schema independently described, so the runtime ORM can change without moving the DACPAC deployment path.
+**ADR-0072 D7 — Migration path away from EF Core is bounded.** Consumers depend on `IRepository<T>` / `IUnitOfWork` — swapping the EF Core implementation to a different ORM is a per-Node mechanical move with stable contract surface. EF Migrations history is the most painful loss but bounded — schemas are well-described and migrations are exportable.
 
-**ADR-0048 (referenced) — SQL project/DACPAC deployment as the schema deployment standard.** The per-Node `HoneyDrunk.<Node>.Database/` folder; the `database-deploy-dacpac.yml` workflow in `HoneyDrunk.Actions`.
+**ADR-0048 (referenced) — EF Migrations as the migration tool.** The per-Node `Migrations/` folder; the `migrate.yml` workflow in `HoneyDrunk.Actions`.
 
 **ADR-0005 (referenced) — Connection strings come from Vault.** Per-Node connection strings live in the Node's Vault namespace and are resolved through `ISecretStore`.
 
@@ -205,7 +205,7 @@ None.
 **Context:**
 - Goal: Land the ADR-0072 ratification in the Data repo's own documentation surface, so the EF Core commitment is discoverable from the repo's READMEs.
 - Feature: ADR-0072 Data Access Stance rollout, Wave 2.
-- ADRs: ADR-0072 D1/D2/D4/D5/D6/D7 (primary), ADR-0048 (SQL project/DACPAC deployment), ADR-0005 (connection strings from Vault), ADR-0047 (testing patterns).
+- ADRs: ADR-0072 D1/D2/D4/D5/D6/D7 (primary), ADR-0048 (EF Migrations), ADR-0005 (connection strings from Vault), ADR-0047 (testing patterns).
 
 **Acceptance Criteria:** As listed above.
 

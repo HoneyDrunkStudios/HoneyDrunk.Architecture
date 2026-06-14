@@ -18,7 +18,7 @@ Three coordinated updates to the `.claude/agents/` execution surface, all in one
 
 1. **`.claude/agents/security.md`** — add the canonical ADR-0049 D1–D6 rubric so the `security` specialist has a concrete reference to cite when reviewing PRs that touch `[PiiField]` declarations, classification downgrades, or new Restricted-class boundaries.
 2. **`.claude/agents/review.md`** — amend the D3 category 9 (Security) checklist to include the classification-completeness check (per ADR-0044 D3 + ADR-0049 D8).
-3. **`.claude/agents/database.md`** — promote the `database` specialist agent from ADR-0046 D9 candidate to v1 roster, authored from scratch with ADR-0049 D8 as its scope (SQL project/DACPAC schema changes on PII-bearing stores; index design on PII-bearing tables; retention-policy configuration changes).
+3. **`.claude/agents/database.md`** — promote the `database` specialist agent from ADR-0046 D9 candidate to v1 roster, authored from scratch with ADR-0049 D8 as its scope (schema migrations on PII-bearing stores; index design on PII-bearing tables; retention-policy configuration changes).
 
 Single PR because all three changes are agent-definition edits in the same `.claude/agents/` directory.
 
@@ -27,7 +27,7 @@ ADR-0049 D8 commits the owners-and-reviewers rubric:
 
 - The generalist `review` agent (per ADR-0044 D3 category 9) flags missing/wrong classifications as part of every PR review — low-precision first pass.
 - The `security` specialist (per ADR-0046 D2) is invoked for new `[PiiField(SensitivePii)]` declarations, classification downgrades (Restricted→Confidential is a red flag), new Restricted-boundary work, and new Nodes storing user-attributable data.
-- The `database` specialist (named as a follow-up candidate in ADR-0046 D9; **promoted to v1 roster by this ADR**) is invoked for SQL project/DACPAC schema changes on PII-bearing stores, index design on PII-bearing tables (an index on `email` makes erasure easier; a composite index that locks in field placement makes it harder), and retention-policy configuration changes on Cosmos containers, App Insights workspaces, or storage accounts.
+- The `database` specialist (named as a follow-up candidate in ADR-0046 D9; **promoted to v1 roster by this ADR**) is invoked for schema migrations on PII-bearing stores, index design on PII-bearing tables (an index on `email` makes erasure easier; a composite index that locks in field placement makes it harder), and retention-policy configuration changes on Cosmos containers, App Insights workspaces, or storage accounts.
 
 ADR-0049 follow-up work explicitly names: "Update `.claude/agents/security.md` with the canonical D1–D6 rubric. Update `.claude/agents/review.md` D3 category 9 with the classification-completeness checklist. Promote the `database` specialist agent from ADR-0046 D9 candidate to v1 roster; author `.claude/agents/database.md`."
 
@@ -102,7 +102,7 @@ Pattern after the existing `.claude/agents/security.md` (per ADR-0046 D2 packet 
 
 > ---
 > name: database
-> description: Specialist review agent for SQL project/DACPAC schema changes, index design, and retention configuration on stores containing classified data. Per ADR-0046 D9 + ADR-0049 D8.
+> description: Specialist review agent for schema migrations, index design, and retention configuration on stores containing classified data. Per ADR-0046 D9 + ADR-0049 D8.
 > ---
 >
 > ## Role
@@ -110,7 +110,7 @@ Pattern after the existing `.claude/agents/security.md` (per ADR-0046 D2 packet 
 >
 > ## Scope
 > Invoked manually (per ADR-0046 D1 v1 manual-invocation posture) for:
-> - SQL project/DACPAC schema changes on `HoneyDrunk.Data`-backed stores (relational, document, key-value).
+> - Schema migrations on `HoneyDrunk.Data`-backed stores (relational, document, key-value).
 > - Index design on PII-bearing tables — an index on `email` makes erasure easier; a composite index that locks in field placement makes it harder.
 > - Retention-policy configuration changes on Cosmos containers, App Insights workspaces, storage accounts, Service Bus queues/topics.
 > - New persisted store for user-attributable data — confirm retention matches ADR-0049 D3.
@@ -118,7 +118,7 @@ Pattern after the existing `.claude/agents/security.md` (per ADR-0046 D2 packet 
 > ## Rubric
 > When invoked, apply:
 >
-> 1. **Schema deployment safety.** Forward-only by default; expand → migrate code → contract for relational stores per ADR-0048. Cosmos and document stores follow schema-on-read with backfill-by-runbook. `RollbackStrategy` PR metadata is mandatory; Tier 2b DACPAC round-trip test required.
+> 1. **Migration safety.** Forward-only by default; expand → migrate code → contract for relational stores per ADR-0048. Cosmos and document stores follow schema-on-read with backfill-by-runbook. `[Rollback]` declaration is mandatory; Tier 2b round-trip test required.
 >
 > 2. **Index design vs erasure.** A primary-key or unique-index on a `[PiiField(Pii)]`-marked column makes per-record erasure trivial. A composite index spanning multiple fields locks in field placement and makes erasure expensive. Prefer the former; flag the latter.
 >
@@ -176,7 +176,7 @@ None. Agent-definition files are Markdown.
 - [ ] **No automatic invocation triggered.** Per ADR-0046 D1's v1 posture, the `database` specialist is manual-only. The operator decides when to invoke it on a given PR.
 
 ## Referenced ADR Decisions
-**ADR-0049 D8 — Owners and reviewers.** "The specialist `security` agent (per ADR-0046 D2) is invoked for any PR touching: a new `[PiiField]` declaration of category `SensitivePii`; a change to a field's classification (downgrade Restricted -> Confidential is a red flag; promotion is fine); a new boundary that handles Restricted-class data ... The specialist `database` agent (named as a follow-up candidate per ADR-0046 D9; promoted to v1 roster by this ADR's follow-up work) is invoked for any PR touching: SQL project/DACPAC schema changes on `HoneyDrunk.Data`-backed stores; Index design on PII-bearing tables; Retention-policy configuration changes."
+**ADR-0049 D8 — Owners and reviewers.** "The specialist `security` agent (per ADR-0046 D2) is invoked for any PR touching: a new `[PiiField]` declaration of category `SensitivePii`; a change to a field's classification (downgrade Restricted → Confidential is a red flag; promotion is fine); a new boundary that handles Restricted-class data ... The specialist `database` agent (named as a follow-up candidate per ADR-0046 D9; promoted to v1 roster by this ADR's follow-up work) is invoked for any PR touching: Schema migrations on `HoneyDrunk.Data`-backed stores; Index design on PII-bearing tables; Retention-policy configuration changes."
 
 **ADR-0049 Follow-up Work.** "Update `constitution/invariants.md` with the Invariant 47 amendment and three new invariants. Update `.claude/agents/security.md` with the canonical D1–D6 rubric. Update `.claude/agents/review.md` D3 category 9 with the classification-completeness checklist. Promote the `database` specialist agent from ADR-0046 D9 candidate to v1 roster; author `.claude/agents/database.md`."
 

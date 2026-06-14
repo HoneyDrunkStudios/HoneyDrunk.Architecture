@@ -23,7 +23,7 @@ ADR-0072's Follow-up Work names: "`HoneyDrunk.Data` ratifies EF Core as the impl
 
 **Why ratify in the Architecture repo and not just the Data repo.** The Architecture repo is the Grid's single source of truth for governance. `repos/HoneyDrunk.<Node>/overview.md` is the canonical "what does this Node do, what does it ship, what are its commitments?" doc — read by other Nodes' integration packets, by the `scope` agent during repo-discovery, and by any agent checking the Node's posture. Recording the ADR-0072 ratification here makes the EF Core commitment discoverable from the Grid's governance surface, not just from the Data repo's own README.
 
-**Split rationale.** The original packet 03 bundled the Data overview update with a per-Node `integration-points.md` sweep across every existing Node. The two tasks have different sequencing: the overview update is purely intra-initiative (only depends on packet 00). The integration-points sweep edits a section that `adr-0048-schema-evolution` packet 01 introduces (`## Schema Deployment Coordination`) and therefore depends textually on that sibling packet. Splitting cleanly separates the standalone-actionable work (03a, this packet) from the sibling-sequenced work (03b).
+**Split rationale.** The original packet 03 bundled the Data overview update with a per-Node `integration-points.md` sweep across every existing Node. The two tasks have different sequencing: the overview update is purely intra-initiative (only depends on packet 00). The integration-points sweep edits a section that `adr-0048-schema-evolution` packet 01 introduces (`## Migration Coordination`) and therefore depends textually on that sibling packet. Splitting cleanly separates the standalone-actionable work (03a, this packet) from the sibling-sequenced work (03b).
 
 This is a docs/governance packet. No code, no .NET project.
 
@@ -49,9 +49,9 @@ Per ADR-0072 (Data Access Stance), `HoneyDrunk.Data` ratifies **Entity Framework
 **Decisions:**
 
 - **EF Core current LTS** tracks the .NET LTS cadence (.NET 8 / EF Core 8, .NET 10 / EF Core 10, .NET 12 / EF Core 12, etc.). Per-Node SemVer concerns.
-- **Provider packages:** `HoneyDrunk.Data.SqlServer` for SQL Server/Azure SQL backings. A future `HoneyDrunk.Data.Npgsql` requires a provider-specific schema-deployment ADR amendment or follow-up decision before adoption.
+- **Provider packages:** `HoneyDrunk.Data.SqlServer` for SQL Server backings; future `HoneyDrunk.Data.Npgsql` for Postgres if/when a Node chooses Postgres. Both are EF Core providers.
 - **Dapper is the scoped exception** for hot-path read queries where EF generates poor SQL or where allocation matters. Per-Node, per-query. Evidence-burdened (EF query, Dapper query, benchmarks, workload context in the PR). Dapper writes are not permitted; writes go through EF Core's DbContext. See ADR-0072 D2.
-- **Schema source and deployment use SQL projects/DACPACs** per ADR-0048. The physical schema source lives in the per-Node `HoneyDrunk.<Node>.Database/` folder (per ADR-0048 D11); the canonical database deploy workflow is the `database-deploy-dacpac.yml` workflow in HoneyDrunk.Actions.
+- **Migration tool is EF Migrations** per ADR-0048. The migration discipline lives in the per-Node `Migrations/` folder (per ADR-0048 D11); the canonical migration runner is the `migrate.yml` workflow in HoneyDrunk.Actions.
 - **Per-Node DbContext.** Each Node owns its own `DbContext`. Sharing across Nodes is forbidden under the Grid's existing boundary discipline (invariant 11 "one repo per Node"; invariant 2's same-layer rule). The per-Node `HoneyDrunk.<Node>.Data` project hosts the DbContext, entity classes, and EF model configurations.
 - **Migration path away from EF Core** is bounded by the `IRepository<T>` / `IUnitOfWork` abstraction. Consumers depend on the contracts, not on `DbContext` directly. If EF Core's trajectory ever turns hostile (license change, hostile maintenance, Microsoft sunset), the migration path is per-Node mechanical rewriting of `HoneyDrunk.Data.EntityFramework` against a different ORM. See ADR-0072 D7.
 
@@ -59,7 +59,7 @@ Per ADR-0072 (Data Access Stance), `HoneyDrunk.Data` ratifies **Entity Framework
 
 - **Dapper is not the default** — scoped exception only with evidence.
 - **Marten is not adopted as a Grid-wide default** — over-fit for the Grid's CRUD-shaped data; permitted as a per-Node backing for a Node whose specific contract is event-sourcing-shaped, but no such Node exists today.
-- **Raw ADO.NET is not the default** — re-derives change tracking, schema-evolution discipline, and model composition per Node.
+- **Raw ADO.NET is not the default** — re-derives change tracking, migration discipline, model composition per Node.
 - **Entity Framework 6 / Classic is forbidden for new work** — maintenance mode, tied to .NET Framework.
 - **RepoDb / Pomelo / freshly-released micro-ORMs are not adopted as defaults** — community / AI-assistance maturity not at Dapper's or EF Core's level in 2026.
 

@@ -10,8 +10,10 @@ ADR-0048 now uses SQL Server database projects and DACPAC deployments for SQL Se
 
 ## Superseded Work
 
-- Packet 07, Notify retroactive EF migration annotation, is superseded. Notify should adopt ADR-0048 through a Node-owned `HoneyDrunk.Notify.Database` SQL project packet when Notify needs durable SQL schema deployment.
-- Packet 09, Standards rollback attribute, is superseded. Rollback posture is PR-body `RollbackStrategy` metadata, not a shared C# attribute.
+- Filed packet bodies remain immutable. Do not rewrite packet 07 or packet 09 in place just to change their historical scope.
+- Packet 07, Notify retroactive EF migration annotation, is superseded by ADR-0048's DACPAC policy. Notify should adopt ADR-0048 through a Node-owned `HoneyDrunk.Notify.Database` SQL project packet when Notify needs durable SQL schema deployment.
+- Packet 09, Standards rollback attribute, is superseded by ADR-0048's rollback metadata policy. Rollback posture is PR-body `RollbackStrategy` metadata, not a shared C# attribute.
+- Use `generated/work-items/proposed/2026-06-14-architecture-dacpac-filed-packet-reconciliation.md` or issue/project-state updates to record supersession instead of mutating filed packet text.
 
 ## Execution Notes
 

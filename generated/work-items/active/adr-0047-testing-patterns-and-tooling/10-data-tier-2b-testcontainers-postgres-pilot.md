@@ -28,7 +28,7 @@ ADR-0047 D14 Phase 3: "Pilot on `HoneyDrunk.Data` (Testcontainers Postgres is th
 2. Adopt the shared test-stack props fragment from packet 01 (xUnit + NSubstitute + AwesomeAssertions + coverlet).
 3. Add Testcontainers: a Postgres container spun up per test class via `IAsyncLifetime` (ADR-0047 D4 — "Tests spin up containers per test class via `IAsyncLifetime`, share containers across tests where safe, and tear down deterministically").
 4. Author the pilot test set covering the behaviors Tier 2a fakes cannot validate:
-   - provider-backed schema behavior is exercised against a real container. For SQL Server-backed Nodes, that means DACPAC publish against Testcontainers SQL Server; for a future explicitly chosen PostgreSQL backing, that means the provider-specific schema path against Postgres.
+   - EF Core migrations actually apply against a real Postgres instance (the migration runs cleanly from empty schema).
    - A representative repository round-trip (write then read) against real Postgres.
    - The outbox-store append + dispatch-claim path against real Postgres transactional semantics.
    - At least one test that would pass against an InMemory fake but exercises a Postgres-specific behavior (e.g. a concurrency/transaction-isolation case), demonstrating why Tier 2b exists.
