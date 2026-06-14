@@ -16,10 +16,10 @@
 
 ## Exposes
 
-- `HoneyDrunk.NovOutbox.Abstractions`: product contracts such as `INovOutboxGateway`, `INovOutboxApiKeyStore`, `NovOutboxTenantTier`, and API-key issuance/result types.
+- `HoneyDrunk.NovOutbox.Abstractions`: product contracts such as `INovOutboxGateway`, `INovOutboxApiKeyStore`, `INovOutboxConsoleQueryStore`, `INovOutboxDeliveryHandoff`, `INovOutboxUsageEmitter`, `NovOutboxTenantTier`, API-key summaries, project snapshots, and submission result types.
 - `HoneyDrunk.NovOutbox`: runtime composition for tenant resolution, limits, billing events, and Communications delegation.
-- `HoneyDrunk.NovOutbox.Web`: customer API and Blazor customer console.
-- `HoneyDrunk.NovOutbox.Billing.Stripe`: Stripe billing adapter.
+- `HoneyDrunk.NovOutbox.Web`: customer API and static customer console for bootstrap provisioning, project overview, send-test, and Auth-backed API-key management.
+- `HoneyDrunk.NovOutbox.Billing.Stripe`: Stripe.NET-backed billing adapter for metered usage, Checkout subscription lifecycle, signed webhook validation, and invoice reconciliation snapshots.
 - `HoneyDrunk.NovOutbox.AppHost`: Aspire local-development host only.
 
 ## Private-repo checks

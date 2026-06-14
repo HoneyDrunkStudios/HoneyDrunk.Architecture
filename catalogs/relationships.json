@@ -186,7 +186,7 @@
         "Private-repo automation smoke test pending"
       ],
       "exposes": {
-        "contracts": ["INovOutboxGateway", "INovOutboxApiKeyStore", "NovOutboxTenantTier", "NovOutboxApiKeyIssuance", "NovOutboxSubmitResult"],
+        "contracts": ["INovOutboxGateway", "INovOutboxApiKeyStore", "INovOutboxConsoleQueryStore", "INovOutboxDeliveryHandoff", "INovOutboxUsageEmitter", "NovOutboxTenantTier", "NovOutboxApiKeyIssuance", "NovOutboxApiKeySummary", "NovOutboxProjectSnapshot", "NovOutboxSubmitResult", "IStripeMeteredBillingClient", "IStripeSubscriptionLifecycleClient", "IStripeWebhookEventValidator", "IStripeInvoiceReconciliationClient"],
         "packages": ["HoneyDrunk.NovOutbox.Abstractions", "HoneyDrunk.NovOutbox", "HoneyDrunk.NovOutbox.Billing.Stripe", "HoneyDrunk.NovOutbox.Web", "HoneyDrunk.NovOutbox.AppHost"]
       },
       "consumes_detail": {
