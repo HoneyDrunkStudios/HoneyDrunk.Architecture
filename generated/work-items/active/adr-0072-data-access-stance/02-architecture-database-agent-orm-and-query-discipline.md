@@ -59,11 +59,11 @@ The existing rubric has seven categories (numbered, paraphrased from `adr-0048-s
 3. D6 online primitives on tables ≥ 100k rows
 4. D8 Audit `AuditEntry` append-only-by-interface constraints
 5. D9 tenant scoping
-6. D10 `[Rollback]` attribute declaration
+6. D10 rollback declaration metadata
 7. D12 round-trip test presence
-8. (operational) EF Core idiom — `MigrationBuilder.Sql(...)` and `--idempotent` cleanliness
+8. (operational) SQL project idiom — object split, pre/post-deployment scripts, and DACPAC publish artifact review
 
-Add the two new categories below the existing ones. They are not migration-scoped (the first eight are); they are ORM-scoped. They apply to **every PR touching data-layer code**, not only PRs touching `Migrations/` or `Backfill/`. The `database` agent's invocation surface (from the existing rubric) is "PRs touching `Migrations/`, `Backfill/`, or any file referenced from a `DbContext`" — that surface already encompasses the new categories' applicability.
+Add the two new categories below the existing ones. They are not migration-scoped (the first eight are); they are ORM-scoped. They apply to **every PR touching data-layer code**, not only PRs touching `HoneyDrunk.<Node>.Database/` or `Backfill/`. The `database` agent's invocation surface (from the existing rubric) is "PRs touching `HoneyDrunk.<Node>.Database/`, `Backfill/`, or any file referenced from a `DbContext`" — that surface already encompasses the new categories' applicability.
 
 #### Category 9 — ORM choice (per ADR-0072 D1/D2)
 
@@ -79,7 +79,7 @@ The depth review confirms that the data-layer change uses EF Core (the default p
   - **(c) Benchmark numbers.** BenchmarkDotNet output or profiler evidence comparing the EF path and the Dapper path on the consuming workload's representative shape. The benchmark must show a measurable, workload-relevant difference (e.g., 3× latency reduction on a path called 10k times per minute; not "Dapper is 5% faster on a query called once per hour").
   - **(d) Workload context.** The expected query frequency, the expected row volume, the consuming caller. The benchmark difference matters only at the consuming workload's scale; the workload context lets the reviewer judge whether the difference matters.
   Missing any of (a), (b), (c), or (d) is a **Block** finding. The introduction is rejected until evidence is supplied.
-- **Dapper-write introduction.** If the change introduces a Dapper write path (`Execute`, `ExecuteAsync`), this is a **Block** finding regardless of evidence. ADR-0072 D2 scopes Dapper to read paths only; writes go through EF Core's DbContext. Recommendation: "If the write genuinely requires raw SQL, use `MigrationBuilder.Sql(...)` for schema changes or `DbContext.Database.ExecuteSqlInterpolated(...)` for runtime data-layer SQL that still wants EF's connection / transaction management."
+- **Dapper-write introduction.** If the change introduces a Dapper write path (`Execute`, `ExecuteAsync`), this is a **Block** finding regardless of evidence. ADR-0072 D2 scopes Dapper to read paths only; writes go through EF Core's DbContext. Recommendation: "If the write genuinely requires raw SQL, use `SQL project pre/post-deployment scripts` for schema changes or `DbContext.Database.ExecuteSqlInterpolated(...)` for runtime data-layer SQL that still wants EF's connection / transaction management."
 - **Per-Node, per-query scope.** Verify that adopting Dapper for one query in a Node does not implicitly adopt it for the Node's other queries. The EF default still applies to everything else in the Node. If the PR introduces multiple Dapper queries at once, each one needs its own evidence — a blanket "we're using Dapper everywhere in this Node now" is rejected. ADR-0072 D2: "Per-Node, per-query."
 - **`FromSqlRaw` vs Dapper.** ADR-0072 D2: "`FromSqlRaw` inside EF is the in-between answer. It is preferred over Dapper when the hand-written query still wants EF's change tracking or composition." If the Dapper introduction's query is one that could equally well use `FromSqlRaw` and stay inside EF's pipeline (it composes with other EF queries, it benefits from change tracking, the result type is an entity), the depth review's recommendation is: "Consider `FromSqlRaw` inside EF instead of Dapper. Provide the workload reasoning if Dapper is preferred." This is a **Request Changes** finding, not Block.
 
@@ -108,7 +108,7 @@ In both categories 9 and 10, add a brief note that the **generalist `review` age
 
 ### Step 4. Update the agent's invocation surface text
 
-The existing invocation surface from `adr-0048-schema-evolution` packet 02 is: "PRs touching `Migrations/`, `Backfill/`, or any file referenced from a `DbContext`." Extend this to include: "PRs introducing Dapper (`using Dapper;` or `IDbConnection.Query<T>` / `Execute` / `ExecuteAsync`) or modifying EF query patterns (calls to `AsNoTracking()`, `Include`, `Select`, `FromSqlRaw`, `EF.CompileQuery`)." The expanded surface ensures the specialist is invoked on data-layer PRs even when no `Migrations/` or `Backfill/` file is touched.
+The existing invocation surface from `adr-0048-schema-evolution` packet 02 is: "PRs touching `HoneyDrunk.<Node>.Database/`, `Backfill/`, or any file referenced from a `DbContext`." Extend this to include: "PRs introducing Dapper (`using Dapper;` or `IDbConnection.Query<T>` / `Execute` / `ExecuteAsync`) or modifying EF query patterns (calls to `AsNoTracking()`, `Include`, `Select`, `FromSqlRaw`, `EF.CompileQuery`)." The expanded surface ensures the specialist is invoked on data-layer PRs even when no `HoneyDrunk.<Node>.Database/` or `Backfill/` file is touched.
 
 If the existing agent file already documents the invocation surface elsewhere (e.g., a "When to invoke" section), update that text to include the ADR-0072 Dapper / EF-query trigger surface.
 
@@ -154,7 +154,7 @@ None.
 
 **ADR-0072 D5 — Query discipline.** `AsNoTracking()` on read-only queries. Projections preferred. `Include` explicit; lazy loading off. N+1 caught at review. Compiled queries permitted for hot paths. `FromSqlRaw` parameterized — never string-interpolated.
 
-**ADR-0048 D13 — `database` specialist agent.** Authored under `.claude/agents/database.md` per ADR-0046's pattern. Walks every PR touching `Migrations/`, `Backfill/`, or any file referenced from a `DbContext`. Owns the seven-category depth rubric from D13 (D2/D5/D6/D8/D9/D10/D12 plus EF Core idiom). ADR-0072 extends this rubric with two additional categories (ORM choice, query discipline).
+**ADR-0048 D13 — `database` specialist agent.** Authored under `.claude/agents/database.md` per ADR-0046's pattern. Walks every PR touching `HoneyDrunk.<Node>.Database/`, `Backfill/`, or any file referenced from a `DbContext`. Owns the seven-category depth rubric from D13 (D2/D5/D6/D8/D9/D10/D12 plus EF Core idiom). ADR-0072 extends this rubric with two additional categories (ORM choice, query discipline).
 
 **ADR-0046 D1 — Specialists complement, do not replace, the `review` agent.** Specialist findings are advisory. The merge gate stays with the human.
 

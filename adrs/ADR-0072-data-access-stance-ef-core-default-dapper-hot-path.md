@@ -10,7 +10,7 @@
 The Grid has [`HoneyDrunk.Data`](../repos/HoneyDrunk.Data/overview.md) Live in the Core sector — repository pattern, unit of work, tenant-aware data, transactional outbox. What `HoneyDrunk.Data` does **not** commit is **which ORM or data-access library** sits underneath. Today:
 
 - **Most Nodes that touch relational data are scaffolded but not yet in production**, so the question has not been forced at scale. The few that have data access today (Vault's secret cache backing, AI's cost-rate cache, Communications's pre-implementation preference store) all use ad-hoc compositions.
-- **[ADR-0048](./ADR-0048-data-schema-evolution-and-migration-policy.md) (Schema Evolution)** committed **EF Migrations** as the canonical migration tool. The ORM that owns the migration tool was implicit; this ADR makes it explicit.
+- **[ADR-0048](./ADR-0048-data-schema-evolution-and-migration-policy.md) (Schema Evolution)** commits **SQL Server database projects and DACPAC deployment** as the canonical production schema path. EF Core remains the runtime ORM decision, not the production schema deployment mechanism.
 - **[ADR-0049](./ADR-0049-data-classification-pii-handling-and-retention-schedule.md) (PII Handling)** introduced data-classification attributes on entity models. The classification mechanism assumed an ORM with model-attribute support — EF Core fits that shape natively; raw ADO.NET does not.
 - **No drift has happened yet**, but every queued Node that touches data (Notify Cloud's tenant store, Identity's `IdentityMap`, Audit's primary write path, Communications's preference store) is about to pick independently. The choice will be made implicitly by the first packet that lands, and the precedent will be near-permanent.
 
@@ -38,15 +38,15 @@ Every Node in the Grid that reads from or writes to a relational database uses *
 - **EF Core current LTS** (tracked to the .NET LTS cadence per the Grid's general framework discipline; LTS releases are the even-numbered .NET majors, e.g., .NET 8 / EF Core 8, .NET 10 / EF Core 10, etc.).
 - **`Microsoft.EntityFrameworkCore.SqlServer`** for SQL Server backings (Azure SQL is the Grid's default per the existing Azure-first posture).
 - **`Microsoft.EntityFrameworkCore.Npgsql`** for PostgreSQL backings when a Node specifically chooses Postgres (the Identity Node, Files Node, and consumer-app PDRs are likely candidates).
-- **EF Migrations** as the canonical migration tool per [ADR-0048](./ADR-0048-data-schema-evolution-and-migration-policy.md). This ADR ratifies the implicit ORM behind ADR-0048's migration choice.
+- **SQL projects/DACPACs** as the canonical production schema deployment path per [ADR-0048](./ADR-0048-data-schema-evolution-and-migration-policy.md). EF Core maps to that schema at runtime.
 
 **Why EF Core as the default:**
 
 - **It is the .NET default.** Microsoft's first-party ORM, broadest community familiarity, deepest documentation, most active maintenance. A solo dev plus AI agents working in .NET have the most leverage on EF Core of any data-access option.
-- **Schema-evolution discipline is built in.** EF Migrations gives the Grid the per-Node migration story per [ADR-0048](./ADR-0048-data-schema-evolution-and-migration-policy.md) for free. No separate migration tool to vet, no parallel discipline to maintain.
+- **Schema-evolution discipline remains explicit.** EF Core Fluent API maps runtime entities to the SQL project model, while the DACPAC carries production DDL per [ADR-0048](./ADR-0048-data-schema-evolution-and-migration-policy.md). The mapper and deploy artifact have different jobs.
 - **Model attributes enable cross-cutting policy.** [ADR-0049](./ADR-0049-data-classification-pii-handling-and-retention-schedule.md)'s PII classification attaches naturally to EF model classes via attributes or Fluent API. Cross-cutting concerns (PII detection, encryption at rest hints, soft-delete patterns) compose into the EF model layer cleanly. Raw ADO.NET or micro-ORMs lose this.
 - **DbContext maps onto per-tenant partition strategy.** [ADR-0050](./ADR-0050-tenant-lifecycle-provisioning-suspension-offboarding-and-data-export.md)'s per-tenant partition mechanic uses DbContext-per-tenant or schema-per-tenant approaches that are first-class in EF Core. Dapper or raw ADO.NET would re-derive the partition mechanic per Node.
-- **Tooling depth.** EF Core has scaffolding, migrations CLI, change tracking, query analysis, second-level cache integration (which the Grid does not adopt today but might revisit), and a mature .editorconfig / Roslyn-analyzer story.
+- **Tooling depth.** EF Core has scaffolding, change tracking, query analysis, second-level cache integration (which the Grid does not adopt today but might revisit), and a mature .editorconfig / Roslyn-analyzer story.
 - **AI-assistance leverage.** Claude, Codex, and Copilot have deep pattern recognition on EF Core in 2026. EF Core idioms (LINQ projections, `Include` for navigation properties, raw-SQL escape hatches via `FromSqlRaw`) are well-known territory.
 - **Long support runway.** Microsoft has shipped EF Core continuously since 2016; the .NET LTS cadence underwrites long-term viability. The many-decade horizon ([`constitution/charter.md`](../constitution/charter.md)) favors options with the longest survivability.
 
@@ -63,7 +63,7 @@ The negative form: Dapper is **not** the default; Marten is not adopted; raw ADO
 The committed posture:
 
 - **When in doubt, EF Core.** The default carries no justification burden; the exception does.
-- **Dapper is scoped to read paths.** Writes go through EF Core's DbContext so the change-tracking / outbox / migration story is preserved. A Dapper-write path would diverge from `HoneyDrunk.Data`'s repository / unit-of-work pattern and is not permitted by default.
+- **Dapper is scoped to read paths.** Writes go through EF Core's DbContext so the change-tracking / outbox / unit-of-work story is preserved. A Dapper-write path would diverge from `HoneyDrunk.Data`'s repository / unit-of-work pattern and is not permitted by default.
 - **Per-Node, per-query.** Adopting Dapper for one query in a Node does not adopt it for the Node's other queries; the EF default still applies to everything else.
 - **Justification lives in the PR.** Every Dapper introduction is reviewed for evidence (EF query, Dapper query, benchmark numbers, workload context). The `review` agent's data-quality category per [ADR-0044](./ADR-0044-grid-aware-cloud-code-review-and-ai-authored-pr-discipline.md) D3 gains a check: "is this Dapper introduction evidence-backed?"
 
@@ -73,13 +73,13 @@ The committed posture:
 - **`FromSqlRaw` inside EF is the in-between answer.** It is preferred over Dapper when the hand-written query still wants EF's change tracking or composition. The two coexist: `FromSqlRaw` for queries that compose with EF's pipeline; Dapper for queries that escape EF's pipeline entirely. The decision lives at the per-query review.
 - **Dapper has a similar long-runway as EF Core.** Stack Overflow's micro-ORM, in continuous use since 2011, governed by a small stable team. The many-decade horizon ([`constitution/charter.md`](../constitution/charter.md)) is not threatened.
 
-### D3 — EF Migrations is the migration tool per ADR-0048
+### D3 — SQL projects and DACPACs own production schema deployment per ADR-0048
 
-[ADR-0048](./ADR-0048-data-schema-evolution-and-migration-policy.md) committed EF Migrations as the schema-evolution tool. This ADR ratifies the implicit dependency: the ORM that owns EF Migrations is EF Core. Adopting another ORM as the default would have forced either a parallel migration story (operational complexity) or a re-derivation of ADR-0048 (architectural churn).
+[ADR-0048](./ADR-0048-data-schema-evolution-and-migration-policy.md) commits SQL Server database projects and DACPAC deployment as the production schema-evolution tool. This ADR keeps EF Core in its runtime role: mapping entities, coordinating writes, and composing with HoneyDrunk.Data. EF Core migrations are not the production schema deployment path.
 
-**Per-Node migrations live alongside the Node's DbContext.** The `HoneyDrunk.<Node>.Data` project (or equivalent) hosts the `DbContext`, the entity configurations, and the `Migrations/` folder. The `dotnet ef migrations add` and `dotnet ef database update` CLI is the standard discipline; CI per [ADR-0012](./ADR-0012-grid-cicd-control-plane.md) runs migrations on the per-environment deploy.
+**Per-Node SQL projects live alongside the Node solution.** A schema-bearing Node hosts `HoneyDrunk.<Node>.Database` in the solution. The runtime project hosts the `DbContext`, entity classes, and Fluent API configurations that map to that SQL project schema. CI builds both, and the database deploy workflow publishes the DACPAC before the app rollout.
 
-**Cross-Node schema concerns** (e.g., Identity's `IdentityMap` and Audit's pseudonymization-token store both touching the user-identity domain per [ADR-0060](./ADR-0060-stand-up-honeydrunk-identity-node.md) D3) follow per-Node migration discipline; the Grid does not have a cross-Node migration coordinator and does not intend to. Per-Node migrations interlock through contract versioning per [ADR-0035](./ADR-0035-abstractions-versioning-and-deprecation-policy.md), not through a shared migration runtime.
+**Cross-Node schema concerns** (e.g., Identity's `IdentityMap` and Audit's pseudonymization-token store both touching the user-identity domain per [ADR-0060](./ADR-0060-stand-up-honeydrunk-identity-node.md) D3) follow per-Node SQL project discipline; the Grid does not have a cross-Node schema coordinator and does not intend to. Per-Node schemas interlock through contract versioning per [ADR-0035](./ADR-0035-abstractions-versioning-and-deprecation-policy.md), not through a shared migration runtime.
 
 ### D4 — Per-Node DbContext, scoped composition
 
@@ -109,7 +109,7 @@ Default EF query patterns, applied at code review per [ADR-0044](./ADR-0044-grid
 EF Core is testable with two well-known patterns:
 
 - **In-memory provider (`Microsoft.EntityFrameworkCore.InMemory`)** for fast unit tests where the SQL provider's specific behavior is not under test. Per [ADR-0047](./ADR-0047-testing-patterns-and-tooling.md) D2's unit-tier scope.
-- **Testcontainers per [ADR-0047](./ADR-0047-testing-patterns-and-tooling.md) D4 (Tier 2b)** for integration tests where the actual SQL provider's behavior matters (migrations actually running, vendor-specific SQL features). The in-memory provider does not implement the full SQL Server / Postgres semantics; Testcontainers is the way to validate against the real engine.
+- **Testcontainers per [ADR-0047](./ADR-0047-testing-patterns-and-tooling.md) D4 (Tier 2b)** for integration tests where the actual SQL provider's behavior matters (DACPAC publish, indexes/constraints, vendor-specific SQL features). The in-memory provider does not implement full SQL Server semantics; Testcontainers is the way to validate against the real engine.
 
 Dapper code is tested via Testcontainers (Tier 2b) — the in-memory provider does not apply to Dapper. A Dapper hot-path read introduced per D2 requires a Tier 2b integration test that exercises the actual query against a real database engine.
 
@@ -119,7 +119,7 @@ The Grid commits to EF Core today. If EF Core's trajectory ever turns hostile (l
 
 - **`IRepository<T>` and `IUnitOfWork`** are the consumer contracts. Consumers do not depend on `DbContext` directly. Swapping the implementation behind those contracts to a different ORM is a per-Node mechanical move.
 - **The migration cost per Node is the rewriting of the `HoneyDrunk.Data.EF` implementation against a different ORM**. The contract surface stays stable; the consumer code compiles unchanged.
-- **EF Migrations would be the most painful loss.** Migration history would have to convert to the new ORM's migration tool (or to raw SQL migration scripts). The pain is real but bounded — schemas are well-described, and the existing migrations history is exportable.
+- **Schema deployment is already decoupled.** Moving away from EF Core would not require moving production schema deployment, because SQL projects/DACPACs already own that path. The painful work is remapping runtime persistence to a new ORM or data-access layer.
 
 The escape valve is not exercised today; it is documented to be transparent about the lock-in cost. EF Core is healthy and aligned with the Grid; the migration path exists in case that changes.
 
@@ -162,7 +162,7 @@ If the scope agent judges any of these invariant-class at acceptance time, numbe
 
 - **The Grid carries one ORM (EF Core) plus one scoped micro-ORM (Dapper).** Both have long support runways; both are well-known; both have deep AI-assistance coverage. The operational footprint is bounded.
 - **The Dapper-exception discipline depends on evidence in PRs.** A lazy Dapper introduction (no benchmark, no EF query comparison, no workload context) is rejected at review. The review agent's checklist enforces it.
-- **EF Migrations is the canonical migration path.** Per-Node migrations are mechanical; the `dotnet ef migrations add` discipline scales to N Nodes without coordination.
+- **SQL projects/DACPACs are the canonical production schema path.** Per-Node database projects are mechanical; the database deploy workflow scales to N SQL Server-backed Nodes without coupling schema deployment to app startup.
 - **In-memory provider speeds unit tests; Testcontainers covers integration semantics.** Per [ADR-0047](./ADR-0047-testing-patterns-and-tooling.md). Solo-dev velocity benefits.
 - **Per-Node DbContext preserves boundary discipline.** No cross-Node DbContext sharing means no hidden coupling, even when two Nodes touch related domain concepts.
 - **The EF Core lock-in is real but bounded.** Per D7, the `IRepository<T>` abstraction means migration cost is rewriting one implementation per Node, not rewriting consumer code. The lock-in cost is acknowledged.
@@ -172,7 +172,7 @@ If the scope agent judges any of these invariant-class at acceptance time, numbe
 - `HoneyDrunk.Data` ratifies EF Core as the implementation behind `IRepository<T>` / `IUnitOfWork`. Existing implementations align (or already align) with this ADR.
 - Each new data-touching Node packet (Identity, Files, Notify Cloud tenant store, Communications preference store, consumer-app PDRs) cites this ADR's EF Core default in its scaffolding.
 - The `review` agent's checklist gains the Dapper-evidence and EF-discipline checks per D5.
-- A per-Node tutorial / template for "how to add a new entity, write a migration, ship the migration in CI" lands as part of the DX-baseline ADR (per the [charter-aware draft cluster 4.1](../generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md)).
+- A per-Node tutorial / template for "how to add a new entity, add the SQL project table/index files, map it with Fluent API, and ship the DACPAC in CI" lands as part of the DX-baseline ADR (per the [charter-aware draft cluster 4.1](../generated/adr-drafts/2026-05-23-charter-aware-adr-and-node-candidates.md)).
 - Watch list: EF Core's stewardship continues; Dapper's continues; the migration-path escape valve (D7) stays dormant unless triggered.
 
 ## Alternatives Considered
@@ -181,7 +181,7 @@ If the scope agent judges any of these invariant-class at acceptance time, numbe
 
 Considered. The argument: micro-ORM is fast, predictable, no hidden behavior; ORM-shaped magic (change tracking, lazy loading, navigation properties) is a known source of pain.
 
-Rejected. The Grid's data-access discipline benefits more from EF Core's broader feature set (migrations, model-attribute composition, per-tenant DbContext patterns, change tracking when wanted, navigation properties when useful) than from Dapper's narrower contract. Most Grid data access is CRUD-shaped — EF Core wins decisively on developer velocity for CRUD. The hot-path read scenarios where Dapper wins are real but minority. Defaulting to the minority case taxes the majority for the benefit of the few.
+Rejected. The Grid's data-access discipline benefits more from EF Core's broader feature set (model-attribute composition, per-tenant DbContext patterns, change tracking when wanted, navigation properties when useful) than from Dapper's narrower contract. Most Grid data access is CRUD-shaped — EF Core wins decisively on developer velocity for CRUD. The hot-path read scenarios where Dapper wins are real but minority. Defaulting to the minority case taxes the majority for the benefit of the few.
 
 ### Marten (PostgreSQL-event-sourcing-first)
 
@@ -193,7 +193,7 @@ Rejected as a default. Marten is **over-fit** for the Grid's general data needs.
 
 Considered. The argument: zero abstraction overhead, maximum control, no hidden behavior.
 
-Rejected. The Grid does not have the operational scale where ADO.NET's overhead-zero pays for the cognitive cost. EF Core's higher-level abstraction is the right trade for solo-dev productivity; ADO.NET as a default would re-derive change tracking, migration discipline, and model composition per Node — at which point we have N partial ORM implementations. Raw ADO.NET is permitted where Dapper is permitted (D2's evidence-backed hot-path scenario), but the default is EF Core.
+Rejected. The Grid does not have the operational scale where ADO.NET's overhead-zero pays for the cognitive cost. EF Core's higher-level abstraction is the right trade for solo-dev productivity; ADO.NET as a default would re-derive change tracking, unit-of-work behavior, and model composition per Node — at which point we have N partial ORM implementations. Raw ADO.NET is permitted where Dapper is permitted (D2's evidence-backed hot-path scenario), but the default is EF Core.
 
 ### Entity Framework 6 / Classic (the .NET-Framework-era EF)
 
@@ -229,19 +229,19 @@ Rejected per D2. The evidence-burden on Dapper introductions is the discipline t
 
 Considered. The argument: ORM choice is a tactical concern; let each Node's first data packet pick.
 
-Rejected. Without an ADR, each Node re-derives the choice and the Grid ends up with EF Core in some, Dapper in others, Marten in a third, and the cross-Node patterns (migrations, classification attribution, per-tenant partitioning) become per-Node ad-hoc. The cost of letting drift accumulate is N migrations later when the Grid forces consolidation. Pinning the default now is the cheapest substrate posture.
+Rejected. Without an ADR, each Node re-derives the choice and the Grid ends up with EF Core in some, Dapper in others, Marten in a third, and the cross-Node patterns (classification attribution, per-tenant partitioning, unit-of-work behavior) become per-Node ad-hoc. The cost of letting drift accumulate is N rewrites later when the Grid forces consolidation. Pinning the default now is the cheapest substrate posture.
 
 ## References
 
 - [`constitution/charter.md`](../constitution/charter.md) — enterprise-grade-substrate framing, many-decade horizon, boring-defaults preference
 - [`constitution/invariants.md`](../constitution/invariants.md) — invariant 2 (runtime packages depend on Abstractions; same-layer rule) and invariant 11 (one repo per Node), together covering the per-Node DbContext rule; invariant 8 (secret values never in logs/traces) covers a distinct concern from parameterized SQL — the `FromSqlRaw` rule is review-enforced under ADR-0072 D5 with no existing numbered invariant home
 - [ADR-0005](./ADR-0005-configuration-and-secrets-strategy.md) — connection strings via Vault
-- [ADR-0012](./ADR-0012-grid-cicd-control-plane.md) — CI migration runner
+- [ADR-0012](./ADR-0012-grid-cicd-control-plane.md) — CI/deploy workflow control plane
 - [ADR-0030](./ADR-0030-grid-wide-audit-substrate.md) / [ADR-0031](./ADR-0031-stand-up-honeydrunk-audit-node.md) — Audit Node (primary write path is EF Core; hot-path forensic queries are Dapper-candidates)
 - [ADR-0035](./ADR-0035-abstractions-versioning-and-deprecation-policy.md) — contract-versioning discipline applied to data-layer interfaces
 - [ADR-0044](./ADR-0044-grid-aware-cloud-code-review-and-ai-authored-pr-discipline.md) D3 category 11 — data-quality review checks (Dapper evidence, EF discipline)
 - [ADR-0047](./ADR-0047-testing-patterns-and-tooling.md) — testing pyramid (in-memory provider for unit, Testcontainers for integration)
-- [ADR-0048](./ADR-0048-data-schema-evolution-and-migration-policy.md) — EF Migrations as the migration tool
+- [ADR-0048](./ADR-0048-data-schema-evolution-and-migration-policy.md) — SQL projects and DACPACs as the production schema deployment path
 - [ADR-0049](./ADR-0049-data-classification-pii-handling-and-retention-schedule.md) — PII classification via EF model attributes
 - [ADR-0050](./ADR-0050-tenant-lifecycle-provisioning-suspension-offboarding-and-data-export.md) — per-tenant DbContext composition
 - [ADR-0060](./ADR-0060-stand-up-honeydrunk-identity-node.md) — Identity Node entities (EF models per this ADR)
