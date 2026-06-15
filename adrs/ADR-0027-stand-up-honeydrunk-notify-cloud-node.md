@@ -90,9 +90,9 @@ Five surfaces form the NovOutbox Node's public boundary inside the Grid: **two i
 
 - `TenantId` (and `TenantId.Internal` sentinel)
 - `ITenantRateLimitPolicy` and `TenantRateLimitDecision` — NovOutbox ships a tier-driven implementation that replaces the `NoopTenantRateLimitPolicy` registration at host time
-- `IBillingEventEmitter` and `BillingEvent` — NovOutbox emits usage through Kernel primitives and composes the Stripe implementation from `HoneyDrunk.Payments.Stripe`
+- `IBillingEventEmitter` and `BillingEvent` — NovOutbox emits usage through Kernel primitives and composes the provider transport from `HoneyDrunk.Payments.Stripe`
 
-This is the single most important boundary call in this stand-up: the multi-tenant primitives are Grid-wide, not NovOutbox-specific. NovOutbox is the first *real* (non-noop) implementation of `ITenantRateLimitPolicy` and the first *real* implementation of `IBillingEventEmitter` in the Grid, but it does not own those contracts.
+This is the single most important boundary call in this stand-up: the multi-tenant primitives are Grid-wide, not NovOutbox-specific. NovOutbox is the first *real* (non-noop) product implementation of `ITenantRateLimitPolicy` and the first product emitter of Kernel `BillingEvent` usage in the Grid. `HoneyDrunk.Payments` owns the reusable provider-side transport that drains those events to Stripe or a future provider.
 
 ### D5. Boundary rule with Notify and Communications
 
@@ -225,7 +225,7 @@ Per the standup-ADR convention, the scaffolding work is a follow-up packet, not 
 - **Default `INovOutboxGateway` implementation** that wires API key validation, rate limiting, orchestration delegation to Communications, and billing event emission. End-to-end smoke test runs in CI against in-memory fixtures.
 - **Container Apps deployment configuration** referencing ADR-0015's reusable `job-deploy-container-app.yml` workflow. The first deploy target is `ca-hd-novoutbox-stg` in East US (matching PDR-0002's single-region commitment).
 
-The scaffold packet does **not** include: the Stripe billing adapter implementation (a separate packet — that is its own ADR per PDR-0002's follow-up artifacts), the Web project's full surface (signup flow, billing dashboard — separate packets), the API key authentication middleware in Auth (separate ADR per D12), or any production tenant data. The scaffold proves the contract surface compiles, the canary catches drift, and the in-memory composition runs end-to-end. Production-shape work follows.
+The scaffold packet does **not** include: the Payments-owned Stripe provider implementation (a separate Payments package/repo slice per ADR-0037), the Web project's full surface (signup flow, billing dashboard — separate packets), the API key authentication middleware in Auth (separate ADR per D12), or any production tenant data. The scaffold proves the contract surface compiles, the canary catches drift, and the in-memory composition runs end-to-end. Production-shape work follows.
 
 ## Consequences
 
@@ -252,7 +252,7 @@ Accepting this ADR — and landing the follow-up scaffold packet — unblocks th
 
 - **PDR-0002's Phase 3 (NovOutbox scaffold, weeks 10–14)** — the package families, contracts, and CI shape are all settled, so the scaffold packet is purely mechanical work.
 - **API key authentication pattern ADR** — has a concrete consumer (`INovOutboxApiKeyStore`) to design against rather than a hypothetical one.
-- **Stripe billing integration ADR** — has the `IBillingEventEmitter` provider-slot shape and the `BillingEvent` record to wire against.
+- **Payments / Stripe integration ADR** — has the provider-neutral Payments boundary and Kernel `BillingEvent` record to wire against.
 - **Communications decision-log persistence ADR** — gains a real production consumer (NovOutbox Pro tier exposes the decision log) that tightens the requirements on persistence backend choice.
 - **Tenant onboarding and provisioning workflow design doc** — has a concrete `INovOutboxApiKeyStore` and tenant-context model to design the signup-to-API-key flow against.
 - **NovOutbox public launch (PDR-0002 Phase 5, week 16, ~2026-09-15)** — the architectural clearance is complete; remaining work is Stripe integration, marketing site, and beta-tenant onboarding, all of which slot into the architecture this ADR settles.

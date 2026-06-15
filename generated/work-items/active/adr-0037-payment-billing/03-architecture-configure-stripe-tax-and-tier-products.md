@@ -11,8 +11,6 @@ initiative: adr-0037-payment-billing
 node: honeydrunk-architecture
 ---
 
-> **SUPERSEDED 2026-06-14:** Do not execute this packet from this folder. Recreate the Stripe Tax and product-configuration work as a Payments-scoped work item before assigning it.
-
 # Configure Stripe Tax (Florida + nexus monitoring) and define the Notify Cloud tier products
 
 ## Summary

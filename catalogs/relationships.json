@@ -203,7 +203,7 @@
     },
     {
       "id": "honeydrunk-payments",
-      "consumes": ["honeydrunk-kernel"],
+      "consumes": ["honeydrunk-kernel", "honeydrunk-vault"],
       "consumed_by": ["honeydrunk-novoutbox"],
       "consumed_by_planned": [],
       "blocked_by": [
@@ -215,7 +215,8 @@
         "packages": ["HoneyDrunk.Payments.Abstractions", "HoneyDrunk.Payments.Stripe"]
       },
       "consumes_detail": {
-        "honeydrunk-kernel": ["IBillingEventEmitter", "BillingEvent", "TenantId", "HoneyDrunk.Kernel.Abstractions"]
+        "honeydrunk-kernel": ["IBillingEventEmitter", "BillingEvent", "TenantId", "HoneyDrunk.Kernel.Abstractions"],
+        "honeydrunk-vault": ["ISecretStore", "HoneyDrunk.Vault"]
       }
     },
     {

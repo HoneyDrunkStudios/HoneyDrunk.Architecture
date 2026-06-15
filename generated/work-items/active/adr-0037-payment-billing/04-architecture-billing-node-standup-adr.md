@@ -11,8 +11,6 @@ initiative: adr-0037-payment-billing
 node: honeydrunk-architecture
 ---
 
-> **SUPERSEDED 2026-06-14:** Do not execute this packet. It authors a `HoneyDrunk.Billing` standup ADR, but ADR-0037 now stands up the shared `HoneyDrunk.Payments` provider boundary. Replace this with a Payments-scoped packet if additional Architecture work is needed.
-
 # Author the HoneyDrunk.Billing standup ADR (Proposed) — the follow-up ADR-0037 defers code work to
 
 ## Summary
