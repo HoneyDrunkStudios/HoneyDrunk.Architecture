@@ -125,7 +125,7 @@ This is the only transitional accommodation; once the rollout closes, the canary
 - **HoneyDrunk.Data** — provides the default Cosmos-backed `IIdempotencyStore` implementation under `HoneyDrunk.Kernel.Idempotency.Cosmos` or similar; the boundary follows the existing `HoneyDrunk.Data.*` backing precedent.
 - **HoneyDrunk.Notify, HoneyDrunk.Communications, HoneyDrunk.Pulse** — every async producer/consumer is amended to use the new envelope and helpers.
 - **HoneyDrunk.Audit** (Seed) — at standup, wires `IdempotentMessageHandler<AuditEmit>`; TTL = 30 days.
-- **HoneyDrunk.Billing** (future, ADR-0037) — depends on this ADR for end-to-end idempotency into Stripe.
+- **HoneyDrunk.Payments** (ADR-0037) — depends on this ADR for end-to-end idempotency into Stripe or any future payment provider.
 - **HoneyDrunk.AI / Agents / Flow** (Seed) — tool dispatch and step execution are idempotent message handlers under the same pattern.
 
 ### Invariants

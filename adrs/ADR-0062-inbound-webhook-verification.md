@@ -9,7 +9,7 @@
 
 The Grid is about to acquire four independent inbound-webhook surfaces inside one release window:
 
-- **`HoneyDrunk.Billing.Webhooks`** — Stripe webhook handler, named explicitly in [ADR-0037](./ADR-0037-payment-and-billing-integration.md) D4 as a Function App. Validates Stripe signatures, persists raw events to the buffer, fans out to the default Service Bus topic per [ADR-0028](./ADR-0028-event-driven-architecture-and-messaging.md).
+- **Payments-owned Stripe webhook boundary** — Stripe webhook handler, named in [ADR-0037](./ADR-0037-payment-and-billing-integration.md) D4 as a single handler per environment. Validates Stripe signatures through `HoneyDrunk.Payments.Stripe`, persists raw events where the host requires durability, and fans out normalized events to the default Service Bus topic per [ADR-0028](./ADR-0028-event-driven-architecture-and-messaging.md).
 - **`HoneyDrunk.Notify`** — Resend and Twilio status webhooks (delivery receipts, bounce events, opt-outs). Currently in flight as part of the Notify Cloud rollout per [ADR-0027](./ADR-0027-stand-up-honeydrunk-notify-cloud-node.md) and [ADR-0038](./ADR-0038-outbound-sender-identity-and-deliverability.md). The provider feeds are Svix-shaped for Resend and Basic-Auth-plus-signature for Twilio.
 - **`HoneyDrunk.Observe`** — GitHub connector webhook receiver (the Q3 roadmap item). Inbound GitHub events normalized through `IObservationEvent` per [ADR-0010](./ADR-0010-observation-layer.md) and Invariant 30.
 - **`HoneyDrunk.Communications`** — Operator approval-event subscribers and tenant-supplied callback endpoints that the orchestration layer per [ADR-0019](./ADR-0019-stand-up-honeydrunk-communications-node.md) reacts to.
@@ -18,7 +18,7 @@ Without a Grid-level decision, each of these four lands its own HMAC implementat
 
 The forcing functions for deciding this now:
 
-- **Stripe webhook handler is the immediate consumer.** [ADR-0037](./ADR-0037-payment-and-billing-integration.md) D4 names `HoneyDrunk.Billing.Webhooks` as a future Function App; whatever shape it ships becomes de-facto canon for every webhook surface after it.
+- **Stripe webhook handler is the immediate consumer.** [ADR-0037](./ADR-0037-payment-and-billing-integration.md) D4 names the Payments-owned Stripe webhook boundary as the first payment-provider receiver; whatever shape it ships becomes de-facto canon for every webhook surface after it.
 - **Notify Cloud GA carries Resend and Twilio status-webhook integration as a launch-shape requirement.** Provider-side delivery receipts are the only credible way the Cloud surface knows whether a tenant's send succeeded; the integration cannot be deferred past GA.
 - **Observe's connector model (per [ADR-0010](./ADR-0010-observation-layer.md)) is the AI-sector-readiness gate** for any external observation source. GitHub is the first realistic connector to land. The webhook-verification shape decided here is what the connector slot consumes.
 - **Communications subscriber surfaces are about to be specified.** The Operator-approval-event-subscriber design is one packet away. Settling the verification pattern before Communications writes its first receiver prevents the per-Node-drift outcome.
@@ -213,7 +213,7 @@ ASP.NET-Core-hosted receivers consume the middleware-and-route shape. Function-A
 ### Affected Nodes
 
 - **`HoneyDrunk.Kernel`** — gains `IWebhookSignatureVerifier` in `Kernel.Abstractions`, the `HmacSha256SignatureVerifier` default in `HoneyDrunk.Kernel`, the `RawBodyPreservationMiddleware`, and the `AddWebhookReceiver<T>` extension. Spec-level additions, not breaking. Contract-shape canary scope expands per Invariant 46-style coverage.
-- **`HoneyDrunk.Billing.Webhooks`** (planned per [ADR-0037](./ADR-0037-payment-and-billing-integration.md) D4) — first concrete consumer at standup. Implements `StripeSignatureVerifier`, registers it via `AddWebhookReceiver<>`, uses `IIdempotencyStore` for dedup with the 30-day TTL.
+- **Payments-owned Stripe webhook boundary** (planned per [ADR-0037](./ADR-0037-payment-and-billing-integration.md) D4) — first concrete payment-provider consumer at standup. Implements or composes `StripeSignatureVerifier` through `HoneyDrunk.Payments.Stripe`, registers it via `AddWebhookReceiver<>` where hosted as an HTTP receiver, and uses `IIdempotencyStore` for dedup with the 30-day TTL.
 - **`HoneyDrunk.Notify`** — Resend (Svix-shaped) and Twilio receivers compose against this ADR. Existing webhook code (if any) is amended in a separate rollout packet; transitional behavior is "verify with old code, audit-emit per D11" so the audit surface lights up before the verifier consolidation lands.
 - **`HoneyDrunk.Observe`** — the GitHub-connector webhook receiver (Q3 roadmap) composes against this ADR from day one. The receiver's normalized output through `IObservationEvent` is unchanged; only the verification entry-point is governed here.
 - **`HoneyDrunk.Communications`** — Operator-approval-event subscriber receivers and any tenant-supplied callbacks compose against this ADR. The receiver work was about to start; this ADR is its prerequisite.
@@ -255,7 +255,7 @@ Not edited by this ADR — listed for the scope agent's packet wave at acceptanc
 - Update `catalogs/contracts.json` with `IWebhookSignatureVerifier` and the supporting `WebhookVerificationRequest` / `WebhookVerificationResult` records under `honeydrunk-kernel`.
 - Add the proposed invariants to `constitution/invariants.md` with scope-agent-assigned numbers at acceptance time.
 - File the Kernel implementation packet — `IWebhookSignatureVerifier`, `HmacSha256SignatureVerifier`, `RawBodyPreservationMiddleware`, `AddWebhookReceiver<T>`, contract-shape canary additions.
-- File the `HoneyDrunk.Billing.Webhooks` scaffold packet ([ADR-0037](./ADR-0037-payment-and-billing-integration.md) D4 standup) — depends on the Kernel implementation packet landing first.
+- File the Payments-owned Stripe webhook receiver packet ([ADR-0037](./ADR-0037-payment-and-billing-integration.md) D4 standup) — depends on the Kernel implementation packet landing first.
 - File Notify-side amendments for Resend and Twilio receivers to compose against `IWebhookSignatureVerifier`; bridge the existing receiver code through the transitional pattern.
 - File the Observe GitHub-connector receiver packet when the Q3 roadmap pulls on it.
 - File a Communications packet that composes the Operator-approval-event subscriber against this ADR.

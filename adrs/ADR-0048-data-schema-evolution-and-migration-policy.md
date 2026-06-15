@@ -21,7 +21,7 @@ The forcing functions for codifying this now:
 
 - **Audit standup (ADR-0031) is the first Tier 0 Node that will live for years and accumulate schema changes.** An append-only-by-interface store with no schema deployment policy is the highest-cost place to invent one ad-hoc.
 - **Memory and Knowledge standups (ADR-0021/0022)** introduce embedding stores and document indexes whose schemas will evolve as the AI sector matures. Each Node inventing its own pattern produces three incompatible schema deployment stories before the AI sector has even shipped.
-- **Billing standup (ADR-0037, Proposed)** will hold Stripe-reconciled tenant ledger data — wrong-schema or lost-data outcomes are commercially disqualifying. Schema deployment policy must exist before Billing's first table.
+- **Payments/product subscription standup (ADR-0037, Proposed)** will hold provider-reconciled tenant ledger data — wrong-schema or lost-data outcomes are commercially disqualifying. Schema deployment policy must exist before the first durable payment/subscription table.
 - **Notify Cloud GA (PDR-0002 / ADR-0027)** is the first commercial product; per-tenant data will accumulate; the deploy cadence will pick up; the "two revisions alive at once" property from ADR-0015 D6 will be exercised every release. Schema-compatibility-across-revisions is no longer a future concern.
 - **ADR-0042's `IIdempotencyStore` contract test** (now formalized as a Tier 2a contract test per ADR-0047 D4) exercises a real backing — meaning the schema that creates the dedup table is itself test-exercised in CI. The pattern that test follows is the de-facto pattern every other Node copies. Better to commit it deliberately.
 - **ADR-0047 D4 commits Testcontainers** for Tier 2b integration tests against real backing services. DACPAC round-trip testing now has a natural home; the testing surface exists, the policy on what to test there does not.
@@ -228,10 +228,10 @@ tests/
 
 **The database deploy reusable workflow** (new, lands in HoneyDrunk.Actions per the ADR-0012 control-plane invariant):
 
-- Inputs: `node` (the Node name), `environment` (`dev`/`staging`/`prod`), and optional DACPAC/publish profile overrides.
+- Inputs: `node` (the Node name), `environment` (`dev`/`staging`/`prod`), `schema-source-ref` (the reviewed commit SHA, tag, or branch that contains the SQL project change being promoted), and optional DACPAC/publish profile overrides.
 - Trigger: `workflow_dispatch` only (operator-deliberate per D3).
 - Steps:
-  1. Check out the consumer repo at the SHA of the latest deployed code for the target environment (per ADR-0033's environment-to-ref mapping). This guarantees the DACPAC source matches the running code.
+  1. Check out the consumer repo at `schema-source-ref`, the reviewed schema source being promoted. For an Expand phase this is usually the merge commit or release tag that contains the already-landed SQL project change, not the target environment's previously deployed app SHA. This guarantees the DACPAC source is the intended database model while D2/D5 guarantee that model remains backward-compatible with the currently running code.
   2. Build the Node's SQL project and publish the DACPAC artifact.
   3. Resolve the connection string from Vault per ADR-0005 using the Grid's OIDC credential model per ADR-0015.
   4. Generate and review/store the publish script/report, then publish to Azure SQL.
@@ -294,7 +294,7 @@ The agent is also invoked **from the `scope` agent** when packets imply schema c
 - **Phase 2 (Week 2–4)** — Pilot on **HoneyDrunk.Kernel.Idempotency** (per ADR-0042). The idempotency store contract test (Tier 2a per ADR-0047 D4) gains the round-trip schema test in Tier 2b; the Cosmos backing follows D7's schema-on-read pattern. This pilot exercises the document-store side of the policy on a Node that already has a contract test.
 - **Phase 3 (Week 4–6)** — Audit standup (ADR-0031) adopts the full pattern. Audit is the highest-stakes Node for the policy — Tier 0, append-only-by-interface, retention ≥ 730 days. Standup canary includes the round-trip test from day one; D8's constraints are baked into the `database` agent's Audit-specific rules.
 - **Phase 4 (Month 2–3)** — Memory, Knowledge standup (ADR-0021/0022) consumes the pattern. Each Node's standup ADR amendment references this ADR for the schema deployment story instead of inventing one.
-- **Phase 5 (Month 3+)** — Billing standup (ADR-0037) consumes the pattern. Billing carries the strongest data-integrity requirements; the `database` agent is invoked on every Billing PR by default.
+- **Phase 5 (Month 3+)** — Payments standup (ADR-0037) consumes the pattern. Payments carries the strongest data-integrity requirements; the `database` agent is invoked on every Payments PR by default.
 - **Phase 6 (Ongoing)** — Notify Cloud per-tenant schema deployments as Notify Cloud GA approaches; the tenant-scoped variant of D9 if and when adopted.
 
 Each phase is a discrete go/no-go.
@@ -307,7 +307,7 @@ Each phase is a discrete go/no-go.
 - **HoneyDrunk.Data** — gains a SQL project/DACPAC conventions page. Backings are per-consuming-Node, so Data itself doesn't own product schemas; it ships EF runtime patterns, outbox contracts, and tests.
 - **HoneyDrunk.Audit** (Seed, ADR-0031) — adopts the pattern in full at standup. Tier 0; append-only-by-interface per D8; round-trip test from day one; `database` agent on every Audit-touching PR.
 - **HoneyDrunk.Memory, HoneyDrunk.Knowledge** (Seed, ADR-0021/0022) — adopt the pattern at standup. Tier 1; expand/contract per D2 with the 14-day window per D5.
-- **HoneyDrunk.Billing** (proposed by ADR-0037; not yet in `catalogs/nodes.json`) — adopts the pattern at standup with the 30-day window per D5 matching ADR-0042's billing TTL.
+- **HoneyDrunk.Payments** (proposed by ADR-0037) — adopts the pattern at standup with the 30-day window per D5 matching ADR-0042's billing TTL.
 - **HoneyDrunk.Notify** — gains a per-Node SQL project when it takes a durable SQL Server dependency. No data movement today.
 - **HoneyDrunk.Notify.Cloud** (Seed, ADR-0027) — adopts shared-schema multi-tenancy per D9 by default. Future per-tenant variant would trigger this ADR's D9 second branch.
 - **HoneyDrunk.Pulse** — Tier 2; permitted to use `[BreakingChange]` for the rare destructive schema change. Cosmos historical-signals store follows D7.

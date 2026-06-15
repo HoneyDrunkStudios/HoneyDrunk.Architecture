@@ -11,6 +11,8 @@
 - `HoneyDrunk.Data.Abstractions`: `IOutboxStore` durable outbox contract for atomic accepted-submission writes.
 - `HoneyDrunk.Data.EntityFramework`, `HoneyDrunk.Data.Outbox`, and `HoneyDrunk.Data.Outbox.Dispatcher`: EF Core persistence and runtime host composition for committed-row dispatch.
 - `HoneyDrunk.Transport`, `HoneyDrunk.Transport.AzureServiceBus`, and `HoneyDrunk.Transport.InMemory`: production Azure Service Bus dispatch and development/test in-memory dispatch for committed outbox work.
+- `HoneyDrunk.Payments.Abstractions`: provider-neutral checkout, subscription lifecycle, webhook, and invoice reconciliation contracts.
+- `HoneyDrunk.Payments.Stripe`: first payment provider implementation for Stripe.NET-backed commercial launch flows.
 - `HoneyDrunk.Actions`: reusable CI, security, package, review, and deployment workflows.
 - `HoneyDrunk.Infrastructure`: Azure Container Apps deployment templates once the product has a deployable shape.
 
@@ -19,7 +21,6 @@
 - `HoneyDrunk.NovOutbox.Abstractions`: product contracts such as `INovOutboxGateway`, `INovOutboxApiKeyStore`, `INovOutboxConsoleQueryStore`, `INovOutboxDeliveryHandoff`, `INovOutboxUsageEmitter`, `NovOutboxTenantTier`, API-key summaries, project snapshots, and submission result types.
 - `HoneyDrunk.NovOutbox`: runtime composition for tenant resolution, limits, billing events, and Communications delegation.
 - `HoneyDrunk.NovOutbox.Web`: customer API and static customer console for bootstrap provisioning, project overview, send-test, and Auth-backed API-key management.
-- `HoneyDrunk.NovOutbox.Billing.Stripe`: Stripe.NET-backed billing adapter for metered usage, Checkout subscription lifecycle, signed webhook validation, and invoice reconciliation snapshots.
 - `HoneyDrunk.NovOutbox.AppHost`: Aspire local-development host only.
 
 ## Private-repo checks

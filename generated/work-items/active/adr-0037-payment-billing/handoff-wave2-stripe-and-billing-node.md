@@ -1,5 +1,7 @@
 # Handoff — ADR-0037 Wave 2: Planned-Node Registration + Stripe Account
 
+> **SUPERSEDED 2026-06-14:** This handoff names `HoneyDrunk.Billing` and must not be used as an execution input. PR #632 supersedes it with `HoneyDrunk.Payments`; write a fresh Payments-scoped handoff before Wave 2 work resumes.
+
 **Read this once at the Wave 1 → Wave 2 transition.** Ephemeral baton pass — not a live tracker. Immutable per invariant 24.
 
 ## What landed in Wave 1

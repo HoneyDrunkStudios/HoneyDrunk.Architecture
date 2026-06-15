@@ -574,6 +574,49 @@
     "cooldown_days": 14
   },
   {
+    "id": "honeydrunk-payments",
+    "type": "node",
+    "name": "HoneyDrunk.Payments",
+    "public_name": "HoneyDrunk.Payments",
+    "short": "Provider-neutral payment and billing integrations",
+    "description": "Shared payment-provider boundary for HoneyDrunk products. Owns provider-neutral payment contracts and provider packages such as Stripe so product nodes do not carry SDK-specific billing code.",
+    "sector": "Ops",
+    "signal": "Seed",
+    "cluster": "commercial",
+    "energy": 0,
+    "priority": 30,
+    "flow": 0,
+    "tags": ["payments", "billing", "stripe", "subscriptions", "webhooks", "invoice-reconciliation", "provider-boundary"],
+    "links": {
+      "repo": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Payments"
+    },
+    "long_description": {
+      "overview": "HoneyDrunk.Payments is the shared payment-provider boundary for hosted products. Product nodes keep product pricing, tenant binding, and business policy, while Payments exposes provider-neutral contracts and provider implementations for checkout, subscription lifecycle, webhook normalization, invoice reconciliation, and metered billing transport.",
+      "why_it_exists": "To keep Stripe and future payment providers behind a reusable provider boundary instead of embedding payment SDK code in each product repository.",
+      "primary_audience": "Product-node owners that need checkout, subscriptions, billing webhook intake, and invoice reconciliation without depending directly on a payment provider SDK.",
+      "value_props": [
+        "Provider-neutral payment contracts for product code",
+        "Stripe.NET implementation for subscriptions, webhooks, invoices, and meter events",
+        "A clear provider-slot pattern for future providers such as Paddle or LemonSqueezy",
+        "Keeps product repos focused on tenant policy, pricing, and product-specific billing state"
+      ],
+      "monetization_signal": "Commercial infrastructure shared by hosted HoneyDrunk products.",
+      "roadmap_focus": "Stand up abstractions plus Stripe implementation, migrate NovOutbox off its product-owned Stripe package, and prove repo automation plus review admission.",
+      "grid_relationship": "Consumes Kernel billing-event primitives for metered usage emission. Consumed by NovOutbox today and by future product nodes at the abstractions layer, with provider packages selected in composition.",
+      "integration_depth": "medium",
+      "demo_path": "Product node depends on HoneyDrunk.Payments.Abstractions -> composition registers HoneyDrunk.Payments.Stripe -> checkout and webhook flows return provider-neutral snapshots.",
+      "signal_quote": "Providers behind contracts.",
+      "stability_tier": "seed",
+      "impact_vector": "commercial optionality"
+    },
+    "foundational": false,
+    "strategy_base": 18,
+    "tier": "none",
+    "time_pressure": 3,
+    "done": false,
+    "cooldown_days": 14
+  },
+  {
     "id": "honeydrunk-actions",
     "type": "node",
     "name": "HoneyDrunk.Actions",
