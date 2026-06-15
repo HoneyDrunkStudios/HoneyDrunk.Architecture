@@ -11,6 +11,8 @@ initiative: adr-0037-payment-billing
 node: honeydrunk-architecture
 ---
 
+> **SUPERSEDED 2026-06-14:** Do not execute this packet. It registers the old `HoneyDrunk.Billing` working name and has been superseded by the `HoneyDrunk.Payments` node registration in PR #632.
+
 # Register the HoneyDrunk.Billing Node — context folder, sector map, planned catalog edges
 
 ## Summary

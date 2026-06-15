@@ -260,7 +260,7 @@
     "nodeId": "honeydrunk-payments",
     "name": "HoneyDrunk.Payments.Abstractions",
     "type": "abstractions",
-    "version": "0.1.0",
+    "version": "0.0.0",
     "description": "Provider-neutral payment contracts for checkout, subscriptions, signed webhooks, and invoice reconciliation"
   },
   {
@@ -268,7 +268,7 @@
     "nodeId": "honeydrunk-payments",
     "name": "HoneyDrunk.Payments.Stripe",
     "type": "provider",
-    "version": "0.1.0",
+    "version": "0.0.0",
     "description": "Stripe.NET payment provider implementation for meter events, Checkout subscriptions, webhooks, and invoice reconciliation"
   },
   {

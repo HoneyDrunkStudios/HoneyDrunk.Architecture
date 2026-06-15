@@ -211,7 +211,7 @@
       "name": "HoneyDrunk.Payments",
       "sector": "Ops",
       "signal": "Seed",
-      "version": "0.1.0",
+      "version": "0.0.0",
       "canary_status": "none",
       "last_release": null,
       "active_blockers": [

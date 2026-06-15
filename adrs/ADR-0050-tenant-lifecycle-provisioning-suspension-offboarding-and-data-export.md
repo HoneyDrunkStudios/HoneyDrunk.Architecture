@@ -24,7 +24,7 @@ What exists today:
 The forcing functions for deciding this now:
 
 - **ADR-0027 (Notify.Cloud, Proposed)** presumes paying tenants exist. The ADR cannot move past Proposed without a definition of how a paying tenant comes into being and how one stops being one.
-- **ADR-0037 (Billing, Proposed)** presumes a subscription lifecycle — `trialing`, `active`, `past_due`, `unpaid`, `canceled` — and a `HoneyDrunk.Billing` Node that doesn't exist yet. Subscription state must map onto Grid tenant state, and the mapping is undefined.
+- **ADR-0037 (Payments, Proposed)** presumes a subscription lifecycle — `trialing`, `active`, `past_due`, `unpaid`, `canceled` — and a `HoneyDrunk.Payments` provider boundary. Subscription state must map onto Grid tenant state, and the mapping is undefined.
 - **PDR-0002 (Notify.Cloud commercial offering)** is explicitly blocked on this ADR. Pricing, packaging, and sales motion all depend on knowing what "a customer" is operationally.
 - **GDPR Article 17 / CCPA right-to-delete are statutory.** The first EU-resident user who exercises right-to-erasure cannot be answered with "the audit substrate is append-only, sorry." The collision between **Invariant 47 (audit is append-only)** and **GDPR Art. 17 (data must be erased on request)** is the central architectural decision in this ADR. It cannot be deferred to a future ADR because the deferral itself is non-compliant — GDPR requires that the erasure path be designed in, not retrofitted.
 - **The first prospect for Notify.Cloud is in conversation.** Operationally, we need a way to take their money and provision them in the next 60 days.
@@ -84,7 +84,7 @@ The initiator of each transition is recorded in the audit event:
 | `Trialing → Offboarding` | Scheduled job | Trial expired without conversion |
 | `Offboarding → Closed` | Scheduled job | T+30 from offboarding entry |
 
-State is persisted in the `HoneyDrunk.Billing` Node (per ADR-0037, once standup completes) with a read-replica view in `HoneyDrunk.Auth` for fast access-check decisions. Until Billing is scaffolded, state lives in a `Tenants` table in `HoneyDrunk.Auth` as the interim home; the Billing-standup ADR-0037 packet picks up the migration.
+State is persisted through the `HoneyDrunk.Payments` / product subscription boundary (per ADR-0037, once standup completes) with a read-replica view in `HoneyDrunk.Auth` for fast access-check decisions. Until Payments/product subscription state is scaffolded, state lives in a `Tenants` table in `HoneyDrunk.Auth` as the interim home; the Payments ADR-0037 packet picks up the migration.
 
 ### D2 — Provisioning model (v1): self-serve sign-up with manual approval
 
@@ -372,7 +372,7 @@ Each phase is a discrete go/no-go.
 - **HoneyDrunk.Notify** — welcome email, suspension notice, offboarding confirmation, export-ready email, all become Notify intake calls from the Communications workflow.
 - **HoneyDrunk.Communications** — hosts the tenant lifecycle workflows (provisioning, suspension, offboarding, erasure). New surface area but architecturally consistent with ADR-0019.
 - **HoneyDrunk.Audit** — interface extended to accept only `PseudoTenantToken` / `PseudoUserToken` value types in actor/subject fields; PII rejection at the boundary; new event types (`TenantProvisioned`, `TenantSuspended`, `TenantReinstated`, `TenantOffboarding`, `TenantClosed`, `TenantDataExported`, `UserErased`).
-- **HoneyDrunk.Billing** (not yet scaffolded; introduced by ADR-0037) — once standup completes, owns the tenant-state record canonically; Stripe webhook handling drives state transitions.
+- **HoneyDrunk.Payments** (introduced by ADR-0037) — once standup completes, owns or normalizes provider subscription lifecycle snapshots; product subscription state drives tenant-state transitions.
 - **HoneyDrunk.Studios** — admin console additions per D9: prospect queue, tenant directory, per-tenant action surface, audit timeline view.
 - **HoneyDrunk.Architecture** — `catalogs/contracts.json` gains `PseudoTenantToken`, `PseudoUserToken` value types under Audit's published contracts; `repos/HoneyDrunk.Auth/integration-points.md` gains the identity-map description; `constitution/feature-flow-catalog.md` gains the tenant lifecycle flow.
 
@@ -504,7 +504,7 @@ Rejected. The 730-day audit retention floor (per ADR-0040 D3) exists for Grid-wi
 
 ### Persist tenant state in Billing from day one (skip the Auth interim)
 
-Considered. Cleaner long-term home (D1's eventual target). Rejected because `HoneyDrunk.Billing` is not yet scaffolded; introducing it as a hard dependency for the tenant state machine would block Phase 1 on a much larger standup wave. The interim Auth-side persistence is cheap and well-bounded; the migration to Billing when ADR-0037 standup completes is one packet, the data model is small, and the read-replica view in Auth survives the migration (becomes downstream of Billing instead of canonical).
+Considered. Cleaner long-term home (D1's eventual target). Rejected because `HoneyDrunk.Payments` is not yet scaffolded; introducing it as a hard dependency for the tenant state machine would block Phase 1 on a much larger standup wave. The interim Auth-side persistence is cheap and well-bounded; the migration to Payments/product subscription state when ADR-0037 standup completes is one packet, the data model is small, and the read-replica view in Auth survives the migration (becomes downstream of product subscription state instead of canonical).
 
 ### Use a vendor identity-management product (Auth0, WorkOS, Frontegg) for the identity map
 

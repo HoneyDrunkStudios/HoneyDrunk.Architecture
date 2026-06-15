@@ -12,6 +12,8 @@ initiative: adr-0037-payment-billing
 node: honeydrunk-architecture
 ---
 
+> **SUPERSEDED 2026-06-14:** Do not execute this packet. It belongs to the old ADR-0037 `HoneyDrunk.Billing` work-item set and has been superseded by the `HoneyDrunk.Payments` node registration in PR #632.
+
 # Accept ADR-0037 — flip status, add the three billing invariants, register the initiative
 
 ## Summary

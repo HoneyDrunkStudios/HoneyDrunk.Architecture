@@ -21,7 +21,7 @@ Accepting this ADR creates catalog and cross-repo obligations that must be compl
 - [ ] Add `honeydrunk-novoutbox` entries to `catalogs/relationships.json`, `catalogs/grid-health.json`, `catalogs/contracts.json`, and `catalogs/modules.json`
 - [ ] Update sector map (`constitution/sectors.md`) Ops-sector entry to include NovOutbox as the commercial wrapper above Notify and Communications
 - [ ] Wire the contract-shape canary into Actions for the five frozen NovOutbox wrapper contracts (`INovOutboxGateway`, `INovOutboxApiKeyStore`, `NovOutboxTenantTier`, `NovOutboxApiKeyIssuance`, `NovOutboxSubmitResult`); the Kernel multi-tenant primitives are guarded by Kernel's canary per ADR-0026
-- [ ] Reference ADR-0026 (Grid Multi-Tenant Primitives) as a hard prerequisite — NovOutbox is its first real (non-noop) consumer of `ITenantRateLimitPolicy` and `IBillingEventEmitter`; this stand-up does not flip Accepted until ADR-0026 is Accepted
+- [ ] Reference ADR-0026 (Grid Multi-Tenant Primitives) as a hard prerequisite — NovOutbox is its first real (non-noop) product consumer of `ITenantRateLimitPolicy` and `IBillingEventEmitter`; Payments owns the provider implementation that drains billing usage to Stripe. This stand-up does not flip Accepted until ADR-0026 is Accepted
 - [ ] Scope agent assigns final invariant numbers when flipping Status → Accepted
 
 ## Context
@@ -307,7 +307,7 @@ Rejected. No second consumer of NovOutbox's contracts exists in the Grid (it is 
 
 ### Define `TenantId`, `BillingEvent`, and `IBillingEventEmitter` in `HoneyDrunk.NovOutbox.Abstractions`
 
-Rejected. These are Grid-wide primitives consumed by Notify, Communications, Vault, Pulse, and any future commercial wrapper. Putting them in the Cloud Abstractions package would force every other Node that participates in tenancy or billing to take a runtime dependency on the Cloud Abstractions package, which is a private-repo package and an inversion of the dependency direction (the Cloud Node sits *above* Notify and Communications, so Notify cannot transitively reference it). ADR-0026 (Grid Multi-Tenant Primitives) puts `TenantId`, `ITenantRateLimitPolicy`, `TenantRateLimitDecision`, `IBillingEventEmitter`, and `BillingEvent` in `HoneyDrunk.Kernel.Abstractions.Tenancy`, where they belong as foundational primitives. NovOutbox is the first real consumer; future commercial wrappers (if any) inherit the same primitives.
+Rejected. These are Grid-wide primitives consumed by Notify, Communications, Vault, Pulse, and any future commercial wrapper. Putting them in the Cloud Abstractions package would force every other Node that participates in tenancy or billing to take a runtime dependency on the Cloud Abstractions package, which is a private-repo package and an inversion of the dependency direction (the Cloud Node sits *above* Notify and Communications, so Notify cannot transitively reference it). ADR-0026 (Grid Multi-Tenant Primitives) puts `TenantId`, `ITenantRateLimitPolicy`, `TenantRateLimitDecision`, `IBillingEventEmitter`, and `BillingEvent` in `HoneyDrunk.Kernel.Abstractions.Tenancy`, where they belong as foundational primitives. NovOutbox is the first real product consumer; `HoneyDrunk.Payments` owns the reusable provider-side implementation. Future commercial wrappers (if any) inherit the same primitives.
 
 ### Have NovOutbox call Notify directly, bypassing Communications
 

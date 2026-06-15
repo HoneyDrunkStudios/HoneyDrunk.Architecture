@@ -1,5 +1,7 @@
 # Dispatch Plan: Payment and Billing Integration (ADR-0037)
 
+> **SUPERSEDED 2026-06-14:** This draft work-item set uses the old `HoneyDrunk.Billing` working name and is no longer executable. PR #632 registers `HoneyDrunk.Payments` as the provider boundary and supersedes these active packets. Replace this set with Payments-scoped work items before assigning agents.
+
 **Date:** 2026-05-22 (initial scope — drafted ahead of ADR-0037 acceptance).
 **Trigger:** ADR-0037 (Payment and Billing Integration) — Proposed 2026-05-21, part of the 2026-05-21 batch of cross-cutting Grid-gap ADRs. Scoped now so the packet set is ready when the ADR lands. The forcing function per ADR-0037's Context is the Notify Cloud GA milestone — the first paying tenant cannot be onboarded without a payment processor, a subscription model, an invoice surface, tax handling, and a customer portal, none of which exist in the Grid today.
 **Type:** Multi-repo in classification, but every packet's `target_repo` is `HoneyDrunk.Architecture`. ADR-0037 is a *policy/decision* ADR — it chooses Stripe and commits Grid-wide rules, but the actual billing code is explicitly deferred by ADR-0037 itself (D2, D9, Follow-up Work) to a **separate `HoneyDrunk.Billing` standup ADR**. This initiative lands the policy, the Grid-governance changes, the planned-Node registration, the human Stripe-account work, and authors that follow-up standup ADR. It does **not** scaffold the Billing Node.

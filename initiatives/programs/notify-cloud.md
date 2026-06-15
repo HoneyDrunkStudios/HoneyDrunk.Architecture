@@ -4,7 +4,7 @@
 **Status:** Forming
 **Roadmap thread:** [NovOutbox](../roadmap.md) (Q2-Q4 2026, the Grid's first commercial trial) · **Current-focus rows:** #6-#9
 **Kill criteria / gates:** PDR-0002 §K 90-day decision-point (extend / maintenance / sunset) + the §K hard rule (revert the multi-tenant wrapper if it compromises internal Grid use)
-**Last updated:** 2026-06-13
+**Last updated:** 2026-06-14
 
 Naming note: **NovOutbox** supersedes the earlier customer-facing names **HoneyDrunk Notify** and **Notify Cloud**. This tracker keeps the historical `notify-cloud.md` filename for link stability until a separate cleanup pass renames paths. The private technical repo and package family are now confirmed as `HoneyDrunk.NovOutbox`; `HoneyDrunk.Notify.Cloud` remains historical planning language only.
 
@@ -31,7 +31,7 @@ Phase spine from PDR-0002 §Rollout (dates on `roadmap.md`).
 | **ADR-0019** Communications scaffold + Notify refactor (intake/routing split) | needed (Proposed; **hard prerequisite**) | — | multi-tenant primitives; Pro-tier wedge | P1 |
 | **Grid multi-tenant primitives ADR** (gateway middleware: tenant context, rate limits, billing, per-tenant Vault) | needed | ADR-0019 *accepted* (decision→decision) | ADR-0027 scaffold | P2 |
 | **ADR-0027** Stand up the NovOutbox wrapper Node (`HoneyDrunk.NovOutbox` private repo + packages) | needed (Proposed) | multi-tenant primitives *shipped* | Stripe billing; SDK; Web | P3 |
-| **Payments/Stripe billing + SDK** (`HoneyDrunk.Payments.Stripe`, `.Client`) | needed | ADR-0027 | soft launch | P3 |
+| **Payments/Stripe billing + SDK** (`HoneyDrunk.Payments.Abstractions`, `HoneyDrunk.Payments.Stripe`) | needed | ADR-0027 | soft launch | P3 |
 
 **Status legend:** `needed → drafting → accepted → implemented`, or `gated`.
 

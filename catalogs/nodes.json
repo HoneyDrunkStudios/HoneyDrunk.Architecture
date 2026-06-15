@@ -602,7 +602,7 @@
       ],
       "monetization_signal": "Commercial infrastructure shared by hosted HoneyDrunk products.",
       "roadmap_focus": "Stand up abstractions plus Stripe implementation, migrate NovOutbox off its product-owned Stripe package, and prove repo automation plus review admission.",
-      "grid_relationship": "Consumes Kernel billing-event primitives for metered usage emission. Consumed by NovOutbox and future hosted products at the abstractions layer, with provider packages selected in composition.",
+      "grid_relationship": "Consumes Kernel billing-event primitives for metered usage emission. Consumed by NovOutbox today and by future product nodes at the abstractions layer, with provider packages selected in composition.",
       "integration_depth": "medium",
       "demo_path": "Product node depends on HoneyDrunk.Payments.Abstractions -> composition registers HoneyDrunk.Payments.Stripe -> checkout and webhook flows return provider-neutral snapshots.",
       "signal_quote": "Providers behind contracts.",

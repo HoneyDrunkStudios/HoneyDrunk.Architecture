@@ -15,7 +15,7 @@
 - Product-specific subscription persistence tables.
 - Customer-console UX.
 - General money representation; that remains governed by Kernel/Architecture money decisions.
-- Provider secrets storage; provider secrets must be resolved through Vault or deploy-time configuration.
+- Provider secrets storage; provider secrets must be resolved only through HoneyDrunk.Vault / `ISecretStore`. Deploy-time configuration may carry Vault secret names, secret references, environment names, or non-secret provider identifiers, but not provider secret values.
 
 ## Naming
 

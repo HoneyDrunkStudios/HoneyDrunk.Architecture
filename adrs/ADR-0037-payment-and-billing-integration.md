@@ -5,6 +5,8 @@
 **Deciders:** HoneyDrunk Studios
 **Sector:** Ops / cross-cutting
 
+> **Payments amendment (2026-06-14):** ADR-0037 is the standup authority for the shared `HoneyDrunk.Payments` provider boundary. `HoneyDrunk.Payments` supersedes the earlier `HoneyDrunk.Billing` working name used in draft packets and dependent ADR text. The active work items under `generated/work-items/active/adr-0037-payment-billing/` are superseded execution inputs until replaced with Payments-scoped work items.
+
 ## Context
 
 ADR-0026 promoted `IBillingEventEmitter` and `BillingEvent` into Kernel.Abstractions as Grid-wide multi-tenant primitives. `BillingEvent` describes a metered, attributable, idempotent unit of consumption (per its frozen shape). ADR-0027 (Notify Cloud) is the first consumer; PDR-0003 through PDR-0008 (six consumer-app PDRs) all anticipate paid tiers that will emit billing events through the same primitive.
@@ -111,7 +113,7 @@ Stripe test mode is wired through `dev` and `staging` per environment-scoped Str
 - **HoneyDrunk.Vault** — holds Stripe API keys (per environment) and webhook signing secrets.
 - **HoneyDrunk.Audit** — product hosts may emit audit events for payment-provider lifecycle changes.
 - **Consumer-app Nodes** (designed, not yet scaffolded — PDR-0003, etc.) — depend on Payments for web subscriptions; depend on the future mobile-IAP ADR for in-app subscriptions.
-- **catalogs/relationships.json** — gains edges: Payments -> Kernel and NovOutbox -> Payments, with future consumer apps -> Payments.
+- **catalogs/relationships.json** — gains edges: Payments -> Kernel and NovOutbox -> Payments. Future consumer-app usage is tracked in prose until concrete consumer-app node IDs exist.
 
 ### Invariants
 

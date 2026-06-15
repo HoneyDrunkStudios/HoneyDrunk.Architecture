@@ -205,7 +205,7 @@
       "id": "honeydrunk-payments",
       "consumes": ["honeydrunk-kernel"],
       "consumed_by": ["honeydrunk-novoutbox"],
-      "consumed_by_planned": ["future hosted products"],
+      "consumed_by_planned": [],
       "blocked_by": [
         "Provider-neutral abstractions and Stripe implementation are in initial repo standup",
         "Package publishing and provider secret onboarding are pending"
