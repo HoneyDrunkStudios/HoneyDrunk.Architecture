@@ -7,7 +7,7 @@
 
 ## Purpose
 
-Persistence conventions, repository patterns, tenant-aware data access, and transactional outbox. Provides EF Core and SQL Server implementations.
+Persistence conventions, repository patterns, tenant-aware data access, transactional outbox, and SQL Server database project/DACPAC deployment conventions. Provides EF Core and SQL Server runtime implementations.
 
 ## Key Packages
 

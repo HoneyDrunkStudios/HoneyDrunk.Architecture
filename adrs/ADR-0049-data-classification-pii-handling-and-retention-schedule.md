@@ -208,7 +208,7 @@ The v1 Grid is hosted entirely in **Azure US East 2** (the existing single-regio
   - A new boundary that handles Restricted-class data (a new HTTP endpoint, a new message envelope shape, a new audit event family).
   - A new Node that will store user-attributable data (consumer-app standup PDRs).
 - The specialist **`database` agent** (named as a follow-up candidate per ADR-0046 D9; promoted to v1 roster by this ADR's follow-up work) is invoked for any PR touching:
-  - Schema migrations on `HoneyDrunk.Data`-backed stores.
+  - SQL project/DACPAC schema changes on `HoneyDrunk.Data`-backed stores.
   - Index design on PII-bearing tables (an index on `email` makes erasure easier; a composite index that locks in field placement makes it harder).
   - Retention-policy configuration changes on Cosmos containers, App Insights workspaces, or storage accounts.
 

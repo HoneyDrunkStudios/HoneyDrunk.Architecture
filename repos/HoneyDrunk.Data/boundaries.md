@@ -10,6 +10,6 @@
 
 ## What Data Does NOT Own
 - **Business entities** — Applications define their own entities
-- **Migration authoring** — Applications write their own EF migrations
+- **Database project authoring** — Applications own their SQL project/DACPAC schema source
 - **Transport publishing** — Outbox dispatcher uses Transport to publish, but Transport owns messaging
 - **Tenant resolution strategy** — Applications must implement `ITenantResolutionStrategy`

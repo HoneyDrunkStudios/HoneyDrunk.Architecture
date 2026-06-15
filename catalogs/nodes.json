@@ -271,23 +271,23 @@
     "name": "HoneyDrunk.Data",
     "public_name": "HoneyDrunk.Data",
     "short": "Persistence contracts & provider implementations",
-    "description": "Persistence contracts, EF Core and SQL Server provider implementations, transactional outbox with lease-based dispatch, migrations discipline, tenant isolation, and diagnostics.",
+    "description": "Persistence contracts, EF Core and SQL Server provider implementations, transactional outbox with lease-based dispatch, SQL project/DACPAC schema deployment discipline, tenant isolation, and diagnostics.",
     "sector": "Core",
     "signal": "Live",
     "cluster": "foundation",
     "energy": 0,
     "priority": 36,
     "flow": 23,
-    "tags": ["database", "persistence", "migrations", "multi-tenant", "entityframework", "sqlserver", "outbox", "contracts", "testing"],
+    "tags": ["database", "persistence", "schema-deployment", "dacpac", "multi-tenant", "entityframework", "sqlserver", "outbox", "contracts", "testing"],
     "links": {
       "repo": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Data"
     },
     "long_description": {
-      "overview": "HoneyDrunk.Data gives the Grid memory and continuity. It defines persistence contracts and provider conventions across every tenant, every node, and every environment, so storage stays predictable and auditable. This Node standardizes migrations, schema versioning, tenant isolation, and persistence telemetry. It includes a transactional outbox pattern with lease-based concurrency for exactly-once message delivery.",
+      "overview": "HoneyDrunk.Data gives the Grid memory and continuity. It defines persistence contracts and provider conventions across every tenant, every node, and every environment, so storage stays predictable and auditable. This Node standardizes SQL project/DACPAC schema deployment, schema versioning, tenant isolation, and persistence telemetry. It includes a transactional outbox pattern with lease-based concurrency for exactly-once message delivery.",
       "why_it_exists": "HoneyDrunk.Data exists to prevent inconsistency and reinvention across the Grid.",
       "primary_audience": "HoneyDrunk maintainers, contributors, and service owners.",
       "value_props": [
-        "Standardizes database, migrations, and persistence patterns",
+        "Standardizes database, DACPAC deployment, and persistence patterns",
         "Transactional outbox with lease-based concurrency for exactly-once delivery",
         "Reduces operational risk with opinionated defaults",
         "Improves developer velocity and interoperability"
