@@ -1,6 +1,6 @@
 # Hive Sync Drift Report
 
-**Last Updated:** 2026-06-12
+**Last Updated:** 2026-06-15
 
 Fully rewritten by `hive-sync`; First Surfaced dates are sticky for persistent findings.
 
@@ -69,8 +69,16 @@ Fully rewritten by `hive-sync`; First Surfaced dates are sticky for persistent f
   - **First Surfaced:** 2026-05-25
   - **Detail:** Hive-sync does not auto-add compatibility rows.
 - **Category 6: grid-health node missing from compatibility matrix**
+  - **Item:** honeydrunk-novoutbox
+  - **First Surfaced:** 2026-06-15
+  - **Detail:** Hive-sync does not auto-add compatibility rows.
+- **Category 6: grid-health node missing from compatibility matrix**
   - **Item:** honeydrunk-operator
   - **First Surfaced:** 2026-05-25
+  - **Detail:** Hive-sync does not auto-add compatibility rows.
+- **Category 6: grid-health node missing from compatibility matrix**
+  - **Item:** honeydrunk-payments
+  - **First Surfaced:** 2026-06-15
   - **Detail:** Hive-sync does not auto-add compatibility rows.
 - **Category 6: grid-health node missing from compatibility matrix**
   - **Item:** honeydrunk-sim
@@ -89,144 +97,12 @@ Fully rewritten by `hive-sync`; First Surfaced dates are sticky for persistent f
   - **First Surfaced:** 2026-05-25
   - **Detail:** mapped novel status blocked
 - **Category 14: current-focus drift**
-  - **Item:** ADR-0015 focus row still shows incomplete rollout
-  - **First Surfaced:** 2026-06-05
-  - **Detail:** ADR-0015 is now 5/5 closed after Notify#3, Notify#4, and Pulse#3 closed on 2026-06-04; `current-focus.md` is netrunner-owned.
-- **Category 14: current-focus drift**
-  - **Item:** ADR-0033 focus row still marked Open
+  - **Item:** ADR-0027 focus row references unfiled scaffold packet
+  - **First Surfaced:** 2026-06-15
+  - **Detail:** `current-focus.md` surfaces ADR-0027 scaffold filing as focus work because `generated/work-items/active/adr-0027-notify-cloud-standup/06-notify-cloud-node-scaffold.md` has no filed issue state; netrunner owns that row.
+- **Category 15: alert-routing-table drift**
+  - **Item:** live-only: [ADR-0085](../adrs/ADR-0085-grid-wide-documentation-currency-agent.md) docs-sync run report | `#hive-activity` | Info | `docs-sync: {summary-counts} — {report-or-pr-link}`
   - **First Surfaced:** 2026-06-03
-  - **Detail:** ADR-0033 auto-flipped to Accepted and all three accepting packet issues are closed; `current-focus.md` is netrunner-owned.
-- **Category 14: current-focus drift**
-  - **Item:** ADR-0077 focus row still shows start work open
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** ADR-0077 has 19/19 tracked packet issues closed on 2026-06-07; `current-focus.md` is netrunner-owned.
-- **Category 14: current-focus drift**
-  - **Item:** HoneyHub focus row does not reflect closed Phase 2 packets
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** HoneyHub#1–#6 closed between 2026-06-07 and 2026-06-08; `current-focus.md` is netrunner-owned.
-- **Category 15: alert-routing-table drift**
-  - **Item:** adr-only: App Insights internal-Grid error spike ([ADR-0045](./ADR-0045-grid-wide-error-tracking.md)) | `#ops-alerts` | High | `🐞 {node}: {error-fingerprint} firing {rate}/h — {link}`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
-- **Category 15: alert-routing-table drift**
-  - **Item:** adr-only: Azure budget 50% threshold ([ADR-0052](./ADR-0052-cost-governance-budget-alerts-and-kill-switches.md)) | `#ops-alerts` | Info | `💰 budget at 50% ({category}, ${spend}/${cap})`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
-- **Category 15: alert-routing-table drift**
-  - **Item:** adr-only: Azure budget 75% threshold ([ADR-0052](./ADR-0052-cost-governance-budget-alerts-and-kill-switches.md)) | `#ops-alerts` | Medium | `💰 budget at 75% ({category})`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
-- **Category 15: alert-routing-table drift**
-  - **Item:** adr-only: Azure budget 90% / 100% threshold ([ADR-0052](./ADR-0052-cost-governance-budget-alerts-and-kill-switches.md)) | `#ops-alerts` + `#security-alerts` | Critical | `💰🔥 budget at {pct}% ({category}) — kill-switch posture: {posture}`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
-- **Category 15: alert-routing-table drift**
-  - **Item:** adr-only: CodeRabbit P0/P1 finding ([ADR-0079](./ADR-0079-multi-perspective-pr-review-stack.md)) | `#security-alerts` | High | `🐰 CodeRabbit {severity} on {repo}#{pr} — {pr-link}`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
-- **Category 15: alert-routing-table drift**
-  - **Item:** adr-only: Credential rotation T+0 (expired) ([ADR-0083](./ADR-0083-external-saas-credential-rotation.md)) | `#security-alerts` + `#audit-sensitive` | Critical | `🔑🔥 {credential} EXPIRED — {incident-record-link}`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
-- **Category 15: alert-routing-table drift**
-  - **Item:** adr-only: Credential rotation escalation T-30 ([ADR-0083](./ADR-0083-external-saas-credential-rotation.md)) | `#ops-alerts` | Medium | `🔑 {credential} expires in 30 days — {rotation-walkthrough-link}`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
-- **Category 15: alert-routing-table drift**
-  - **Item:** adr-only: Credential rotation escalation T-7 ([ADR-0083](./ADR-0083-external-saas-credential-rotation.md)) | `#ops-alerts` + `#security-alerts` | High | `🔑⚠️ {credential} expires in 7 days — {rotation-walkthrough-link}`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
-- **Category 15: alert-routing-table drift**
-  - **Item:** adr-only: Deploy failure ([ADR-0033](./ADR-0033-environment-gated-deploy-trigger-model.md)) | `#ops-alerts` + `#release` | High | `🔥 {node} {tag} → {env} FAILED — {link-to-run}`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
-- **Category 15: alert-routing-table drift**
-  - **Item:** adr-only: Deploy success ([ADR-0033](./ADR-0033-environment-gated-deploy-trigger-model.md)) | `#release` | Info | `🚀 {node} {tag} → {env} ({duration})`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
-- **Category 15: alert-routing-table drift**
-  - **Item:** adr-only: Grid Health aggregator drift ([ADR-0012](./ADR-0012-grid-cicd-control-plane.md) D6) | `#ops-alerts` | Medium | `🕸️ grid-health: {drift-summary} — {issue-link}`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
-- **Category 15: alert-routing-table drift**
-  - **Item:** adr-only: NuGet publish failure ([ADR-0034](./ADR-0034-public-package-distribution-and-nuget-policy.md)) | `#ops-alerts` + `#release` | High | `📦❌ {package} {version} publish failed — {link-to-run}`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
-- **Category 15: alert-routing-table drift**
-  - **Item:** adr-only: NuGet publish success ([ADR-0034](./ADR-0034-public-package-distribution-and-nuget-policy.md)) | `#release` | Info | `📦 {package} {version} published to nuget.org`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
-- **Category 15: alert-routing-table drift**
-  - **Item:** adr-only: [ADR-0014](./ADR-0014-hive-architecture-reconciliation-agent.md) hive-sync drift finding | `#hive-activity` | Medium | `🔄 hive-sync: {finding-summary} — {issue-link}`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
-- **Category 15: alert-routing-table drift**
-  - **Item:** adr-only: [ADR-0044](./ADR-0044-grid-aware-cloud-code-review-and-ai-authored-pr-discipline.md) review verdict (Approve / Request Changes / Comment) | `#agent-activity` | Info | `🐝 review on {repo}#{pr}: {verdict} — {pr-link}`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
-- **Category 15: alert-routing-table drift**
-  - **Item:** adr-only: [ADR-0046](./ADR-0046-specialist-review-agents.md) specialist invocation | `#agent-activity` | Info | `🎯 {specialist} on {repo}#{pr}: {verdict} — {pr-link}`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in ADR-0084 D6 but not `constitution/alert-routing.md`.
-- **Category 15: alert-routing-table drift**
-  - **Item:** live-only: App Insights internal-Grid error spike ([ADR-0045](../adrs/ADR-0045-grid-wide-error-tracking.md)) | `#ops-alerts` | High | `🐞 {node}: {error-fingerprint} firing {rate}/h — {link}`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
-- **Category 15: alert-routing-table drift**
-  - **Item:** live-only: Azure budget 50% threshold ([ADR-0052](../adrs/ADR-0052-cost-governance-budget-alerts-and-kill-switches.md)) | `#ops-alerts` | Info | `💰 budget at 50% ({category}, ${spend}/${cap})`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
-- **Category 15: alert-routing-table drift**
-  - **Item:** live-only: Azure budget 75% threshold ([ADR-0052](../adrs/ADR-0052-cost-governance-budget-alerts-and-kill-switches.md)) | `#ops-alerts` | Medium | `💰 budget at 75% ({category})`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
-- **Category 15: alert-routing-table drift**
-  - **Item:** live-only: Azure budget 90% / 100% threshold ([ADR-0052](../adrs/ADR-0052-cost-governance-budget-alerts-and-kill-switches.md)) | `#ops-alerts` + `#security-alerts` | Critical | `💰🔥 budget at {pct}% ({category}) — kill-switch posture: {posture}`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
-- **Category 15: alert-routing-table drift**
-  - **Item:** live-only: CodeRabbit P0/P1 finding ([ADR-0079](../adrs/ADR-0079-multi-perspective-pr-review-stack.md)) | `#security-alerts` | High | `🐰 CodeRabbit {severity} on {repo}#{pr} — {pr-link}`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
-- **Category 15: alert-routing-table drift**
-  - **Item:** live-only: Credential rotation T+0 (expired) ([ADR-0083](../adrs/ADR-0083-external-saas-credential-rotation.md)) | `#security-alerts` + `#audit-sensitive` | Critical | `🔑🔥 {credential} EXPIRED — {incident-record-link}`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
-- **Category 15: alert-routing-table drift**
-  - **Item:** live-only: Credential rotation escalation T-30 ([ADR-0083](../adrs/ADR-0083-external-saas-credential-rotation.md)) | `#ops-alerts` | Medium | `🔑 {credential} expires in 30 days — {rotation-walkthrough-link}`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
-- **Category 15: alert-routing-table drift**
-  - **Item:** live-only: Credential rotation escalation T-7 ([ADR-0083](../adrs/ADR-0083-external-saas-credential-rotation.md)) | `#ops-alerts` + `#security-alerts` | High | `🔑⚠️ {credential} expires in 7 days — {rotation-walkthrough-link}`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
-- **Category 15: alert-routing-table drift**
-  - **Item:** live-only: Deploy failure ([ADR-0033](../adrs/ADR-0033-environment-gated-deploy-trigger-model.md)) | `#ops-alerts` + `#release` | High | `🔥 {node} {tag} → {env} FAILED — {link-to-run}`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
-- **Category 15: alert-routing-table drift**
-  - **Item:** live-only: Deploy success ([ADR-0033](../adrs/ADR-0033-environment-gated-deploy-trigger-model.md)) | `#release` | Info | `🚀 {node} {tag} → {env} ({duration})`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
-- **Category 15: alert-routing-table drift**
-  - **Item:** live-only: Grid Health aggregator drift ([ADR-0012](../adrs/ADR-0012-grid-cicd-control-plane.md) D6) | `#ops-alerts` | Medium | `🕸️ grid-health: {drift-summary} — {issue-link}`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
-- **Category 15: alert-routing-table drift**
-  - **Item:** live-only: NuGet publish failure ([ADR-0034](../adrs/ADR-0034-public-package-distribution-and-nuget-policy.md)) | `#ops-alerts` + `#release` | High | `📦❌ {package} {version} publish failed — {link-to-run}`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
-- **Category 15: alert-routing-table drift**
-  - **Item:** live-only: NuGet publish success ([ADR-0034](../adrs/ADR-0034-public-package-distribution-and-nuget-policy.md)) | `#release` | Info | `📦 {package} {version} published to nuget.org`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
-- **Category 15: alert-routing-table drift**
-  - **Item:** live-only: [ADR-0014](../adrs/ADR-0014-hive-architecture-reconciliation-agent.md) hive-sync drift finding | `#hive-activity` | Medium | `🔄 hive-sync: {finding-summary} — {issue-link}`
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
-- **Category 15: alert-routing-table drift**
-  - **Item:** live-only: [ADR-0043](../adrs/ADR-0043-continuous-backlog-generation-strategy.md) opportunistic Scout backlog source run | `#hive-activity` | Info | `backlog-scout: {recommendation}, {packets-created} packets — {report-or-pr-link}`
-  - **First Surfaced:** 2026-06-05
   - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
 - **Category 15: alert-routing-table drift**
   - **Item:** live-only: [ADR-0043](../adrs/ADR-0043-continuous-backlog-generation-strategy.md) strategic backlog source run | `#hive-activity` | Info | `backlog-strategic: {packets-created} proposed packets — {report-or-pr-link}`
@@ -237,11 +113,7 @@ Fully rewritten by `hive-sync`; First Surfaced dates are sticky for persistent f
   - **First Surfaced:** 2026-06-05
   - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
 - **Category 15: alert-routing-table drift**
-  - **Item:** live-only: [ADR-0043](../adrs/ADR-0043-continuous-backlog-generation-strategy.md) urgent reactive operational packet | `#ops-alerts` | High | `backlog-urgent-ops: {summary} — {urgent-briefing-or-pr-link}`
-  - **First Surfaced:** 2026-06-05
-  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
-- **Category 15: alert-routing-table drift**
-  - **Item:** live-only: [ADR-0043](../adrs/ADR-0043-continuous-backlog-generation-strategy.md) urgent reactive security packet | `#security-alerts` | High | `backlog-urgent-security: {summary} — {urgent-briefing-or-pr-link}`
+  - **Item:** live-only: [ADR-0043](../adrs/ADR-0043-continuous-backlog-generation-strategy.md) opportunistic Scout backlog source run | `#hive-activity` | Info | `backlog-scout: {recommendation}, {packets-created} packets — {report-or-pr-link}`
   - **First Surfaced:** 2026-06-05
   - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
 - **Category 15: alert-routing-table drift**
@@ -249,21 +121,13 @@ Fully rewritten by `hive-sync`; First Surfaced dates are sticky for persistent f
   - **First Surfaced:** 2026-06-05
   - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
 - **Category 15: alert-routing-table drift**
-  - **Item:** live-only: [ADR-0044](../adrs/ADR-0044-grid-aware-cloud-code-review-and-ai-authored-pr-discipline.md) review verdict (Approve / Request Changes / Comment) | `#agent-activity` | Info | `🐝 review on {repo}#{pr}: {verdict} — {pr-link}`
-  - **First Surfaced:** 2026-06-08
+  - **Item:** live-only: [ADR-0043](../adrs/ADR-0043-continuous-backlog-generation-strategy.md) urgent reactive security packet | `#security-alerts` | High | `backlog-urgent-security: {summary} — {urgent-briefing-or-pr-link}`
+  - **First Surfaced:** 2026-06-05
   - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
 - **Category 15: alert-routing-table drift**
-  - **Item:** live-only: [ADR-0046](../adrs/ADR-0046-specialist-review-agents.md) specialist invocation | `#agent-activity` | Info | `🎯 {specialist} on {repo}#{pr}: {verdict} — {pr-link}`
-  - **First Surfaced:** 2026-06-08
+  - **Item:** live-only: [ADR-0043](../adrs/ADR-0043-continuous-backlog-generation-strategy.md) urgent reactive operational packet | `#ops-alerts` | High | `backlog-urgent-ops: {summary} — {urgent-briefing-or-pr-link}`
+  - **First Surfaced:** 2026-06-05
   - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
-- **Category 15: alert-routing-table drift**
-  - **Item:** live-only: [ADR-0085](../adrs/ADR-0085-grid-wide-documentation-currency-agent.md) docs-sync run report | `#hive-activity` | Info | `docs-sync: {summary-counts} — {report-or-pr-link}`
-  - **First Surfaced:** 2026-06-03
-  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
-- **Category 17: implementation-notes completion-gate hold**
-  - **Item:** adr-0015-container-apps-rollout
-  - **First Surfaced:** 2026-06-08
-  - **Detail:** governing decision lacks exact `## Implementation Notes (YYYY-MM-DD)` pointer heading. Hive-sync must hold this initiative In Progress until the implementing agent authors the conforming record.
 - **Category 17: implementation-notes completion-gate hold**
   - **Item:** adr-0044-cloud-code-review
   - **First Surfaced:** 2026-06-08

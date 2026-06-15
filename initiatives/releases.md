@@ -2,7 +2,7 @@
 
 Centralized view of what shipped across the Grid.
 
-**Last Updated:** 2026-05-21
+**Last Updated:** 2026-06-15
 
 ---
 
@@ -11,6 +11,24 @@ Centralized view of what shipped across the Grid.
 > **Human review pending:** Vault.Rotation still has no published package/tag by decision; keep it out of release history until Oleg asks for an actual release.
 
 ### Pending Verification
+
+#### HoneyDrunk.Actions release marker (N/A)
+
+- **Signal:** Live
+- **Shipped:** 2026-04-10
+- **Highlights:**
+  - `catalogs/grid-health.json` records this as the latest release marker for `HoneyDrunk.Actions`.
+  - Human review is needed before adding narrative highlights; this Node reports version `N/A` rather than a package-style semantic release.
+- **Breaking Changes:** Human review pending.
+
+#### HoneyDrunk.Architecture release marker (N/A)
+
+- **Signal:** Live
+- **Shipped:** 2026-04-12
+- **Highlights:**
+  - `catalogs/grid-health.json` records this as the latest release marker for `HoneyDrunk.Architecture`.
+  - Human review is needed before adding narrative highlights; this Node reports version `N/A` rather than a package-style semantic release.
+- **Breaking Changes:** Human review pending.
 
 #### Vault.Rotation initial release
 

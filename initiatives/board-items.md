@@ -2,7 +2,7 @@
 
 Non-initiative items currently on HoneyDrunkStudios org Project #4. Fully rewritten by `hive-sync`.
 
-**Last Updated:** 2026-06-12
+**Last Updated:** 2026-06-15
 
 ## security
 
@@ -16,11 +16,12 @@ Non-initiative items currently on HoneyDrunkStudios org Project #4. Fully rewrit
 - [HoneyDrunk.Actions#138](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/138) — [grid-health] refresh-hive-project-metadata.yml unhealthy (open)
 - [HoneyDrunk.Actions#139](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/139) — [grid-health] weekly-governance.yml unhealthy (open)
 - [HoneyDrunk.Actions#141](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/141) — [grid-health] pr-core.yml unhealthy (open)
-- [HoneyDrunk.Actions#142](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/142) — [grid-health] file-work-items.yml unhealthy (open)
+- [HoneyDrunk.Actions#142](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/142) — [grid-health] file-packets.yml unhealthy (open)
 - [HoneyDrunk.Actions#143](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/143) — [grid-health] release.yml unhealthy (open)
 - [HoneyDrunk.Actions#144](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/144) — [grid-health] seed-labels.yml unhealthy (open)
 - [HoneyDrunk.Actions#145](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/145) — [grid-health] azure-oidc-deploy.yml unhealthy (open)
 - [HoneyDrunk.Actions#191](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/191) — [grid-health] seed-labels-fanout.yml unhealthy (open)
+- [HoneyDrunk.Actions#204](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/204) — [grid-health] file-work-items.yml unhealthy (open)
 - [HoneyDrunk.Agents#4](https://github.com/HoneyDrunkStudios/HoneyDrunk.Agents/issues/4) — [grid-health] publish.yml unhealthy (open)
 - [HoneyDrunk.Agents#5](https://github.com/HoneyDrunkStudios/HoneyDrunk.Agents/issues/5) — [grid-health] weekly-deps.yml unhealthy (closed; closed 2026-05-26)
 - [HoneyDrunk.AI#18](https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/18) — [grid-health] publish.yml unhealthy (open)
@@ -55,6 +56,7 @@ Non-initiative items currently on HoneyDrunkStudios org Project #4. Fully rewrit
 - [HoneyDrunk.Actions#78](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/78) — CI Change: `nightly-deps.yml` opens/updates a single grouped `📦 Outdated Dependencies` issue per repo (closed; closed 2026-05-19; labels: feature, tier-2, wave-1, ci-cd, meta, adr-0032, initiative-adr-0032-pr-validation-policy)
 - [HoneyDrunk.Actions#134](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/134) — Grid Health (open)
 - [HoneyDrunk.Actions#150](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/150) — fix(pr-core): pr-metadata-check needs pull-requests:write to auto-apply out-of-band label (closed; closed 2026-05-29; labels: chore, tier-1, ci-cd, adr-0011)
+- [HoneyDrunk.Actions#205](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/205) — Map HoneyDrunk.Payments to the Payments Node (open; labels: chore, ci, tier-2, wave-1, docs, payments, adr-0037)
 - [HoneyDrunk.AI#1](https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/1) — Feature: Add `IModelRouter`, `IRoutingPolicy`, `ModelCapabilityDeclaration` to `HoneyDrunk.AI.Abstractions` (closed; closed 2026-05-21; labels: feature, tier-2, ai, contracts, adr-0010, blocked, wave-2, initiative-adr-0010-observe-ai-routing-phase-1)
 - [HoneyDrunk.AI#2](https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/2) — Feature: Stand up the HoneyDrunk.AI repo — solution, packages, contracts, CI, InMemory provider (closed; closed 2026-05-20; labels: feature, tier-2, ai, scaffold, adr-0016, initiative-adr-0016-honeydrunk-ai-standup)
 - [HoneyDrunk.AI#3](https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/3) — Feature: Add `IModelRouter`, `IRoutingPolicy`, `ModelCapabilityDeclaration` to `HoneyDrunk.AI.Abstractions` (closed; closed 2026-05-21; labels: feature, tier-2, ai, contracts, adr-0010, blocked, wave-2, initiative-adr-0010-observe-ai-routing-phase-1)
@@ -90,8 +92,9 @@ Non-initiative items currently on HoneyDrunkStudios org Project #4. Fully rewrit
 - [HoneyDrunk.Notify#8](https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/8) — Consolidate Notify template and provider helpers (closed; closed 2026-05-18; labels: tier-2, chore, meta, initiative-standalone)
 - [HoneyDrunk.Notify#12](https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/12) — Coverage backfill: bring `HoneyDrunk.Notify` total line coverage to ≥ 70% (clear the absolute floor) (closed; closed 2026-05-20; labels: tier-2, wave-2, chore, testing, comms, adr-0032, initiative-adr-0032-pr-validation-policy)
 - [HoneyDrunk.Notify#13](https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/13) — Align Notify Kernel identity and queue secret boundary (closed; closed 2026-05-18; labels: bug, tier-2, adr-0005, ops, notify, wave-3, kernel-adoption, adr-0006, initiative-kernel-adoption-alignment)
-- [HoneyDrunk.Notify#44](https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/44) — 📦 Outdated Dependencies (closed; closed 2026-06-08; labels: dependencies)
+- [HoneyDrunk.Notify#44](https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/44) — 📦 Outdated Dependencies (closed; closed 2026-06-15; labels: dependencies)
 - [HoneyDrunk.Observe#2](https://github.com/HoneyDrunkStudios/HoneyDrunk.Observe/issues/2) — Feature: Scaffold `HoneyDrunk.Observe` repo, solution, and Abstractions package with Phase 1 contracts (closed; closed 2026-05-21; labels: feature, tier-3, ops, new-node, scaffolding, adr-0010, wave-2, initiative-adr-0010-observe-ai-routing-phase-1)
+- [HoneyDrunk.Operator#17](https://github.com/HoneyDrunkStudios/HoneyDrunk.Operator/issues/17) — 📦 Outdated Dependencies (open; labels: dependencies)
 - [HoneyDrunk.Pulse#11](https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/11) — Consolidate Pulse HTTP OTLP sink helpers (closed; closed 2026-05-18; labels: tier-2, chore, ops, initiative-standalone)
 - [HoneyDrunk.Pulse#13](https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/13) — Reconcile Pulse.Collector Node identity: hardcoded NodeId("pulse") vs HONEYDRUNK_NODE_ID=honeydrunk-pulse (closed; closed 2026-05-19; labels: bug)
 - [HoneyDrunk.Pulse#14](https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/14) — Coverage backfill: bring `HoneyDrunk.Pulse` total line coverage to ≥ 70% (clear the absolute floor) (closed; closed 2026-05-19; labels: tier-2, wave-2, chore, ops, testing, adr-0032, initiative-adr-0032-pr-validation-policy)
