@@ -5,6 +5,10 @@
 **Deciders:** HoneyDrunk Studios
 **Sector:** Core / cross-cutting
 
+> Filename note: the `data-schema-evolution-and-migration-policy` slug is
+> retained for link stability. The accepted policy is DACPAC-first schema
+> deployment; EF migrations are not the production schema-deployment path.
+
 ## Context
 
 The Grid has no formal schema-evolution policy. Today:
