@@ -3,6 +3,7 @@
 ## Consumes
 
 - `HoneyDrunk.Kernel.Abstractions`: `BillingEvent`, `IBillingEventEmitter`, and tenant identifiers for metered usage emission.
+- `HoneyDrunk.Vault`: `ISecretStore` / Vault-backed secret resolution for provider API keys and webhook signing secrets.
 - Stripe.NET: provider SDK used only inside `HoneyDrunk.Payments.Stripe`.
 - `HoneyDrunk.Actions`: reusable CI, security, package, review, and deployment workflows.
 
