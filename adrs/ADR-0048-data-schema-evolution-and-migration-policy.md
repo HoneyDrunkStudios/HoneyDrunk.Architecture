@@ -9,7 +9,7 @@
 
 The Grid has no formal schema-evolution policy. Today:
 
-- **No Node has shipped a non-trivial production schema deployment yet.** Notify carries an EF Core `DbContext` with one or two scaffold-time migrations, but nothing has been deployed against a populated store with traffic on it. Pulse uses Cosmos and has been schemaless by accident rather than by decision. Vault's persistent store is Key Vault itself (not a relational schema). The first real "deployed-and-populated" schema deployments are imminent: Audit standup (ADR-0031), Memory and Knowledge standups (ADR-0021/0022), and the future Billing Node (ADR-0037) all introduce relational stores that will outlive any single deploy.
+- **No Node has shipped a non-trivial production schema deployment yet.** Notify carries an EF Core `DbContext` with one or two scaffold-time migrations, but nothing has been deployed against a populated store with traffic on it. Pulse uses Cosmos and has been schemaless by accident rather than by decision. Vault's persistent store is Key Vault itself (not a relational schema). The first real "deployed-and-populated" schema deployments are imminent: Audit standup (ADR-0031), Memory and Knowledge standups (ADR-0021/0022), and HoneyDrunk.Payments / product subscription state (ADR-0037) all introduce relational stores that will outlive any single deploy.
 - **ADR-0036 (Disaster Recovery, Proposed) presumes schema evolution exists** — it talks about geo-redundant SQL backups, restore drills, and point-in-time recovery windows, all of which assume schemas change *somehow*. Nothing names the somehow.
 - **ADR-0042 (Idempotency Contract, Proposed) presumes a dedup-state table** with a specific shape (`IdempotencyKey → (FirstSeenAt, Outcome)`, partitioned by consumer-group, TTL'd). Adding new columns to that table mid-flight, or evolving its key shape, has zero defined process today.
 - **ADR-0033 (Environment-Gated Deploy Trigger Model, Accepted) is silent on schema deployment timing.** D1 commits push-to-`main`-to-`dev` and tag-to-`staging`/`prod` triggers; it says nothing about whether schema deployments run before, during, or after the code deploy that depends on them. The question is unavoidable but unanswered.
@@ -127,7 +127,7 @@ A SQL project change's Expand phase and its eventual Contract phase are bounded 
 | **Audit (per ADR-0030 append-only-by-interface)** | **Indefinite (≥ 730-day retention)** | Append-only stores never drop columns; the old shape lives as long as the rows that wrote it. Contract phase for Audit means "new writes use new shape; old rows retain old shape, queries handle both." See D8. |
 | **Tier 0 / Tier 1 customer-facing stores (Notify Cloud, Memory, Knowledge, Billing)** | **Two stable deploys minimum**, or **14 days of uptime** between Expand and Contract, whichever is longer. | Allows a rollback window: if the post-Expand code is reverted, the schema still supports it. |
 | **Tier 0 Vault and adjacent secret-state stores** | **N/A — Key Vault has no relational schema; secret-shape evolution is governed by ADR-0006, not this ADR.** | |
-| **Tier 2 internal stores (Pulse history, Evals)** | **One stable deploy minimum** between Expand and Contract. | Best-effort posture; explicit downtime acceptable for destructive changes via `[BreakingChange]` annotation per D2. |
+| **Tier 2 internal stores (Pulse history, Evals)** | **One stable deploy minimum** between Expand and Contract. | Best-effort posture; explicit downtime acceptable for destructive changes via `BreakingChange: true` PR metadata per D2. |
 | **Idempotency stores (per ADR-0042)** | **Two stable deploys minimum**, or **30 days of uptime** (matching ADR-0042 D4's billing/audit TTL). | The dedup state must survive rollback of the consumer; old entries must remain legible to the old code revision. |
 
 The window is **enforced by review** (ADR-0044 D3 category 13; ADR-0046 specialist `database` agent per D10) — a PR titled "Contract phase" that lands within the window of the corresponding Expand phase is a review block, not a CI block. The committed metadata path: each schema-changing PR declares `SchemaPhase: Expand` or `SchemaPhase: Contract` plus a stable `SchemaChangeId` in the PR body and database project README. The `database` agent walks back from the Contract PR to find the matching Expand PR's merge timestamp and flags windows that are too short.
@@ -228,10 +228,10 @@ tests/
 
 **The database deploy reusable workflow** (new, lands in HoneyDrunk.Actions per the ADR-0012 control-plane invariant):
 
-- Inputs: `node` (the Node name), `environment` (`dev`/`staging`/`prod`), `schema-source-ref` (the reviewed commit SHA, tag, or branch that contains the SQL project change being promoted), and optional DACPAC/publish profile overrides.
+- Inputs: `node` (the Node name), `environment` (`dev`/`staging`/`prod`), `schema-source-ref` (the reviewed commit SHA or release tag that contains the SQL project change being promoted), and optional DACPAC/publish profile overrides. Protected environments (`staging`/`prod`) require an immutable merge SHA or release tag; if the caller supplies a branch for `dev`, the workflow resolves it to a commit SHA before build and records that SHA in the deployment artifacts.
 - Trigger: `workflow_dispatch` only (operator-deliberate per D3).
 - Steps:
-  1. Check out the consumer repo at `schema-source-ref`, the reviewed schema source being promoted. For an Expand phase this is usually the merge commit or release tag that contains the already-landed SQL project change, not the target environment's previously deployed app SHA. This guarantees the DACPAC source is the intended database model while D2/D5 guarantee that model remains backward-compatible with the currently running code.
+  1. Resolve `schema-source-ref` to an immutable commit SHA, reject mutable branch refs for protected environments, and check out the consumer repo at that resolved SHA. For an Expand phase this is usually the merge commit or release tag that contains the already-landed SQL project change, not the target environment's previously deployed app SHA. This guarantees the DACPAC source is the intended database model while D2/D5 guarantee that model remains backward-compatible with the currently running code.
   2. Build the Node's SQL project and publish the DACPAC artifact.
   3. Resolve the connection string from Vault per ADR-0005 using the Grid's OIDC credential model per ADR-0015.
   4. Generate and review/store the publish script/report, then publish to Azure SQL.
@@ -275,7 +275,7 @@ Document-store backfill jobs (D7) carry their own integration tests: spin up the
 
 Per ADR-0046, the Grid commits to specialist review agents for high-risk surface areas. Schema evolution is one of them. The `database` agent (added to `.claude/agents/database.md` per ADR-0046's pattern) walks every PR that touches a SQL project, `Backfill/`, or any file referenced from a `DbContext`:
 
-- **D2 conformance** — single-deploy destructive change present? `[BreakingChange]` annotation present? Tier appropriate?
+- **D2 conformance** — single-deploy destructive change present? `BreakingChange: true` PR metadata present? Tier appropriate? SQL project README notes the same phase/rollback intent?
 - **D5 window adequacy** — Expand/Contract phase pairing detected? Window since the matching Expand large enough?
 - **D6 online primitives** — table row count vs threshold; online primitives used?
 - **D8 Audit constraints** — if `AuditEntry` is touched, any forbidden operation (column drop, type narrowing, `NOT NULL` add)?
@@ -310,7 +310,7 @@ Each phase is a discrete go/no-go.
 - **HoneyDrunk.Payments** (proposed by ADR-0037) — adopts the pattern at standup with the 30-day window per D5 matching ADR-0042's billing TTL.
 - **HoneyDrunk.Notify** — gains a per-Node SQL project when it takes a durable SQL Server dependency. No data movement today.
 - **HoneyDrunk.Notify.Cloud** (Seed, ADR-0027) — adopts shared-schema multi-tenancy per D9 by default. Future per-tenant variant would trigger this ADR's D9 second branch.
-- **HoneyDrunk.Pulse** — Tier 2; permitted to use `[BreakingChange]` for the rare destructive schema change. Cosmos historical-signals store follows D7.
+- **HoneyDrunk.Pulse** — Tier 2; permitted to use `BreakingChange: true` PR metadata for the rare destructive schema change. Cosmos historical-signals store follows D7.
 - **HoneyDrunk.Actions** — gains a DACPAC database deploy reusable workflow per D11. Existing reusable workflows (`job-deploy-container-app.yml` per ADR-0015) are unchanged; the database deploy workflow is a sibling workflow operator-triggered before code deploy.
 - **HoneyDrunk.Architecture** — `catalogs/grid-health.json` gains a new `schema_evolution` field per state-holding Node (values: `sql-project-dacpac`, `cosmos-schema-on-read`, `n/a`). `catalogs/contracts.json` is unchanged (no new public contract). `repos/{name}/integration-points.md` template gains a Schema Deployment Coordination line for Nodes where deployment ordering matters across Nodes.
 - **`.claude/agents/database.md`** — new file (per ADR-0046 pattern). Owns D2/D5/D6/D8/D9/D10/D12 checks.

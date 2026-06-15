@@ -278,7 +278,7 @@
     "energy": 0,
     "priority": 36,
     "flow": 23,
-    "tags": ["database", "persistence", "migrations", "multi-tenant", "entityframework", "sqlserver", "outbox", "contracts", "testing"],
+    "tags": ["database", "persistence", "schema-deployment", "dacpac", "multi-tenant", "entityframework", "sqlserver", "outbox", "contracts", "testing"],
     "links": {
       "repo": "https://github.com/HoneyDrunkStudios/HoneyDrunk.Data"
     },
