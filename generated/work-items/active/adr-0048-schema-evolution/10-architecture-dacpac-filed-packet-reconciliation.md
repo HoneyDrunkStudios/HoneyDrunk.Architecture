@@ -1,8 +1,8 @@
 ---
 title: Reconcile historical ADR-0048 schema-deployment artifacts with DACPAC policy
 target_repo: HoneyDrunkStudios/HoneyDrunk.Architecture
-wave: 1
-initiative: standalone
+wave: reactive
+initiative: adr-0048-schema-evolution
 node: honeydrunk-architecture
 tier: 2
 labels: ["docs", "tier-2", "meta", "adr-0048", "schema-deployment", "reactive"]
@@ -43,10 +43,11 @@ execution resumes. The affected filed packet paths include:
 
 The current ADR text and living dispatch plan carry the corrected policy. This
 packet exists to reconcile already-filed issue state and historical handoffs
-without mutating their original text. Promote and file this packet before any
-superseded ADR-0048 or ADR-0072 issue is assigned for execution, unless the
-owning issue has already received an explicit supersession comment linking to
-ADR-0048 D1/D3/D11 and the revised dispatch plan.
+without mutating their original text. This active packet must be filed by
+`file-work-items.yml` from `main` before any superseded ADR-0048 or ADR-0072
+issue is assigned for execution, unless the owning issue has already received an
+explicit supersession comment linking to ADR-0048 D1/D3/D11 and the revised
+dispatch plan.
 
 ## Scope
 
@@ -81,6 +82,17 @@ ADR-0048 D1/D3/D11 and the revised dispatch plan.
   before executor assignment.
 - PR #631 posted initial supersession comments on 2026-06-15 to
   HoneyDrunk.Actions#124, HoneyDrunk.Notify#35, and HoneyDrunk.Standards#48.
+- The PR #631 supersession comments are tracked at:
+  - HoneyDrunk.Actions#124:
+    https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/124#issuecomment-4710561956
+  - HoneyDrunk.Notify#35:
+    https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/35#issuecomment-4710561966
+  - HoneyDrunk.Standards#48:
+    https://github.com/HoneyDrunkStudios/HoneyDrunk.Standards/issues/48#issuecomment-4710561974
+- This packet is active under ADR-0048 packet 10, so `file-work-items.yml`
+  files it from `main` as the machine-followable reconciliation anchor. The
+  three issue comments above are the interim executor-visible guardrail until
+  that filing workflow creates the Architecture issue.
 - Any replacement implementation packet uses SQL project/DACPAC terminology and
   does not introduce `dotnet ef migrations script`, EF migration classes,
   startup-time `Database.Migrate()`, or `[Rollback]` attributes as production
@@ -90,6 +102,6 @@ ADR-0048 D1/D3/D11 and the revised dispatch plan.
 
 - Reactive-source packet (ADR-0043 D4): generated from PR #631 Grid Review
   feedback.
-- This packet is intentionally proposed, not active, because filing is normally
-  operator-controlled. The living dispatch plans now treat it as the required
-  supersession path for stale filed issue state.
+- This packet is active by operator direction in PR #631. Filing remains
+  automated by `file-work-items.yml` on merge to `main`; do not manually create
+  a duplicate Architecture issue unless that workflow fails.
