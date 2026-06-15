@@ -3,7 +3,7 @@
     {
       "id": "honeydrunk-kernel",
       "consumes": [],
-      "consumed_by": ["honeydrunk-transport", "honeydrunk-vault", "honeydrunk-vault-rotation", "honeydrunk-auth", "honeydrunk-web-rest", "honeydrunk-data", "honeydrunk-notify", "honeydrunk-pulse", "honeydrunk-communications", "honeydrunk-novoutbox"],
+      "consumed_by": ["honeydrunk-transport", "honeydrunk-vault", "honeydrunk-vault-rotation", "honeydrunk-auth", "honeydrunk-web-rest", "honeydrunk-data", "honeydrunk-notify", "honeydrunk-pulse", "honeydrunk-communications", "honeydrunk-novoutbox", "honeydrunk-payments"],
       "consumed_by_planned": ["honeydrunk-ai", "honeydrunk-capabilities", "honeydrunk-agents", "honeydrunk-memory", "honeydrunk-knowledge", "honeydrunk-flow", "honeydrunk-operator", "honeydrunk-audit", "honeydrunk-observe"],
       "blocked_by": [],
       "exposes": {
@@ -29,7 +29,7 @@
     {
       "id": "honeydrunk-vault",
       "consumes": ["honeydrunk-kernel"],
-      "consumed_by": ["honeydrunk-auth", "honeydrunk-novoutbox"],
+      "consumed_by": ["honeydrunk-auth", "honeydrunk-novoutbox", "honeydrunk-payments"],
       "consumed_by_planned": ["honeydrunk-ai", "honeydrunk-vault-rotation", "honeydrunk-observe"],
       "blocked_by": [],
       "exposes": {
@@ -177,7 +177,7 @@
     },
     {
       "id": "honeydrunk-novoutbox",
-      "consumes": ["honeydrunk-kernel", "honeydrunk-auth", "honeydrunk-vault", "honeydrunk-web-rest", "honeydrunk-communications", "honeydrunk-notify", "honeydrunk-data", "honeydrunk-transport"],
+      "consumes": ["honeydrunk-kernel", "honeydrunk-auth", "honeydrunk-vault", "honeydrunk-web-rest", "honeydrunk-communications", "honeydrunk-notify", "honeydrunk-data", "honeydrunk-transport", "honeydrunk-payments"],
       "consumed_by": [],
       "consumed_by_planned": [],
       "blocked_by": [
@@ -186,8 +186,8 @@
         "Private-repo automation smoke test pending"
       ],
       "exposes": {
-        "contracts": ["INovOutboxGateway", "INovOutboxApiKeyStore", "INovOutboxConsoleQueryStore", "INovOutboxDeliveryHandoff", "INovOutboxUsageEmitter", "NovOutboxTenantTier", "NovOutboxApiKeyIssuance", "NovOutboxApiKeySummary", "NovOutboxProjectSnapshot", "NovOutboxSubmitResult", "IStripeMeteredBillingClient", "IStripeSubscriptionLifecycleClient", "IStripeWebhookEventValidator", "IStripeInvoiceReconciliationClient", "StripeBillingClient"],
-        "packages": ["HoneyDrunk.NovOutbox.Abstractions", "HoneyDrunk.NovOutbox", "HoneyDrunk.NovOutbox.Billing.Stripe", "HoneyDrunk.NovOutbox.Web", "HoneyDrunk.NovOutbox.AppHost"]
+        "contracts": ["INovOutboxGateway", "INovOutboxApiKeyStore", "INovOutboxConsoleQueryStore", "INovOutboxDeliveryHandoff", "INovOutboxUsageEmitter", "NovOutboxTenantTier", "NovOutboxApiKeyIssuance", "NovOutboxApiKeySummary", "NovOutboxProjectSnapshot", "NovOutboxSubmitResult"],
+        "packages": ["HoneyDrunk.NovOutbox.Abstractions", "HoneyDrunk.NovOutbox", "HoneyDrunk.NovOutbox.Web", "HoneyDrunk.NovOutbox.AppHost"]
       },
       "consumes_detail": {
         "honeydrunk-kernel": ["TenantId", "ITenantRateLimitPolicy", "TenantRateLimitDecision", "IBillingEventEmitter", "BillingEvent", "IGridContextAccessor", "IOperationContextAccessor", "ITelemetryActivityFactory", "HoneyDrunk.Kernel.Abstractions"],
@@ -197,7 +197,26 @@
         "honeydrunk-communications": ["ICommunicationOrchestrator", "HoneyDrunk.Communications.Abstractions"],
         "honeydrunk-notify": ["INotificationSender for diagnostics and smoke paths", "HoneyDrunk.Notify.Abstractions"],
         "honeydrunk-data": ["IOutboxStore", "HoneyDrunk.Data.Abstractions", "HoneyDrunk.Data.EntityFramework host composition", "HoneyDrunk.Data.Outbox runtime", "HoneyDrunk.Data.Outbox.Dispatcher runtime"],
-        "honeydrunk-transport": ["ITransportPublisher", "HoneyDrunk.Transport", "HoneyDrunk.Transport.AzureServiceBus", "HoneyDrunk.Transport.InMemory"]
+        "honeydrunk-transport": ["ITransportPublisher", "HoneyDrunk.Transport", "HoneyDrunk.Transport.AzureServiceBus", "HoneyDrunk.Transport.InMemory"],
+        "honeydrunk-payments": ["IPaymentSubscriptionLifecycleClient", "IPaymentWebhookEventValidator", "IPaymentInvoiceReconciliationClient", "HoneyDrunk.Payments.Abstractions", "HoneyDrunk.Payments.Stripe"]
+      }
+    },
+    {
+      "id": "honeydrunk-payments",
+      "consumes": ["honeydrunk-kernel", "honeydrunk-vault"],
+      "consumed_by": ["honeydrunk-novoutbox"],
+      "consumed_by_planned": [],
+      "blocked_by": [
+        "Provider-neutral abstractions and Stripe implementation are in initial repo standup",
+        "Package publishing and provider secret onboarding are pending"
+      ],
+      "exposes": {
+        "contracts": ["IPaymentSubscriptionLifecycleClient", "IPaymentWebhookEventValidator", "IPaymentInvoiceReconciliationClient", "PaymentCheckoutSessionRequest", "PaymentSubscriptionSnapshot", "PaymentProviderNames", "IStripeMeteredBillingClient", "IStripeSubscriptionLifecycleClient", "IStripeWebhookEventValidator", "IStripeInvoiceReconciliationClient", "StripeBillingClient"],
+        "packages": ["HoneyDrunk.Payments.Abstractions", "HoneyDrunk.Payments.Stripe"]
+      },
+      "consumes_detail": {
+        "honeydrunk-kernel": ["IBillingEventEmitter", "BillingEvent", "TenantId", "HoneyDrunk.Kernel.Abstractions"],
+        "honeydrunk-vault": ["ISecretStore", "HoneyDrunk.Vault"]
       }
     },
     {

@@ -65,7 +65,7 @@ The Grid-wide naming rule (per `project_naming_rule_records`) holds: it is `Mone
 - **Fractional-currency support.** Some currencies (Bahraini dinar, Tunisian dinar) have three minor-unit decimals, not two. Some currencies (gold-tied tokens, future crypto) have more. `decimal` supports arbitrary fractional precision up to 28-29 significant digits; `long` minor units requires an explicit per-currency minor-unit count and conversion math everywhere.
 - **Serialization correctness.** Decimal serialization as a string (D9) preserves precision; `long` minor units require the consumer to also know the minor-unit divisor. The two-field shape `(amount, currency)` is self-contained.
 - **Fewer arithmetic bugs.** Minor-unit arithmetic ("multiply by 100, then divide by 100") is a well-known source of off-by-one rounding errors. Decimal arithmetic with explicit `D3` rounding (per D3 below) is more legible and less bug-prone.
-- **Stripe boundary conversion.** Stripe's wire format is minor units (cents for USD, etc.). The conversion to/from minor units happens **at the Stripe adapter boundary** in `HoneyDrunk.Billing.Stripe` (per [ADR-0037](./ADR-0037-payment-and-billing-integration.md) D2 / D9), not in `Money` itself. The Grid's internal representation is decimal; the wire format with Stripe is minor units; the adapter handles the conversion.
+- **Stripe boundary conversion.** Stripe's wire format is minor units (cents for USD, etc.). The conversion to/from minor units happens **at the Stripe adapter boundary** in `HoneyDrunk.Payments.Stripe` (per [ADR-0037](./ADR-0037-payment-and-billing-integration.md) D2 / D9), not in `Money` itself. The Grid's internal representation is decimal; the wire format with Stripe is minor units; the adapter handles the conversion.
 
 **Why a value type / record over two raw fields (`decimal Amount` + `string CurrencyCode`):**
 
@@ -194,7 +194,7 @@ PDRs that justify a non-USD default for a specific product override the default 
 
 **Where `Money` appears:**
 
-- **Invoice records** in `HoneyDrunk.Billing` (after the Stripe webhook lands). The invoice carries `Money` per line item and per total.
+- **Invoice snapshots and records** produced through `HoneyDrunk.Payments` / product subscription state (after the Stripe webhook lands). The invoice carries `Money` per line item and per total.
 - **Audit events that record monetary outcomes** — `SubscriptionRenewed { tenant_id, monetary_value, currency_code, ... }`, `RefundIssued { ..., monetary_value, currency_code, ... }`, `QuotaOverageBilled { ..., monetary_value, currency_code, ... }`. Per D11 the wire shape is two fields; the in-memory type held by the emitter is `Money`.
 - **Consumer-app price catalogs** (PDR-0003 through PDR-0008). Each consumer app's price catalog carries `Money` per product variant.
 - **Internal cost ledger** (per [ADR-0052](./ADR-0052-cost-governance-budget-alerts-and-kill-switches.md), per D10 below).
@@ -299,7 +299,7 @@ The following are explicitly **not** decided by this ADR:
 
 - **HoneyDrunk.Kernel.Abstractions** — gains `Money` (record) and `CurrencyCode` (record struct) in a new namespace. Additive surface; per [ADR-0035](./ADR-0035-abstractions-versioning-and-deprecation-policy.md) D1 a minor bump on the pre-1.0 Kernel.Abstractions package.
 - **HoneyDrunk.Kernel** — gains the System.Text.Json converter for `Money` (per D9) and any reference implementations (e.g., `Money.Round`, `Money.Zero`, arithmetic operators). Additive.
-- **HoneyDrunk.Billing** — adopts `Money` in invoice records, the Stripe-webhook-derived monetary fields, and the buffer's per-event monetary outcomes (the count-only `BillingEvent` is unchanged; the *invoice record* downstream of the Stripe webhook carries `Money`).
+- **HoneyDrunk.Payments** — adopts `Money` in invoice snapshots/records, Stripe-webhook-derived monetary fields, and provider-buffer monetary outcomes (the count-only `BillingEvent` is unchanged; the *invoice record* downstream of the Stripe webhook carries `Money`).
 - **HoneyDrunk.Notify.Cloud** — adopts `Money` in the tenant tier-price field (`NotifyCloudTenantTier`'s monthly base fee). Per [ADR-0027](./ADR-0027-stand-up-honeydrunk-notify-cloud-node.md) D5 the tier's price is *configured in Stripe*; the Grid-side mirror is informational, and `Money` is the type.
 - **HoneyDrunk.Audit** — adopts the two-field convention from D11 for money-changing audit events. The emitter side projects `Money` into `monetary_value` + `currency_code`.
 - **HoneyDrunk.AI** (cost-governance cache per [ADR-0052](./ADR-0052-cost-governance-budget-alerts-and-kill-switches.md)) — adopts `Money` in the cost-rate cache value type. USD-only at Phase 1 per D10.

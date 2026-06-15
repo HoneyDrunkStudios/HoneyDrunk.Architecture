@@ -12,7 +12,7 @@ The Grid is "public-by-default" by convention but has never recorded a license d
 The forcing functions:
 
 - **ADR-0034 (NuGet)** mandates a `<PackageLicenseExpression>` on every public package; without a policy, this is one-off SPDX picks scattered across project files.
-- **ADR-0027** introduced FSL as precedent without a Grid-wide policy framing. Two more revenue Nodes (potential `HoneyDrunk.Billing.Cloud` per ADR-0037 D9, future consumer-app servers) will hit the same question.
+- **ADR-0027** introduced FSL as precedent without a Grid-wide policy framing. Two more revenue Nodes (potential hosted `HoneyDrunk.Payments` surfaces per ADR-0037 D9, future consumer-app servers) will hit the same question.
 - **External consumer of an Abstractions package** can today install with no clear license, which is a problem for any consumer's legal review.
 - **Future-contributor friction:** absent a license, an external contributor's PR carries an unclear IP grant.
 
@@ -56,7 +56,7 @@ Current revenue Nodes under this rule:
 - `HoneyDrunk.Notify` — FSL (ADR-0027).
 - `HoneyDrunk.Communications` — FSL (ADR-0027).
 - `HoneyDrunk.Notify.Cloud` — private (ADR-0027 D2); license not externally visible, internally treated as proprietary.
-- `HoneyDrunk.Billing` (future, ADR-0037 D9) — FSL on the open Abstractions and engine, private on `.Cloud` variant.
+- `HoneyDrunk.Payments` (ADR-0037 D9) — public Abstractions/provider packages where useful, private on any hosted payment-control surface.
 - Consumer-app server Nodes (future, PDR-0003 through PDR-0008) — FSL when they exist.
 
 `<PackageLicenseExpression>FSL-1.1-MIT</PackageLicenseExpression>` for FSL Nodes. The FSL text is included as `LICENSE.md` in the repo (the SPDX identifier alone is insufficient because FSL is custom-text per project).

@@ -285,7 +285,7 @@ Per-tenant quotas are enforced by `IFileQuotaPolicy` and consist of:
 - **File count quota** — total file count across all purposes for the tenant.
 - **Single-file size cap** — maximum size of a single uploaded file.
 
-Quota defaults are **tier-driven**, sourced from `HoneyDrunk.Billing` (when stood up per [ADR-0037](./ADR-0037-payment-and-billing-integration.md)) and cached per-tenant in a `QuotaSnapshot` record. Tier-default seed values (to be confirmed at first-feature-packet time):
+Quota defaults are **tier-driven**, sourced from `HoneyDrunk.Payments` / product subscription state (when stood up per [ADR-0037](./ADR-0037-payment-and-billing-integration.md)) and cached per-tenant in a `QuotaSnapshot` record. Tier-default seed values (to be confirmed at first-feature-packet time):
 
 | Tier | Byte total | File count | Single-file cap |
 |------|-----------|-----------|-----------------|

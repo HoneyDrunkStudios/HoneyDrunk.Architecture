@@ -248,20 +248,28 @@
     "description": "Customer-facing API and console for signup, projects, API keys, logs, usage, and billing state"
   },
   {
-    "id": "novoutbox-billing-stripe",
-    "nodeId": "honeydrunk-novoutbox",
-    "name": "HoneyDrunk.NovOutbox.Billing.Stripe",
-    "type": "provider",
-    "version": "0.0.0",
-    "description": "Stripe billing adapter for translating NovOutbox usage and tenant state into product billing events"
-  },
-  {
     "id": "novoutbox-apphost",
     "nodeId": "honeydrunk-novoutbox",
     "name": "HoneyDrunk.NovOutbox.AppHost",
     "type": "local-dev",
     "version": "0.0.0",
     "description": "Aspire AppHost used for local development only; production deployment remains Azure Container Apps via curated infrastructure"
+  },
+  {
+    "id": "payments-abstractions",
+    "nodeId": "honeydrunk-payments",
+    "name": "HoneyDrunk.Payments.Abstractions",
+    "type": "abstractions",
+    "version": "0.0.0",
+    "description": "Provider-neutral payment contracts for checkout, subscriptions, signed webhooks, and invoice reconciliation"
+  },
+  {
+    "id": "payments-stripe",
+    "nodeId": "honeydrunk-payments",
+    "name": "HoneyDrunk.Payments.Stripe",
+    "type": "provider",
+    "version": "0.0.0",
+    "description": "Stripe.NET payment provider implementation for meter events, Checkout subscriptions, webhooks, and invoice reconciliation"
   },
   {
     "id": "observe-abstractions",

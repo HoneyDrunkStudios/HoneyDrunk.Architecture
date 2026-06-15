@@ -113,7 +113,7 @@ Every cost event recorded in the ledger carries an optional `TenantId` dimension
 
 The per-tenant roll-up enables two downstream surfaces:
 
-- **Notify Cloud billing reconciliation** (per ADR-0037 future Billing Node) — the cost attributed to a tenant is the input to the per-tenant invoice; the Billing Node applies pricing on top of cost. A tenant whose attributed cost exceeds their revenue is a tenant the operator needs to renegotiate or offboard.
+- **NovOutbox billing reconciliation** (per ADR-0037 Payments boundary) — the cost attributed to a tenant is the input to the per-tenant invoice; Payments/product subscription logic applies pricing on top of cost. A tenant whose attributed cost exceeds their revenue is a tenant the operator needs to renegotiate or offboard.
 - **Abuse detection** — a tenant whose attributed AI inference cost suddenly 10x's relative to their baseline is a likely abuse case (compromised credentials, runaway integration, intentional misuse). The anomaly detection (D10) operates per-tenant for this reason.
 
 `TenantId` is **not PII** (per ADR-0045 D7 it is allowed as a dimension on telemetry); the cost ledger reuses the same opaque identifier shape. No tenant data beyond the id and the cost value lives in the ledger.
@@ -281,7 +281,7 @@ The dev caps follow the same enforcement posture (D4) — hard cap fires the kil
 ### D13 — Relationship to ADR-0016, ADR-0037, ADR-0041, and ADR-0045
 
 - **ADR-0016 D5 (operator-configurable token cost rates and `ICostLedger`)** — this ADR is the policy layer ADR-0016 references. ADR-0016 names the abstraction; this ADR defines its caps, alerts, kill-switches, attribution, persistence, and reporting. The implementation home in `HoneyDrunk.AI` (D7) is consistent with ADR-0016's standup scope.
-- **ADR-0037 (future Billing Node)** — per-tenant cost attribution (D5) is the upstream input to the Billing Node's invoice generation. This ADR commits the attribution dimension; ADR-0037's implementation consumes it. Decoupled by the ledger interface.
+- **ADR-0037 (Payments Node)** — per-tenant cost attribution (D5) is the upstream input to payment invoice generation. This ADR commits the attribution dimension; ADR-0037's implementation consumes it. Decoupled by the ledger interface.
 - **ADR-0041 (AI model registry)** — model approval is the gate on *what runs*; this ADR is the gate on *how much runs*. Both are necessary; neither replaces the other. An approved model still respects the AI inference cap; a denied model is rejected before the cap check.
 - **ADR-0045 (error tracking)** — hard-cap breaches and anomaly detections both flow through `IErrorReporter` for surface consistency. The operator sees cost events in the same App Insights Failures blade they see application errors, problem-grouped distinctly so cost incidents don't drown application incidents.
 - **ADR-0030 (Audit substrate)** — operator overrides (D11) write audit events; the cost ledger itself is **not** the audit substrate (different retention shape, different append semantics — the cost ledger supports updates for retroactive reconciliation, Audit does not).
@@ -316,7 +316,7 @@ Each phase is a discrete go/no-go. Phase 4 is the explicit "this is the dangerou
 - **HoneyDrunk.Audit** — receives override events per D11 with `sensitive=audit` tagging.
 - **HoneyDrunk.Architecture** — `catalogs/contracts.json` gains `ICostLedger` under Kernel's published contracts; `business/context/cost-budgets.json` is added as the configuration file; `generated/cost-reports/` directory is added with the format spec and the first auto-generated report.
 - **All AI-sector Seed Nodes (per ADR-0016–0025)** — every Node consuming `ILlmDispatcher` inherits the kill-switch behavior transparently; no per-Node change required beyond the dependency on the updated HoneyDrunk.AI version.
-- **Future HoneyDrunk.Billing Node (per ADR-0037)** — consumes the per-tenant cost roll-up from the ledger.
+- **HoneyDrunk.Payments Node (per ADR-0037)** — consumes the per-tenant cost roll-up from the ledger.
 - **Future HoneyDrunk.CostLedger Node** — promotion path per D7; not created at v1.
 
 ### Invariants
@@ -358,7 +358,7 @@ Adds three:
 - Update `catalogs/contracts.json` with `ICostLedger` under Kernel.
 - Update the `review` agent (per ADR-0044 D3) with a "cost-config change" review category for `business/context/cost-budgets.json` edits.
 - Reorganize Azure resources into dev/prod separation per D12 (if not already separated).
-- Author the per-tenant cost roll-up query API consumed by the future Billing Node (per ADR-0037).
+- Author the per-tenant cost roll-up query API consumed by Payments (per ADR-0037).
 - Document the override audit pattern in `business/context/` so operators know the procedure before they need it.
 - Add a `cost-config` review category to `.claude/agents/review.md` per ADR-0044 D3, covering the production-critical nature of `business/context/cost-budgets.json` changes.
 - Set per-provider API key spending limits (OpenAI, Anthropic) at slightly above the corresponding Grid hard cap, as the defense-in-depth net per the Alternatives Considered section.
@@ -415,7 +415,7 @@ Considered. Customer pre-funds a credit pool; spend draws against it; pool exhau
 - **It's a customer-billing model, not a cost-control model.** ADR-0037 is the home for customer-side billing semantics. This ADR's scope is Grid-internal spend control.
 - **It doesn't address Studio-internal cost.** A pre-funded pool model would still leave Studio-side agents (Codex, internal Claude agents) burning unmetered budget.
 
-The per-tenant attribution (D5) feeds the future Billing Node which may implement a pre-authorized credit model for tenants. That is a separate decision; this ADR enables it but does not implement it.
+The per-tenant attribution (D5) feeds Payments, which may implement a pre-authorized credit model for tenants. That is a separate decision; this ADR enables it but does not implement it.
 
 ### Co-locate the ledger in HoneyDrunk.Kernel directly
 

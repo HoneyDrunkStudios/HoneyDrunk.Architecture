@@ -205,7 +205,7 @@ Everything else in this file is **watch, archive, or lane-supporting**:
 - **Gate 1 — ADR-0018 Accepted + Operator scaffold executed:** Operator aggregator, `hd cost status`, `hd cost unlock`, `hd cost report`, monthly report writer, dashboard view, non-prod Container Apps auto-suspend, Communications/Notify alert wiring, dev/prod Azure split.
 - **Gate 2 — ADR-0040 Accepted + App Insights provisioned:** App Insights anomaly-alert Bicep.
 - **Gate 3 — one month of Phase-1 baseline data:** Phase-1 multiplier flip (`CostLedger:PhaseOneMultiplier:*` -> 1) and cap tuning.
-- **Gate 4 — ADR-0037 Accepted + Billing Node scaffolded:** per-tenant cost query API.
+- **Gate 4 — ADR-0037 Accepted + Payments Node scaffolded:** per-tenant cost query API.
 - **Gate K — ADR-0016 Phase-1 AI scaffold executed + Kernel contracts released:** Kernel packet 03, AI relocation, Cosmos ledger, and dispatcher kill-switch packets.
 
 **Exit criteria:** ADR-0052 Accepted; cost-governance invariants live; `cost-budgets.json` seeded; report format + review-agent cost gating in place; residual gate map captures every deferred surface with its gating event. Full enforcement (the kill-switch) goes live when the AI Node scaffolds (ADR-0016 Phase 1) and the Kernel contracts release.

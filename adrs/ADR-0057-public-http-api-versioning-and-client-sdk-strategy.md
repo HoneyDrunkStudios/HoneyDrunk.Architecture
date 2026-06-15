@@ -385,7 +385,7 @@ Each phase is a discrete go/no-go.
 - **HoneyDrunk.Studios** — Owns the `docs.*.honeydrunkstudios.com` subdomains. New API surface = Studios-side packet to provision DNS and hosting.
 - **HoneyDrunk.Architecture** — `catalogs/contracts.json` gains `publicHttpApi` entries per Node listing the surface name, current major version, OpenAPI spec path, and published SDK coordinates. `constitution/feature-flow-catalog.md` gains the deprecation-notification flow.
 - **AI-sector Seed Nodes (ADR-0016 through ADR-0025)** — On standup, any Node that ships a public HTTP surface inherits the substrate from Phase 1. The substrate is in place before the first AI-sector public API exists.
-- **Future HoneyDrunk.Billing (per ADR-0037)** — Designed against this ADR from day one. All "required on billing endpoints" rules are materialized at standup.
+- **HoneyDrunk.Payments (per ADR-0037)** — Designed against this ADR from day one. All "required on payment/billing endpoints" rules are materialized at standup.
 
 ### Invariants
 

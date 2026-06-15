@@ -294,7 +294,7 @@ A non-`human` PR that touches a high-risk Node requires **two independent LLM-re
 - **HoneyDrunk.Vault** - any change to secret handling, bootstrap, or rotation.
 - **HoneyDrunk.Auth** - any change to token validation, principal resolution, or the Audit emit boundary (ADR-0031).
 - **HoneyDrunk.Audit** - any change to the append-only-by-interface guarantee (ADR-0030 Phase 1).
-- **HoneyDrunk.Billing** (when standup lands per ADR-0037) - any change.
+- **HoneyDrunk.Payments** (per ADR-0037) - any change.
 - **Any `.Cloud` revenue Node** (per ADR-0027 D2) - any change.
 
 The catalog of high-risk Nodes lives in `catalogs/grid-health.json` under a new field, `review_risk_class`, so the list evolves with the Grid without amending this ADR. The Grid Review Runner auto-detects high-risk touches and:
