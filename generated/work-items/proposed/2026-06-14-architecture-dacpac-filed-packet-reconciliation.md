@@ -29,7 +29,8 @@ or replacement packets so historical work tracking remains auditable.
 
 Reactive packet for reconciling PR #631 schema-deployment feedback: already-filed
 work items and historical handoff artifacts must remain immutable after
-filing/emission. The affected filed packet paths include:
+filing/emission, but their GitHub issue state must be made executor-safe before
+execution resumes. The affected filed packet paths include:
 
 - `generated/work-items/active/adr-0048-schema-evolution/05-actions-migrate-yml-reusable-workflow.md`
   mapped to HoneyDrunk.Actions issue #124.
@@ -42,7 +43,10 @@ filing/emission. The affected filed packet paths include:
 
 The current ADR text and living dispatch plan carry the corrected policy. This
 packet exists to reconcile already-filed issue state and historical handoffs
-without mutating their original text.
+without mutating their original text. Promote and file this packet before any
+superseded ADR-0048 or ADR-0072 issue is assigned for execution, unless the
+owning issue has already received an explicit supersession comment linking to
+ADR-0048 D1/D3/D11 and the revised dispatch plan.
 
 ## Scope
 
@@ -70,6 +74,11 @@ without mutating their original text.
   moves performed by the standard Hive workflow.
 - Superseded ADR-0048 issue state is auditable from GitHub comments or project
   fields, not from rewritten packet text.
+- Superseded ADR-0072 issue state is audited the same way if the issue body
+  still presents EF migrations as a production schema-deployment path.
+- Issues for ADR-0048 packet 05, packet 07, and packet 09 each have a
+  supersession comment or are closed/replaced under the standard Hive workflow
+  before executor assignment.
 - Any replacement implementation packet uses SQL project/DACPAC terminology and
   does not introduce `dotnet ef migrations script`, EF migration classes,
   startup-time `Database.Migrate()`, or `[Rollback]` attributes as production
@@ -79,6 +88,6 @@ without mutating their original text.
 
 - Reactive-source packet (ADR-0043 D4): generated from PR #631 Grid Review
   feedback.
-- This packet is intentionally proposed, not active. Promote and file it only
-  if the operator wants the issue-state reconciliation tracked as a discrete
-  Hive item.
+- This packet is intentionally proposed, not active, because filing is normally
+  operator-controlled. The living dispatch plans now treat it as the required
+  supersession path for stale filed issue state.

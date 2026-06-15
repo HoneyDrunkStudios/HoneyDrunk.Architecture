@@ -230,11 +230,13 @@ tests/
 
 - Inputs: `node` (the Node name), `environment` (`dev`/`staging`/`prod`), `schema-source-ref` (the reviewed commit SHA or release tag that contains the SQL project change being promoted), and optional DACPAC/publish profile overrides. Protected environments (`staging`/`prod`) require an immutable merge SHA or release tag; if the caller supplies a branch for `dev`, the workflow resolves it to a commit SHA before build and records that SHA in the deployment artifacts.
 - Trigger: `workflow_dispatch` only (operator-deliberate per D3).
+- SQL project target platform: every `HoneyDrunk.<Node>.Database.sqlproj` pins the SQL Server/Azure SQL target platform that matches the deployed backing. Azure SQL-backed Nodes use the Azure SQL DacFx schema provider; any move to a different relational provider or target platform requires an explicit ADR amendment or follow-up decision before the SQL project is used for protected environments.
+- Publish profile safety: each Node owns reviewed publish profiles/scripts under the SQL project, with environment-specific values where needed. Protected-environment profiles must set DacFx `BlockOnPossibleDataLoss=True`, must keep `DropObjectsNotInSource=False` unless an explicitly reviewed Contract-phase PR opts into named drops, must surface drift/destructive operations in the generated report/script before publish, and must preserve the generated publish report, script, DACPAC, resolved source SHA, and deployment output as artifacts. A Contract-phase PR that intentionally drops objects must name the object list, `SchemaChangeId`, and `RollbackStrategy` in the PR body and SQL project README; the reviewed publish script is part of the approval evidence.
 - Steps:
   1. Resolve `schema-source-ref` to an immutable commit SHA, reject mutable branch refs for protected environments, and check out the consumer repo at that resolved SHA. For an Expand phase this is usually the merge commit or release tag that contains the already-landed SQL project change, not the target environment's previously deployed app SHA. This guarantees the DACPAC source is the intended database model while D2/D5 guarantee that model remains backward-compatible with the currently running code.
   2. Build the Node's SQL project and publish the DACPAC artifact.
   3. Resolve the connection string from Vault per ADR-0005 using the Grid's OIDC credential model per ADR-0015.
-  4. Generate and review/store the publish script/report, then publish to Azure SQL.
+  4. Generate and review/store the publish script/report with the Node's reviewed publish profile. Fail before publish if the report includes unreviewed drops, data-loss operations, target-platform mismatch, or drift outside the declared `SchemaChangeId`.
   5. On success: upload the DACPAC, publish script/report, and deployment output as workflow artifacts.
   6. On failure: surface the offending DDL statement, the partial-application state from the deployment output, and the operator-runbook link from D10.
 
@@ -281,6 +283,7 @@ Per ADR-0046, the Grid commits to specialist review agents for high-risk surface
 - **D8 Audit constraints** — if `AuditEntry` is touched, any forbidden operation (column drop, type narrowing, `NOT NULL` add)?
 - **D9 tenant scoping** — multi-tenant table touched? Schema deployment scoped correctly?
 - **D10 rollback declaration** — PR body declares `RollbackStrategy` and the declaration is adequate?
+- **D11 publish profile safety** — target platform pinned? protected-environment profile blocks possible data loss? unreviewed drops disabled? publish report/script retained and reviewed before publish?
 - **D12 tests present** — DACPAC publish/model-match test added or updated for the schema change?
 - **SQL project idiom** — object split across schema/table/index scripts cleanly? Generated publish script is reviewable and does not hide destructive drift?
 
@@ -335,7 +338,7 @@ Adds three:
 - **`database` agent invocation adds ~30s–2min to PR review** for schema-touching PRs. Negligible at current PR volume; named as a cost factor if PR volume grows.
 - **Per-tenant schema variant (D9 second branch) is not adopted today.** When and if the first Node moves to per-tenant schemas, this ADR's D9 is the schema deployment story; the operational complexity of resume-from-tenant-N is the trigger for revisiting whether per-tenant schemas remain worth it.
 - **SQL project SDK/tooling alignment** means the build surface may drift as Visual Studio/SDK tooling evolves. Cross-Grid tooling bumps are coordinated multi-Node PRs; recorded as a known upgrade burden, not a recurring cost.
-- **Round-trip test cost in CI** is bounded by Testcontainers' per-test-class container reuse (per ADR-0047 D4). For a Node database project, the round-trip test publishes the DACPAC against a fresh container database; tolerable at current scale.
+- **Round-trip test cost in CI** is bounded by Testcontainers' per-test-class container reuse (per ADR-0047 D4), but SQL Server containers are materially heavier than the prior Postgres baseline. For a Node database project, the round-trip test publishes the DACPAC against a fresh container database; tolerable at current scale, but visible in CI minutes and reviewed again if schema-bearing Node count grows.
 - **The Vault bootstrap-recovery procedure (ADR-0036 D6) is unchanged.** Vault's persistent state is in Key Vault itself; no schema migrations exist for Vault. This ADR explicitly does not change ADR-0006 or ADR-0036 D6's posture on Vault.
 
 ### Follow-up Work
