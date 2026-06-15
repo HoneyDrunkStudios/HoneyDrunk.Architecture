@@ -98,6 +98,8 @@ The following filed packet bodies remain visible for auditability but are not th
 
 Filed GitHub issues and project-state updates for those historical packets are reconciled by `generated/work-items/proposed/2026-06-14-architecture-dacpac-filed-packet-reconciliation.md`. That reconciliation packet is the executor-safe supersession path: before packet 05, packet 07, packet 09, or any ADR-0072 filed issue that still instructs EF migration production deployment can proceed, promote/file the reconciliation packet and post issue comments or project-state notes pointing the executor back to this dispatch-plan section and ADR-0048 D1/D3/D11.
 
+Supersession comments were posted from PR #631 on 2026-06-15 to HoneyDrunk.Actions#124, HoneyDrunk.Notify#35, and HoneyDrunk.Standards#48 so direct issue readers see the DACPAC pivot before execution.
+
 ## Version Bumps
 
 - **`HoneyDrunk.Architecture`** — not a versioned .NET solution. Catalog/doc/governance/agent edits only (packets 00, 01, 02, 03, 04, 06).

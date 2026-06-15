@@ -79,6 +79,8 @@ ADR-0048 D1/D3/D11 and the revised dispatch plan.
 - Issues for ADR-0048 packet 05, packet 07, and packet 09 each have a
   supersession comment or are closed/replaced under the standard Hive workflow
   before executor assignment.
+- PR #631 posted initial supersession comments on 2026-06-15 to
+  HoneyDrunk.Actions#124, HoneyDrunk.Notify#35, and HoneyDrunk.Standards#48.
 - Any replacement implementation packet uses SQL project/DACPAC terminology and
   does not introduce `dotnet ef migrations script`, EF migration classes,
   startup-time `Database.Migrate()`, or `[Rollback]` attributes as production
