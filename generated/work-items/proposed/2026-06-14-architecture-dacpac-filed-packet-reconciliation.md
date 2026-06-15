@@ -27,9 +27,9 @@ or replacement packets so historical work tracking remains auditable.
 
 ## Context
 
-Grid Review on PR #631 flagged that already-filed work items and historical
-handoff artifacts must remain immutable after filing/emission. The affected
-filed packet paths include:
+Reactive packet for reconciling PR #631 schema-deployment feedback: already-filed
+work items and historical handoff artifacts must remain immutable after
+filing/emission. The affected filed packet paths include:
 
 - `generated/work-items/active/adr-0048-schema-evolution/05-actions-migrate-yml-reusable-workflow.md`
   mapped to HoneyDrunk.Actions issue #124.

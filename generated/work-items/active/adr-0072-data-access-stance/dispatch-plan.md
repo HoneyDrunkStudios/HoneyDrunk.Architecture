@@ -13,6 +13,8 @@ ADR-0072 commits the Grid's data-access stance: **EF Core is the default ORM for
 
 The ADR is a **policy / ratification** ADR. The committed implementation (EF Core via `HoneyDrunk.Data.EntityFramework`) already exists in the Data repo; this initiative ratifies it explicitly, lands the discipline in the `review` agent's rubric and the `database` specialist agent's rubric, and updates the Data Node's README/overview to make the stance discoverable.
 
+This living dispatch plan now references ADR-0048's SQL project/DACPAC deployment standard. Filed ADR-0072 packet bodies that still mention EF migration mechanics remain historical filed scope; executors reconcile those issue bodies through comments, project-state updates, or replacement packets instead of rewriting filed packet text in place.
+
 **6 packets across 2 waves**, targeting **2 repos** (`HoneyDrunk.Architecture`, `HoneyDrunk.Data`). All 6 are `Actor=Agent`, 0 `Actor=Human`. No Human Prerequisites in any packet — the work is pure docs/governance/rubric editing with no portal clicks or manual deploys. Packets 02 and 03b carry a **textual cross-initiative gate** on `adr-0048-schema-evolution` (the filing pipeline's `work-item:NN` form only resolves intra-initiative; cross-initiative sequencing is enforced by the executor at PR-open time).
 
 ## Trigger
@@ -127,7 +129,7 @@ No site-sync flag. ADR-0072 is internal Core-sector infrastructure — no public
 - **First Dapper hot-path read introduction** — a per-Node packet with benchmark evidence, when the workload data exists. Not in this initiative.
 - **EF Core interceptor discipline as a Grid invariant** — ADR-0072's Alternatives Considered section notes this is deferred, not rejected. A follow-up ADR may commit a Grid-wide interceptor pattern once the patterns settle in production.
 - **Marten as a backing option for one specific Node** — ADR-0072 keeps this open as a per-Node Node-specific choice (e.g. a future event-store-shaped Node); the Grid-wide default stays EF Core. No follow-up filed here.
-- **Per-Node tutorial / template for "how to add an entity, write a migration, ship it in CI"** — named in ADR-0072's Follow-up Work as belonging to the DX-baseline ADR. Not in this initiative.
+- **Per-Node tutorial / template for "how to add an entity, update a SQL project, build a DACPAC, ship it in CI"** — replaces the older filed EF-migration tutorial wording under ADR-0048's DACPAC policy and belongs to the DX-baseline ADR. Not in this initiative.
 
 ## Rollback Plan
 

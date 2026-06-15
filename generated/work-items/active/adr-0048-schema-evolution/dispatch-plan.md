@@ -1,4 +1,4 @@
-# Dispatch Plan — ADR-0048: Data Schema Evolution and Migration Policy
+# Dispatch Plan — ADR-0048: Data Schema Evolution and Deployment Policy
 
 **Initiative:** `adr-0048-schema-evolution`
 **ADR:** ADR-0048 (Proposed → Accepted via packet 00)
@@ -12,6 +12,8 @@
 ADR-0048 commits the Grid's response to a missing schema-evolution policy: **SQL Server database projects and DACPACs** as the Grid-wide framework for relational stores (D1), the **expand → migrate code → contract** pattern as the zero-downtime mechanic (D2), the **out-of-band `database-deploy-dacpac.yml` workflow** as the timing model — operator-triggered, separate from app deploy, compatible with ADR-0015 D6's multi-revision window (D3/D4/D11), per-store backward-compatibility windows (D5), online DDL primitives on tables ≥ 100k rows (D6), schema-on-read for document stores (D7), append-only-by-interface schema constraints for the Audit `AuditEntry` table (D8), tenant-scoped-vs-Grid-wide schema deployment ordering (D9), forward-only rollback (D10), file/naming conventions plus the `database-deploy-dacpac.yml` reusable workflow (D11), DACPAC round-trip tests + PR-body rollback declarations as test/review requirements (D12), a specialist `database` review agent per ADR-0046 (D13), and a 6-phase rollout (D14).
 
 This initiative delivers: ADR acceptance + the three schema-evolution invariants + catalog registration (Architecture); the `database` specialist agent (Architecture); the `review.md` D3-category-13 delegation to `database` (Architecture); the `scope.md` packet pre-flight schema-change detector + the invariant-33 review/scope context-loading mirror (Architecture); the new `database-deploy-dacpac.yml` reusable workflow (Actions); the canonical SQL project README template (Architecture); and the schema-on-read documentation for the Kernel idempotency Cosmos dedup store (Kernel, Phase 2 pilot). Notify adoption moves to a later Node-owned SQL project/DACPAC packet instead of retroactive EF migration annotation. Already-filed packet bodies remain immutable; issue/project-state reconciliation is tracked by `generated/work-items/proposed/2026-06-14-architecture-dacpac-filed-packet-reconciliation.md`.
+
+The living packet list below reflects the DACPAC policy pivot. Earlier filed packet bodies that described EF migration scripts, rollback attributes, or retroactive Notify migration annotation remain historical filed artifacts; they are superseded by this dispatch-plan revision and the reconciliation packet rather than rewritten in place.
 
 **8 packets across 4 waves**, targeting **3 repos** (`HoneyDrunk.Architecture`, `HoneyDrunk.Actions`, `HoneyDrunk.Kernel`). All 8 are `Actor=Agent`, 0 `Actor=Human`. Three packets carry Human Prerequisites (the workflow packet 05 needs portal RBAC + Key Vault secret seeding before its first consumer invocation; packet 00 needs invariant-number confirmation; packet 08 names an optional path-placement decision) — but the *code/docs* work is fully delegable in every case, so all stay `Actor=Agent`.
 
@@ -86,6 +88,16 @@ Packets within a wave run in parallel. **Wave-2 packets 02/03/04** are independe
 | 06 | [per-Node SQL project README template](./06-architecture-migrations-readme-template.md) | Architecture | Agent | 3 | 00 |
 | 08 | [Kernel idempotency Cosmos schema-on-read doc](./08-kernel-idempotency-cosmos-schema-on-read-doc.md) | Kernel | Agent | 4 | 00, 06 |
 
+## Historical Filed Packets Superseded by DACPAC Pivot
+
+The following filed packet bodies remain visible for auditability but are not the current execution plan:
+
+- **Packet 05** was originally filed as a migration-runner workflow packet. The current implementation path is still packet 05, but the workflow is `database-deploy-dacpac.yml` and builds/deploys reviewed SQL project DACPAC artifacts rather than EF migration scripts.
+- **Packet 07** was originally filed as Notify retroactive migration annotation. Notify adoption is now deferred to a later Node-owned SQL project/DACPAC packet under Notify's own track.
+- **Packet 09** was originally filed as a Standards rollback-attribute packet. Rollback posture now lives in PR-body `RollbackStrategy` metadata and SQL project README notes, not a shared runtime attribute.
+
+Filed GitHub issues and project-state updates for those historical packets are reconciled by `generated/work-items/proposed/2026-06-14-architecture-dacpac-filed-packet-reconciliation.md`.
+
 ## Version Bumps
 
 - **`HoneyDrunk.Architecture`** — not a versioned .NET solution. Catalog/doc/governance/agent edits only (packets 00, 01, 02, 03, 04, 06).
@@ -123,7 +135,7 @@ No site-sync flag. ADR-0048 is internal Core-sector infrastructure — no public
 - **Partition-key change on Cosmos** — ADR-0048 D7 names it as the most expensive Cosmos migration shape; a follow-up ADR if and when first needed. Not before then.
 - **Per-tenant schemas** — ADR-0048 D9's second branch; a follow-up ADR if and when adopted.
 - **`dev` automation of `database-deploy-dacpac.yml`** — ADR-0048 names "auto-running `database-deploy-dacpac.yml` against `dev` on every merge that touches `HoneyDrunk.<Node>.Database/`" as a Phase-4+-evaluated follow-up. Not in this initiative.
-- **`dr-runbook.md` Schema Deployment Failure section template update** — ADR-0036 Follow-up Work; depends on ADR-0036 acceptance and template existence. Not in this initiative; the per-Node README (packets 07/08) and the canonical template (packet 06) point at the future location with "to be added when ADR-0036 lands."
+- **`dr-runbook.md` Schema Deployment Failure section template update** — ADR-0036 Follow-up Work; depends on ADR-0036 acceptance and template existence. Not in this initiative; the canonical template (packet 06) and Kernel schema-on-read doc (packet 08) point at the future location with "to be added when ADR-0036 lands."
 - **`HoneyDrunk.Architecture`'s ADR index amendment for D14 Phase 1 → Phase 2 transition.** The Phase-2 pilot completion (packet 08 merging) is a milestone update for the initiative tracker; the dispatch plan updates at wave boundaries per ADR-0008 D7 ("dispatch plans are the one exception to packet immutability"), so updating this plan when Wave 4 completes is in-scope per the plan's living-narrative posture.
 
 ## Rollback Plan
@@ -133,7 +145,7 @@ No site-sync flag. ADR-0048 is internal Core-sector infrastructure — no public
 - **Packet 03 (review.md D3 category 13 delegation):** revert the PR. The generalist `review` agent's existing category-13 surface checks remain; the delegation stanza is removed.
 - **Packet 04 (scope.md pre-flight + review.md context-loading mirror):** revert the PR. The scope agent loses the schema-change detector; the review.md context-loading list returns to its prior state. Invariant 33's symmetry is preserved either way (both `scope.md` and `review.md` revert together).
 - **Packet 05 (`database-deploy-dacpac.yml` workflow):** revert the workflow YAML. No consumer breaks — the workflow is `workflow_dispatch`-only via consumer-side caller workflows; reverting it disables the caller's `uses:` reference, which is itself caller-side.
-- **Packet 06 (per-Node template):** revert the template file. No consumer breaks — the template is reference content; Nodes that already copied it (packets 07/08) retain their per-Node copies.
+- **Packet 06 (per-Node template):** revert the template file. No consumer breaks — the template is reference content; Nodes that already copied it from this initiative (packet 08) retain their per-Node copies.
 - **Packet 08 (Kernel idempotency Cosmos schema-on-read doc):** revert the PR. The doc and the empty `Backfill/` directory are removed. No runtime impact (the doc is reference content; the Cosmos backing implementation is unchanged).
 
 ## Filing

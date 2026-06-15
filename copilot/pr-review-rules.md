@@ -111,7 +111,7 @@ The three severity levels above remain the canonical taxonomy. ADR-0044 D3 adds 
 ### 13. Data and persistence integrity
 - **Block:** Data loss/corruption risk, unsafe schema deployment, broken ordering/deduplication, or non-idempotent persistence side effects.
 - **Request Changes:** Missing rollback/backfill/versioning, weak consistency handling, or hidden ordering assumptions.
-- **Suggest:** Clarify persistence docs, indexes, retention notes, or low-risk migration follow-ups.
+- **Suggest:** Clarify persistence docs, indexes, retention notes, or low-risk schema-deployment follow-ups.
 
 ### 14. Distributed systems concerns
 - **Block:** Unsafe cross-service assumptions, message loss/duplication hazards, broken eventual consistency, or distributed deadlock risk.
