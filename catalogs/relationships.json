@@ -211,7 +211,7 @@
         "Package publishing and provider secret onboarding are pending"
       ],
       "exposes": {
-        "contracts": ["IPaymentSubscriptionLifecycleClient", "IPaymentWebhookEventValidator", "IPaymentInvoiceReconciliationClient", "PaymentCheckoutSessionRequest", "PaymentSubscriptionSnapshot", "PaymentProviderNames", "IStripeMeteredBillingClient", "IStripeSubscriptionLifecycleClient", "IStripeWebhookEventValidator", "IStripeInvoiceReconciliationClient", "StripeBillingClient"],
+        "contracts": ["IPaymentSubscriptionLifecycleClient", "IPaymentWebhookEventValidator", "IPaymentInvoiceReconciliationClient", "PaymentCheckoutSessionRequest", "PaymentSubscriptionSnapshot", "PaymentProviderNames", "IStripeMeteredBillingClient", "IStripeApiKeyProvider", "IStripeWebhookSecretProvider", "IStripeSubscriptionLifecycleClient", "IStripeWebhookEventValidator", "IStripeInvoiceReconciliationClient", "StripeBillingClient"],
         "packages": ["HoneyDrunk.Payments.Abstractions", "HoneyDrunk.Payments.Stripe"]
       },
       "consumes_detail": {
