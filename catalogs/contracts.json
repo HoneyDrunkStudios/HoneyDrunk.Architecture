@@ -213,6 +213,8 @@
       "status": "seed",
       "interfaces": [
         { "name": "IStripeMeteredBillingClient", "kind": "interface", "description": "Stripe meter-event transport boundary for accepted usage events." },
+        { "name": "IStripeApiKeyProvider", "kind": "interface", "description": "Stripe provider composition interface for resolving API keys from the host Vault / ISecretStore boundary at call time." },
+        { "name": "IStripeWebhookSecretProvider", "kind": "interface", "description": "Stripe provider composition interface for resolving webhook endpoint signing secrets from the host Vault / ISecretStore boundary at validation time." },
         { "name": "IStripeSubscriptionLifecycleClient", "kind": "interface", "description": "Stripe Checkout subscription lifecycle boundary for creating subscription sessions, reading subscriptions, and canceling subscriptions." },
         { "name": "IStripeWebhookEventValidator", "kind": "interface", "description": "Signed Stripe webhook validation and normalized event snapshot boundary." },
         { "name": "IStripeInvoiceReconciliationClient", "kind": "interface", "description": "Stripe invoice reconciliation boundary for reading invoice payment and product metadata state." },

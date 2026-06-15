@@ -12,6 +12,7 @@ slug: architecture-changelog
 > **State note:** This unreleased section records multiple staged 2026-06-01/2026-06-02 updates; verify live secret/tunnel state before cutting a release note.
 
 - Registered `HoneyDrunk.Payments` as the shared payment-provider boundary: added node/catalog entries, provider-neutral payment contracts, `HoneyDrunk.Payments.Stripe` as the Stripe.NET provider package, NovOutbox consumption edges, and repo context docs. This replaces the earlier NovOutbox-owned `HoneyDrunk.NovOutbox.Billing.Stripe` package shape.
+- Added Payments catalog metadata for the public Stripe provider composition interfaces (`IStripeApiKeyProvider`, `IStripeWebhookSecretProvider`) and documented the Stripe meter customer mapping / failure-diagnostics preconditions.
 
 - Pointed the ADR-0086 `lore-signal-review` runner job at the `hive-activity` Discord channel (`Discord--HiveActivity--RunnerWebhookUrl`) to match the other runner jobs, and tidied its description/portability wording. **Operator:** confirm `Discord--HiveActivity--RunnerWebhookUrl` exists in the runner Key Vault before merge, or the job's notifications will break.
 

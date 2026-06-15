@@ -11,6 +11,7 @@
 
 - `HoneyDrunk.Payments.Abstractions`: provider-neutral contracts for checkout sessions, subscription lifecycle, webhook event normalization, and invoice reconciliation.
 - `HoneyDrunk.Payments.Stripe`: Stripe.NET provider implementation plus Stripe-specific contracts for callers that need explicit Stripe identifiers or raw Stripe lifecycle operations.
+- `IStripeApiKeyProvider` / `IStripeWebhookSecretProvider`: Stripe composition interfaces that hosts implement with Vault-backed secret resolution. Product workflows should not pass raw Stripe API keys or webhook secrets through Payments contracts.
 
 ## Consumers
 
@@ -22,3 +23,4 @@
 - Product nodes should not depend directly on Stripe.NET.
 - Provider-specific webhook signature semantics stay in the provider package.
 - Provider-neutral snapshots carry `Provider` plus provider object identifiers so products can persist links without knowing SDK object shapes.
+- Stripe meters must set `customer_mapping.event_payload_key` to `customer_key` and map usage from `value`; product hosts should log failed meter emission with tenant/project/event/correlation context and without provider secrets or raw webhook payloads.
