@@ -22,7 +22,7 @@ Rules:
 | Order | Node | Repo | Last audited | Last report |
 |---:|---|---|---|---|
 | 1 | HoneyDrunk.Kernel | HoneyDrunk.Kernel | 2026-06-09 | generated/audits/HoneyDrunk.Kernel-2026-06-09.md |
-| 2 | HoneyDrunk.Transport | HoneyDrunk.Transport |  |  |
+| 2 | HoneyDrunk.Transport | HoneyDrunk.Transport | 2026-06-16 | generated/audits/HoneyDrunk.Transport-2026-06-16.md |
 | 3 | HoneyDrunk.Vault | HoneyDrunk.Vault |  |  |
 | 4 | HoneyDrunk.Auth | HoneyDrunk.Auth |  |  |
 | 5 | HoneyDrunk.Web.Rest | HoneyDrunk.Web.Rest |  |  |
