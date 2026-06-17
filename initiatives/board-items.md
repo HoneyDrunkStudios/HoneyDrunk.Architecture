@@ -2,7 +2,7 @@
 
 Non-initiative items currently on HoneyDrunkStudios org Project #4. Fully rewritten by `hive-sync`.
 
-**Last Updated:** 2026-06-15
+**Last Updated:** 2026-06-17
 
 ## security
 
@@ -43,6 +43,11 @@ Non-initiative items currently on HoneyDrunkStudios org Project #4. Fully rewrit
 - [HoneyDrunk.Observe#8](https://github.com/HoneyDrunkStudios/HoneyDrunk.Observe/issues/8) — [grid-health] weekly-deps.yml unhealthy (closed; closed 2026-05-26)
 - [HoneyDrunk.Operator#6](https://github.com/HoneyDrunkStudios/HoneyDrunk.Operator/issues/6) — [grid-health] publish.yml unhealthy (open)
 - [HoneyDrunk.Operator#7](https://github.com/HoneyDrunkStudios/HoneyDrunk.Operator/issues/7) — [grid-health] weekly-deps.yml unhealthy (closed; closed 2026-05-26)
+- [HoneyDrunk.Payments#4](https://github.com/HoneyDrunkStudios/HoneyDrunk.Payments/issues/4) — [grid-health] pr-review.yml unhealthy (open)
+- [HoneyDrunk.Payments#6](https://github.com/HoneyDrunkStudios/HoneyDrunk.Payments/issues/6) — [grid-health] publish.yml unhealthy (open)
+- [HoneyDrunk.Payments#7](https://github.com/HoneyDrunkStudios/HoneyDrunk.Payments/issues/7) — [grid-health] weekly-deps.yml unhealthy (open)
+- [HoneyDrunk.Payments#8](https://github.com/HoneyDrunkStudios/HoneyDrunk.Payments/issues/8) — [grid-health] hive-field-mirror.yml unhealthy (closed; closed 2026-06-17)
+- [HoneyDrunk.Payments#9](https://github.com/HoneyDrunkStudios/HoneyDrunk.Payments/issues/9) — [grid-health] pr.yml unhealthy (open)
 - [HoneyDrunk.Pulse#35](https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/35) — [grid-health] publish.yml unhealthy (closed; closed 2026-05-29)
 - [HoneyDrunk.Pulse#36](https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/36) — [grid-health] release-collector.yml unhealthy (closed; closed 2026-06-03)
 - [HoneyDrunk.Transport#38](https://github.com/HoneyDrunkStudios/HoneyDrunk.Transport/issues/38) — [grid-health] publish.yml unhealthy (closed; closed 2026-05-27)
@@ -50,7 +55,6 @@ Non-initiative items currently on HoneyDrunkStudios org Project #4. Fully rewrit
 
 ## other
 
-- [HoneyDrunk.Actions#50](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/50) — Follow-up: add Container Apps deploy smoke test (closed; closed 2026-05-16; labels: ci, tier-2, adr-0015)
 - [HoneyDrunk.Actions#73](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/73) — Consolidate Actions deploy and GitHub helpers (closed; closed 2026-05-19; labels: chore, tier-2, ops, initiative-standalone)
 - [HoneyDrunk.Actions#77](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/77) — CI Change: Blocking coverage gate + non-blocking outdated-NuGet summary section in `pr-core.yml` (closed; closed 2026-05-19; labels: feature, tier-2, wave-1, ci-cd, meta, adr-0032, initiative-adr-0032-pr-validation-policy)
 - [HoneyDrunk.Actions#78](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/78) — CI Change: `nightly-deps.yml` opens/updates a single grouped `📦 Outdated Dependencies` issue per repo (closed; closed 2026-05-19; labels: feature, tier-2, wave-1, ci-cd, meta, adr-0032, initiative-adr-0032-pr-validation-policy)
@@ -62,9 +66,7 @@ Non-initiative items currently on HoneyDrunkStudios org Project #4. Fully rewrit
 - [HoneyDrunk.AI#3](https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/3) — Feature: Add `IModelRouter`, `IRoutingPolicy`, `ModelCapabilityDeclaration` to `HoneyDrunk.AI.Abstractions` (closed; closed 2026-05-21; labels: feature, tier-2, ai, contracts, adr-0010, blocked, wave-2, initiative-adr-0010-observe-ai-routing-phase-1)
 - [HoneyDrunk.AI#24](https://github.com/HoneyDrunkStudios/HoneyDrunk.AI/issues/24) — 📦 Outdated Dependencies (open; labels: dependencies)
 - [HoneyDrunk.Architecture#33](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/33) — Feature: Accept ADR-0010 — register HoneyDrunk.Observe, wire AI routing contracts into catalogs, finalize invariants (closed; closed 2026-05-21; labels: feature, tier-2, wave-1, docs, meta, catalog, adr-0010, initiative-adr-0010-observe-ai-routing-phase-1)
-- [HoneyDrunk.Architecture#34](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/34) — Chore: Create `HoneyDrunk.Observe` GitHub repo (human-only) (closed; closed 2026-05-16; labels: chore, tier-1, wave-1, new-node, human-only, meta, adr-0010, initiative-adr-0010-observe-ai-routing-phase-1)
 - [HoneyDrunk.Architecture#35](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/35) — Feature: Accept ADR-0010 — register HoneyDrunk.Observe, wire AI routing contracts into catalogs, finalize invariants (closed; closed 2026-05-21; labels: feature, tier-2, wave-1, docs, meta, catalog, adr-0010, initiative-adr-0010-observe-ai-routing-phase-1)
-- [HoneyDrunk.Architecture#36](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/36) — Chore: Create `HoneyDrunk.Observe` GitHub repo (human-only) (closed; closed 2026-05-16; labels: chore, tier-1, wave-1, new-node, human-only, meta, adr-0010, initiative-adr-0010-observe-ai-routing-phase-1)
 - [HoneyDrunk.Architecture#72](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/72) — Chore: Register HoneyDrunk.AI's standup decisions in Architecture catalogs (closed; closed 2026-05-20; labels: chore, tier-2, architecture, ai, adr-0016, initiative-adr-0016-honeydrunk-ai-standup)
 - [HoneyDrunk.Architecture#73](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/73) — Chore: Add ADR-0016's three new invariants to the Grid constitution (closed; closed 2026-05-20; labels: chore, tier-2, architecture, ai, adr-0016, initiative-adr-0016-honeydrunk-ai-standup, constitution)
 - [HoneyDrunk.Architecture#80](https://github.com/HoneyDrunkStudios/HoneyDrunk.Architecture/issues/80) — Consolidate Architecture packet and guidance rules (closed; closed 2026-05-19; labels: chore, tier-2, meta, initiative-standalone)
