@@ -1,6 +1,6 @@
 # Hive Sync Drift Report
 
-**Last Updated:** 2026-06-15
+**Last Updated:** 2026-06-17
 
 Fully rewritten by `hive-sync`; First Surfaced dates are sticky for persistent findings.
 
@@ -128,6 +128,10 @@ Fully rewritten by `hive-sync`; First Surfaced dates are sticky for persistent f
   - **Item:** live-only: [ADR-0043](../adrs/ADR-0043-continuous-backlog-generation-strategy.md) urgent reactive operational packet | `#ops-alerts` | High | `backlog-urgent-ops: {summary} — {urgent-briefing-or-pr-link}`
   - **First Surfaced:** 2026-06-05
   - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
+- **Category 17: implementation-notes completion-gate hold**
+  - **Item:** adr-0015-container-apps-rollout
+  - **First Surfaced:** 2026-06-17
+  - **Detail:** packet-folder note exists, but governing decision lacks exact `## Implementation Notes (YYYY-MM-DD)` pointer heading. Hive-sync must hold this initiative In Progress until the implementing agent authors the conforming record.
 - **Category 17: implementation-notes completion-gate hold**
   - **Item:** adr-0044-cloud-code-review
   - **First Surfaced:** 2026-06-08
