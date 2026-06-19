@@ -1,6 +1,6 @@
 # Proposed ADR/PDR Queue
 
-**Last Updated:** 2026-06-17
+**Last Updated:** 2026-06-19
 
 ## Awaiting Implementing Packets
 
@@ -34,7 +34,7 @@
 - `ADR-0042` — ADR-0042: Idempotency Contract for Async Boundaries (adrs/ADR-0042-idempotency-contract-for-async-boundaries.md) — 0/2 accepting packet issues closed; open: HoneyDrunk.Architecture#248, HoneyDrunk.Architecture#249
 - `ADR-0045` — ADR-0045: Grid-Wide Error Tracking (adrs/ADR-0045-grid-wide-error-tracking.md) — 0/8 accepting packet issues closed; open: HoneyDrunk.Architecture#258, HoneyDrunk.Architecture#259, HoneyDrunk.Pulse#24, HoneyDrunk.Pulse#25, HoneyDrunk.Actions#98, HoneyDrunk.Notify#27, HoneyDrunk.Architecture#260, HoneyDrunk.Architecture#261
 - `ADR-0046` — ADR-0046: Specialist Review Agents (adrs/ADR-0046-specialist-review-agents.md) — 0/8 accepting packet issues closed; open: HoneyDrunk.Architecture#262, HoneyDrunk.Architecture#263, HoneyDrunk.Architecture#264, HoneyDrunk.Architecture#265, HoneyDrunk.Architecture#266, HoneyDrunk.Architecture#267, HoneyDrunk.Architecture#268, HoneyDrunk.Architecture#269
-- `ADR-0048` — ADR-0048: Data Schema Evolution and Migration Policy (adrs/ADR-0048-data-schema-evolution-and-migration-policy.md) — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#394
+- `ADR-0048` — ADR-0048: Data Schema Evolution and Deployment Policy (adrs/ADR-0048-data-schema-evolution-and-migration-policy.md) — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#394
 - `ADR-0049` — ADR-0049: Data Classification, PII Handling, and Retention Schedule (adrs/ADR-0049-data-classification-pii-handling-and-retention-schedule.md) — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#400
 - `ADR-0050` — ADR-0050: Tenant Lifecycle: Provisioning, Suspension, Offboarding, and Data Export (adrs/ADR-0050-tenant-lifecycle-provisioning-suspension-offboarding-and-data-export.md) — 0/1 accepting packet issues closed; open: HoneyDrunk.Architecture#407
 - `ADR-0051` — ADR-0051: AI Agent Authorization and Tool Scoping Model (adrs/ADR-0051-ai-agent-authorization-and-tool-scoping-model.md) — 0/2 accepting packet issues closed; open: HoneyDrunk.Architecture#351, HoneyDrunk.Architecture#352
