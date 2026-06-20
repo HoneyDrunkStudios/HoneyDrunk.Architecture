@@ -1,6 +1,6 @@
 # Hive Sync Drift Report
 
-**Last Updated:** 2026-06-17
+**Last Updated:** 2026-06-19
 
 Fully rewritten by `hive-sync`; First Surfaced dates are sticky for persistent findings.
 
@@ -101,8 +101,8 @@ Fully rewritten by `hive-sync`; First Surfaced dates are sticky for persistent f
   - **First Surfaced:** 2026-06-15
   - **Detail:** `current-focus.md` surfaces ADR-0027 scaffold filing as focus work because `generated/work-items/active/adr-0027-notify-cloud-standup/06-notify-cloud-node-scaffold.md` has no filed issue state; netrunner owns that row.
 - **Category 15: alert-routing-table drift**
-  - **Item:** live-only: [ADR-0085](../adrs/ADR-0085-grid-wide-documentation-currency-agent.md) docs-sync run report | `#hive-activity` | Info | `docs-sync: {summary-counts} — {report-or-pr-link}`
-  - **First Surfaced:** 2026-06-03
+  - **Item:** live-only: [ADR-0043](../adrs/ADR-0043-continuous-backlog-generation-strategy.md) opportunistic Scout backlog source run | `#hive-activity` | Info | `backlog-scout: {recommendation}, {packets-created} packets — {report-or-pr-link}`
+  - **First Surfaced:** 2026-06-05
   - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
 - **Category 15: alert-routing-table drift**
   - **Item:** live-only: [ADR-0043](../adrs/ADR-0043-continuous-backlog-generation-strategy.md) strategic backlog source run | `#hive-activity` | Info | `backlog-strategic: {packets-created} proposed packets — {report-or-pr-link}`
@@ -113,11 +113,7 @@ Fully rewritten by `hive-sync`; First Surfaced dates are sticky for persistent f
   - **First Surfaced:** 2026-06-05
   - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
 - **Category 15: alert-routing-table drift**
-  - **Item:** live-only: [ADR-0043](../adrs/ADR-0043-continuous-backlog-generation-strategy.md) opportunistic Scout backlog source run | `#hive-activity` | Info | `backlog-scout: {recommendation}, {packets-created} packets — {report-or-pr-link}`
-  - **First Surfaced:** 2026-06-05
-  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
-- **Category 15: alert-routing-table drift**
-  - **Item:** live-only: [ADR-0043](../adrs/ADR-0043-continuous-backlog-generation-strategy.md) weekly backlog briefing generated | `#hive-activity` | Info | `backlog-briefing: {new-proposed-count} proposed, top-3 ready — {briefing-or-pr-link}`
+  - **Item:** live-only: [ADR-0043](../adrs/ADR-0043-continuous-backlog-generation-strategy.md) urgent reactive operational packet | `#ops-alerts` | High | `backlog-urgent-ops: {summary} — {urgent-briefing-or-pr-link}`
   - **First Surfaced:** 2026-06-05
   - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
 - **Category 15: alert-routing-table drift**
@@ -125,8 +121,12 @@ Fully rewritten by `hive-sync`; First Surfaced dates are sticky for persistent f
   - **First Surfaced:** 2026-06-05
   - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
 - **Category 15: alert-routing-table drift**
-  - **Item:** live-only: [ADR-0043](../adrs/ADR-0043-continuous-backlog-generation-strategy.md) urgent reactive operational packet | `#ops-alerts` | High | `backlog-urgent-ops: {summary} — {urgent-briefing-or-pr-link}`
+  - **Item:** live-only: [ADR-0043](../adrs/ADR-0043-continuous-backlog-generation-strategy.md) weekly backlog briefing generated | `#hive-activity` | Info | `backlog-briefing: {new-proposed-count} proposed, top-3 ready — {briefing-or-pr-link}`
   - **First Surfaced:** 2026-06-05
+  - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
+- **Category 15: alert-routing-table drift**
+  - **Item:** live-only: [ADR-0085](../adrs/ADR-0085-grid-wide-documentation-currency-agent.md) docs-sync run report | `#hive-activity` | Info | `docs-sync: {summary-counts} — {report-or-pr-link}`
+  - **First Surfaced:** 2026-06-03
   - **Detail:** Row exists in `constitution/alert-routing.md` but not ADR-0084 D6.
 - **Category 17: implementation-notes completion-gate hold**
   - **Item:** adr-0015-container-apps-rollout
