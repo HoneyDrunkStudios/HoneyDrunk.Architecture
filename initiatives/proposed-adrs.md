@@ -1,6 +1,6 @@
 # Proposed ADR/PDR Queue
 
-**Last Updated:** 2026-06-19
+**Last Updated:** 2026-06-22
 
 ## Awaiting Implementing Packets
 
