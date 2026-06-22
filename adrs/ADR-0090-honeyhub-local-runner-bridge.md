@@ -317,6 +317,10 @@ Per the HoneyHub flexibility posture (PDR-0011 Amendment §7), each decision is 
 
 Provisional decisions change by a conversation + an amendment note here (no new ADR) as long as no `[Firm]` line is crossed.
 
+### Amendments
+
+- **2026-06-22: state-only notifications extend to connector alerts (HoneyHub PR #48).** The state-only notification posture (D7, `[Firm]`) was written for agent-run state (`needs_input`/`completed`/`failed`/`PR opened`). HoneyHub's Key Vault connector adds an **expiry-alert** category (a secret, key, or certificate approaching or past expiry). Its lock-screen-visible payload carries only the object **kind** (secret/key/certificate) and the **expiry date**, never a secret value, object name, vault name, full path, or stack trace; the in-app Key Vault view holds the identifying detail. This stays within the firm rule's intent (no prompt text, code, secrets, or sensitive identifiers leave the device), so the firm minimization boundary is **unchanged**. The authorized notification content is clarified to read "status/backend/repo/link for run state, plus object-kind/expiry-date for Key Vault expiry alerts." The data-classification table's Notifications row (low-detail operational metadata, excluding prompt text/code/secrets/stack traces/full paths) governs both categories.
+
 ---
 
 ## Appendix: Feasibility Spike (2026-06-06)
