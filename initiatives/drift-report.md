@@ -1,6 +1,6 @@
 # Hive Sync Drift Report
 
-**Last Updated:** 2026-06-22
+**Last Updated:** 2026-06-28
 
 Fully rewritten by `hive-sync`; First Surfaced dates are sticky for persistent findings.
 
@@ -11,11 +11,11 @@ Fully rewritten by `hive-sync`; First Surfaced dates are sticky for persistent f
 - **Category 4: node GitHub repo missing**
   - **Item:** HoneyDrunk.Sim
   - **First Surfaced:** 2026-05-25
-  - **Detail:** `gh repo view` could not resolve this repo.
+  - **Detail:** `gh repo view HoneyDrunkStudios/HoneyDrunk.Sim` could not resolve this repo.
 - **Category 4: node GitHub repo missing**
   - **Item:** HoneyDrunk.Studios
   - **First Surfaced:** 2026-05-25
-  - **Detail:** `gh repo view` could not resolve this repo.
+  - **Detail:** `gh repo view HoneyDrunkStudios/HoneyDrunk.Studios` could not resolve this repo.
 - **Category 6: grid-health node missing from compatibility matrix**
   - **Item:** honeydrunk-actions
   - **First Surfaced:** 2026-05-25
