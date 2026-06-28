@@ -2,7 +2,7 @@
 
 Non-initiative items currently on HoneyDrunkStudios org Project #4. Fully rewritten by `hive-sync`.
 
-**Last Updated:** 2026-06-22
+**Last Updated:** 2026-06-28
 
 ## security
 
@@ -25,25 +25,17 @@ Non-initiative items currently on HoneyDrunkStudios org Project #4. Fully rewrit
 - [HoneyDrunk.Actions#191](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/191) — [grid-health] seed-labels-fanout.yml unhealthy (open)
 - [HoneyDrunk.Actions#204](https://github.com/HoneyDrunkStudios/HoneyDrunk.Actions/issues/204) — [grid-health] file-work-items.yml unhealthy (open)
 - [HoneyDrunk.Agents#4](https://github.com/HoneyDrunkStudios/HoneyDrunk.Agents/issues/4) — [grid-health] publish.yml unhealthy (open)
-- [HoneyDrunk.Agents#5](https://github.com/HoneyDrunkStudios/HoneyDrunk.Agents/issues/5) — [grid-health] weekly-deps.yml unhealthy (closed; closed 2026-05-26)
 - [HoneyDrunk.Capabilities#4](https://github.com/HoneyDrunkStudios/HoneyDrunk.Capabilities/issues/4) — [grid-health] publish.yml unhealthy (open)
-- [HoneyDrunk.Capabilities#5](https://github.com/HoneyDrunkStudios/HoneyDrunk.Capabilities/issues/5) — [grid-health] weekly-deps.yml unhealthy (closed; closed 2026-05-26)
 - [HoneyDrunk.Data#34](https://github.com/HoneyDrunkStudios/HoneyDrunk.Data/issues/34) — [grid-health] nightly-deps.yml unhealthy (open)
 - [HoneyDrunk.Flow#4](https://github.com/HoneyDrunkStudios/HoneyDrunk.Flow/issues/4) — [grid-health] publish.yml unhealthy (open)
-- [HoneyDrunk.Flow#5](https://github.com/HoneyDrunkStudios/HoneyDrunk.Flow/issues/5) — [grid-health] weekly-deps.yml unhealthy (closed; closed 2026-05-26)
 - [HoneyDrunk.Kernel#66](https://github.com/HoneyDrunkStudios/HoneyDrunk.Kernel/issues/66) — [grid-health] publish.yml unhealthy (open)
 - [HoneyDrunk.Knowledge#4](https://github.com/HoneyDrunkStudios/HoneyDrunk.Knowledge/issues/4) — [grid-health] publish.yml unhealthy (open)
-- [HoneyDrunk.Knowledge#5](https://github.com/HoneyDrunkStudios/HoneyDrunk.Knowledge/issues/5) — [grid-health] weekly-deps.yml unhealthy (closed; closed 2026-05-26)
 - [HoneyDrunk.Memory#4](https://github.com/HoneyDrunkStudios/HoneyDrunk.Memory/issues/4) — [grid-health] publish.yml unhealthy (open)
-- [HoneyDrunk.Memory#5](https://github.com/HoneyDrunkStudios/HoneyDrunk.Memory/issues/5) — [grid-health] weekly-deps.yml unhealthy (closed; closed 2026-05-26)
-- [HoneyDrunk.Notify#45](https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/45) — [grid-health] publish.yml unhealthy (closed; closed 2026-05-28)
 - [HoneyDrunk.Notify#46](https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/46) — [grid-health] release-functions.yml unhealthy (closed; closed 2026-06-05)
 - [HoneyDrunk.Notify#47](https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/47) — [grid-health] release-worker.yml unhealthy (open)
 - [HoneyDrunk.Notify#57](https://github.com/HoneyDrunkStudios/HoneyDrunk.Notify/issues/57) — [grid-health] pr.yml unhealthy (closed; closed 2026-06-06)
 - [HoneyDrunk.Observe#7](https://github.com/HoneyDrunkStudios/HoneyDrunk.Observe/issues/7) — [grid-health] publish.yml unhealthy (open)
-- [HoneyDrunk.Observe#8](https://github.com/HoneyDrunkStudios/HoneyDrunk.Observe/issues/8) — [grid-health] weekly-deps.yml unhealthy (closed; closed 2026-05-26)
 - [HoneyDrunk.Operator#6](https://github.com/HoneyDrunkStudios/HoneyDrunk.Operator/issues/6) — [grid-health] publish.yml unhealthy (open)
-- [HoneyDrunk.Operator#7](https://github.com/HoneyDrunkStudios/HoneyDrunk.Operator/issues/7) — [grid-health] weekly-deps.yml unhealthy (closed; closed 2026-05-26)
 - [HoneyDrunk.Payments#4](https://github.com/HoneyDrunkStudios/HoneyDrunk.Payments/issues/4) — [grid-health] pr-review.yml unhealthy (open)
 - [HoneyDrunk.Payments#6](https://github.com/HoneyDrunkStudios/HoneyDrunk.Payments/issues/6) — [grid-health] publish.yml unhealthy (open)
 - [HoneyDrunk.Payments#7](https://github.com/HoneyDrunkStudios/HoneyDrunk.Payments/issues/7) — [grid-health] weekly-deps.yml unhealthy (closed; closed 2026-06-22)
@@ -51,7 +43,6 @@ Non-initiative items currently on HoneyDrunkStudios org Project #4. Fully rewrit
 - [HoneyDrunk.Payments#9](https://github.com/HoneyDrunkStudios/HoneyDrunk.Payments/issues/9) — [grid-health] pr.yml unhealthy (open)
 - [HoneyDrunk.Pulse#35](https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/35) — [grid-health] publish.yml unhealthy (closed; closed 2026-05-29)
 - [HoneyDrunk.Pulse#36](https://github.com/HoneyDrunkStudios/HoneyDrunk.Pulse/issues/36) — [grid-health] release-collector.yml unhealthy (closed; closed 2026-06-03)
-- [HoneyDrunk.Transport#38](https://github.com/HoneyDrunkStudios/HoneyDrunk.Transport/issues/38) — [grid-health] publish.yml unhealthy (closed; closed 2026-05-27)
 - [HoneyDrunk.Vault#51](https://github.com/HoneyDrunkStudios/HoneyDrunk.Vault/issues/51) — [grid-health] pr.yml unhealthy (closed; closed 2026-06-06)
 
 ## other
