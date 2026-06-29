@@ -1,6 +1,6 @@
 # Hive Sync Drift Report
 
-**Last Updated:** 2026-06-22
+**Last Updated:** 2026-06-29
 
 Fully rewritten by `hive-sync`; First Surfaced dates are sticky for persistent findings.
 
